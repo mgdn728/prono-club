@@ -306,6 +306,52 @@ nav#nav button.on{color:#fff;border-color:var(--acc)}
   .grp-h{grid-template-columns:minmax(0,1fr) 168px 30px}
   .mrow2{grid-template-columns:40px minmax(0,1fr) 168px 30px}
 }
+
+/* ===== Cartes de match aérées + onglets par sport ===== */
+.sports{display:flex;gap:8px;overflow-x:auto;margin:0 -2px 14px;padding:2px 2px 4px;scrollbar-width:none}
+.sports::-webkit-scrollbar{display:none}
+.sports button{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:11px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--line);font-weight:700;font-size:15px;box-shadow:0 1px 2px rgba(18,23,34,.05)}
+.sports .si{font-size:18px}
+.sports small{background:var(--card2);color:var(--muted);border-radius:99px;padding:1px 8px;font-size:11px;font-weight:800}
+.sports button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.sports button.on small{background:rgba(255,255,255,.25);color:#fff}
+.comps{display:flex;gap:8px;overflow-x:auto;margin-bottom:4px;padding-bottom:4px;scrollbar-width:none}
+.comps::-webkit-scrollbar{display:none}
+.comps .chip{white-space:nowrap;flex:0 0 auto}
+.day{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:20px 4px 10px}
+.mc{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(18,23,34,.05)}
+.mc.open{border-color:color-mix(in srgb,var(--acc) 40%,var(--line))}
+.mc-h{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.mc-h .st{font-weight:700;color:var(--text);background:none;padding:0;border:0}
+.mc-h .st.live{color:var(--acc)}
+.mc-h .st.done{color:var(--muted)}
+.mc-b{margin-left:auto;color:var(--acc);font-weight:700}
+.mc-t{display:grid;gap:7px;width:100%;text-align:left;font-size:16px;font-weight:700;margin-bottom:14px}
+.mc-t span{display:flex;justify-content:space-between;gap:10px}
+.mc-t i{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mc-t .sc{font-size:17px}
+.mc-t .sc.win{color:var(--acc)}
+.mc-t:hover i{color:var(--acc)}
+.mc-o{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mc-o.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mc-o .odd{flex-direction:row;justify-content:space-between;align-items:center;padding:0 14px;min-height:50px;border-radius:12px}
+.mc-o .odd span{display:block;font-size:13px;color:var(--muted);font-weight:800}
+.mc-o .odd b{font-size:16px}
+.mc-o .odd.on span{color:#fff}
+.mc-m{display:block;width:100%;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--acc);text-align:center}
+.mc .markets{margin:12px -16px -14px;padding:2px 16px 16px;border-radius:0 0 16px 16px}
+.mc .markets .mk h4{color:var(--text);font-size:13.5px}
+.opts{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.opts .odd{min-height:52px;border-radius:10px}
+.opts .odd span{font-size:12px;white-space:normal;text-align:center;line-height:1.25}
+.hero{display:flex;flex-direction:column;gap:2px}
+@media (max-width:420px){
+  .mc{padding:12px 13px}
+  .mc .markets{margin:12px -13px -12px;padding:2px 13px 14px}
+  .mc-o .odd{padding:0 10px;min-height:48px}
+  .mc-o .odd b{font-size:15px}
+  .sports button{padding:10px 13px;font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -363,7 +409,6 @@ const MARKETS=[
  {key:'tot',title:'Nombre exact de buts',opts:()=>[0,1,2,3,4].map(n=>({id:String(n),label:n+' but'+(n>1?'s':''),fn:(h,a)=>h+a==n})).concat([{id:'5+',label:'5 buts ou +',fn:(h,a)=>h+a>=5}])},
  {key:'cs',title:'Score exact',cs:true,opts:()=>{const o=[];for(let i=0;i<=3;i++)for(let j=0;j<=3;j++)o.push({id:i+'-'+j,label:i+' - '+j,fn:(h,a)=>h==i&&a==j});o.push({id:'autre',label:'Autre',fn:(h,a)=>h>3||a>3});return o}}
 ];
-const MK=Object.fromEntries(MARKETS.map(m=>[m.key,m]));
 
 const SHOP=[
  {id:'c250',sec:'Bonus',ic:'🪙',name:'+250 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:400,kind:'coins',val:250},
@@ -391,42 +436,118 @@ function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;',
 const hhmm=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 function dayLabel(t,day){const k=dkey(new Date(t));if(k===day)return hhmm(t);return(k===addDays(day,1)?'Nuit ':new Date(t).toLocaleDateString('fr-FR',{weekday:'short'})+' ')+hhmm(t)}
 
-/* ---------- Modèle de cotes : on part des cotes 1N2 pour calculer les autres marchés ---------- */
-const GRID=[];for(let i=1;i<=90;i++)GRID.push(i*0.05);
-const PV=GRID.map(l=>{const v=[];for(let k=0;k<=10;k++)v.push(pois(k,l));return v});
-const CV=PV.map(v=>{const c=[];let s=0;for(let k=0;k<=10;k++){c.push(s);s+=v[k]}return c}); // CV[j][x] = P(but < x)
-function fit(o){
+/* ---------- Sports et marchés ---------- */
+const fr=x=>String(x).replace('.',',');
+const ou=(key,title,l)=>({key,title,opts:()=>[{id:'plus',label:'Plus de '+fr(l),fn:(h,a)=>h+a>l},{id:'moins',label:'Moins de '+fr(l),fn:(h,a)=>h+a<l}]});
+const HOCKEY_MARKETS=[
+ {key:'1x2',title:'Résultat (temps réglementaire)',opts:m=>[{id:'1',label:m.home,fn:(h,a)=>h>a},{id:'N',label:'Match nul',fn:(h,a)=>h==a},{id:'2',label:m.away,fn:(h,a)=>h<a}]},
+ MARKETS[1],
+ ou('ou45','Nombre de buts : plus/moins de 4,5',4.5),ou('ou55','Nombre de buts : plus/moins de 5,5',5.5),ou('ou65','Nombre de buts : plus/moins de 6,5',6.5),
+ {key:'btts',title:'Les deux équipes marquent',opts:()=>[{id:'oui',label:'Oui',fn:(h,a)=>h>0&&a>0},{id:'non',label:'Non',fn:(h,a)=>!(h>0&&a>0)}]},
+ {key:'hcp',title:'Handicap -1,5',opts:m=>[{id:'1',label:m.home+' -1,5',fn:(h,a)=>h-a>1.5},{id:'2',label:m.away+' -1,5',fn:(h,a)=>a-h>1.5}]}
+];
+const WIN=title=>({key:'win',title,opts:m=>[{id:'1',label:m.home,fn:(h,a)=>h>a},{id:'2',label:m.away,fn:(h,a)=>a>h}]});
+function setsMarkets(m){
+  const n=m.bo===5?3:2,list=[];
+  for(let w=0;w<n;w++){list.push({id:n+'-'+w,label:m.home+' '+n+'-'+w,fn:(h,a)=>h==n&&a==w})}
+  for(let w=0;w<n;w++){list.push({id:w+'-'+n,label:m.away+' '+n+'-'+w,fn:(h,a)=>a==n&&h==w})}
+  const lines=m.bo===5?[3.5,4.5]:[2.5];
+  return [WIN('Vainqueur du match'),{key:'cs',title:'Score exact en sets',opts:()=>list},
+    ...lines.map(l=>ou('ns'+String(l).replace('.',''),'Nombre de sets : plus/moins de '+fr(l),l)),
+    {key:'set1',title:'Gagne au moins un set',opts:m=>[{id:'1',label:m.home,fn:(h)=>h>0},{id:'2',label:m.away,fn:(h,a)=>a>0}]}];
+}
+function basketMarkets(m){
+  const tl=m.tl||200,hl=m.hl;
+  return [WIN('Vainqueur (prolongations incluses)'),
+    ...[tl-10,tl,tl+10].map(l=>ou('tp'+Math.round(l*10),'Total de points : plus/moins de '+fr(l),l)),
+    {key:'hcp',title:'Handicap ('+m.home+' '+(hl>0?'+':'')+fr(hl)+')',opts:m=>[{id:'1',label:m.home+' '+(hl>0?'+':'')+fr(hl),fn:(h,a)=>h-a+hl>0},{id:'2',label:m.away+' '+(hl>0?'-':'+')+fr(Math.abs(hl)),fn:(h,a)=>h-a+hl<0}]},
+    {key:'marg',title:'Écart de victoire',opts:m=>[
+      {id:'1a',label:m.home+' de 1 à 5',fn:(h,a)=>h-a>0&&h-a<=5},{id:'1b',label:m.home+' de 6 à 10',fn:(h,a)=>h-a>5&&h-a<=10},{id:'1c',label:m.home+' de 11 ou +',fn:(h,a)=>h-a>10},
+      {id:'2a',label:m.away+' de 1 à 5',fn:(h,a)=>a-h>0&&a-h<=5},{id:'2b',label:m.away+' de 6 à 10',fn:(h,a)=>a-h>5&&a-h<=10},{id:'2c',label:m.away+' de 11 ou +',fn:(h,a)=>a-h>10}]}];
+}
+const SPORTS={
+  foot:{name:'Football',ic:'⚽',three:true,markets:()=>MARKETS},
+  tennis:{name:'Tennis',ic:'🎾',three:false,markets:setsMarkets},
+  basket:{name:'Basket',ic:'🏀',three:false,markets:basketMarkets},
+  hockey:{name:'Hockey',ic:'🏒',three:true,markets:()=>HOCKEY_MARKETS},
+  tt:{name:'Ping-pong',ic:'🏓',three:false,markets:setsMarkets}
+};
+const SPORT_ORDER=['foot','tennis','basket','hockey','tt'];
+function marketsOf(m){if(!m._mk)m._mk=SPORTS[m.sp].markets(m);return m._mk}
+
+/* ---------- Modèle de cotes : on part des cotes du vainqueur pour calculer les autres marchés ---------- */
+const GRID=[];for(let i=1;i<=120;i++)GRID.push(i*0.05);
+const PV=GRID.map(l=>{const v=[];for(let k=0;k<=14;k++)v.push(pois(k,l));return v});
+const CV=PV.map(v=>{const c=[];let s=0;for(let k=0;k<=14;k++){c.push(s);s+=v[k]}return c});
+function fitGoals(o){
   const inv=o.map(x=>1/x),s=inv[0]+inv[1]+inv[2],q=inv.map(x=>x/s);
   let best=1e9,bi=20,bj=20;
   for(let i=0;i<GRID.length;i++){const A=PV[i];
     for(let j=0;j<GRID.length;j++){const B=PV[j],C=CV[j];let p1=0,pn=0;
-      for(let x=0;x<=10;x++){p1+=A[x]*C[x];pn+=A[x]*B[x]}
-      const p2=1-p1-pn,e=(p1-q[0])**2+(pn-q[1])**2+(p2-q[2])**2;
+      for(let x=0;x<=14;x++){p1+=A[x]*C[x];pn+=A[x]*B[x]}
+      const e=(p1-q[0])**2+(pn-q[1])**2+(1-p1-pn-q[2])**2;
       if(e<best){best=e;bi=i;bj=j}}}
   return[GRID[bi],GRID[bj]];
 }
-const FIX={};       // jour -> [matchs]
-const SRC={};       // jour -> 'db' | 'embed'
+function fitHockey(o,T){ // total de buts fixé (≈6 en NHL), on ajuste la répartition sur les cotes 1 et 2
+  const t=1/o[0]/(1/o[0]+1/o[2]);let best=1e9,bk=.5;
+  for(let k=0.15;k<=0.85;k+=0.005){const lh=T*k,la=T*(1-k);let p1=0,p2=0;
+    for(let i=0;i<=14;i++)for(let j=0;j<=14;j++){const p=pois(i,lh)*pois(j,la);if(i>j)p1+=p;else if(j>i)p2+=p}
+    const e=Math.abs(p1/(p1+p2)-t);if(e<best){best=e;bk=k}}
+  return[T*bk,T*(1-bk)];
+}
+const p2way=o=>{const a=1/o[0],b=1/o[1];return a/(a+b)};
+function setsDist(p,bo){
+  const n=bo===5?3:2,C=(a,b)=>{let r=1;for(let i=1;i<=b;i++)r=r*(a-b+i)/i;return r};
+  const win=q=>{let t=0;for(let w=0;w<n;w++)t+=C(n-1+w,w)*Math.pow(q,n)*Math.pow(1-q,w);return t};
+  let lo=0.01,hi=0.99;for(let k=0;k<50;k++){const mid=(lo+hi)/2;if(win(mid)<p)lo=mid;else hi=mid}
+  const q=(lo+hi)/2,d=[];
+  for(let w=0;w<n;w++){d.push([n,w,C(n-1+w,w)*Math.pow(q,n)*Math.pow(1-q,w)]);d.push([w,n,C(n-1+w,w)*Math.pow(1-q,n)*Math.pow(q,w)])}
+  return d;
+}
+function invPhi(p){ // approximation de la loi normale inverse
+  const a=[-39.69683028665376,220.9460984245205,-275.9285104469687,138.357751867269,-30.66479806614716,2.506628277459239],b=[-54.47609879822406,161.5858368580409,-155.6989798598866,66.80131188771972,-13.28068155211218],c=[-0.007784894002430293,-0.3223964580411365,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783],dd=[0.007784695709041462,0.3224671290700398,2.445134137142996,3.754408661907416];
+  const pl=0.02425;let q,r;
+  if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1)}
+  if(p>1-pl){q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1)}
+  q=p-0.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+}
+function pointsDist(p,tl){
+  const sdM=12,sdT=16,mu=sdM*invPhi(Math.min(.995,Math.max(.005,p))),d=[];
+  const g=(x,s)=>Math.exp(-x*x/(2*s*s));
+  for(let D=-60.5;D<=60.5;D+=1){const wD=g(D-mu,sdM);if(wD<1e-6)continue;
+    for(let T=-60;T<=60;T+=2){const wT=g(T,sdT);d.push([(tl+T+D)/2,(tl+T-D)/2,wD*wT])}}
+  return{d,mu};
+}
+const FIX={};
 let lastSync=null;
 function build(day,arr){
   const old=FIX[day]||[];
   FIX[day]=arr.map(r=>{
+    const sp=SPORTS[r.sp]?r.sp:'foot';
     const prev=old.find(m=>m.id===day+'_'+r.id);
-    const m={id:day+'_'+r.id,day,comp:r.c||'Football',flag:r.f||'⚽',home:r.h,away:r.a,ko:new Date(r.t).getTime(),o:r.o,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
-    let lam=prev&&prev.o.join()===r.o.join()?prev.lam:fit(r.o);
-    m.lam=lam;const M=[];let tot=0;
-    for(let i=0;i<=10;i++){M[i]=[];for(let j=0;j<=10;j++){M[i][j]=pois(i,lam[0])*pois(j,lam[1]);tot+=M[i][j]}}
-    m.M=M;m.tot=tot;return m;
+    const m={id:day+'_'+r.id,day,sp,comp:r.c||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:r.h,away:r.a,ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
+    const same=prev&&prev.o.join()===r.o.join()&&prev.tl===r.tl&&prev.bo===m.bo;
+    if(same){m.dist=prev.dist;m.hl=prev.hl}
+    else if(sp==='foot'||sp==='hockey'){
+      const lam=sp==='hockey'?fitHockey(r.o,r.tl||6):fitGoals(r.o),d=[];for(let i=0;i<=14;i++)for(let j=0;j<=14;j++)d.push([i,j,pois(i,lam[0])*pois(j,lam[1])]);m.dist=d;
+    }else if(sp==='basket'){const pd=pointsDist(p2way(r.o),r.tl||200);m.dist=pd.d;m.hl=-(Math.round(pd.mu)+(pd.mu>=0?0.5:-0.5))}
+    else m.dist=setsDist(p2way(r.o),m.bo);
+    if(sp==='basket'&&m.hl==null)m.hl=-0.5;
+    let t=0;for(const x of m.dist)t+=x[2];m.tot=t;
+    return m;
   }).sort((a,b)=>a.ko-b.ko);
 }
 function findMatch(id){const d=id.split('_')[0];return(FIX[d]||[]).find(m=>m.id===id)}
 function mkTitle(mk,m){return typeof mk.title==='function'?mk.title(m):mk.title}
-function getOpt(m,mk,opt){const K=MK[mk];if(!K)return null;return K.opts(m).find(o=>o.id===opt)||null}
+function marketOf(m,mk){return marketsOf(m).find(k=>k.key===mk)||null}
+function getOpt(m,mk,opt){const K=marketOf(m,mk);if(!K)return null;return K.opts(m).find(o=>o.id===opt)||null}
 function oddsOf(m,mk,opt){
   if(mk==='1x2'){const i={'1':0,'N':1,'2':2}[opt];return m.o[i]}
+  if(mk==='win'){return m.o[opt==='1'?0:1]}
   const key=mk+'|'+opt;if(key in m._o)return m._o[key];
   const o=getOpt(m,mk,opt);if(!o)return null;
-  let p=0;for(let i=0;i<=10;i++)for(let j=0;j<=10;j++)if(o.fn(i,j))p+=m.M[i][j];
+  let p=0;for(const x of m.dist)if(o.fn(x[0],x[1]))p+=x[2];
   p/=m.tot;
   const v=p<0.004?null:Math.min(250,Math.max(1.01,Math.floor(100/(p*1.065))/100));
   return m._o[key]=v;
@@ -441,7 +562,7 @@ function status(m){
 /* ---------- État & sauvegarde ---------- */
 function fresh(){return{v:2,updated:0,day:today(),coins:DAILY,diamonds:0,bets:[],inv:{boost:0,shield:0},owned:[],title:null,theme:null,stats:{won:0,lost:0,earned:0,best:0}}}
 let state=fresh();
-const ui={tab:'matchs',day:'today',comp:'all',open:null,slip:[],mode:'simple',stakes:{},combi:100,boost:false,shield:false,betFilter:'pending',authMode:'login',board:null};
+const ui={tab:'matchs',sport:'foot',comp:'all',open:null,slip:[],mode:'simple',stakes:{},combi:100,boost:false,shield:false,betFilter:'pending',authMode:'login',board:null};
 const LS_SESSION='pronoclub_session';
 let session=null,writing=false,pending=false,saveTimer=null,synced=false;
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
@@ -581,7 +702,7 @@ function slipCalc(){
 }
 function placeBets(){
   const c=slipCalc();if(c.err||!c.sels.length)return;
-  const snap=s=>({matchId:s.matchId,mk:s.mk,opt:s.opt,odds:s.odds,match:s.m.home+' – '+s.m.away,market:mkTitle(MK[s.mk],s.m),pick:getOpt(s.m,s.mk,s.opt).label,comp:s.m.flag+' '+s.m.comp,ko:s.m.ko});
+  const snap=s=>({matchId:s.matchId,mk:s.mk,opt:s.opt,odds:s.odds,match:s.m.home+' – '+s.m.away,market:mkTitle(marketOf(s.m,s.mk),s.m),pick:getOpt(s.m,s.mk,s.opt).label,comp:s.m.flag+' '+s.m.comp,ko:s.m.ko});
   const base={placedAt:Date.now(),status:'pending',boost:c.boostOn,shield:c.shieldOn};
   if(ui.mode==='simple'){
     for(const s of c.sels){const st=Math.floor(+ui.stakes[selKey(s)]);state.bets.push({...base,id:uid(),type:'Simple',sels:[snap(s)],stake:st,odds:Math.round(s.odds*(c.boostOn?1.1:1)*100)/100})}
@@ -617,48 +738,73 @@ function oddBtn(m,mk,o,closed,res,short){
   const on=inSlip(m.id,mk,o.id),won=res&&o.fn(res[0],res[1]);
   return '<button class="odd'+(on?' on':'')+(won?' wonopt':'')+'" data-sel="'+m.id+'|'+mk+'|'+o.id+'" '+(closed?'disabled':'')+'><span>'+esc(short||o.label)+'</span><b>'+fo(v)+'</b></button>';
 }
-function statusHtml(m,day){
-  const st=status(m),late=st==='live'&&Date.now()>m.ko+150*60e3;
-  return st==='live'?(late?'<span class="st done">Résultat<br>bientôt</span>':'<span class="st live">LIVE</span>'):st==='fini'?'<span class="st done">Terminé</span>':st==='annule'?'<span class="st done">'+esc(m.x)+'</span>':'<span class="st">'+dayLabel(m.ko,day).replace(' ','<br>')+'</span>';
+function whenHtml(m){
+  const st=status(m),late=st==='live'&&Date.now()>m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3;
+  if(st==='live')return late?'<span class="st done">Résultat bientôt</span>':'<span class="st live">● En direct</span>';
+  if(st==='fini')return'<span class="st done">Terminé</span>';
+  if(st==='annule')return'<span class="st done">'+esc(m.x)+'</span>';
+  const d=new Date(m.ko),tk=today(),k=dkey(d);
+  const lbl=k===tk?"Aujourd'hui":k===addDays(tk,1)?'Demain':d.toLocaleDateString('fr-FR',{weekday:'long'});
+  return '<span class="st">'+lbl+' · '+hhmm(m.ko)+'</span>';
 }
-function matchRow(m,day){
-  const st=status(m),closed=st!=='avenir',res=st==='fini'?m.s:null;
-  const quick=MARKETS[0].opts(m).map(o=>oddBtn(m,'1x2',o,closed,res,o.id==='N'?'Nul':o.label)).join('');
-  const nb=MARKETS.slice(1).reduce((n,k)=>n+k.opts(m).length,0);
-  const sc=(a,b)=>res?'<b class="sc'+(a>b?' win':'')+'">'+a+'</b>':'';
+function matchCard(m){
+  const st=status(m),closed=st!=='avenir',res=st==='fini'?m.s:null,three=SPORTS[m.sp].three;
+  const mks=marketsOf(m),first=mks[0];
+  const quick=first.opts(m).map(o=>oddBtn(m,first.key,o,closed,res,three?o.id:(o.id==='1'?'1':'2'))).join('');
+  const nb=mks.slice(1).reduce((n,k)=>n+k.opts(m).filter(o=>oddsOf(m,k.key,o.id)!=null).length,0);
+  const sc=(i)=>res?'<b class="sc'+(res[i]>res[1-i]?' win':'')+'">'+res[i]+'</b>':'';
   const myBets=state.bets.some(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
-  let html='<div class="mrow2'+(ui.open===m.id?' open':'')+'">'+
-    '<div class="when">'+statusHtml(m,day)+'</div>'+
-    '<button class="tm" data-open="'+m.id+'"><span><i>'+esc(m.home)+'</i>'+sc(res&&res[0],res&&res[1])+'</span><span><i>'+esc(m.away)+'</i>'+sc(res&&res[1],res&&res[0])+'</span>'+(myBets?'<em>● pari en cours</em>':'')+'</button>'+
-    '<div class="q3">'+quick+'</div>'+
-    '<button class="more" data-open="'+m.id+'" title="Tous les paris">'+(ui.open===m.id?'−':'+'+nb)+'</button></div>';
+  let html='<article class="mc'+(ui.open===m.id?' open':'')+'">'+
+    '<div class="mc-h"><span class="mc-w">'+whenHtml(m)+'</span><span class="mc-c">'+m.flag+' '+esc(m.comp)+'</span>'+(myBets?'<span class="mc-b">Pari en cours</span>':'')+'</div>'+
+    '<button class="mc-t" data-open="'+m.id+'"><span><i>'+esc(m.home)+'</i>'+sc(0)+'</span><span><i>'+esc(m.away)+'</i>'+sc(1)+'</span></button>'+
+    '<div class="mc-o'+(three?'':' two')+'">'+quick+'</div>'+
+    '<button class="mc-m" data-open="'+m.id+'">'+(ui.open===m.id?'Masquer les paris ▲':'+'+nb+' paris ▼')+'</button>';
   if(ui.open===m.id){
-    html+='<div class="markets">'+MARKETS.slice(1).map(k=>'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.cs?' cs':'')+'">'+k.opts(m).map(o=>oddBtn(m,k.key,o,closed,res)).join('')+'</div></div>').join('')+'</div>';
+    html+='<div class="markets">'+mks.slice(1).map(k=>{const btns=k.opts(m).map(o=>oddBtn(m,k.key,o,closed,res)).join('');return btns?'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.cs?' cs':'')+'">'+btns+'</div></div>':''}).join('')+'</div>';
   }
-  return html;
+  return html+'</article>';
+}
+function visibleMatches(){
+  const t=today(),days=[t,addDays(t,1)];
+  let all=[];for(const d of days)all=all.concat(FIX[d]||[]);
+  // on cache les matchs terminés depuis plus de 12 h
+  return all.filter(m=>!(m.s&&Date.now()>m.ko+12*3600e3));
 }
 function renderMatches(){
-  const day=ui.day==='today'?today():addDays(today(),1);
-  const all=FIX[day]||[];
+  const vis=visibleMatches();
+  const count=sp=>vis.filter(m=>m.sp===sp&&status(m)==='avenir').length;
+  if(!SPORTS[ui.sport])ui.sport='foot';
+  const all=vis.filter(m=>m.sp===ui.sport);
   const comps=[...new Set(all.map(m=>m.comp))];
   if(ui.comp!=='all'&&!comps.includes(ui.comp))ui.comp='all';
   const order={avenir:0,live:1,fini:2,annule:3};
-  const sorted=all.slice().sort((a,b)=>order[status(a)]-order[status(b)]||a.ko-b.ko);
-  const shown=ui.comp==='all'?comps:[ui.comp];
+  const list=(ui.comp==='all'?all:all.filter(m=>m.comp===ui.comp)).slice().sort((a,b)=>order[status(a)]-order[status(b)]||a.ko-b.ko);
   const flag=c=>all.find(m=>m.comp===c).flag;
-  const open=all.filter(m=>status(m)==='avenir').length;
-  const side='<div class="side"><div class="side-h">Compétitions</div>'+
-    '<button class="'+(ui.comp==='all'?'on':'')+'" data-comp="all"><span>⚽ Tous les matchs</span><small>'+all.length+'</small></button>'+
-    comps.map(c=>'<button class="'+(ui.comp===c?'on':'')+'" data-comp="'+esc(c)+'"><span>'+flag(c)+' '+esc(c)+'</span><small>'+all.filter(m=>m.comp===c).length+'</small></button>').join('')+'</div>';
-  const groups=shown.map(c=>{const ms=sorted.filter(m=>m.comp===c);
-    return '<section class="grp"><div class="grp-h"><span>'+flag(c)+' '+esc(c)+'</span><span class="cols"><i>1</i><i>N</i><i>2</i></span><span class="sp"></span></div>'+ms.map(m=>matchRow(m,day)).join('')+'</section>'}).join('');
-  return installBanner()+
-   '<div class="hero"><div><b>🪙 '+nf(DAILY)+' pièces offertes chaque jour</b><span>Nouvelles pièces dans '+untilMidnight()+' · gains versés en 💎 diamants</span></div></div>'+
-   '<div class="toolbar"><div class="seg"><button data-day="today" class="'+(ui.day==='today'?'on':'')+'">Aujourd\'hui</button><button data-day="tomorrow" class="'+(ui.day==='tomorrow'?'on':'')+'">Demain</button></div>'+
-   '<div class="chips-m">'+(comps.length>1?'<button class="chip'+(ui.comp==='all'?' on':'')+'" data-comp="all">Tous</button>'+comps.map(c=>'<button class="chip'+(ui.comp===c?' on':'')+'" data-comp="'+esc(c)+'">'+flag(c)+' '+esc(c)+'</button>').join(''):'')+'</div></div>'+
-   (all.length?'<div class="mlayout">'+side+'<div>'+(open===0&&ui.day==='today'?'<p class="reset-note">Tous les matchs du jour ont commencé. Passez sur « Demain » pour parier.</p>':'')+groups+
-     '<p class="reset-note" style="margin-top:12px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p></div></div>'
-     :'<div class="empty">Les matchs de cette journée ne sont pas encore publiés. Ils seront ajoutés lors de la prochaine mise à jour.</div>');
+  const tabs='<div class="sports">'+SPORT_ORDER.map(k=>{const n=count(k);return '<button class="'+(ui.sport===k?'on':'')+'" data-sport="'+k+'"><span class="si">'+SPORTS[k].ic+'</span><span class="sn">'+SPORTS[k].name+'</span>'+(n?'<small>'+n+'</small>':'')+'</button>'}).join('')+'</div>';
+  const chip=(c,lbl)=>'<button class="chip'+(ui.comp===c?' on':'')+'" data-comp="'+esc(c)+'">'+lbl+'</button>';
+  const comp=comps.length>1?'<div class="comps">'+chip('all','Toutes')+comps.map(c=>chip(c,flag(c)+' '+esc(c))).join('')+'</div>':'';
+  // regroupe par jour puis par compétition
+  let body='';
+  if(!list.length){
+    body='<div class="empty"><div style="font-size:34px">'+SPORTS[ui.sport].ic+'</div>Pas de match de '+SPORTS[ui.sport].name.toLowerCase()+' à parier pour le moment.<br>Les prochains matchs seront ajoutés lors de la prochaine mise à jour.</div>';
+  }else{
+    const sections=[];
+    for(const m of list){
+      const k=status(m)==='avenir'?dkey(new Date(m.ko)):'zz';
+      let sec=sections.find(x=>x.k===k);if(!sec){sec={k,items:[]};sections.push(sec)}
+      sec.items.push(m);
+    }
+    sections.sort((a,b)=>a.k<b.k?-1:1);
+    const t=today();
+    body=sections.map(sec=>{
+      const title=sec.k==='zz'?'En cours et terminés':sec.k===t?"Aujourd'hui":sec.k===addDays(t,1)?'Demain':new Date(sec.k+'T12:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+      return '<h3 class="day">'+title+'</h3>'+sec.items.map(matchCard).join('');
+    }).join('');
+  }
+  return installBanner()+tabs+
+   '<div class="hero"><b>🪙 '+nf(DAILY)+' pièces offertes chaque jour</b><span>Nouvelles pièces dans '+untilMidnight()+' · gains versés en 💎 diamants</span></div>'+
+   comp+body+
+   '<p class="reset-note" style="margin-top:14px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>';
 }
 function renderBets(){
   const s=state.stats,tot=s.won+s.lost;
@@ -700,12 +846,12 @@ function renderRules(){
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
   '<li>Les diamants ne se parient pas : ils s\'échangent dans la <b>Boutique</b> contre des bonus (pièces en plus, boost de cote, assurance) ou des récompenses (titres, thèmes).</li>'+
   '<li><b>Simple</b> : un pari par sélection. <b>Combiné</b> : plusieurs matchs dans un seul pari, les cotes se multiplient, mais tout doit être gagnant.</li>'+
-  '<li>On ne peut plus parier sur un match une fois qu\'il a commencé. Les paris sont réglés dès que le résultat réel est publié (plusieurs mises à jour par jour). Tous les paris portent sur le temps réglementaire (90 minutes, sans prolongation ni tirs au but).</li>'+
+  '<li>On ne peut plus parier sur un match une fois qu\'il a commencé. Les paris sont réglés dès que le résultat réel est publié (plusieurs mises à jour par jour). Football : temps réglementaire (90 minutes, sans prolongation ni tirs au but). Hockey : temps réglementaire (60 minutes). Basket : prolongations incluses. Tennis et ping-pong : résultat final du match.</li>'+
   '<li>Si un match est reporté ou annulé, la sélection est annulée et la mise vous est rendue.</li></ul>'+
   '<h3>Installer l\'appli sur son téléphone</h3><ul>'+
   '<li><b>Android</b> : ouvrez le site dans Chrome, menu ⋮ puis « Installer l\'application » (ou « Ajouter à l\'écran d\'accueil »).</li>'+
   '<li><b>iPhone / iPad</b> : ouvrez le site dans Safari, bouton Partager (carré avec une flèche) puis « Sur l\'écran d\'accueil ».</li></ul>'+
-  '<h3>Les cotes</h3><p style="margin:0">Les cotes 1N2 sont relevées ou estimées d\'après le marché au moment de la mise à jour : elles sont proches de celles de Betclic ou Winamax, sans être exactement les leurs. Les cotes des autres marchés sont calculées à partir de ces cotes 1N2.</p>'+
+  '<h3>Les cotes</h3><p style="margin:0">Les cotes du vainqueur (1N2) sont relevées ou estimées d\'après le marché au moment de la mise à jour : elles sont proches de celles de Betclic ou Winamax, sans être exactement les leurs. Les cotes des autres marchés sont calculées à partir de ces cotes.</p>'+
   '<p class="disc">Jeu gratuit, sans argent réel. Les pièces et les diamants n\'ont aucune valeur et ne peuvent être ni achetés ni convertis en argent. Si les jeux d\'argent vous posent problème : Joueurs Info Service, 09 74 75 13 13 (appel non surtaxé).</p></div>';
 }
 function renderBoard(){
@@ -780,7 +926,7 @@ function renderSlip(){
   let body='';
   if(c.sels.length>1||ui.mode==='combi')body+='<div class="seg" style="margin-bottom:10px"><button data-mode="simple" class="'+(ui.mode==='simple'?'on':'')+'" style="flex:1">Simple</button><button data-mode="combi" class="'+(ui.mode==='combi'?'on':'')+'" style="flex:1">Combiné</button></div>';
   body+=c.sels.map(s=>{const k=selKey(s),o=getOpt(s.m,s.mk,s.opt);
-    return '<div class="sel"><div class="top"><div><div class="pick">'+esc(o.label)+'</div><div class="sub">'+esc(mkTitle(MK[s.mk],s.m))+'</div><div class="sub">'+esc(s.m.home+' – '+s.m.away)+(s.open?'':' · <span style="color:var(--bad)">commencé</span>')+'</div></div><div style="display:flex;align-items:flex-start"><span class="o">'+fo(s.odds)+'</span><button class="rm" data-rm="'+k+'" aria-label="Retirer">×</button></div></div>'+
+    return '<div class="sel"><div class="top"><div><div class="pick">'+esc(o.label)+'</div><div class="sub">'+esc(mkTitle(marketOf(s.m,s.mk),s.m))+'</div><div class="sub">'+esc(s.m.home+' – '+s.m.away)+(s.open?'':' · <span style="color:var(--bad)">commencé</span>')+'</div></div><div style="display:flex;align-items:flex-start"><span class="o">'+fo(s.odds)+'</span><button class="rm" data-rm="'+k+'" aria-label="Retirer">×</button></div></div>'+
     (ui.mode==='simple'?'<div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="'+k+'" value="'+(ui.stakes[k]??'')+'" aria-label="Mise"><span class="g" data-g="'+k+'">→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*(c.boostOn?1.1:1))+' 💎</span></div>'+qs(k):'')+'</div>'}).join('');
   if(ui.mode==='combi')body+='<div class="sel"><div class="row"><span>Cote totale</span><span class="v" style="color:var(--acc)">'+fo(c.combiOdds)+'</span></div><div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="__combi" value="'+ui.combi+'" aria-label="Mise du combiné"></div>'+qs('__combi')+'</div>';
   $('#slipBody').innerHTML=body;
@@ -823,7 +969,7 @@ document.addEventListener('click',e=>{
   if(session&&!synced&&(d.sel||d.buy||d.equip||t.id==='place')){toast('⏳ Chargement de votre compte…');refreshFromServer();return}
   if(d.sel){const[id,mk,opt]=d.sel.split('|');toggleSel(id,mk,opt);return}
   if(d.open){ui.open=ui.open===d.open?null:d.open;renderView();return}
-  if(d.day){ui.day=d.day;ui.open=null;ui.comp='all';renderView();return}
+  if(d.sport){ui.sport=d.sport;ui.open=null;ui.comp='all';renderView();return}
   if(d.comp){ui.comp=d.comp;renderView();return}
   if(d.bf){ui.betFilter=d.bf;renderView();return}
   if(d.rm){ui.slip=ui.slip.filter(s=>selKey(s)!==d.rm);if(ui.slip.length<2&&ui.mode==='combi')ui.mode='simple';renderSlip();renderView();return}
