@@ -418,6 +418,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 /* barre de navigation du bas (mobile) */
 .bnav{display:none}
 @media (max-width:900px){
+  .bnav{grid-template-columns:repeat(6,1fr)!important}
   #nav{display:none}
   .fab{display:none!important}
   main{padding-bottom:110px}
@@ -433,6 +434,19 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
   .toast{bottom:96px}
 }
 @media (max-width:420px){.fc{flex-basis:240px}.hero::after{font-size:38px}}
+
+/* ===== Onglet Live ===== */
+.live-hero{background:linear-gradient(115deg,#0f1624,#3a0d1c);color:#fff;border-radius:18px;padding:16px 18px;margin-bottom:6px;display:flex;flex-direction:column;gap:4px;box-shadow:0 8px 22px rgba(15,22,36,.2)}
+.live-hero b{font-size:18px}
+.live-hero span{font-size:13px;opacity:.85;line-height:1.45}
+.day .cnt{background:var(--acc);color:#fff;border-radius:99px;padding:1px 8px;font-size:11px;letter-spacing:0}
+.lv-t{font-size:12px;color:var(--muted)}
+.lv .mc-t{margin-bottom:8px}
+.lv-b{margin-top:6px;padding:9px 12px;border-radius:12px;background:color-mix(in srgb,var(--acc) 8%,#fff);font-size:13px;color:#4a2028}
+.lv-r{margin:2px 0 6px;font-weight:700;color:var(--acc)}
+.lv-l{display:block;width:100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);text-align:center;font-size:13px;font-weight:700;color:var(--acc);text-decoration:none}
+.empty.small{padding:14px;font-size:13.5px;background:#fff;border-radius:14px}
+.bdg.live{background:#e0182d}
 </style>
 </head>
 <body>
@@ -449,6 +463,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
   <div class="wrap">
     <nav id="nav">
       <button data-tab="matchs" class="on">Matchs</button>
+      <button data-tab="live">🔴 Live</button>
       <button data-tab="paris">Mes paris</button>
       <button data-tab="boutique">Boutique</button>
       <button data-tab="classement">Classement</button>
@@ -472,6 +487,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 <button class="fab hide" id="fab"></button>
 <nav class="bnav" id="bnav">
   <button data-tab="matchs"><i>🏟️</i><span>Matchs</span></button>
+  <button data-tab="live"><i>📡</i><span>Live</span><b class="bdg live" id="bnLive"></b></button>
   <button data-tab="paris"><i>🧾</i><span>Mes paris</span><b class="bdg" id="bnBets"></b></button>
   <button class="slipbtn" id="bnSlip"><i>🎟️</i><span>Coupon</span><b class="bdg" id="bnSlipN"></b></button>
   <button data-tab="boutique"><i>🎁</i><span>Boutique</span></button>
@@ -853,6 +869,8 @@ function renderHeader(){
   $('#userBtn').innerHTML=session?'👤 <span class="un">'+esc(session.pseudo)+'</span>':'👤 Connexion';
   const n=state.bets.filter(b=>b.status==='pending').length;
   document.querySelectorAll('.bnav button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===ui.tab));
+  const nl=liveMatches().filter(m=>status(m)==='live'&&Date.now()<m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3).length,bl=document.getElementById('bnLive');if(bl){bl.textContent=nl||'';bl.style.display=nl?'':'none'}
+  document.querySelectorAll('#nav button[data-tab="live"]').forEach(b=>b.textContent=nl?'🔴 Live ('+nl+')':'🔴 Live');
   const bb=document.getElementById('bnBets');if(bb){bb.textContent=n||'';bb.style.display=n?'':'none'}
   document.querySelectorAll('#nav button').forEach(b=>{
     b.classList.toggle('on',b.dataset.tab===ui.tab);
@@ -951,6 +969,40 @@ function renderMatches(){
    comp+body+
    '<p class="reset-note" style="margin-top:14px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>';
 }
+function liveMatches(){
+  const t=today();let all=[];
+  for(const d of [addDays(t,-1),t,addDays(t,1)])all=all.concat(FIX[d]||[]);
+  return all;
+}
+function renderLive(){
+  const all=liveMatches();
+  const lim=m=>m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3;
+  const live=all.filter(m=>status(m)==='live'&&Date.now()<lim(m)).sort((a,b)=>a.ko-b.ko);
+  const wait=all.filter(m=>status(m)==='live'&&Date.now()>=lim(m)).sort((a,b)=>b.ko-a.ko);
+  const done=all.filter(m=>status(m)==='fini'&&Date.now()-m.ko<20*3600e3).sort((a,b)=>b.ko-a.ko);
+  const soon=all.filter(m=>status(m)==='avenir'&&m.ko-Date.now()<2*3600e3).sort((a,b)=>a.ko-b.ko);
+  const myBets=m=>state.bets.filter(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
+  const ago=m=>{const mn=Math.max(0,Math.round((Date.now()-m.ko)/60000));return mn<60?mn+' min':Math.floor(mn/60)+' h '+String(mn%60).padStart(2,'0')};
+  const q=m=>'https://www.google.com/search?q='+encodeURIComponent(m.home+' '+m.away+' score');
+  const card=(m,kind)=>{
+    const bets=myBets(m),late=kind==='live'&&Date.now()>m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3;
+    const st=kind==='live'?(late?'<span class="st done">Terminé · résultat bientôt</span>':'<span class="st live">● En direct</span><span class="lv-t">commencé il y a '+ago(m)+'</span>'):kind==='done'?'<span class="st done">Terminé</span>':'<span class="st">Dans '+Math.max(1,Math.round((m.ko-Date.now())/60000))+' min</span>';
+    const res=kind==='done'?m.s:null,sc=i=>res&&m.sp!=='mma'?'<b class="sc'+(res[i]>res[1-i]?' win':'')+'">'+res[i]+'</b>':'';
+    let h='<article class="mc lv" style="--sc:'+SPORTS[m.sp].col+'"><div class="mc-h">'+st+'<span class="mc-c">'+SPORTS[m.sp].ic+' '+esc(m.comp)+'</span></div>'+
+      '<div class="mc-t"><span>'+avatar(m.home)+'<i>'+esc(m.home)+'</i>'+sc(0)+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+'</i>'+sc(1)+'</span></div>';
+    if(kind==='done'&&m.sp==='mma')h+='<p class="lv-r">'+esc(scoreTxt(m))+'</p>';
+    if(bets.length)h+='<div class="lv-b">🎟️ <b>'+bets.length+' pari'+(bets.length>1?'s':'')+' en cours</b> · mise '+nf(bets.reduce((a,b)=>a+b.stake,0))+' 🪙 · gain possible '+nf(bets.reduce((a,b)=>a+b.stake*b.odds,0))+' 💎</div>';
+    if(kind==='live')h+='<a class="lv-l" href="'+q(m)+'" target="_blank" rel="noopener">Voir le score en direct ↗</a>';
+    if(kind==='soon')h+='<button class="lv-l" data-go="'+m.sp+'">Parier avant le coup d\'envoi →</button>';
+    return h+'</article>';
+  };
+  const sec=(title,list,kind,empty)=>'<h3 class="day">'+title+(list.length?' <small class="cnt">'+list.length+'</small>':'')+'</h3>'+(list.length?list.map(m=>card(m,kind)).join(''):'<div class="empty small">'+empty+'</div>');
+  return '<div class="live-hero"><b>📡 Live</b><span>Les matchs en cours et vos paris en attente. Les paris sont fermés une fois le match commencé ; ils sont réglés dès que le résultat officiel est publié.</span></div>'+
+    sec('En direct',live,'live','Aucun match en cours pour le moment.')+
+    sec('Bientôt',soon,'soon','Aucun match dans les 2 prochaines heures.')+
+    (wait.length?sec('En attente du résultat',wait,'live',''):'')+
+    sec('Résultats récents',done,'done','Pas encore de résultats.');
+}
 function renderBets(){
   const s=state.stats,tot=s.won+s.lost;
   const list=state.bets.filter(b=>ui.betFilter==='pending'?b.status==='pending':b.status!=='pending').slice().reverse();
@@ -1010,7 +1062,7 @@ function renderBoard(){
   return '<h2 class="h2">Classement</h2><p class="sub2">Les joueurs avec le plus de diamants. Mis à jour quand chacun joue.</p>'+body;
 }
 function renderView(){
-  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='classement'?renderBoard():renderRules();
+  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='classement'?renderBoard():ui.tab==='live'?renderLive():renderRules();
 }
 
 /* --- Installation de l'appli (PWA) --- */
@@ -1115,6 +1167,7 @@ document.addEventListener('click',e=>{
   if(session&&!synced&&(d.sel||d.buy||d.equip||t.id==='place')){toast('⏳ Chargement de votre compte…');refreshFromServer();return}
   if(d.sel){const[id,mk,opt]=d.sel.split('|');toggleSel(id,mk,opt);return}
   if(d.open){ui.open=ui.open===d.open?null:d.open;renderView();return}
+  if(d.go){ui.tab='matchs';ui.sport=d.go;ui.comp='all';renderHeader();renderView();window.scrollTo({top:0});return}
   if(d.sport){ui.sport=d.sport;ui.open=null;ui.comp='all';renderView();return}
   if(d.comp){ui.comp=d.comp;renderView();return}
   if(d.bf){ui.betFilter=d.bf;renderView();return}
