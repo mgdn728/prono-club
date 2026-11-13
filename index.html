@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PronoClub — Paris sportifs gratuits</title>
+<meta name="description" content="Paris sportifs gratuits sur les vrais matchs : 1 000 pièces par jour, des diamants à gagner et un classement entre amis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e13;--panel:#111821;--card:#161f2a;--card2:#1c2734;--line:#253244;
+  --text:#e9eff6;--muted:#8796a8;--acc:#1fd47e;--acc-ink:#04130b;--coin:#f6c445;--dia:#62c6ff;--bad:#ff5d6c;
+  --r:14px;
+}
+body.theme-gold{--acc:#f2b632;--acc-ink:#1a1200}
+body.theme-purple{--acc:#a983ff;--acc-ink:#12082a}
+body.theme-red{--acc:#ff5a5f;--acc-ink:#220405}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:15px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:disabled{cursor:not-allowed}
+input{font:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(10,14,19,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;gap:14px;height:62px}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.brand i{font-style:normal;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--acc);color:var(--acc-ink);font-size:17px}
+.brand span{color:var(--acc)}
+.title-chip{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;border:1px solid var(--acc);color:var(--acc);white-space:nowrap}
+.bal{margin-left:auto;display:flex;gap:8px}
+.pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);padding:7px 12px;border-radius:99px;font-weight:700;white-space:nowrap}
+.pill.coin b{color:var(--coin)} .pill.dia b{color:var(--dia)}
+.pill small{color:var(--muted);font-weight:500}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav button{padding:11px 14px;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}
+nav button.on{color:var(--text);border-color:var(--acc)}
+nav .badge{background:var(--acc);color:var(--acc-ink);border-radius:99px;font-size:11px;padding:1px 6px;margin-left:4px}
+
+/* layout */
+main{display:grid;grid-template-columns:1fr 340px;gap:20px;padding:20px 0 120px}
+.reset-note{color:var(--muted);font-size:13px;margin:0 0 14px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{padding:7px 12px;border-radius:8px;color:var(--muted);font-weight:600;font-size:14px}
+.seg button.on{background:var(--card2);color:var(--text)}
+.chip{padding:7px 12px;border-radius:99px;border:1px solid var(--line);color:var(--muted);font-weight:600;font-size:13px;background:var(--panel)}
+.chip.on{border-color:var(--acc);color:var(--text);background:color-mix(in srgb,var(--acc) 14%,transparent)}
+
+/* match */
+.match{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:14px;padding:14px;align-items:center}
+.mmeta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);margin-bottom:8px}
+.st{font-weight:700;padding:2px 7px;border-radius:6px;background:var(--card2);color:var(--text)}
+.st.live{background:var(--bad);color:#fff}
+.st.done{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.teams{display:grid;gap:4px;font-weight:600}
+.teams div{display:flex;justify-content:space-between;gap:10px}
+.teams .sc{font-weight:800;min-width:18px;text-align:right}
+.teams .win{color:var(--acc)}
+.quick{display:grid;grid-template-columns:repeat(3,78px);gap:6px}
+.odd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 6px;min-height:50px;transition:.12s}
+.odd span{font-size:11px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.odd b{font-size:15px}
+.odd:hover:not(:disabled){border-color:var(--acc)}
+.odd.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.odd.on span{color:var(--acc-ink)}
+.odd:disabled{opacity:.4}
+.odd.wonopt{border-color:var(--acc);opacity:1}
+.mfoot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:8px 14px}
+.link{color:var(--acc);font-weight:600;font-size:13px;padding:4px 0}
+.ghost{font-size:12px;color:var(--muted);font-weight:600;padding:5px 9px;border:1px dashed var(--line);border-radius:8px}
+.ghost:hover{color:var(--text);border-color:var(--muted)}
+.markets{border-top:1px solid var(--line);padding:6px 14px 14px;background:color-mix(in srgb,var(--panel) 60%,var(--bg))}
+.mk{margin-top:12px}
+.mk h4{margin:0 0 7px;font-size:13px;color:var(--muted);font-weight:600}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px}
+.opts.cs{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
+
+/* slip */
+aside{position:sticky;top:120px;align-self:start}
+.slip{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.slip-h{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid var(--line);font-weight:800}
+.slip-h .x{display:none;font-size:22px;color:var(--muted)}
+.slip-b{padding:12px 14px;max-height:calc(100vh - 330px);overflow:auto}
+.empty{color:var(--muted);text-align:center;padding:28px 10px;font-size:14px;line-height:1.5}
+.sel{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 11px;margin-bottom:8px}
+.sel .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.sel .pick{font-weight:700}
+.sel .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.sel .o{font-weight:800;color:var(--acc)}
+.sel .rm{color:var(--muted);font-size:18px;line-height:1;margin-left:6px}
+.stake{display:flex;align-items:center;gap:8px;margin-top:8px}
+.stake input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:8px 10px;font-weight:700}
+.stake input:focus{outline:none;border-color:var(--acc)}
+.stake .g{font-size:12px;color:var(--muted);white-space:nowrap}
+.quickstake{display:flex;gap:5px;margin-top:7px}
+.quickstake button{flex:1;font-size:12px;font-weight:700;padding:5px 0;border-radius:7px;background:var(--card2);color:var(--muted)}
+.quickstake button:hover{color:var(--text)}
+.slip-f{border-top:1px solid var(--line);padding:12px 14px}
+.row{display:flex;justify-content:space-between;font-size:14px;margin:4px 0}
+.row .v{font-weight:700}
+.row.big .v{color:var(--dia);font-size:17px}
+.extras{display:grid;gap:6px;margin:8px 0}
+.extras label{display:flex;gap:8px;align-items:center;font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 9px;cursor:pointer}
+.extras label.off{opacity:.45;cursor:not-allowed}
+.btn{width:100%;background:var(--acc);color:var(--acc-ink);font-weight:800;padding:13px;border-radius:11px;font-size:15px;margin-top:8px}
+.btn:disabled{opacity:.45}
+.err{color:var(--bad);font-size:13px;margin-top:6px;min-height:1px}
+.fab{display:none}
+
+/* bets & shop */
+.h2{font-size:20px;font-weight:800;margin:0 0 4px}
+.sub2{color:var(--muted);margin:0 0 16px;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat small{color:var(--muted);font-size:12px}
+.stat b{display:block;font-size:20px;margin-top:3px}
+.bet{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.bet .bh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.tag{font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px}
+.tag.pending{background:var(--card2);color:var(--muted)}
+.tag.won{background:color-mix(in srgb,var(--acc) 20%,transparent);color:var(--acc)}
+.tag.lost{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+.bl{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-top:1px dashed var(--line)}
+.bl:first-of-type{border-top:0}
+.bl .s{color:var(--muted);font-size:12px}
+.mark{font-weight:800}
+.mark.ok{color:var(--acc)} .mark.ko{color:var(--bad)}
+.bf{display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:var(--muted)}
+.bf b{color:var(--text)}
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px}
+.item .ic{font-size:30px}
+.item h3{margin:0;font-size:16px}
+.item p{margin:0;color:var(--muted);font-size:13px;line-height:1.45;flex:1}
+.item .cost{font-weight:800;color:var(--dia)}
+.item button{background:var(--card2);border:1px solid var(--line);padding:10px;border-radius:10px;font-weight:700}
+.item button.buy{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.item button:disabled{opacity:.45}
+.item .own{font-size:12px;color:var(--acc);font-weight:700}
+.sec{font-size:14px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:22px 0 10px}
+.rules{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;line-height:1.6}
+.rules h3{margin:18px 0 6px}
+.rules h3:first-child{margin-top:0}
+.rules ul{margin:0;padding-left:20px}
+.disc{color:var(--muted);font-size:13px;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:var(--card2);border:1px solid var(--line);padding:12px 18px;border-radius:12px;font-weight:700;z-index:60;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr}
+  aside{position:fixed;inset:auto 0 0 0;top:auto;z-index:50;transform:translateY(105%);transition:.25s}
+  aside.open{transform:none}
+  .slip{border-radius:18px 18px 0 0;max-height:85vh;display:flex;flex-direction:column}
+  .slip-b{max-height:none;flex:1}
+  .slip-h .x{display:block}
+  .fab{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:40;background:var(--acc);color:var(--acc-ink);border-radius:14px;padding:14px 16px;font-weight:800;justify-content:space-between;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .fab.hide{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .hbar{gap:8px}
+  .brand{font-size:17px}
+  .title-chip{display:none}
+  .pill{padding:6px 9px;font-size:14px}
+  .pill small{display:none}
+  .mrow{grid-template-columns:1fr}
+  .quick{grid-template-columns:repeat(3,1fr)}
+}
+
+/* comptes */
+.pill.user{cursor:pointer;color:var(--text)}
+.pill.user:hover{border-color:var(--acc)}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(5,8,12,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.auth{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px}
+.auth .brand{justify-content:center;font-size:24px;margin-bottom:6px}
+.auth p.lead{text-align:center;color:var(--muted);margin:0 0 18px;font-size:14px;line-height:1.5}
+.auth .seg{margin-bottom:16px}
+.auth .seg button{flex:1}
+.auth label{display:block;font-size:13px;color:var(--muted);font-weight:600;margin:10px 0 5px}
+.auth input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px 12px;font-size:15px}
+.auth input:focus{outline:none;border-color:var(--acc)}
+.auth .hint{font-size:12px;color:var(--muted);margin-top:5px}
+.auth .err{text-align:center;margin-top:10px}
+.auth .menu{display:grid;gap:8px;margin-top:8px}
+.auth .menu button{background:var(--card2);border:1px solid var(--line);padding:11px;border-radius:10px;font-weight:700}
+.board{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.brow{display:grid;grid-template-columns:44px 1fr auto auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.brow:first-child{border-top:0}
+.brow .rk{font-weight:800;color:var(--muted);text-align:center}
+.brow.me{background:color-mix(in srgb,var(--acc) 12%,transparent)}
+.brow .d{font-weight:800;color:var(--dia)}
+.brow .w{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hbar">
+    <div class="brand"><i>⚽</i>Prono<span>Club</span></div>
+    <div id="titleChip"></div>
+    <div class="bal">
+      <div class="pill coin" title="Pièces du jour (à parier)">🪙 <b id="coins">1 000</b> <small>pièces</small></div>
+      <div class="pill dia" title="Diamants (gains, à échanger en boutique)">💎 <b id="dias">0</b> <small>diamants</small></div>
+      <button class="pill user" id="userBtn" title="Mon compte"></button>
+    </div>
+  </div>
+  <div class="wrap">
+    <nav id="nav">
+      <button data-tab="matchs" class="on">Matchs</button>
+      <button data-tab="paris">Mes paris</button>
+      <button data-tab="boutique">Boutique</button>
+      <button data-tab="classement">Classement</button>
+      <button data-tab="regles">Règles</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <main>
+    <section id="view"></section>
+    <aside id="aside">
+      <div class="slip">
+        <div class="slip-h"><span>Coupon <span id="slipCount" style="color:var(--muted);font-weight:600"></span></span><button class="x" id="closeSlip" aria-label="Fermer">×</button></div>
+        <div class="slip-b" id="slipBody"></div>
+        <div class="slip-f" id="slipFoot"></div>
+      </div>
+    </aside>
+  </main>
+</div>
+<button class="fab hide" id="fab"></button>
+<div class="toast" id="toast"></div>
+<div class="modal" id="authModal"><div class="auth" id="authBox"></div></div>
+
+<script>
+/* ---------- Configuration ---------- */
+const SB_URL='https://akxsucplmrdrbsmhdmvj.supabase.co';
+const SB_KEY='sb_publishable_y0r-6RnFOCPZffZJSCxvQg_whwl47yx';
+const DAILY=1000;
+
+const MARKETS=[
+ {key:'1x2',title:'Résultat du match',opts:m=>[{id:'1',label:m.home,fn:(h,a)=>h>a},{id:'N',label:'Match nul',fn:(h,a)=>h==a},{id:'2',label:m.away,fn:(h,a)=>h<a}]},
+ {key:'dc',title:'Double chance',opts:m=>[{id:'1N',label:m.home+' ou nul',fn:(h,a)=>h>=a},{id:'12',label:m.home+' ou '+m.away,fn:(h,a)=>h!=a},{id:'N2',label:'Nul ou '+m.away,fn:(h,a)=>h<=a}]},
+ {key:'btts',title:'Les deux équipes marquent',opts:()=>[{id:'oui',label:'Oui',fn:(h,a)=>h>0&&a>0},{id:'non',label:'Non',fn:(h,a)=>!(h>0&&a>0)}]},
+ ...[1.5,2.5,3.5].map(l=>({key:'ou'+String(l).replace('.',''),title:'Nombre de buts : plus/moins de '+String(l).replace('.',','),opts:()=>[{id:'plus',label:'Plus de '+String(l).replace('.',','),fn:(h,a)=>h+a>l},{id:'moins',label:'Moins de '+String(l).replace('.',','),fn:(h,a)=>h+a<l}]})),
+ {key:'ehome',title:m=>m.home+' marque',opts:()=>[{id:'oui',label:'Oui',fn:(h)=>h>0},{id:'non',label:'Non',fn:(h)=>h==0}]},
+ {key:'eaway',title:m=>m.away+' marque',opts:()=>[{id:'oui',label:'Oui',fn:(h,a)=>a>0},{id:'non',label:'Non',fn:(h,a)=>a==0}]},
+ {key:'v_btts',title:'Résultat + les deux équipes marquent',opts:m=>[{id:'1',label:m.home+' & Oui',fn:(h,a)=>h>a&&a>0},{id:'N',label:'Nul & Oui',fn:(h,a)=>h==a&&h>0},{id:'2',label:m.away+' & Oui',fn:(h,a)=>a>h&&h>0}]},
+ {key:'tot',title:'Nombre exact de buts',opts:()=>[0,1,2,3,4].map(n=>({id:String(n),label:n+' but'+(n>1?'s':''),fn:(h,a)=>h+a==n})).concat([{id:'5+',label:'5 buts ou +',fn:(h,a)=>h+a>=5}])},
+ {key:'cs',title:'Score exact',cs:true,opts:()=>{const o=[];for(let i=0;i<=3;i++)for(let j=0;j<=3;j++)o.push({id:i+'-'+j,label:i+' - '+j,fn:(h,a)=>h==i&&a==j});o.push({id:'autre',label:'Autre',fn:(h,a)=>h>3||a>3});return o}}
+];
+const MK=Object.fromEntries(MARKETS.map(m=>[m.key,m]));
+
+const SHOP=[
+ {id:'c250',sec:'Bonus',ic:'🪙',name:'+250 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:400,kind:'coins',val:250},
+ {id:'c1000',sec:'Bonus',ic:'💰',name:'+1 000 pièces',desc:'Doublez votre budget du jour.',cost:1400,kind:'coins',val:1000},
+ {id:'boost',sec:'Bonus',ic:'🚀',name:'Boost de cote +10 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,10.',cost:600,kind:'inv'},
+ {id:'shield',sec:'Bonus',ic:'🛡️',name:'Assurance',desc:'Si le pari assuré est perdu, la mise vous est rendue en diamants.',cost:900,kind:'inv'},
+ {id:'t1',sec:'Titres',ic:'🥉',name:'Titre « Pronostiqueur »',desc:'Affiché à côté du logo.',cost:1000,kind:'title',label:'Pronostiqueur'},
+ {id:'t2',sec:'Titres',ic:'🥈',name:'Titre « Expert »',desc:'Pour ceux qui lisent le jeu.',cost:3000,kind:'title',label:'Expert'},
+ {id:'t3',sec:'Titres',ic:'🥇',name:'Titre « Légende »',desc:'Le titre ultime du club.',cost:10000,kind:'title',label:'Légende'},
+ {id:'th_gold',sec:'Thèmes',ic:'🟡',name:'Thème Or',desc:'Change la couleur du site.',cost:2500,kind:'theme',cls:'theme-gold'},
+ {id:'th_purple',sec:'Thèmes',ic:'🟣',name:'Thème Violet',desc:'Change la couleur du site.',cost:2500,kind:'theme',cls:'theme-purple'},
+ {id:'th_red',sec:'Thèmes',ic:'🔴',name:'Thème Rouge',desc:'Change la couleur du site.',cost:2500,kind:'theme',cls:'theme-red'}
+];
+
+/* ---------- Outils ---------- */
+const $=s=>document.querySelector(s);
+const nf=n=>Math.round(n).toLocaleString('fr-FR');
+const fo=o=>o.toFixed(2).replace('.',',');
+function dkey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addDays(k,n){const[y,m,d]=k.split('-').map(Number);return dkey(new Date(y,m-1,d+n))}
+const today=()=>dkey(new Date());
+function pois(k,l){let p=Math.exp(-l);for(let i=1;i<=k;i++)p*=l/i;return p}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const hhmm=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+function dayLabel(t,day){const k=dkey(new Date(t));if(k===day)return hhmm(t);return(k===addDays(day,1)?'Nuit ':new Date(t).toLocaleDateString('fr-FR',{weekday:'short'})+' ')+hhmm(t)}
+
+/* ---------- Modèle de cotes : on part des cotes 1N2 pour calculer les autres marchés ---------- */
+const GRID=[];for(let i=1;i<=90;i++)GRID.push(i*0.05);
+const PV=GRID.map(l=>{const v=[];for(let k=0;k<=10;k++)v.push(pois(k,l));return v});
+const CV=PV.map(v=>{const c=[];let s=0;for(let k=0;k<=10;k++){c.push(s);s+=v[k]}return c}); // CV[j][x] = P(but < x)
+function fit(o){
+  const inv=o.map(x=>1/x),s=inv[0]+inv[1]+inv[2],q=inv.map(x=>x/s);
+  let best=1e9,bi=20,bj=20;
+  for(let i=0;i<GRID.length;i++){const A=PV[i];
+    for(let j=0;j<GRID.length;j++){const B=PV[j],C=CV[j];let p1=0,pn=0;
+      for(let x=0;x<=10;x++){p1+=A[x]*C[x];pn+=A[x]*B[x]}
+      const p2=1-p1-pn,e=(p1-q[0])**2+(pn-q[1])**2+(p2-q[2])**2;
+      if(e<best){best=e;bi=i;bj=j}}}
+  return[GRID[bi],GRID[bj]];
+}
+const FIX={};       // jour -> [matchs]
+const SRC={};       // jour -> 'db' | 'embed'
+let lastSync=null;
+function build(day,arr){
+  const old=FIX[day]||[];
+  FIX[day]=arr.map(r=>{
+    const prev=old.find(m=>m.id===day+'_'+r.id);
+    const m={id:day+'_'+r.id,day,comp:r.c||'Football',flag:r.f||'⚽',home:r.h,away:r.a,ko:new Date(r.t).getTime(),o:r.o,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
+    let lam=prev&&prev.o.join()===r.o.join()?prev.lam:fit(r.o);
+    m.lam=lam;const M=[];let tot=0;
+    for(let i=0;i<=10;i++){M[i]=[];for(let j=0;j<=10;j++){M[i][j]=pois(i,lam[0])*pois(j,lam[1]);tot+=M[i][j]}}
+    m.M=M;m.tot=tot;return m;
+  }).sort((a,b)=>a.ko-b.ko);
+}
+function findMatch(id){const d=id.split('_')[0];return(FIX[d]||[]).find(m=>m.id===id)}
+function mkTitle(mk,m){return typeof mk.title==='function'?mk.title(m):mk.title}
+function getOpt(m,mk,opt){const K=MK[mk];if(!K)return null;return K.opts(m).find(o=>o.id===opt)||null}
+function oddsOf(m,mk,opt){
+  if(mk==='1x2'){const i={'1':0,'N':1,'2':2}[opt];return m.o[i]}
+  const key=mk+'|'+opt;if(key in m._o)return m._o[key];
+  const o=getOpt(m,mk,opt);if(!o)return null;
+  let p=0;for(let i=0;i<=10;i++)for(let j=0;j<=10;j++)if(o.fn(i,j))p+=m.M[i][j];
+  p/=m.tot;
+  const v=p<0.004?null:Math.min(250,Math.max(1.01,Math.floor(100/(p*1.065))/100));
+  return m._o[key]=v;
+}
+function status(m){
+  if(m.x)return'annule';
+  if(m.s)return'fini';
+  if(Date.now()>=m.ko)return'live';
+  return'avenir';
+}
+
+/* ---------- État & sauvegarde ---------- */
+function fresh(){return{v:2,updated:0,day:today(),coins:DAILY,diamonds:0,bets:[],inv:{boost:0,shield:0},owned:[],title:null,theme:null,stats:{won:0,lost:0,earned:0,best:0}}}
+let state=fresh();
+const ui={tab:'matchs',day:'today',comp:'all',open:null,slip:[],mode:'simple',stakes:{},combi:100,boost:false,shield:false,betFilter:'pending',authMode:'login',board:null};
+const LS_SESSION='pronoclub_session';
+let session=null,writing=false,pending=false,saveTimer=null,synced=false;
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+try{session=JSON.parse(lsGet(LS_SESSION)||'null')}catch(e){}
+if(session){try{const s=lsGet('pronoclub_state_'+session.pseudo.toLowerCase());if(s)state=Object.assign(fresh(),JSON.parse(s))}catch(e){}}
+
+/* --- Supabase : comptes, sauvegarde, classement --- */
+async function rpc(fn,args){
+  const r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(args||{})});
+  const txt=await r.text();let data=null;try{data=txt?JSON.parse(txt):null}catch(e){}
+  if(!r.ok){const e=new Error((data&&data.message)||('Erreur '+r.status));e.code=data&&data.message;throw e}
+  return data;
+}
+const ERR={pseudo_invalide:'Pseudo : 3 à 20 caractères (lettres, chiffres, _ . -).',mdp_court:'Le mot de passe doit faire au moins 6 caractères.',pseudo_pris:'Ce pseudo est déjà pris.',identifiants:'Pseudo ou mot de passe incorrect.',session:'Session expirée, reconnectez-vous.'};
+function save(){
+  if(!session||!synced)return;
+  state.updated=Date.now();
+  if(session)lsSet('pronoclub_state_'+session.pseudo.toLowerCase(),JSON.stringify(state));
+  clearTimeout(saveTimer);saveTimer=setTimeout(pushRemote,1200);
+}
+async function pushRemote(){
+  if(!session)return;
+  if(writing){pending=true;return}
+  writing=true;
+  try{await rpc('sauver',{p_token:session.token,p_etat:state})}catch(e){if(e.code==='session')logout(ERR.session)}
+  writing=false;
+  if(pending){pending=false;pushRemote()}
+}
+async function startSession(res){
+  session={token:res.token,pseudo:res.pseudo};
+  lsSet(LS_SESSION,JSON.stringify(session));
+  state=res.etat?Object.assign(fresh(),res.etat):fresh();
+  synced=true;
+  closeAuth();tick(true);loadFixtures();
+  toast('👋 Bienvenue '+session.pseudo+' !');
+}
+async function refreshFromServer(){
+  if(!session)return;
+  try{const res=await rpc('charger',{p_token:session.token});
+    if(res&&res.etat&&(!synced||(res.etat.updated||0)>(state.updated||0)))state=Object.assign(fresh(),res.etat);
+    const first=!synced;synced=true;
+    if(first&&!(res&&res.etat))save();
+    tick(false);
+  }catch(e){if(e.code==='session')logout(ERR.session)}
+}
+function logout(msg){
+  session=null;synced=false;lsSet(LS_SESSION,null);state=fresh();ui.slip=[];
+  renderAll();openAuth(msg);
+}
+async function loadBoard(){
+  try{ui.board=await rpc('classement',{})}catch(e){ui.board='err'}
+  if(ui.tab==='classement')renderView();
+}
+
+/* --- Matchs : fichiers fixtures/AAAA-MM-JJ.json publiés avec le site --- */
+async function loadFixtures(){
+  const days=new Set([addDays(today(),-1),today(),addDays(today(),1)]);
+  for(const b of state.bets)if(b.status==='pending')for(const s of b.sels)days.add(s.matchId.split('_')[0]);
+  let changed=false;const v=Math.floor(Date.now()/60000);
+  await Promise.all([...days].map(async d=>{
+    try{const r=await fetch('fixtures/'+d+'.json?v='+v,{cache:'no-store'});
+      if(!r.ok)return;const arr=await r.json();
+      if(Array.isArray(arr)){build(d,arr);changed=true}}catch(e){}
+  }));
+  lastSync=Date.now();
+  tick(changed);
+}
+
+function daily(){
+  if(state.day!==today()){
+    state.day=today();state.coins=DAILY;
+    if(state.bets.length>300)state.bets=state.bets.slice(-300);
+    toast('☀️ Nouvelle journée : vous avez '+nf(DAILY)+' pièces !');
+    return true;
+  }
+  return false;
+}
+function settle(){
+  let ch=false;
+  for(const b of state.bets){
+    if(b.status!=='pending')continue;
+    const ms=b.sels.map(s=>findMatch(s.matchId));
+    if(ms.some(m=>!m||(status(m)!=='fini'&&status(m)!=='annule')))continue;
+    let won=true,odds=1,allVoid=true;
+    b.sels.forEach((s,i)=>{const m=ms[i];
+      if(status(m)==='annule'){s.void=true;return}
+      allVoid=false;const o=getOpt(m,s.mk,s.opt);
+      if(!(o&&o.fn(m.s[0],m.s[1])))won=false;else odds*=s.odds});
+    if(b.boost)odds*=1.1;
+    if(allVoid){b.status='void';b.payout=b.stake;state.diamonds+=b.stake;toast('↩️ Match annulé : mise rendue ('+nf(b.stake)+' 💎)')}
+    else if(won){
+      b.odds=Math.round(odds*100)/100;b.status='won';b.payout=Math.round(b.stake*b.odds);state.diamonds+=b.payout;
+      state.stats.won++;state.stats.earned+=b.payout;state.stats.best=Math.max(state.stats.best,b.odds);
+      toast('🎉 Pari gagné ! +'+nf(b.payout)+' 💎');
+    }else{
+      b.status='lost';b.payout=0;state.stats.lost++;
+      if(b.shield){b.refund=b.stake;state.diamonds+=b.stake;toast('🛡️ Pari perdu, mais assuré : +'+nf(b.stake)+' 💎')}
+    }
+    b.settledAt=Date.now();ch=true;
+  }
+  return ch;
+}
+
+/* ---------- Coupon ---------- */
+const selKey=s=>s.matchId+'|'+s.mk+'|'+s.opt;
+function inSlip(id,mk,opt){return ui.slip.some(s=>s.matchId===id&&s.mk===mk&&s.opt===opt)}
+function toggleSel(id,mk,opt){
+  const i=ui.slip.findIndex(s=>s.matchId===id&&s.mk===mk&&s.opt===opt);
+  if(i>=0)ui.slip.splice(i,1);
+  else{
+    if(ui.slip.length>=12){toast('12 sélections maximum');return}
+    const s={matchId:id,mk,opt};ui.slip.push(s);
+    if(!(selKey(s) in ui.stakes))ui.stakes[selKey(s)]=100;
+  }
+  renderSlip();renderView();
+}
+function slipCalc(){
+  const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?oddsOf(m,s.mk,s.opt):1,open:m&&status(m)==='avenir'}}).filter(s=>s.m);
+  const single=(ui.mode==='simple'&&sels.length===1)||(ui.mode==='combi'&&sels.length>=2);
+  const boostOn=ui.boost&&single&&state.inv.boost>0, shieldOn=ui.shield&&single&&state.inv.shield>0;
+  let total=0,gain=0,err='',combiOdds=1;
+  if(ui.mode==='simple'){
+    for(const s of sels){const st=Math.max(0,Math.floor(+ui.stakes[selKey(s)]||0));total+=st;gain+=st*s.odds*(boostOn?1.1:1)}
+  }else{
+    for(const s of sels)combiOdds*=s.odds;
+    combiOdds=Math.round(combiOdds*(boostOn?1.1:1)*100)/100;
+    total=Math.max(0,Math.floor(+ui.combi||0));gain=total*combiOdds;
+    const ids=sels.map(s=>s.matchId);
+    if(sels.length<2)err='Un combiné demande au moins 2 sélections.';
+    else if(new Set(ids).size!==ids.length)err='Un combiné ne peut pas contenir 2 paris sur le même match.';
+  }
+  if(!err&&sels.some(s=>!s.open))err='Un des matchs a commencé : retirez-le du coupon.';
+  if(!err&&total>state.coins)err='Pas assez de pièces (il vous reste '+nf(state.coins)+').';
+  if(!err&&sels.length&&(ui.mode==='simple'?sels.some(s=>!(Math.floor(+ui.stakes[selKey(s)]||0)>0)):!(total>0)))err='Indiquez une mise pour chaque pari.';
+  return{sels,single,boostOn,shieldOn,total,gain,err,combiOdds};
+}
+function placeBets(){
+  const c=slipCalc();if(c.err||!c.sels.length)return;
+  const snap=s=>({matchId:s.matchId,mk:s.mk,opt:s.opt,odds:s.odds,match:s.m.home+' – '+s.m.away,market:mkTitle(MK[s.mk],s.m),pick:getOpt(s.m,s.mk,s.opt).label,comp:s.m.flag+' '+s.m.comp,ko:s.m.ko});
+  const base={placedAt:Date.now(),status:'pending',boost:c.boostOn,shield:c.shieldOn};
+  if(ui.mode==='simple'){
+    for(const s of c.sels){const st=Math.floor(+ui.stakes[selKey(s)]);state.bets.push({...base,id:uid(),type:'Simple',sels:[snap(s)],stake:st,odds:Math.round(s.odds*(c.boostOn?1.1:1)*100)/100})}
+  }else{
+    state.bets.push({...base,id:uid(),type:'Combiné ('+c.sels.length+')',sels:c.sels.map(snap),stake:Math.floor(+ui.combi),odds:c.combiOdds});
+  }
+  state.coins-=c.total;
+  if(c.boostOn)state.inv.boost--;
+  if(c.shieldOn)state.inv.shield--;
+  ui.slip=[];ui.boost=false;ui.shield=false;
+  save();toast('✅ Pari validé : '+nf(c.total)+' pièces misées');
+  $('#aside').classList.remove('open');
+  renderAll();
+}
+
+/* ---------- Rendu ---------- */
+function renderHeader(){
+  $('#coins').textContent=nf(state.coins);$('#dias').textContent=nf(state.diamonds);
+  $('#titleChip').innerHTML=state.title?'<span class="title-chip">'+esc(state.title)+'</span>':'';
+  document.body.className=state.theme||'';
+  $('#userBtn').innerHTML=session?'👤 <span class="un">'+esc(session.pseudo)+'</span>':'👤 Connexion';
+  const n=state.bets.filter(b=>b.status==='pending').length;
+  document.querySelectorAll('#nav button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.tab===ui.tab);
+    if(b.dataset.tab==='paris')b.innerHTML='Mes paris'+(n?'<span class="badge">'+n+'</span>':'');
+  });
+}
+function untilMidnight(){const n=new Date(),m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1);const mins=Math.ceil((m-n)/60000);return Math.floor(mins/60)+' h '+String(mins%60).padStart(2,'0')}
+
+function oddBtn(m,mk,o,closed,res,short){
+  const v=oddsOf(m,mk,o.id);
+  if(v==null)return'';
+  const on=inSlip(m.id,mk,o.id),won=res&&o.fn(res[0],res[1]);
+  return '<button class="odd'+(on?' on':'')+(won?' wonopt':'')+'" data-sel="'+m.id+'|'+mk+'|'+o.id+'" '+(closed?'disabled':'')+'><span>'+esc(short||o.label)+'</span><b>'+fo(v)+'</b></button>';
+}
+function matchCard(m,day){
+  const st=status(m),closed=st!=='avenir',res=st==='fini'?m.s:null;
+  const late=st==='live'&&Date.now()>m.ko+150*60e3;
+  const stHtml=st==='live'?(late?'<span class="st done">Résultat bientôt</span>':'<span class="st live">EN COURS</span>'):st==='fini'?'<span class="st done">Terminé</span>':st==='annule'?'<span class="st done">'+esc(m.x)+'</span>':'<span class="st">'+dayLabel(m.ko,day)+'</span>';
+  const quick=MARKETS[0].opts(m).map(o=>oddBtn(m,'1x2',o,closed,res,o.id)).join('');
+  const nb=MARKETS.slice(1).reduce((n,k)=>n+k.opts(m).length,0);
+  const hs=res?'<span class="sc'+(res[0]>res[1]?' win':'')+'">'+res[0]+'</span>':'',as=res?'<span class="sc'+(res[1]>res[0]?' win':'')+'">'+res[1]+'</span>':'';
+  const myBets=state.bets.some(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
+  let html='<div class="match"><div class="mrow"><div><div class="mmeta">'+stHtml+'<span>'+m.flag+' '+esc(m.comp)+'</span>'+(myBets?'<span style="color:var(--acc);font-weight:700">• pari en cours</span>':'')+'</div>'+
+    '<div class="teams"><div><span>'+esc(m.home)+'</span>'+hs+'</div><div><span>'+esc(m.away)+'</span>'+as+'</div></div></div>'+
+    '<div class="quick">'+quick+'</div></div>'+
+    '<div class="mfoot"><button class="link" data-open="'+m.id+'">'+(ui.open===m.id?'− Masquer les paris':'+ '+nb+' autres paris')+'</button></div>';
+  if(ui.open===m.id){
+    html+='<div class="markets">'+MARKETS.slice(1).map(k=>'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.cs?' cs':'')+'">'+k.opts(m).map(o=>oddBtn(m,k.key,o,closed,res)).join('')+'</div></div>').join('')+'</div>';
+  }
+  return html+'</div>';
+}
+function renderMatches(){
+  const day=ui.day==='today'?today():addDays(today(),1);
+  const all=FIX[day]||[];
+  const comps=[...new Set(all.map(m=>m.comp))];
+  if(ui.comp!=='all'&&!comps.includes(ui.comp))ui.comp='all';
+  let ms=ui.comp==='all'?all:all.filter(m=>m.comp===ui.comp);
+  const order={avenir:0,live:1,fini:2,annule:3};
+  ms=ms.slice().sort((a,b)=>order[status(a)]-order[status(b)]||a.ko-b.ko);
+  const open=all.filter(m=>status(m)==='avenir').length;
+  return '<p class="reset-note">🪙 '+nf(DAILY)+' nouvelles pièces chaque jour à minuit (dans '+untilMidnight()+'). Les gains sont versés en 💎 diamants. Matchs réels, résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>'+
+   '<div class="toolbar"><div class="seg"><button data-day="today" class="'+(ui.day==='today'?'on':'')+'">Aujourd\'hui</button><button data-day="tomorrow" class="'+(ui.day==='tomorrow'?'on':'')+'">Demain</button></div>'+
+   (comps.length>1?'<button class="chip'+(ui.comp==='all'?' on':'')+'" data-comp="all">Toutes</button>'+comps.map(c=>{const f=all.find(m=>m.comp===c).flag;return '<button class="chip'+(ui.comp===c?' on':'')+'" data-comp="'+esc(c)+'">'+f+' '+esc(c)+'</button>'}).join(''):'')+'</div>'+
+   (all.length?(open===0&&ui.day==='today'?'<p class="reset-note">Tous les matchs du jour ont commencé. Regardez l\'onglet « Demain » pour parier.</p>':'')+ms.map(m=>matchCard(m,day)).join('')
+     :'<div class="empty">Les matchs de cette journée ne sont pas encore publiés. Ils seront ajoutés lors de la prochaine mise à jour.</div>');
+}
+function renderBets(){
+  const s=state.stats,tot=s.won+s.lost;
+  const list=state.bets.filter(b=>ui.betFilter==='pending'?b.status==='pending':b.status!=='pending').slice().reverse();
+  const card=b=>{
+    const tag=b.status==='pending'?'<span class="tag pending">En cours</span>':b.status==='won'?'<span class="tag won">Gagné +'+nf(b.payout)+' 💎</span>':b.status==='void'?'<span class="tag pending">Annulé · mise rendue</span>':'<span class="tag lost">Perdu'+(b.refund?' · remboursé '+nf(b.refund)+' 💎':'')+'</span>';
+    const lines=b.sels.map(x=>{const m=findMatch(x.matchId);let mark='',score='';
+      if(m&&status(m)==='fini'){const o=getOpt(m,x.mk,x.opt),ok=o&&o.fn(m.s[0],m.s[1]);mark='<span class="mark '+(ok?'ok':'ko')+'">'+(ok?'✓':'✗')+'</span>';score=' · '+m.s[0]+'-'+m.s[1]}
+      else if(m&&status(m)==='annule')score=' · '+m.x;
+      else if(m&&status(m)==='live')score=' · en cours';else score=' · '+hhmm(x.ko||(m&&m.ko));
+      return '<div class="bl"><div><div><b>'+esc(x.pick)+'</b> <span style="color:var(--acc);font-weight:700">'+fo(x.odds)+'</span></div><div class="s">'+esc(x.market)+'</div><div class="s">'+esc(x.match)+score+'</div></div>'+mark+'</div>'}).join('');
+    return '<div class="bet"><div class="bh"><b>'+b.type+(b.boost?' 🚀':'')+(b.shield?' 🛡️':'')+'</b>'+tag+'</div>'+lines+
+      '<div class="bf"><span>Mise <b>'+nf(b.stake)+' 🪙</b></span><span>Cote <b>'+fo(b.odds)+'</b></span><span>Gain possible <b>'+nf(b.stake*b.odds)+' 💎</b></span></div></div>'};
+  return '<h2 class="h2">Mes paris</h2><p class="sub2">Les paris sont réglés automatiquement dès que le résultat réel du match est publié.</p>'+
+   '<div class="stats"><div class="stat"><small>Paris gagnés</small><b>'+s.won+' / '+tot+'</b></div><div class="stat"><small>Réussite</small><b>'+(tot?Math.round(s.won/tot*100):0)+' %</b></div><div class="stat"><small>Diamants gagnés</small><b style="color:var(--dia)">'+nf(s.earned)+'</b></div><div class="stat"><small>Plus grosse cote gagnée</small><b>'+(s.best?fo(s.best):'–')+'</b></div></div>'+
+   '<div class="toolbar"><div class="seg"><button data-bf="pending" class="'+(ui.betFilter==='pending'?'on':'')+'">En cours</button><button data-bf="done" class="'+(ui.betFilter==='done'?'on':'')+'">Terminés</button></div></div>'+
+   (list.length?list.map(card).join(''):'<div class="empty">'+(ui.betFilter==='pending'?'Aucun pari en cours. Choisissez une cote dans l\'onglet Matchs !':'Aucun pari terminé pour l\'instant.')+'</div>');
+}
+function renderShop(){
+  const secs=[...new Set(SHOP.map(i=>i.sec))];
+  const item=i=>{
+    let btn,own='';
+    if(i.kind==='title'||i.kind==='theme'){
+      const owned=state.owned.includes(i.id),active=i.kind==='title'?state.title===i.label:state.theme===i.cls;
+      if(owned){own='<span class="own">✓ Acheté</span>';btn='<button data-equip="'+i.id+'">'+(active?'Retirer':(i.kind==='title'?'Afficher':'Activer'))+'</button>'}
+      else btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
+    }else{
+      if(i.kind==='inv')own='<span class="own">'+(state.inv[i.id]?'En stock : '+state.inv[i.id]:'')+'</span>';
+      btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
+    }
+    return '<div class="item"><div class="ic">'+i.ic+'</div><h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' 💎</div>'+own+btn+'</div>'};
+  return '<h2 class="h2">Boutique</h2><p class="sub2">Échangez vos diamants contre des bonus et des récompenses. Vous avez <b style="color:var(--dia)">'+nf(state.diamonds)+' 💎</b>.</p>'+
+    secs.map(s=>'<div class="sec">'+s+'</div><div class="shop">'+SHOP.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
+}
+function renderRules(){
+  return '<div class="rules"><h3>Comment ça marche ?</h3><ul>'+
+  '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙</b>. Les pièces non jouées ne se gardent pas : elles repartent à '+nf(DAILY)+' à minuit.</li>'+
+  '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
+  '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
+  '<li>Les diamants ne se parient pas : ils s\'échangent dans la <b>Boutique</b> contre des bonus (pièces en plus, boost de cote, assurance) ou des récompenses (titres, thèmes).</li>'+
+  '<li><b>Simple</b> : un pari par sélection. <b>Combiné</b> : plusieurs matchs dans un seul pari, les cotes se multiplient, mais tout doit être gagnant.</li>'+
+  '<li>On ne peut plus parier sur un match une fois qu\'il a commencé. Les paris sont réglés dès que le résultat réel est publié (plusieurs mises à jour par jour). Tous les paris portent sur le temps réglementaire (90 minutes, sans prolongation ni tirs au but).</li>'+
+  '<li>Si un match est reporté ou annulé, la sélection est annulée et la mise vous est rendue.</li></ul>'+
+  '<h3>Les cotes</h3><p style="margin:0">Les cotes 1N2 sont relevées ou estimées d\'après le marché au moment de la mise à jour : elles sont proches de celles de Betclic ou Winamax, sans être exactement les leurs. Les cotes des autres marchés sont calculées à partir de ces cotes 1N2.</p>'+
+  '<p class="disc">Jeu gratuit, sans argent réel. Les pièces et les diamants n\'ont aucune valeur et ne peuvent être ni achetés ni convertis en argent. Si les jeux d\'argent vous posent problème : Joueurs Info Service, 09 74 75 13 13 (appel non surtaxé).</p></div>';
+}
+function renderBoard(){
+  const b=ui.board;
+  let body;
+  if(b==null)body='<div class="empty">Chargement du classement…</div>';
+  else if(b==='err')body='<div class="empty">Impossible de charger le classement pour le moment.</div>';
+  else if(!b.length)body='<div class="empty">Personne au classement pour l\'instant.</div>';
+  else body='<div class="board">'+b.map((r,i)=>{const me=session&&r.pseudo.toLowerCase()===session.pseudo.toLowerCase();
+    return '<div class="brow'+(me?' me':'')+'"><span class="rk">'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</span><b>'+esc(r.pseudo)+(me?' (vous)':'')+'</b><span class="w">'+r.gagnes+' gagnés</span><span class="d">'+nf(r.diamants)+' 💎</span></div>'}).join('')+'</div>';
+  return '<h2 class="h2">Classement</h2><p class="sub2">Les joueurs avec le plus de diamants. Mis à jour quand chacun joue.</p>'+body;
+}
+function renderView(){
+  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='classement'?renderBoard():renderRules();
+}
+
+/* --- Écran de connexion --- */
+function openAuth(msg){
+  const m=ui.authMode;
+  const brand='<div class="brand"><i>⚽</i>Prono<span>Club</span></div>';
+  if(session&&m==='menu'){
+    $('#authBox').innerHTML=brand+'<p class="lead">Connecté en tant que <b style="color:var(--text)">'+esc(session.pseudo)+'</b></p><div class="menu"><button id="doLogout">Se déconnecter</button><button id="closeAuth">Fermer</button></div>';
+  }else{
+    $('#authBox').innerHTML=brand+'<p class="lead">Paris sportifs gratuits sur les vrais matchs.<br>1 000 pièces offertes chaque jour !</p>'+
+    '<div class="seg"><button data-auth="login" class="'+(m==='login'?'on':'')+'">Se connecter</button><button data-auth="signup" class="'+(m==='signup'?'on':'')+'">Créer un compte</button></div>'+
+    '<form id="authForm" autocomplete="on"><label for="fPseudo">Pseudo</label><input id="fPseudo" name="username" autocomplete="username" maxlength="20" required>'+
+    (m==='signup'?'<div class="hint">3 à 20 caractères : lettres, chiffres, _ . -</div>':'')+
+    '<label for="fMdp">Mot de passe</label><input id="fMdp" name="password" type="password" autocomplete="'+(m==='signup'?'new-password':'current-password')+'" required>'+
+    (m==='signup'?'<div class="hint">Au moins 6 caractères. Notez-le bien : il n\'y a pas de récupération par e-mail.</div>':'')+
+    '<button class="btn" type="submit" id="authSubmit">'+(m==='signup'?'Créer mon compte':'Se connecter')+'</button><div class="err" id="authErr">'+(msg?esc(msg):'')+'</div></form>';
+  }
+  $('#authModal').classList.add('open');
+  const f=$('#fPseudo');if(f)setTimeout(()=>f.focus(),50);
+}
+function closeAuth(){$('#authModal').classList.remove('open')}
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='authForm')return;
+  e.preventDefault();
+  const p=$('#fPseudo').value.trim(),w=$('#fMdp').value,btn=$('#authSubmit'),er=$('#authErr');
+  btn.disabled=true;er.textContent='';
+  try{const res=await rpc(ui.authMode==='signup'?'inscription':'connexion',{p_pseudo:p,p_mdp:w});await startSession(res)}
+  catch(err){er.textContent=ERR[err.code]||'Connexion impossible. Vérifiez votre réseau et réessayez.'}
+  btn.disabled=false;
+});
+function renderSlip(){
+  const c=slipCalc();
+  $('#slipCount').textContent=c.sels.length?'('+c.sels.length+')':'';
+  const fab=$('#fab');fab.classList.toggle('hide',!c.sels.length);
+  fab.innerHTML='<span>🧾 Coupon · '+c.sels.length+'</span><span>Gain possible '+nf(c.gain)+' 💎</span>';
+  if(!c.sels.length){
+    $('#slipBody').innerHTML='<div class="empty">Votre coupon est vide.<br>Cliquez sur une cote pour l\'ajouter.<br><br>Il vous reste <b style="color:var(--coin)">'+nf(state.coins)+' 🪙</b> à parier aujourd\'hui.</div>';
+    $('#slipFoot').innerHTML='';return;
+  }
+  const qs=k=>'<div class="quickstake">'+[50,100,250,500].map(n=>'<button data-qs="'+k+'" data-v="'+n+'">'+n+'</button>').join('')+'<button data-qs="'+k+'" data-v="max">Max</button></div>';
+  let body='';
+  if(c.sels.length>1||ui.mode==='combi')body+='<div class="seg" style="margin-bottom:10px"><button data-mode="simple" class="'+(ui.mode==='simple'?'on':'')+'" style="flex:1">Simple</button><button data-mode="combi" class="'+(ui.mode==='combi'?'on':'')+'" style="flex:1">Combiné</button></div>';
+  body+=c.sels.map(s=>{const k=selKey(s),o=getOpt(s.m,s.mk,s.opt);
+    return '<div class="sel"><div class="top"><div><div class="pick">'+esc(o.label)+'</div><div class="sub">'+esc(mkTitle(MK[s.mk],s.m))+'</div><div class="sub">'+esc(s.m.home+' – '+s.m.away)+(s.open?'':' · <span style="color:var(--bad)">commencé</span>')+'</div></div><div style="display:flex;align-items:flex-start"><span class="o">'+fo(s.odds)+'</span><button class="rm" data-rm="'+k+'" aria-label="Retirer">×</button></div></div>'+
+    (ui.mode==='simple'?'<div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="'+k+'" value="'+(ui.stakes[k]??'')+'" aria-label="Mise"><span class="g" data-g="'+k+'">→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*(c.boostOn?1.1:1))+' 💎</span></div>'+qs(k):'')+'</div>'}).join('');
+  if(ui.mode==='combi')body+='<div class="sel"><div class="row"><span>Cote totale</span><span class="v" style="color:var(--acc)">'+fo(c.combiOdds)+'</span></div><div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="__combi" value="'+ui.combi+'" aria-label="Mise du combiné"></div>'+qs('__combi')+'</div>';
+  $('#slipBody').innerHTML=body;
+  $('#slipFoot').innerHTML=slipFootHtml(c);
+}
+function slipFootHtml(c){
+  const ex=(id,icon,label,on,n)=>{const dis=!c.single||n<=0;return '<label class="'+(dis?'off':'')+'"><input type="checkbox" data-ex="'+id+'" '+(on&&!dis?'checked':'')+' '+(dis?'disabled':'')+'>'+icon+' '+label+' <span style="margin-left:auto;color:var(--muted)">×'+n+'</span></label>'};
+  let extras='';
+  if(state.inv.boost>0||state.inv.shield>0)extras='<div class="extras">'+(state.inv.boost>0?ex('boost','🚀','Boost +10 %',ui.boost,state.inv.boost):'')+(state.inv.shield>0?ex('shield','🛡️','Assurance',ui.shield,state.inv.shield):'')+(!c.single?'<span style="font-size:12px;color:var(--muted)">Bonus utilisables sur un seul pari (1 simple ou 1 combiné).</span>':'')+'</div>';
+  return extras+'<div class="row"><span>Mise totale</span><span class="v" style="color:var(--coin)">'+nf(c.total)+' 🪙</span></div>'+
+   '<div class="row big"><span>Gain possible</span><span class="v">'+nf(c.gain)+' 💎</span></div>'+
+   '<button class="btn" id="place" '+(c.err?'disabled':'')+'>Valider le pari</button><div class="err">'+(c.err||'')+'</div>';
+}
+function refreshSlipNumbers(){
+  const c=slipCalc();
+  if(ui.mode==='simple')for(const s of c.sels){const k=selKey(s),el=document.querySelector('[data-g="'+k+'"]');if(el)el.textContent='→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*(c.boostOn?1.1:1))+' 💎'}
+  $('#slipFoot').innerHTML=slipFootHtml(c);
+  $('#fab').innerHTML='<span>🧾 Coupon · '+c.sels.length+'</span><span>Gain possible '+nf(c.gain)+' 💎</span>';
+}
+function renderAll(){renderHeader();renderView();renderSlip()}
+
+let tt;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800)}
+
+/* ---------- Événements ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,label');if(!t)return;
+  const d=t.dataset;
+  if(d.tab){ui.tab=d.tab;if(d.tab==='classement')loadBoard();renderHeader();renderView();window.scrollTo({top:0});return}
+  if(d.auth){ui.authMode=d.auth;openAuth();return}
+  if(t.id==='userBtn'){ui.authMode=session?'menu':'login';openAuth();return}
+  if(t.id==='doLogout'){ui.authMode='login';logout();return}
+  if(t.id==='closeAuth'){closeAuth();return}
+  if(!session&&(d.sel||d.buy||t.id==='place')){ui.authMode='signup';openAuth('Créez un compte gratuit (ou connectez-vous) pour parier.');return}
+  if(session&&!synced&&(d.sel||d.buy||d.equip||t.id==='place')){toast('⏳ Chargement de votre compte…');refreshFromServer();return}
+  if(d.sel){const[id,mk,opt]=d.sel.split('|');toggleSel(id,mk,opt);return}
+  if(d.open){ui.open=ui.open===d.open?null:d.open;renderView();return}
+  if(d.day){ui.day=d.day;ui.open=null;ui.comp='all';renderView();return}
+  if(d.comp){ui.comp=d.comp;renderView();return}
+  if(d.bf){ui.betFilter=d.bf;renderView();return}
+  if(d.rm){ui.slip=ui.slip.filter(s=>selKey(s)!==d.rm);if(ui.slip.length<2&&ui.mode==='combi')ui.mode='simple';renderSlip();renderView();return}
+  if(d.mode){ui.mode=d.mode;renderSlip();return}
+  if(d.qs){const v=d.v==='max'?state.coins:+d.v;if(d.qs==='__combi')ui.combi=v;else ui.stakes[d.qs]=v;renderSlip();return}
+  if(t.id==='place'){placeBets();return}
+  if(t.id==='closeSlip'){$('#aside').classList.remove('open');return}
+  if(t.id==='fab'){$('#aside').classList.add('open');return}
+  if(d.buy){
+    const i=SHOP.find(x=>x.id===d.buy);if(!i||state.diamonds<i.cost)return;
+    state.diamonds-=i.cost;
+    if(i.kind==='coins'){state.coins+=i.val;toast('🪙 +'+nf(i.val)+' pièces ajoutées')}
+    else if(i.kind==='inv'){state.inv[i.id]=(state.inv[i.id]||0)+1;toast(i.ic+' '+i.name+' : disponible dans votre coupon')}
+    else{state.owned.push(i.id);if(i.kind==='title')state.title=i.label;else state.theme=i.cls;toast(i.ic+' '+i.name+' débloqué !')}
+    save();renderAll();return;
+  }
+  if(d.equip){
+    const i=SHOP.find(x=>x.id===d.equip);
+    if(i.kind==='title')state.title=state.title===i.label?null:i.label;else state.theme=state.theme===i.cls?null:i.cls;
+    save();renderAll();return;
+  }
+});
+document.addEventListener('change',e=>{const d=e.target.dataset;if(d.ex){ui[d.ex]=e.target.checked;renderSlip()}});
+document.addEventListener('input',e=>{
+  const d=e.target.dataset;
+  if(d.stake!==undefined){const v=e.target.value;if(d.stake==='__combi')ui.combi=v;else ui.stakes[d.stake]=v;refreshSlipNumbers()}
+});
+
+/* ---------- Boucle ---------- */
+function tick(force){
+  const a=daily(),b=settle();
+  if(a||b)save();
+  renderHeader();
+  const focused=document.activeElement&&document.activeElement.matches('input');
+  if(!focused){renderView();renderSlip()}
+}
+tick(true);
+loadFixtures();
+setInterval(()=>tick(false),20000);
+setInterval(loadFixtures,3*60*1000);
+if(session)refreshFromServer();else openAuth();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){loadFixtures();refreshFromServer()}});
+</script>
+</body>
+</html>

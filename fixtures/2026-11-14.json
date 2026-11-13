@@ -1,0 +1,327 @@
+[
+{
+"id": "ecu-crc",
+"c": "Match amical",
+"f": "🌎",
+"h": "Équateur",
+"a": "Costa Rica",
+"t": "2026-11-14T01:00:00+01:00",
+"o": [
+1.55,
+3.8,
+6.0
+]
+},
+{
+"id": "col-chi",
+"c": "Match amical",
+"f": "🌎",
+"h": "Colombie",
+"a": "Chili",
+"t": "2026-11-14T01:00:00+01:00",
+"o": [
+1.55,
+3.9,
+5.8
+]
+},
+{
+"id": "jpn-bra",
+"c": "Match amical",
+"f": "🌏",
+"h": "Japon",
+"a": "Brésil",
+"t": "2026-11-14T11:15:00+01:00",
+"o": [
+3.4,
+3.5,
+2.1
+]
+},
+{
+"id": "tou-rei",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Tourcoing",
+"a": "Reims",
+"t": "2026-11-14T14:00:00+01:00",
+"o": [
+6.5,
+4.3,
+1.45
+]
+},
+{
+"id": "ilr-mtp",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "FA Île-Rousse",
+"a": "Montpellier",
+"t": "2026-11-14T14:00:00+01:00",
+"o": [
+8.0,
+5.0,
+1.33
+]
+},
+{
+"id": "ver-rod",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Versailles",
+"a": "Rodez",
+"t": "2026-11-14T14:00:00+01:00",
+"o": [
+3.0,
+3.2,
+2.3
+]
+},
+{
+"id": "bou-soc",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Boulay",
+"a": "Sochaux",
+"t": "2026-11-14T14:30:00+01:00",
+"o": [
+7.5,
+4.7,
+1.36
+]
+},
+{
+"id": "kos-isr",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Kosovo",
+"a": "Israël",
+"t": "2026-11-14T15:00:00+01:00",
+"o": [
+2.6,
+3.2,
+2.75
+]
+},
+{
+"id": "cho-cae",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Choisy-au-Bac",
+"a": "Caen",
+"t": "2026-11-14T16:00:00+01:00",
+"o": [
+9.0,
+5.5,
+1.28
+]
+},
+{
+"id": "ven-cle",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Vendée Fontenay",
+"a": "Clermont",
+"t": "2026-11-14T16:00:00+01:00",
+"o": [
+5.5,
+4.0,
+1.55
+]
+},
+{
+"id": "fir-ann",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Firminy",
+"a": "Annecy",
+"t": "2026-11-14T17:00:00+01:00",
+"o": [
+10.0,
+6.0,
+1.22
+]
+},
+{
+"id": "geo-hun",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Géorgie",
+"a": "Hongrie",
+"t": "2026-11-14T18:00:00+01:00",
+"o": [
+2.6,
+3.25,
+2.7
+]
+},
+{
+"id": "nor-wal",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Norvège",
+"a": "Pays de Galles",
+"t": "2026-11-14T18:00:00+01:00",
+"o": [
+1.55,
+4.2,
+5.5
+]
+},
+{
+"id": "dun-qrm",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Dunkerque",
+"a": "Quevilly-Rouen",
+"t": "2026-11-14T18:00:00+01:00",
+"o": [
+1.95,
+3.4,
+3.7
+]
+},
+{
+"id": "lan-gui",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Lannion",
+"a": "Guingamp",
+"t": "2026-11-14T19:00:00+01:00",
+"o": [
+9.5,
+5.5,
+1.27
+]
+},
+{
+"id": "lou-pau",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Lourdes",
+"a": "Pau",
+"t": "2026-11-14T19:00:00+01:00",
+"o": [
+9.0,
+5.2,
+1.3
+]
+},
+{
+"id": "alg-tog",
+"c": "Qualif. CAN",
+"f": "🌍",
+"h": "Algérie",
+"a": "Togo",
+"t": "2026-11-14T20:00:00+01:00",
+"o": [
+1.4,
+4.4,
+8.0
+]
+},
+{
+"id": "por-den",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Portugal",
+"a": "Danemark",
+"t": "2026-11-14T20:45:00+01:00",
+"o": [
+1.75,
+3.7,
+4.6
+]
+},
+{
+"id": "aut-irl",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Autriche",
+"a": "Irlande",
+"t": "2026-11-14T20:45:00+01:00",
+"o": [
+1.6,
+3.9,
+5.5
+]
+},
+{
+"id": "swe-bih",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Suède",
+"a": "Bosnie-Herzégovine",
+"t": "2026-11-14T20:45:00+01:00",
+"o": [
+1.7,
+3.8,
+4.8
+]
+},
+{
+"id": "rou-pol",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Roumanie",
+"a": "Pologne",
+"t": "2026-11-14T20:45:00+01:00",
+"o": [
+2.8,
+3.2,
+2.55
+]
+},
+{
+"id": "nir-ukr",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Irlande du Nord",
+"a": "Ukraine",
+"t": "2026-11-14T20:45:00+01:00",
+"o": [
+3.3,
+3.2,
+2.25
+]
+},
+{
+"id": "ovi-gir",
+"c": "Liga 2",
+"f": "🇪🇸",
+"h": "Real Oviedo",
+"a": "Girona",
+"t": "2026-11-14T21:00:00+01:00",
+"o": [
+2.5,
+3.2,
+2.9
+]
+},
+{
+"id": "omf-psgf",
+"c": "D1 Arkema (féminin)",
+"f": "🇫🇷",
+"h": "Marseille",
+"a": "Paris SG",
+"t": "2026-11-14T21:00:00+01:00",
+"o": [
+4.5,
+3.9,
+1.7
+]
+},
+{
+"id": "mir-cam",
+"c": "Brasileirão",
+"f": "🇧🇷",
+"h": "Mirassol",
+"a": "Atlético Mineiro",
+"t": "2026-11-14T22:30:00+01:00",
+"o": [
+2.35,
+3.2,
+3.1
+]
+}
+]

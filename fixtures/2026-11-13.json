@@ -1,0 +1,223 @@
+[
+{
+"id": "mda-kaz",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Moldavie",
+"a": "Kazakhstan",
+"t": "2026-11-13T18:00:00+01:00",
+"o": [
+2.7,
+3.1,
+2.75
+]
+},
+{
+"id": "dij-orl",
+"c": "Coupe de France",
+"f": "🇫🇷",
+"h": "Dijon",
+"a": "Orléans",
+"t": "2026-11-13T20:00:00+01:00",
+"o": [
+2.3,
+3.2,
+3.0
+]
+},
+{
+"id": "egy-mwi",
+"c": "Qualif. CAN",
+"f": "🌍",
+"h": "Égypte",
+"a": "Malawi",
+"t": "2026-11-13T20:00:00+01:00",
+"o": [
+1.25,
+5.5,
+12.0
+]
+},
+{
+"id": "mli-rwa",
+"c": "Qualif. CAN",
+"f": "🌍",
+"h": "Mali",
+"a": "Rwanda",
+"t": "2026-11-13T20:00:00+01:00",
+"o": [
+1.5,
+3.8,
+7.0
+]
+},
+{
+"id": "leg-bur",
+"c": "Liga 2",
+"f": "🇪🇸",
+"h": "Leganés",
+"a": "Burgos",
+"t": "2026-11-13T20:30:00+01:00",
+"o": [
+2.2,
+3.1,
+3.5
+]
+},
+{
+"id": "srb-ger",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Serbie",
+"a": "Allemagne",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+4.6,
+4.0,
+1.68
+]
+},
+{
+"id": "ned-gre",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Pays-Bas",
+"a": "Grèce",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+1.42,
+5.0,
+6.25
+]
+},
+{
+"id": "svn-sui",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Slovénie",
+"a": "Suisse",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+3.6,
+3.3,
+2.05
+]
+},
+{
+"id": "sco-mkd",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Écosse",
+"a": "Macédoine du Nord",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+1.62,
+3.8,
+5.5
+]
+},
+{
+"id": "svk-fro",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Slovaquie",
+"a": "Îles Féroé",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+1.3,
+5.2,
+10.0
+]
+},
+{
+"id": "bul-isl",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Bulgarie",
+"a": "Islande",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+3.1,
+3.25,
+2.3
+]
+},
+{
+"id": "lux-est",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Luxembourg",
+"a": "Estonie",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+2.4,
+3.1,
+3.1
+]
+},
+{
+"id": "lie-aze",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Liechtenstein",
+"a": "Azerbaïdjan",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+6.5,
+4.2,
+1.48
+]
+},
+{
+"id": "and-gib",
+"c": "Ligue des nations",
+"f": "🇪🇺",
+"h": "Andorre",
+"a": "Gibraltar",
+"t": "2026-11-13T20:45:00+01:00",
+"o": [
+1.85,
+3.3,
+4.4
+]
+},
+{
+"id": "sal-cel",
+"c": "Coupe du Roi",
+"f": "🇪🇸",
+"h": "Salamanca",
+"a": "Celta Vigo",
+"t": "2026-11-13T21:00:00+01:00",
+"o": [
+9.0,
+5.5,
+1.3
+]
+},
+{
+"id": "mar-nig",
+"c": "Qualif. CAN",
+"f": "🌍",
+"h": "Maroc",
+"a": "Niger",
+"t": "2026-11-13T21:00:00+01:00",
+"o": [
+1.15,
+7.5,
+17.0
+]
+},
+{
+"id": "arg-uru",
+"c": "Match amical",
+"f": "🌎",
+"h": "Argentine",
+"a": "Uruguay",
+"t": "2026-11-14T00:00:00+01:00",
+"o": [
+1.85,
+3.4,
+4.5
+]
+}
+]
