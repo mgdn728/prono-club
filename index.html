@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PronoClub — Paris sportifs gratuits</title>
-<meta name="theme-color" content="#0a0e13">
+<meta name="theme-color" content="#161b26">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/favicon.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -49,7 +49,7 @@ nav button.on{color:var(--text);border-color:var(--acc)}
 nav .badge{background:var(--acc);color:var(--acc-ink);border-radius:99px;font-size:11px;padding:1px 6px;margin-left:4px}
 
 /* layout */
-main{display:grid;grid-template-columns:1fr 340px;gap:20px;padding:20px 0 120px}
+main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padding:20px 0 120px}
 .reset-note{color:var(--muted);font-size:13px;margin:0 0 14px}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center}
 .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:3px}
@@ -211,6 +211,101 @@ aside{position:sticky;top:120px;align-self:start}
 .install .go{background:var(--acc);color:var(--acc-ink);font-weight:800;padding:9px 14px;border-radius:10px;white-space:nowrap}
 .install .no{color:var(--muted);font-size:20px;padding:0 4px}
 .ios-steps{text-align:left;line-height:1.7;margin:0 0 14px;padding-left:20px}
+
+/* ===== Thème « rouge sport » ===== */
+:root{
+  --bg:#eef0f4;--panel:#ffffff;--card:#f3f4f7;--card2:#e7e9ee;--line:#dde1e8;
+  --text:#121722;--muted:#687285;--acc:#e0182d;--acc-ink:#ffffff;--coin:#c88a00;--dia:#1a73d9;--bad:#e0182d;
+  --head:#161b26;--head2:#202736;--good:#14a05a;
+}
+body.theme-gold{--acc:#d99a00;--acc-ink:#1a1200}
+body.theme-purple{--acc:#7b3fe4;--acc-ink:#fff}
+body.theme-red{--acc:#b30f22;--acc-ink:#fff}
+header{background:var(--head);border-bottom:0;box-shadow:0 2px 0 var(--acc)}
+header .brand,header .pill{color:#fff}
+header .brand span{color:var(--acc)}
+.brand i{background:var(--acc);color:#fff}
+header .pill,header .pill.user{background:var(--head2);border-color:#2c3446;color:#fff}
+header .pill.coin b{color:#ffc93c} header .pill.dia b{color:#6cc0ff}
+header .pill small{color:#9aa4b8}
+header .title-chip{border-color:#fff;color:#fff}
+nav#nav button{color:#a8b1c3}
+nav#nav button.on{color:#fff;border-color:var(--acc)}
+.modal{background:rgba(18,23,34,.7)}
+.auth .brand{color:var(--text)}
+.toast{background:var(--head);color:#fff;border-color:var(--head)}
+.hero{background:linear-gradient(110deg,var(--acc),color-mix(in srgb,var(--acc) 55%,#5a0010));color:#fff;border-radius:var(--r);padding:16px 18px;margin-bottom:14px}
+.hero b{display:block;font-size:17px}
+.hero span{font-size:13px;opacity:.9}
+.toolbar{gap:10px}
+.chips-m{display:none;gap:8px;overflow-x:auto;width:100%;padding-bottom:2px}
+.chips-m .chip{white-space:nowrap}
+.mlayout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:start}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px;position:sticky;top:120px}
+.side-h{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 10px}
+.side button{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;padding:9px 10px;border-radius:9px;font-weight:600;font-size:14px}
+.side button:hover{background:var(--card)}
+.side button.on{background:color-mix(in srgb,var(--acc) 10%,transparent);color:var(--acc)}
+.side small{background:var(--card2);color:var(--muted);border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700}
+.grp{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.grp-h{display:grid;grid-template-columns:minmax(0,1fr) 258px 44px;align-items:center;gap:8px;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line);font-weight:800;font-size:14px}
+.grp-h .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;color:var(--muted);font-size:12px}
+.grp-h .cols i{font-style:normal}
+.mrow2{display:grid;grid-template-columns:58px minmax(0,1fr) 258px 44px;gap:8px;align-items:center;padding:9px 12px;border-top:1px solid var(--line)}
+.grp .mrow2:nth-child(2){border-top:0}
+.mrow2.open{background:color-mix(in srgb,var(--acc) 4%,transparent)}
+.when{font-size:12px;text-align:center;line-height:1.25}
+.when .st{background:transparent;color:var(--text);font-weight:700;padding:0}
+.when .st.live{background:var(--acc);color:#fff;padding:2px 6px;border-radius:5px}
+.when .st.done{border:0;color:var(--muted);font-size:11px}
+.tm{display:grid;gap:3px;text-align:left;min-width:0;font-weight:600;font-size:14px}
+.tm span{display:flex;justify-content:space-between;gap:8px}
+.tm i{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm .sc{min-width:16px;text-align:right}
+.tm .sc.win{color:var(--acc)}
+.tm em{font-style:normal;font-size:11px;color:var(--acc);font-weight:700}
+.tm:hover i{color:var(--acc)}
+.q3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.odd{background:var(--card);border:1px solid var(--line);border-radius:8px;min-height:44px;padding:5px 4px}
+.q3 .odd span{display:none}
+.odd b{font-size:15px;color:var(--text)}
+.odd:hover:not(:disabled){border-color:var(--acc);background:#fff}
+.odd.on{background:var(--acc);border-color:var(--acc)}
+.odd.on b,.odd.on span{color:#fff}
+.odd.wonopt{border-color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}
+.more{height:44px;border-radius:8px;background:var(--card);border:1px solid var(--line);font-size:12px;font-weight:800;color:var(--muted)}
+.more:hover{color:var(--acc);border-color:var(--acc)}
+.markets{background:var(--card);border-top:1px solid var(--line)}
+.opts .odd span{display:block}
+.slip{box-shadow:0 6px 24px rgba(18,23,34,.08)}
+.slip-h{background:var(--head);color:#fff;border-bottom:0}
+.slip-h .x{color:#fff}
+.sel .o{color:var(--acc)}
+.btn{background:var(--acc);color:#fff}
+.row.big .v{color:var(--dia)}
+.tag.won{color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
+.mark.ok{color:var(--good)}
+.chip.on{border-color:var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,#fff)}
+.seg button.on{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg{background:var(--card2)}
+.fab{background:var(--acc);color:#fff}
+.item button.buy{color:#fff}
+.install .go{color:#fff}
+@media (max-width:900px){main{grid-template-columns:minmax(0,1fr)}}
+.odd.on,.odd.on:hover:not(:disabled){background:var(--acc);border-color:var(--acc)}
+.odd.on:hover b{color:#fff}
+@media (max-width:1100px){.mlayout{grid-template-columns:minmax(0,1fr)}.side{display:none}.chips-m{display:flex}}
+@media (max-width:560px){
+  .grp-h{grid-template-columns:minmax(0,1fr) 186px 34px;padding:9px 10px}
+  .mrow2{grid-template-columns:44px minmax(0,1fr) 186px 34px;gap:6px;padding:8px 10px}
+  .tm{font-size:13px}
+  .odd{min-height:40px}.odd b{font-size:14px}
+  .more{height:40px;font-size:11px}
+}
+@media (max-width:400px){
+  .grp-h{grid-template-columns:minmax(0,1fr) 168px 30px}
+  .mrow2{grid-template-columns:40px minmax(0,1fr) 168px 30px}
+}
 </style>
 </head>
 <body>
@@ -522,36 +617,47 @@ function oddBtn(m,mk,o,closed,res,short){
   const on=inSlip(m.id,mk,o.id),won=res&&o.fn(res[0],res[1]);
   return '<button class="odd'+(on?' on':'')+(won?' wonopt':'')+'" data-sel="'+m.id+'|'+mk+'|'+o.id+'" '+(closed?'disabled':'')+'><span>'+esc(short||o.label)+'</span><b>'+fo(v)+'</b></button>';
 }
-function matchCard(m,day){
+function statusHtml(m,day){
+  const st=status(m),late=st==='live'&&Date.now()>m.ko+150*60e3;
+  return st==='live'?(late?'<span class="st done">Résultat<br>bientôt</span>':'<span class="st live">LIVE</span>'):st==='fini'?'<span class="st done">Terminé</span>':st==='annule'?'<span class="st done">'+esc(m.x)+'</span>':'<span class="st">'+dayLabel(m.ko,day).replace(' ','<br>')+'</span>';
+}
+function matchRow(m,day){
   const st=status(m),closed=st!=='avenir',res=st==='fini'?m.s:null;
-  const late=st==='live'&&Date.now()>m.ko+150*60e3;
-  const stHtml=st==='live'?(late?'<span class="st done">Résultat bientôt</span>':'<span class="st live">EN COURS</span>'):st==='fini'?'<span class="st done">Terminé</span>':st==='annule'?'<span class="st done">'+esc(m.x)+'</span>':'<span class="st">'+dayLabel(m.ko,day)+'</span>';
-  const quick=MARKETS[0].opts(m).map(o=>oddBtn(m,'1x2',o,closed,res,o.id)).join('');
+  const quick=MARKETS[0].opts(m).map(o=>oddBtn(m,'1x2',o,closed,res,o.id==='N'?'Nul':o.label)).join('');
   const nb=MARKETS.slice(1).reduce((n,k)=>n+k.opts(m).length,0);
-  const hs=res?'<span class="sc'+(res[0]>res[1]?' win':'')+'">'+res[0]+'</span>':'',as=res?'<span class="sc'+(res[1]>res[0]?' win':'')+'">'+res[1]+'</span>':'';
+  const sc=(a,b)=>res?'<b class="sc'+(a>b?' win':'')+'">'+a+'</b>':'';
   const myBets=state.bets.some(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
-  let html='<div class="match"><div class="mrow"><div><div class="mmeta">'+stHtml+'<span>'+m.flag+' '+esc(m.comp)+'</span>'+(myBets?'<span style="color:var(--acc);font-weight:700">• pari en cours</span>':'')+'</div>'+
-    '<div class="teams"><div><span>'+esc(m.home)+'</span>'+hs+'</div><div><span>'+esc(m.away)+'</span>'+as+'</div></div></div>'+
-    '<div class="quick">'+quick+'</div></div>'+
-    '<div class="mfoot"><button class="link" data-open="'+m.id+'">'+(ui.open===m.id?'− Masquer les paris':'+ '+nb+' autres paris')+'</button></div>';
+  let html='<div class="mrow2'+(ui.open===m.id?' open':'')+'">'+
+    '<div class="when">'+statusHtml(m,day)+'</div>'+
+    '<button class="tm" data-open="'+m.id+'"><span><i>'+esc(m.home)+'</i>'+sc(res&&res[0],res&&res[1])+'</span><span><i>'+esc(m.away)+'</i>'+sc(res&&res[1],res&&res[0])+'</span>'+(myBets?'<em>● pari en cours</em>':'')+'</button>'+
+    '<div class="q3">'+quick+'</div>'+
+    '<button class="more" data-open="'+m.id+'" title="Tous les paris">'+(ui.open===m.id?'−':'+'+nb)+'</button></div>';
   if(ui.open===m.id){
     html+='<div class="markets">'+MARKETS.slice(1).map(k=>'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.cs?' cs':'')+'">'+k.opts(m).map(o=>oddBtn(m,k.key,o,closed,res)).join('')+'</div></div>').join('')+'</div>';
   }
-  return html+'</div>';
+  return html;
 }
 function renderMatches(){
   const day=ui.day==='today'?today():addDays(today(),1);
   const all=FIX[day]||[];
   const comps=[...new Set(all.map(m=>m.comp))];
   if(ui.comp!=='all'&&!comps.includes(ui.comp))ui.comp='all';
-  let ms=ui.comp==='all'?all:all.filter(m=>m.comp===ui.comp);
   const order={avenir:0,live:1,fini:2,annule:3};
-  ms=ms.slice().sort((a,b)=>order[status(a)]-order[status(b)]||a.ko-b.ko);
+  const sorted=all.slice().sort((a,b)=>order[status(a)]-order[status(b)]||a.ko-b.ko);
+  const shown=ui.comp==='all'?comps:[ui.comp];
+  const flag=c=>all.find(m=>m.comp===c).flag;
   const open=all.filter(m=>status(m)==='avenir').length;
-  return installBanner()+'<p class="reset-note">🪙 '+nf(DAILY)+' nouvelles pièces chaque jour à minuit (dans '+untilMidnight()+'). Les gains sont versés en 💎 diamants. Matchs réels, résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>'+
+  const side='<div class="side"><div class="side-h">Compétitions</div>'+
+    '<button class="'+(ui.comp==='all'?'on':'')+'" data-comp="all"><span>⚽ Tous les matchs</span><small>'+all.length+'</small></button>'+
+    comps.map(c=>'<button class="'+(ui.comp===c?'on':'')+'" data-comp="'+esc(c)+'"><span>'+flag(c)+' '+esc(c)+'</span><small>'+all.filter(m=>m.comp===c).length+'</small></button>').join('')+'</div>';
+  const groups=shown.map(c=>{const ms=sorted.filter(m=>m.comp===c);
+    return '<section class="grp"><div class="grp-h"><span>'+flag(c)+' '+esc(c)+'</span><span class="cols"><i>1</i><i>N</i><i>2</i></span><span class="sp"></span></div>'+ms.map(m=>matchRow(m,day)).join('')+'</section>'}).join('');
+  return installBanner()+
+   '<div class="hero"><div><b>🪙 '+nf(DAILY)+' pièces offertes chaque jour</b><span>Nouvelles pièces dans '+untilMidnight()+' · gains versés en 💎 diamants</span></div></div>'+
    '<div class="toolbar"><div class="seg"><button data-day="today" class="'+(ui.day==='today'?'on':'')+'">Aujourd\'hui</button><button data-day="tomorrow" class="'+(ui.day==='tomorrow'?'on':'')+'">Demain</button></div>'+
-   (comps.length>1?'<button class="chip'+(ui.comp==='all'?' on':'')+'" data-comp="all">Toutes</button>'+comps.map(c=>{const f=all.find(m=>m.comp===c).flag;return '<button class="chip'+(ui.comp===c?' on':'')+'" data-comp="'+esc(c)+'">'+f+' '+esc(c)+'</button>'}).join(''):'')+'</div>'+
-   (all.length?(open===0&&ui.day==='today'?'<p class="reset-note">Tous les matchs du jour ont commencé. Regardez l\'onglet « Demain » pour parier.</p>':'')+ms.map(m=>matchCard(m,day)).join('')
+   '<div class="chips-m">'+(comps.length>1?'<button class="chip'+(ui.comp==='all'?' on':'')+'" data-comp="all">Tous</button>'+comps.map(c=>'<button class="chip'+(ui.comp===c?' on':'')+'" data-comp="'+esc(c)+'">'+flag(c)+' '+esc(c)+'</button>').join(''):'')+'</div></div>'+
+   (all.length?'<div class="mlayout">'+side+'<div>'+(open===0&&ui.day==='today'?'<p class="reset-note">Tous les matchs du jour ont commencé. Passez sur « Demain » pour parier.</p>':'')+groups+
+     '<p class="reset-note" style="margin-top:12px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p></div></div>'
      :'<div class="empty">Les matchs de cette journée ne sont pas encore publiés. Ils seront ajoutés lors de la prochaine mise à jour.</div>');
 }
 function renderBets(){
