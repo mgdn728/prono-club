@@ -2,8 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PronoClub — Paris sportifs gratuits</title>
+<meta name="theme-color" content="#0a0e13">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PronoClub">
 <meta name="description" content="Paris sportifs gratuits sur les vrais matchs : 1 000 pièces par jour, des diamants à gagner et un classement entre amis.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +33,7 @@ input{font:inherit}
 .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
 /* header */
-header{position:sticky;top:0;z-index:20;background:rgba(10,14,19,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header{padding-top:env(safe-area-inset-top);position:sticky;top:0;z-index:20;background:rgba(10,14,19,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .hbar{display:flex;align-items:center;gap:14px;height:62px}
 .brand{font-weight:800;font-size:20px;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
 .brand i{font-style:normal;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--acc);color:var(--acc-ink);font-size:17px}
@@ -159,7 +167,7 @@ aside{position:sticky;top:120px;align-self:start}
   .slip{border-radius:18px 18px 0 0;max-height:85vh;display:flex;flex-direction:column}
   .slip-b{max-height:none;flex:1}
   .slip-h .x{display:block}
-  .fab{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:40;background:var(--acc);color:var(--acc-ink);border-radius:14px;padding:14px 16px;font-weight:800;justify-content:space-between;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .fab{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;background:var(--acc);color:var(--acc-ink);border-radius:14px;padding:14px 16px;font-weight:800;justify-content:space-between;box-shadow:0 10px 30px rgba(0,0,0,.5)}
   .fab.hide{display:none}
   .stats{grid-template-columns:repeat(2,1fr)}
 }
@@ -197,6 +205,12 @@ aside{position:sticky;top:120px;align-self:start}
 .brow.me{background:color-mix(in srgb,var(--acc) 12%,transparent)}
 .brow .d{font-weight:800;color:var(--dia)}
 .brow .w{color:var(--muted);font-size:13px}
+.install{display:flex;align-items:center;gap:12px;background:color-mix(in srgb,var(--acc) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--acc) 45%,var(--line));border-radius:var(--r);padding:12px 14px;margin-bottom:14px}
+.install img{width:40px;height:40px;border-radius:10px}
+.install div{flex:1;font-size:14px;line-height:1.4}
+.install .go{background:var(--acc);color:var(--acc-ink);font-weight:800;padding:9px 14px;border-radius:10px;white-space:nowrap}
+.install .no{color:var(--muted);font-size:20px;padding:0 4px}
+.ios-steps{text-align:left;line-height:1.7;margin:0 0 14px;padding-left:20px}
 </style>
 </head>
 <body>
@@ -534,7 +548,7 @@ function renderMatches(){
   const order={avenir:0,live:1,fini:2,annule:3};
   ms=ms.slice().sort((a,b)=>order[status(a)]-order[status(b)]||a.ko-b.ko);
   const open=all.filter(m=>status(m)==='avenir').length;
-  return '<p class="reset-note">🪙 '+nf(DAILY)+' nouvelles pièces chaque jour à minuit (dans '+untilMidnight()+'). Les gains sont versés en 💎 diamants. Matchs réels, résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>'+
+  return installBanner()+'<p class="reset-note">🪙 '+nf(DAILY)+' nouvelles pièces chaque jour à minuit (dans '+untilMidnight()+'). Les gains sont versés en 💎 diamants. Matchs réels, résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>'+
    '<div class="toolbar"><div class="seg"><button data-day="today" class="'+(ui.day==='today'?'on':'')+'">Aujourd\'hui</button><button data-day="tomorrow" class="'+(ui.day==='tomorrow'?'on':'')+'">Demain</button></div>'+
    (comps.length>1?'<button class="chip'+(ui.comp==='all'?' on':'')+'" data-comp="all">Toutes</button>'+comps.map(c=>{const f=all.find(m=>m.comp===c).flag;return '<button class="chip'+(ui.comp===c?' on':'')+'" data-comp="'+esc(c)+'">'+f+' '+esc(c)+'</button>'}).join(''):'')+'</div>'+
    (all.length?(open===0&&ui.day==='today'?'<p class="reset-note">Tous les matchs du jour ont commencé. Regardez l\'onglet « Demain » pour parier.</p>':'')+ms.map(m=>matchCard(m,day)).join('')
@@ -582,6 +596,9 @@ function renderRules(){
   '<li><b>Simple</b> : un pari par sélection. <b>Combiné</b> : plusieurs matchs dans un seul pari, les cotes se multiplient, mais tout doit être gagnant.</li>'+
   '<li>On ne peut plus parier sur un match une fois qu\'il a commencé. Les paris sont réglés dès que le résultat réel est publié (plusieurs mises à jour par jour). Tous les paris portent sur le temps réglementaire (90 minutes, sans prolongation ni tirs au but).</li>'+
   '<li>Si un match est reporté ou annulé, la sélection est annulée et la mise vous est rendue.</li></ul>'+
+  '<h3>Installer l\'appli sur son téléphone</h3><ul>'+
+  '<li><b>Android</b> : ouvrez le site dans Chrome, menu ⋮ puis « Installer l\'application » (ou « Ajouter à l\'écran d\'accueil »).</li>'+
+  '<li><b>iPhone / iPad</b> : ouvrez le site dans Safari, bouton Partager (carré avec une flèche) puis « Sur l\'écran d\'accueil ».</li></ul>'+
   '<h3>Les cotes</h3><p style="margin:0">Les cotes 1N2 sont relevées ou estimées d\'après le marché au moment de la mise à jour : elles sont proches de celles de Betclic ou Winamax, sans être exactement les leurs. Les cotes des autres marchés sont calculées à partir de ces cotes 1N2.</p>'+
   '<p class="disc">Jeu gratuit, sans argent réel. Les pièces et les diamants n\'ont aucune valeur et ne peuvent être ni achetés ni convertis en argent. Si les jeux d\'argent vous posent problème : Joueurs Info Service, 09 74 75 13 13 (appel non surtaxé).</p></div>';
 }
@@ -598,6 +615,23 @@ function renderBoard(){
 function renderView(){
   $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='classement'?renderBoard():renderRules();
 }
+
+/* --- Installation de l'appli (PWA) --- */
+let deferredPrompt=null;
+const standalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(ui.tab==='matchs')renderView()});
+window.addEventListener('appinstalled',()=>{deferredPrompt=null;lsSet('pc_inst_hide','1');toast('📲 PronoClub est installé !');renderView()});
+function installBanner(){
+  if(standalone()||lsGet('pc_inst_hide'))return'';
+  if(!deferredPrompt&&!isIOS)return'';
+  return '<div class="install"><img src="icons/icon-192.png" alt=""><div><b>Installez l\'appli PronoClub</b><br><span style="color:var(--muted)">Une icône sur votre écran d\'accueil, en plein écran.</span></div><button class="go" id="installBtn">Installer</button><button class="no" id="installHide" aria-label="Masquer">×</button></div>';
+}
+function iosHelp(){
+  $('#authBox').innerHTML='<div class="brand"><i>⚽</i>Prono<span>Club</span></div><p class="lead">Pour installer l\'appli sur iPhone :</p><ol class="ios-steps"><li>Ouvrez ce site dans <b>Safari</b>.</li><li>Touchez le bouton <b>Partager</b> (le carré avec une flèche vers le haut).</li><li>Choisissez <b>« Sur l\'écran d\'accueil »</b>, puis <b>Ajouter</b>.</li></ol><div class="menu"><button id="closeAuth">J\'ai compris</button></div>';
+  $('#authModal').classList.add('open');
+}
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
 /* --- Écran de connexion --- */
 function openAuth(msg){
@@ -673,7 +707,12 @@ document.addEventListener('click',e=>{
   if(d.auth){ui.authMode=d.auth;openAuth();return}
   if(t.id==='userBtn'){ui.authMode=session?'menu':'login';openAuth();return}
   if(t.id==='doLogout'){ui.authMode='login';logout();return}
-  if(t.id==='closeAuth'){closeAuth();return}
+  if(t.id==='closeAuth'){closeAuth();if(!session)openAuth();return}
+  if(t.id==='installHide'){lsSet('pc_inst_hide','1');renderView();return}
+  if(t.id==='installBtn'){
+    if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.finally(()=>{deferredPrompt=null;renderView()})}
+    else iosHelp();
+    return}
   if(!session&&(d.sel||d.buy||t.id==='place')){ui.authMode='signup';openAuth('Créez un compte gratuit (ou connectez-vous) pour parier.');return}
   if(session&&!synced&&(d.sel||d.buy||d.equip||t.id==='place')){toast('⏳ Chargement de votre compte…');refreshFromServer();return}
   if(d.sel){const[id,mk,opt]=d.sel.split('|');toggleSel(id,mk,opt);return}
