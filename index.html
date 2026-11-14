@@ -458,6 +458,12 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 .chat{background:#fff;border-radius:18px;box-shadow:0 2px 10px rgba(15,22,36,.06);overflow:hidden;display:flex;flex-direction:column}
 .chat-h{padding:14px 16px;background:linear-gradient(110deg,#0f1624,#2a1220);color:#fff;display:flex;flex-direction:column;gap:2px}
 .chat-h span{font-size:12.5px;opacity:.8}
+.follow{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:10px 12px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
+.follow>b{font-size:13px;color:var(--text);margin-right:auto;white-space:nowrap}
+.follow a{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;color:#fff;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap}
+.follow a.ig{background:linear-gradient(45deg,#f9a03f,#e1306c 50%,#833ab4)}
+.follow a.tt{background:#111;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+@media(max-width:360px){.follow>b{display:none}.follow{justify-content:center}}
 .chat-list{height:min(56vh,520px);overflow-y:auto;padding:12px 12px 6px;background:#f4f6fa;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain}
 .chat-empty{margin:auto;text-align:center;color:var(--muted);font-size:14px;line-height:1.6;padding:20px}
 .chat-empty.small{margin:6px auto;padding:4px;font-size:12px}
@@ -1691,10 +1697,13 @@ function renderChatList(){
 function renderSocial(){
   const b=(k,l)=>'<button data-social="'+k+'" class="'+(ui.social===k?'on':'')+'">'+l+'</button>';
   const seg='<div class="seg social">'+b('chat','💬 Chat')+b('board','🏆 Classement')+b('ligues','👥 Ligues')+'</div>';
-  if(ui.social==='board')return seg+renderBoard();
-  if(ui.social==='ligues')return seg+renderLigues();
+  const follow='<div class="follow"><b>📲 Suis-nous</b>'+
+    '<a class="ig" href="https://www.instagram.com/pronoclub_" target="_blank" rel="noopener">📸 Instagram</a>'+
+    '<a class="tt" href="https://www.tiktok.com/@pronoclub_" target="_blank" rel="noopener">🎵 TikTok</a></div>';
+  if(ui.social==='board')return seg+follow+renderBoard();
+  if(ui.social==='ligues')return seg+follow+renderLigues();
   setTimeout(()=>{renderChatList();markChatSeen()},0);
-  return seg+'<div class="chat"><div class="chat-h"><b>💬 Le salon PronoClub</b><span>Discutez des matchs avec tous les joueurs</span></div>'+
+  return seg+follow+'<div class="chat"><div class="chat-h"><b>💬 Le salon PronoClub</b><span>Discutez des matchs avec tous les joueurs</span></div>'+
     '<div class="chat-list" id="chatList"></div>'+
     (session?'<form class="chat-form" id="chatForm" autocomplete="off"><input id="chatIn" maxlength="300" placeholder="Votre message…" value="'+esc(ui.chatDraft)+'" enterkeyhint="send"><button type="submit" aria-label="Envoyer">➤</button></form><div class="err" id="chatErr"></div>'
       :'<div class="chat-login"><button class="btn" data-auth="login">Connectez-vous pour écrire</button></div>')+
