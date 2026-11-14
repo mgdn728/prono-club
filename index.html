@@ -695,6 +695,20 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .back{font-weight:800;color:#1f6fe0;margin-bottom:10px;padding:6px 0}
 .leave{display:block;margin:18px auto 0;color:var(--muted);font-size:13px;text-decoration:underline}
 
+/* notifications */
+.t-bell{background:linear-gradient(135deg,#00b8d9,#1f5bd6)}
+.nlist{text-align:left;margin:0 0 14px;display:grid;gap:8px}
+.nrow{display:flex;align-items:center;gap:11px;background:#f5f6fb;border-radius:14px;padding:10px 12px;cursor:pointer}
+.nrow .ni{font-size:22px;flex:0 0 auto}
+.nrow .nt{flex:1;min-width:0;line-height:1.3}
+.nrow .nt b{display:block;font-size:14.5px}
+.nrow .nt small{color:var(--muted);font-size:12px}
+.nsec{font-weight:800;font-size:12.5px;color:#6a2cf5;margin:6px 2px 0}
+.nwarn{background:#fff4e5;color:#8a4b00!important;border-radius:12px;padding:9px 11px;font-size:13px!important;text-align:left}
+input.sw{appearance:none;-webkit-appearance:none;flex:0 0 46px;width:46px;height:28px;border-radius:99px;background:#d5d9e3;position:relative;cursor:pointer;transition:.2s;margin:0}
+input.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:.2s}
+input.sw:checked{background:linear-gradient(135deg,#18b85c,#00a3a3)}
+input.sw:checked::after{left:21px}
 /* soutenir */
 .don{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:linear-gradient(120deg,#fff0f5,#f3ecff);border:2px solid transparent;background:linear-gradient(120deg,#fff5f8,#f6f0ff) padding-box,var(--grad-main) border-box;border-radius:20px;padding:14px 16px;margin:12px 0 4px;box-shadow:var(--sh)}
 .don-ic{font-size:34px;animation:beat 1.6s ease-in-out infinite}
@@ -1049,7 +1063,10 @@ try{session=JSON.parse(lsGet(LS_SESSION)||'null')}catch(e){}
 (function(){try{const q=new URLSearchParams(location.search),p=q.get('p'),l=q.get('l');
   if(p&&/^[A-Za-z0-9_.-]{3,20}$/.test(p)&&!(session&&session.pseudo.toLowerCase()===p.toLowerCase()))lsSet('pc_parrain',p);
   if(l&&/^[A-Za-z0-9]{6}$/.test(l))lsSet('pc_ligue',l.toUpperCase());
-  if(p||l)history.replaceState(null,'',location.pathname)}catch(e){}})();
+  if(q.has('paris'))ui.tab='paris';
+  if(q.has('chat')){ui.tab='chat';ui.social='chat'}
+  if(q.has('ligues')){ui.tab='chat';ui.social='ligues'}
+  if(location.search)history.replaceState(null,'',location.pathname)}catch(e){}})();
 if(session){try{const s=lsGet('pronoclub_state_'+session.pseudo.toLowerCase());if(s)state=Object.assign(fresh(),JSON.parse(s))}catch(e){}}
 
 /* --- Supabase : comptes, sauvegarde, classement --- */
@@ -1237,7 +1254,7 @@ function placeBets(){
   $('#aside').classList.remove('open');
   renderAll();
   const last=state.bets[state.bets.length-1];
-  popup('<div class="pop-ic big">✅</div><h3>Pari validé !</h3><p><b>'+nf(c.total)+' pièces</b> misées · gain possible <b style="color:#1f7bff">'+nf(c.gain)+' 💎</b></p><div class="pop-btns"><button class="pbtn" data-sharebet="'+last.id+'">📤 Partager mon coupon</button><button class="pbtn ghost2" data-popclose="1">Continuer</button></div>');
+  popup('<div class="pop-ic big">✅</div><h3>Pari validé !</h3><p><b>'+nf(c.total)+' pièces</b> misées · gain possible <b style="color:#1f7bff">'+nf(c.gain)+' 💎</b></p><div class="pop-btns"><button class="pbtn" data-sharebet="'+last.id+'">📤 Partager mon coupon</button><button class="pbtn ghost2" data-popclose="1">Continuer</button></div>'+(notifSupport()&&!notifOn()?'<button class="later" data-notifs="1">🔔 Me prévenir quand le résultat tombe</button>':''));
 }
 
 /* ---------- Joueurs : décorations ---------- */
@@ -1282,6 +1299,80 @@ function shareLigue(code,nom){
   const url=SITE()+'?l='+code+(session?'&p='+encodeURIComponent(session.pseudo):'');
   sharePopup('👥','Inviter dans « '+esc(nom)+' »','Vos amis rejoignent la ligue en ouvrant ce lien (ou avec le code <b>'+code+'</b> dans l\'onglet Social → Ligues).',
     'Rejoins ma ligue « '+nom+' » sur PronoClub et viens me battre ! Code : '+code,url);
+}
+
+/* ---------- Notifications ---------- */
+const NPREFS=[['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat']];
+const NPROPRIO=[['proprio_comptes','👤','Nouveaux joueurs','Chaque nouveau compte créé'],['proprio_chat','💬','Messages du chat','Tous les messages, pour surveiller le salon']];
+const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+function notifSupport(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
+function notifOn(){return session&&lsGet('pc_notif')===session.pseudo&&notifSupport()&&Notification.permission==='granted'}
+function b64u(k){const p='='.repeat((4-k.length%4)%4),b=atob((k+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0))}
+async function swReg(){const r=await Promise.race([navigator.serviceWorker.ready,new Promise(x=>setTimeout(()=>x(null),6000))]);if(!r)throw new Error('sw');return r}
+async function openNotifs(){
+  closeAuth();
+  if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour recevoir des notifications.');return}
+  if(!notifSupport()){
+    if(isIOS&&!isStandalone())popup('<div class="pop-ic big">📲</div><h3>D\'abord, installez l\'appli</h3><p>Sur iPhone, les notifications marchent seulement avec l\'appli installée :<br>1. Touchez <b>Partager</b> (le carré avec la flèche) en bas de Safari.<br>2. Choisissez <b>« Sur l\'écran d\'accueil »</b>.<br>3. Ouvrez PronoClub <b>depuis la nouvelle icône</b>, puis revenez ici.</p><div class="pop-btns"><button class="pbtn" data-popclose="1">Compris</button></div>');
+    else popup('<div class="pop-ic big">🔕</div><h3>Pas disponible ici</h3><p>Ce navigateur ne permet pas les notifications. Essayez avec Chrome, Firefox ou Edge (ou Safari sur iPhone, avec l\'appli installée).</p><div class="pop-btns"><button class="pbtn" data-popclose="1">OK</button></div>');
+    return}
+  ui.notif={loading:true};renderNotifPop();
+  let sub=null,st=null;
+  try{const reg=await swReg();sub=await reg.pushManager.getSubscription()}catch(e){}
+  try{st=await rpc('notif_etat',{p_token:session.token,p_endpoint:sub?sub.endpoint:''})}
+  catch(e){ui.notif={off:true};renderNotifPop();return}
+  const def={};NPREFS.forEach(x=>def[x[0]]=true);if(st&&st.proprio)NPROPRIO.forEach(x=>def[x[0]]=true);
+  const on=!!(sub&&st&&st.abonne&&Notification.permission==='granted');
+  if(on)lsSet('pc_notif',session.pseudo);else if(lsGet('pc_notif')===session.pseudo)lsSet('pc_notif',null);
+  ui.notif={sub,on,proprio:!!(st&&st.proprio),prefs:Object.assign(def,(st&&st.prefs)||{})};
+  renderNotifPop();
+}
+function renderNotifPop(){
+  const N=ui.notif||{};let h='<div class="pop-ic big">🔔</div><h3>Notifications</h3>';
+  if(N.loading)h+='<p>Chargement…</p>';
+  else if(N.off)h+='<p>Les notifications ne sont pas encore activées sur le serveur. Il faut terminer la mise en place dans Supabase.</p><div class="pop-btns"><button class="pbtn" data-popclose="1">OK</button></div>';
+  else{
+    const row=x=>'<label class="nrow"><span class="ni">'+x[1]+'</span><span class="nt"><b>'+x[2]+'</b><small>'+x[3]+'</small></span><input type="checkbox" class="sw" data-npref="'+x[0]+'"'+(N.prefs[x[0]]?' checked':'')+'></label>';
+    h+='<p>'+(N.on?'✅ Activées sur ce téléphone. Choisissez ce que vous voulez recevoir :':'Soyez prévenu même quand l\'appli est fermée. Choisissez ce que vous voulez recevoir :')+'</p>'+
+      '<div class="nlist">'+NPREFS.map(row).join('')+(N.proprio?'<div class="nsec">👑 Propriétaire du site</div>'+NPROPRIO.map(row).join(''):'')+'</div>'+
+      (Notification.permission==='denied'?'<p class="nwarn">Les notifications sont bloquées pour ce site. Autorisez-les dans les réglages du navigateur (le cadenas à côté de l\'adresse), puis réessayez.</p>':'')+
+      '<div class="pop-btns">'+(N.on?'<button class="pbtn ghost2" id="notifOff">Désactiver sur ce téléphone</button><button class="pbtn" id="notifTest">Tester</button>':'<button class="pbtn" id="notifOnBtn">🔔 Activer les notifications</button>')+'</div>';
+  }
+  const M=$('#popModal');
+  if(M.classList.contains('open')&&$('#popBox').querySelector('.nbox')){$('#popBox .nbox').innerHTML=h;return}
+  popQ.length=0;M.classList.remove('open');popup('<div class="nbox">'+h+'</div>');
+}
+async function notifSave(){
+  const N=ui.notif;if(!N||!N.sub)return;
+  try{await rpc('notif_abonner',{p_token:session.token,p_sub:N.sub.toJSON(),p_prefs:N.prefs})}catch(e){toast('Réglage non enregistré, réessayez')}
+}
+async function notifActiver(){
+  const btn=$('#notifOnBtn');if(btn){btn.disabled=true;btn.textContent='⏳ Activation…'}
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){toast('🔕 Notifications refusées');renderNotifPop();return}
+    const key=await rpc('notif_cle',{});
+    if(!key){toast('Le serveur de notifications n\'est pas encore prêt. Réessayez dans 2 minutes.');renderNotifPop();return}
+    const reg=await swReg();
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(key)});
+    ui.notif.sub=sub;
+    const r=await rpc('notif_abonner',{p_token:session.token,p_sub:sub.toJSON(),p_prefs:ui.notif.prefs});
+    ui.notif.on=true;lsSet('pc_notif',session.pseudo);
+    if(r&&r.proprio&&!ui.notif.proprio){ui.notif.proprio=true;NPROPRIO.forEach(x=>ui.notif.prefs[x[0]]=true);notifSave()}
+    renderNotifPop();renderView();
+    reg.showNotification('🔔 Notifications activées',{body:'Vous serez prévenu des résultats de vos paris et des défis du jour.',icon:'icons/icon-192.png',badge:'icons/favicon.png'});
+  }catch(e){toast('Activation impossible sur ce navigateur');renderNotifPop()}
+}
+async function notifDesactiver(){
+  const N=ui.notif;
+  try{if(N.sub){await rpc('notif_desabonner',{p_token:session.token,p_endpoint:N.sub.endpoint});await N.sub.unsubscribe()}}catch(e){}
+  ui.notif.on=false;ui.notif.sub=null;lsSet('pc_notif',null);renderNotifPop();renderView();toast('🔕 Notifications désactivées');
+}
+async function notifUnlinkOnLogout(tok){
+  try{if(!notifSupport()||!tok)return;const reg=await swReg();const sub=await reg.pushManager.getSubscription();
+    if(sub)await rpc('notif_desabonner',{p_token:tok,p_endpoint:sub.endpoint})}catch(e){}
+  lsSet('pc_notif',null);
 }
 
 /* ---------- Image du coupon à partager ---------- */
@@ -1441,6 +1532,7 @@ function dashHtml(){
   const n=session&&state.streak?state.streak.n:0;
   return '<div class="dash">'+
    '<div class="tile t-coin"><div class="ti">🪙</div><b>'+nf(state.coins)+' pièces</b><span>'+nf(DAILY)+' de plus dans '+untilMidnight()+'</span></div>'+
+   '<button class="tile t-bell" data-notifs="1"><div class="ti">🔔</div><b>Notifications</b><span>'+(notifOn()?'Activées ✓':'Résultats, défis, série…')+'</span></button>'+
    '<button class="tile t-fire" data-streak="1"><div class="ti">🔥</div><b>Série : '+n+' jour'+(n>1?'s':'')+'</b><span>'+(session?'Demain : +'+nf(streakBonus(n+1))+' pièces':'Bonus chaque jour')+'</span></button>'+
    '<button class="tile t-gift" data-invite="1"><div class="ti">🎁</div><b>Invite tes potes</b><span>+'+PARRAIN_BONUS+' pièces chacun</span></button>'+
    '<button class="tile t-league" data-tab="chat" data-social="ligues"><div class="ti">👥</div><b>Ligues entre potes</b><span>Ton classement privé</span></button>'+
@@ -1556,6 +1648,7 @@ function renderRules(){
   '<li><b>Défi du jour 🎯</b> : un pronostic gratuit par jour sur la grosse affiche. Bonne réponse = <b>+'+DEFI_GAIN+' 💎</b>.</li>'+
   '<li><b>Parrainage 🎁</b> : invitez vos amis avec votre lien. Pour chaque ami inscrit, <b>+'+PARRAIN_BONUS+' pièces</b> pour vous et pour lui (20 amis maximum).</li>'+
   '<li><b>Ligues 👥</b> : créez une ligue, partagez le code et affrontez vos amis dans votre propre classement. Le classement de la semaine repart à zéro chaque lundi.</li></ul>'+
+  '<h3>Notifications 🔔</h3><ul><li>Touchez la tuile <b>🔔 Notifications</b> (ou votre avatar en haut) pour être prévenu même appli fermée : résultat de vos paris, défi du jour, série en danger, amis et ligues. Vous choisissez ce que vous recevez.</li><li>Sur iPhone, il faut d\'abord installer l\'appli sur l\'écran d\'accueil.</li></ul>'+
   '<h3>Installer l\'appli sur son téléphone</h3><ul>'+
   '<li><b>Android</b> : ouvrez le site dans Chrome, menu ⋮ puis « Installer l\'application » (ou « Ajouter à l\'écran d\'accueil »).</li>'+
   '<li><b>iPhone / iPad</b> : ouvrez le site dans Safari, bouton Partager (carré avec une flèche) puis « Sur l\'écran d\'accueil ».</li></ul>'+
@@ -1707,7 +1800,7 @@ function openAuth(msg){
   const m=ui.authMode;
   const brand='<div class="brand"><i>⚽</i>Prono<span>Club</span></div>';
   if(session&&m==='menu'){
-    $('#authBox').innerHTML=brand+'<p class="lead">Connecté en tant que <b style="color:var(--text)">'+esc(session.pseudo)+'</b></p><div class="menu"><button data-tab="regles">📖 Règles du jeu</button><button id="doLogout">Se déconnecter</button><button id="closeAuth">Fermer</button></div>';
+    $('#authBox').innerHTML=brand+'<p class="lead">Connecté en tant que <b style="color:var(--text)">'+esc(session.pseudo)+'</b></p><div class="menu"><button data-notifs="1">🔔 Notifications</button><button data-tab="regles">📖 Règles du jeu</button><button id="doLogout">Se déconnecter</button><button id="closeAuth">Fermer</button></div>';
   }else{
     const par=lsGet('pc_parrain');
     $('#authBox').innerHTML=brand+'<p class="lead">Paris sportifs gratuits sur les vrais matchs.<br>1 000 pièces offertes chaque jour !</p>'+
@@ -1792,6 +1885,10 @@ document.addEventListener('click',e=>{
   if(d.sharetxt!==undefined){shareLink(d.sharetxt,d.shareurl);return}
   if(d.sharebet){shareBet(d.sharebet);return}
   if(d.invite){openInvite();return}
+  if(d.notifs){openNotifs();return}
+  if(t.id==='notifOnBtn'){notifActiver();return}
+  if(t.id==='notifOff'){notifDesactiver();return}
+  if(t.id==='notifTest'){swReg().then(r=>r.showNotification('⚽ PronoClub',{body:'Test réussi : les notifications marchent sur ce téléphone !',icon:'icons/icon-192.png',badge:'icons/favicon.png'})).catch(()=>toast('Test impossible'));return}
   if(d.streak){const n=session&&state.streak?state.streak.n:0;
     if(!session){ui.authMode='signup';openAuth('Créez un compte pour lancer votre série de connexion.');return}
     popup('<div class="pop-ic big">🔥</div><h3>Série de '+n+' jour'+(n>1?'s':'')+'</h3><p>Connectez-vous chaque jour pour gagner des pièces bonus : +100 le 1er jour, +200 le 2e… jusqu\'à <b>+700 par jour</b>. Un jour raté, et la série repart à zéro !</p>'+streakDots(n)+'<div class="pop-btns"><button class="pbtn" data-popclose="1">C\'est parti</button></div>');return}
@@ -1801,7 +1898,7 @@ document.addEventListener('click',e=>{
   if(d.ligue!==undefined){openLigue(d.ligue);renderView();toTop();return}
   if(d.auth){closePop();ui.authMode=d.auth;openAuth();return}
   if(t.id==='userBtn'){ui.authMode=session?'menu':'login';openAuth();return}
-  if(t.id==='doLogout'){ui.authMode='login';logout();return}
+  if(t.id==='doLogout'){notifUnlinkOnLogout(session&&session.token);ui.authMode='login';logout();return}
   if(t.id==='closeAuth'){closeAuth();return}
   if(t.id==='installHide'){lsSet('pc_inst_hide','1');renderView();return}
   if(t.id==='installBtn'){
@@ -1840,7 +1937,8 @@ document.addEventListener('click',e=>{
   }
 });
 document.getElementById('popModal').addEventListener('click',e=>{if(e.target.id==='popModal')closePop()});
-document.addEventListener('change',e=>{const d=e.target.dataset;if(d.ex){ui[d.ex]=e.target.checked;renderSlip()}});
+document.addEventListener('change',e=>{
+  if(e.target.dataset&&e.target.dataset.npref&&ui.notif&&ui.notif.prefs){ui.notif.prefs[e.target.dataset.npref]=e.target.checked;if(ui.notif.on)notifSave();return}const d=e.target.dataset;if(d.ex){ui[d.ex]=e.target.checked;renderSlip()}});
 document.addEventListener('input',e=>{
   const d=e.target.dataset;
   if(d.stake!==undefined){const v=e.target.value;if(d.stake==='__combi')ui.combi=v;else ui.stakes[d.stake]=v;refreshSlipNumbers()}
