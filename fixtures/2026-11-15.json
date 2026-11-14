@@ -474,5 +474,61 @@
 2.1
 ],
 "bo": 3
+},
+{
+"id": "phi-ind",
+"sp": "basket",
+"c": "NBA",
+"f": "🇺🇸",
+"h": "Philadelphia 76ers",
+"a": "Indiana Pacers",
+"t": "2026-11-15T19:00:00+01:00",
+"o": [
+1.21,
+4.29
+],
+"tl": 224.5
+},
+{
+"id": "phx-lal",
+"sp": "basket",
+"c": "NBA",
+"f": "🇺🇸",
+"h": "Phoenix Suns",
+"a": "Los Angeles Lakers",
+"t": "2026-11-15T22:00:00+01:00",
+"o": [
+2.48,
+1.52
+],
+"tl": 228.5
+},
+{
+"id": "lac-cha",
+"sp": "basket",
+"c": "NBA",
+"f": "🇺🇸",
+"h": "Los Angeles Clippers",
+"a": "Charlotte Hornets",
+"t": "2026-11-15T22:30:00+01:00",
+"o": [
+1.89,
+1.89
+],
+"tl": 220.5
+},
+{
+"id": "uta-sas",
+"sp": "basket",
+"c": "NBA",
+"f": "🇺🇸",
+"h": "Utah Jazz",
+"a": "San Antonio Spurs",
+"t": "2026-11-15T23:00:00+01:00",
+"o": [
+6.29,
+1.11
+],
+"tl": 229.5
 }
 ]
