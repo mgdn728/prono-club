@@ -695,6 +695,14 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .back{font-weight:800;color:#1f6fe0;margin-bottom:10px;padding:6px 0}
 .leave{display:block;margin:18px auto 0;color:var(--muted);font-size:13px;text-decoration:underline}
 
+/* soutenir */
+.don{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:linear-gradient(120deg,#fff0f5,#f3ecff);border:2px solid transparent;background:linear-gradient(120deg,#fff5f8,#f6f0ff) padding-box,var(--grad-main) border-box;border-radius:20px;padding:14px 16px;margin:12px 0 4px;box-shadow:var(--sh)}
+.don-ic{font-size:34px;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{15%{transform:scale(1.15)}30%{transform:scale(1)}}
+.don-t{flex:1;min-width:200px}
+.don-t b{display:block;font-size:16px}
+.don-t span{font-size:12.5px;color:#4a5263;line-height:1.4}
+.don .pbtn{flex:0 0 auto}
 /* chat */
 .seg.social button{white-space:nowrap;font-size:14px;padding:10px 4px}
 .phero b.code{display:inline;font-size:inherit;padding:1px 8px}
@@ -829,6 +837,7 @@ const MARKETS=[
 ];
 
 const DEFI_GAIN=300,PARRAIN_BONUS=500;
+const STRIPE_DON=''; // lien de paiement Stripe (montant libre) pour le bouton « Soutenir PronoClub »
 const SHOP=[
  {id:'c250',sec:'Bonus',ic:'🪙',name:'+250 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:400,kind:'coins',val:250},
  {id:'c1000',sec:'Bonus',ic:'💰',name:'+1 000 pièces',desc:'Doublez votre budget du jour.',cost:1400,kind:'coins',val:1000},
@@ -1530,6 +1539,7 @@ function renderShop(){
   const prof=session?'<div class="prof">'+pav(session.pseudo,myDeco())+'<div><div class="prof-n">'+pname(session.pseudo,myDeco())+'</div><small>Comme les autres joueurs vous voient dans le chat et les classements</small></div></div>':'';
   return pageHero('ph-shop','🎁','Boutique','Échangez vos diamants contre des bonus et des récompenses à montrer à tout le monde.')+
     '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div>'+prof+
+    (STRIPE_DON?'<div class="don"><div class="don-ic">❤️</div><div class="don-t"><b>Soutenir PronoClub</b><span>Le site est gratuit et le restera. Si vous l\'aimez, vous pouvez aider à le faire grandir avec le montant de votre choix. Un don ne donne ni pièces ni diamants.</span></div><a class="pbtn" href="'+STRIPE_DON+'" target="_blank" rel="noopener">Je soutiens ❤️</a></div>':'')+
     secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+'</div><div class="shop">'+SHOP.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
 }
 function renderRules(){
