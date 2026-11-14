@@ -421,7 +421,11 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
   .bnav{grid-template-columns:repeat(6,1fr)!important}
   #nav{display:none}
   .fab{display:none!important}
-  main{padding-bottom:110px}
+  main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+  /* coque d'appli : la page défile à l'intérieur, la barre du navigateur ne bouge plus et la barre du bas reste entière */
+  html{height:100%;overflow:hidden}
+  body{height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;background-attachment:scroll}
+  .bnav{transform:translateZ(0);will-change:transform}
   .bnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;background:#fff;box-shadow:0 -6px 24px rgba(15,22,36,.10);padding:6px 4px calc(6px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0}
   .bnav button{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;color:#7a8396;font-size:10.5px;font-weight:700}
   .bnav button i{font-style:normal;font-size:21px;line-height:1.1;filter:grayscale(.6);opacity:.8}
@@ -528,6 +532,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 <div class="modal" id="authModal"><div class="auth" id="authBox"></div></div>
 
 <script>
+function toTop(){try{window.scrollTo({top:0});document.body.scrollTop=0;document.documentElement.scrollTop=0}catch(e){}}
 /* ---------- Configuration ---------- */
 const SB_URL='https://akxsucplmrdrbsmhdmvj.supabase.co';
 const SB_KEY='sb_publishable_y0r-6RnFOCPZffZJSCxvQg_whwl47yx';
@@ -1244,7 +1249,7 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show'
 document.addEventListener('click',e=>{
   const t=e.target.closest('button,label');if(!t)return;
   const d=t.dataset;
-  if(d.tab){if(session)closeAuth();ui.tab=d.tab;if(d.tab==='classement')loadBoard();if(d.tab==='chat'){if(ui.social==='board')loadBoard();chatSoon()}renderHeader();renderView();window.scrollTo({top:0});return}
+  if(d.tab){if(session)closeAuth();ui.tab=d.tab;if(d.tab==='classement')loadBoard();if(d.tab==='chat'){if(ui.social==='board')loadBoard();chatSoon()}renderHeader();renderView();toTop();return}
   if(d.auth){ui.authMode=d.auth;openAuth();return}
   if(t.id==='userBtn'){ui.authMode=session?'menu':'login';openAuth();return}
   if(t.id==='doLogout'){ui.authMode='login';logout();return}
@@ -1258,7 +1263,7 @@ document.addEventListener('click',e=>{
   if(session&&!synced&&(d.sel||d.buy||d.equip||t.id==='place')){toast('⏳ Chargement de votre compte…');refreshFromServer();return}
   if(d.sel){const[id,mk,opt]=d.sel.split('|');toggleSel(id,mk,opt);return}
   if(d.open){ui.open=ui.open===d.open?null:d.open;renderView();return}
-  if(d.go){ui.tab='matchs';ui.sport=d.go;ui.comp='all';renderHeader();renderView();window.scrollTo({top:0});return}
+  if(d.go){ui.tab='matchs';ui.sport=d.go;ui.comp='all';renderHeader();renderView();toTop();return}
   if(d.social){ui.social=d.social;if(d.social==='board')loadBoard();renderView();if(d.social==='chat')chatSoon();return}
   if(d.sport){ui.sport=d.sport;ui.open=null;ui.comp='all';renderView();return}
   if(d.comp){ui.comp=d.comp;renderView();return}
