@@ -447,6 +447,36 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 .lv-l{display:block;width:100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);text-align:center;font-size:13px;font-weight:700;color:var(--acc);text-decoration:none}
 .empty.small{padding:14px;font-size:13.5px;background:#fff;border-radius:14px}
 .bdg.live{background:#e0182d}
+
+/* ===== Chat ===== */
+.seg.social{display:flex;margin-bottom:12px}
+.seg.social button{flex:1}
+.chat{background:#fff;border-radius:18px;box-shadow:0 2px 10px rgba(15,22,36,.06);overflow:hidden;display:flex;flex-direction:column}
+.chat-h{padding:14px 16px;background:linear-gradient(110deg,#0f1624,#2a1220);color:#fff;display:flex;flex-direction:column;gap:2px}
+.chat-h span{font-size:12.5px;opacity:.8}
+.chat-list{height:min(56vh,520px);overflow-y:auto;padding:12px 12px 6px;background:#f4f6fa;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain}
+.chat-empty{margin:auto;text-align:center;color:var(--muted);font-size:14px;line-height:1.6;padding:20px}
+.chat-empty.small{margin:6px auto;padding:4px;font-size:12px}
+.cm{display:flex;gap:8px;align-items:flex-end;max-width:86%}
+.cm.same{margin-top:-3px}
+.cm .av{width:30px;height:30px;font-size:11px}
+.av-sp{flex:0 0 30px}
+.cm.me{align-self:flex-end;flex-direction:row-reverse}
+.cm.me .av-sp{display:none}
+.cb{background:#fff;border-radius:16px 16px 16px 6px;padding:7px 11px;box-shadow:0 1px 2px rgba(15,22,36,.08);min-width:0}
+.cm.me .cb{background:linear-gradient(135deg,#ff2a3f,#c50f25);color:#fff;border-radius:16px 16px 6px 16px}
+.cn{font-size:12px;font-weight:800;color:#3a4354;margin-bottom:2px}
+.cn small{font-weight:600;color:var(--muted);margin-left:4px}
+.cm.me .cn,.cm.me .cn small{color:rgba(255,255,255,.85)}
+.ct{font-size:14.5px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
+.chat-form input{flex:1;min-width:0;border:1px solid var(--line);background:#f4f6fa;border-radius:999px;padding:11px 16px;font-size:15px;color:var(--text)}
+.chat-form input:focus{outline:none;border-color:var(--acc);background:#fff}
+.chat-form button{flex:0 0 46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#ff2a3f,#c50f25);color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(224,24,45,.3)}
+.chat .err{padding:0 14px}
+.chat-login{padding:12px}
+.chat-rules{margin:0;padding:8px 14px 12px;font-size:11.5px;color:var(--muted)}
+@media (max-width:900px){.chat-list{height:calc(100vh - 420px);min-height:260px}}
 </style>
 </head>
 <body>
@@ -466,6 +496,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
       <button data-tab="live">🔴 Live</button>
       <button data-tab="paris">Mes paris</button>
       <button data-tab="boutique">Boutique</button>
+      <button data-tab="chat">💬 Chat</button>
       <button data-tab="classement">Classement</button>
       <button data-tab="regles">Règles</button>
     </nav>
@@ -491,7 +522,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
   <button data-tab="paris"><i>🧾</i><span>Mes paris</span><b class="bdg" id="bnBets"></b></button>
   <button class="slipbtn" id="bnSlip"><i>🎟️</i><span>Coupon</span><b class="bdg" id="bnSlipN"></b></button>
   <button data-tab="boutique"><i>🎁</i><span>Boutique</span></button>
-  <button data-tab="classement"><i>🏆</i><span>Classement</span></button>
+  <button data-tab="chat"><i>💬</i><span>Chat</span><b class="bdg" id="bnChat"></b></button>
 </nav>
 <div class="toast" id="toast"></div>
 <div class="modal" id="authModal"><div class="auth" id="authBox"></div></div>
@@ -705,7 +736,7 @@ function status(m){
 /* ---------- État & sauvegarde ---------- */
 function fresh(){return{v:2,updated:0,day:today(),coins:DAILY,diamonds:0,bets:[],inv:{boost:0,shield:0},owned:[],title:null,theme:null,stats:{won:0,lost:0,earned:0,best:0}}}
 let state=fresh();
-const ui={tab:'matchs',sport:'foot',comp:'all',open:null,slip:[],mode:'simple',stakes:{},combi:100,boost:false,shield:false,betFilter:'pending',authMode:'login',board:null};
+const ui={tab:'matchs',sport:'foot',comp:'all',open:null,slip:[],mode:'simple',stakes:{},combi:100,boost:false,shield:false,betFilter:'pending',authMode:'login',board:null,social:'chat',chatDraft:''};
 const LS_SESSION='pronoclub_session';
 let session=null,writing=false,pending=false,saveTimer=null,synced=false;
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
@@ -1051,6 +1082,66 @@ function renderRules(){
   '<h3>Les cotes</h3><p style="margin:0">Les cotes du vainqueur (1N2) sont relevées ou estimées d\'après le marché au moment de la mise à jour : elles sont proches de celles de Betclic ou Winamax, sans être exactement les leurs. Les cotes des autres marchés sont calculées à partir de ces cotes.</p>'+
   '<p class="disc">Jeu gratuit, sans argent réel. Les pièces et les diamants n\'ont aucune valeur et ne peuvent être ni achetés ni convertis en argent. Si les jeux d\'argent vous posent problème : Joueurs Info Service, 09 74 75 13 13 (appel non surtaxé).</p></div>';
 }
+/* ---------- Chat ---------- */
+const chat={msgs:[],last:0,timer:null,state:'loading',sending:false};
+const CHAT_ERR={trop_vite:'Doucement : attendez quelques secondes entre deux messages.',trop_long:'Message trop long (300 caractères maximum).',vide:'Écrivez un message.',session:ERR.session};
+function chatSeen(){return +(lsGet('pc_chat_seen')||0)}
+function chatUnread(){const me=session&&session.pseudo.toLowerCase(),s=chatSeen();return chat.msgs.filter(m=>m.id>s&&m.pseudo.toLowerCase()!==me).length}
+function markChatSeen(){if(chat.last)lsSet('pc_chat_seen',String(chat.last));updateChatBadge()}
+function updateChatBadge(){const n=ui.tab==='chat'?0:chatUnread(),b=document.getElementById('bnChat');if(b){b.textContent=n>9?'9+':(n||'');b.style.display=n?'':'none'}
+  document.querySelectorAll('#nav button[data-tab="chat"]').forEach(x=>x.textContent=n?'💬 Chat ('+n+')':'💬 Chat')}
+async function chatPoll(){
+  try{const r=await rpc('chat_lire',{p_apres:chat.last});chat.state='ok';
+    if(Array.isArray(r)&&r.length){chat.msgs=chat.msgs.concat(r).slice(-200);chat.last=r[r.length-1].id;
+      if(ui.tab==='chat'&&ui.social==='chat'){renderChatList();if(document.visibilityState==='visible')markChatSeen()}}
+    else if(ui.tab==='chat'&&ui.social==='chat'&&!document.getElementById('chatList').dataset.ready)renderChatList();
+  }catch(e){chat.state=/function|404|PGRST/i.test(e.message||'')?'off':'err';if(ui.tab==='chat'&&ui.social==='chat')renderChatList()}
+  updateChatBadge();
+}
+function chatSchedule(){clearTimeout(chat.timer);const fast=ui.tab==='chat'&&document.visibilityState==='visible';chat.timer=setTimeout(async()=>{await chatPoll();chatSchedule()},fast?4000:45000)}
+function chatSoon(){clearTimeout(chat.timer);chatPoll().then(chatSchedule)}
+function chatTime(t){const d=new Date(t),k=dkey(d);return (k===today()?'':d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' ')+hhmm(t)}
+function chatListHtml(){
+  if(chat.state==='off')return '<div class="chat-empty">💬 Le chat n\'est pas encore activé.<br><small>Il faut ajouter la partie « chat » dans Supabase.</small></div>';
+  if(chat.state==='loading'&&!chat.msgs.length)return '<div class="chat-empty">Chargement des messages…</div>';
+  if(!chat.msgs.length)return '<div class="chat-empty">👋 Aucun message pour l\'instant.<br>Lancez la discussion !</div>';
+  const me=session&&session.pseudo.toLowerCase();let prev=null;
+  return chat.msgs.map(m=>{const mine=m.pseudo.toLowerCase()===me,same=prev&&prev.pseudo===m.pseudo&&(new Date(m.cree_le)-new Date(prev.cree_le))<300000;prev=m;
+    return '<div class="cm'+(mine?' me':'')+(same?' same':'')+'">'+(!mine&&!same?avatar(m.pseudo):'<span class="av-sp"></span>')+'<div class="cb">'+(!same?'<div class="cn">'+(mine?'Vous':esc(m.pseudo))+' <small>'+chatTime(m.cree_le)+'</small></div>':'')+'<div class="ct">'+esc(m.texte)+'</div></div></div>'}).join('')+(chat.state==='err'?'<div class="chat-empty small">Connexion perdue, nouvelle tentative…</div>':'');
+}
+function renderChatList(){
+  const el=document.getElementById('chatList');if(!el)return;
+  const atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<80||!el.dataset.ready;
+  el.innerHTML=chatListHtml();el.dataset.ready='1';
+  if(atBottom)el.scrollTop=el.scrollHeight;
+}
+function renderSocial(){
+  const seg='<div class="seg social"><button data-social="chat" class="'+(ui.social==='chat'?'on':'')+'">💬 Discussion</button><button data-social="board" class="'+(ui.social==='board'?'on':'')+'">🏆 Classement</button></div>';
+  if(ui.social==='board')return seg+renderBoard();
+  setTimeout(()=>{renderChatList();markChatSeen()},0);
+  return seg+'<div class="chat"><div class="chat-h"><b>💬 Le salon PronoClub</b><span>Discutez des matchs avec tous les joueurs</span></div>'+
+    '<div class="chat-list" id="chatList"></div>'+
+    (session?'<form class="chat-form" id="chatForm" autocomplete="off"><input id="chatIn" maxlength="300" placeholder="Votre message…" value="'+esc(ui.chatDraft)+'" enterkeyhint="send"><button type="submit" aria-label="Envoyer">➤</button></form><div class="err" id="chatErr"></div>'
+      :'<div class="chat-login"><button class="btn" data-auth="login">Connectez-vous pour écrire</button></div>')+
+    '<p class="chat-rules">Restez respectueux. Ne partagez jamais d\'informations personnelles (adresse, téléphone, mot de passe).</p></div>';
+}
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='chatForm')return;
+  e.preventDefault();
+  if(!session){ui.authMode='login';openAuth();return}
+  const inp=$('#chatIn'),txt=inp.value.trim(),er=$('#chatErr');
+  if(!txt||chat.sending)return;
+  chat.sending=true;er.textContent='';
+  try{const m=await rpc('chat_envoyer',{p_token:session.token,p_texte:txt});
+    inp.value='';ui.chatDraft='';
+    await chatPoll();if(m&&!chat.msgs.some(x=>x.id===m.id)){chat.msgs.push(m);chat.last=Math.max(chat.last,m.id)}
+    const el=document.getElementById('chatList');if(el)el.dataset.ready='';renderChatList();markChatSeen();
+  }catch(err){er.textContent=CHAT_ERR[err.code]||(/function|404|PGRST/i.test(err.message||'')?'Le chat n\'est pas encore activé.':'Envoi impossible, réessayez.');if(err.code==='session')logout(ERR.session)}
+  chat.sending=false;inp.focus();
+});
+document.addEventListener('input',e=>{if(e.target.id==='chatIn')ui.chatDraft=e.target.value});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')chatSoon()});
+
 function renderBoard(){
   const b=ui.board;
   let body;
@@ -1062,7 +1153,7 @@ function renderBoard(){
   return '<h2 class="h2">Classement</h2><p class="sub2">Les joueurs avec le plus de diamants. Mis à jour quand chacun joue.</p>'+body;
 }
 function renderView(){
-  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='classement'?renderBoard():ui.tab==='live'?renderLive():renderRules();
+  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='classement'?renderBoard():ui.tab==='chat'?renderSocial():ui.tab==='live'?renderLive():renderRules();
 }
 
 /* --- Installation de l'appli (PWA) --- */
@@ -1153,7 +1244,7 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show'
 document.addEventListener('click',e=>{
   const t=e.target.closest('button,label');if(!t)return;
   const d=t.dataset;
-  if(d.tab){if(session)closeAuth();ui.tab=d.tab;if(d.tab==='classement')loadBoard();renderHeader();renderView();window.scrollTo({top:0});return}
+  if(d.tab){if(session)closeAuth();ui.tab=d.tab;if(d.tab==='classement')loadBoard();if(d.tab==='chat'){if(ui.social==='board')loadBoard();chatSoon()}renderHeader();renderView();window.scrollTo({top:0});return}
   if(d.auth){ui.authMode=d.auth;openAuth();return}
   if(t.id==='userBtn'){ui.authMode=session?'menu':'login';openAuth();return}
   if(t.id==='doLogout'){ui.authMode='login';logout();return}
@@ -1168,6 +1259,7 @@ document.addEventListener('click',e=>{
   if(d.sel){const[id,mk,opt]=d.sel.split('|');toggleSel(id,mk,opt);return}
   if(d.open){ui.open=ui.open===d.open?null:d.open;renderView();return}
   if(d.go){ui.tab='matchs';ui.sport=d.go;ui.comp='all';renderHeader();renderView();window.scrollTo({top:0});return}
+  if(d.social){ui.social=d.social;if(d.social==='board')loadBoard();renderView();if(d.social==='chat')chatSoon();return}
   if(d.sport){ui.sport=d.sport;ui.open=null;ui.comp='all';renderView();return}
   if(d.comp){ui.comp=d.comp;renderView();return}
   if(d.bf){ui.betFilter=d.bf;renderView();return}
@@ -1202,7 +1294,7 @@ function tick(force){
   const a=daily(),b=settle();
   if(a||b)save();
   renderHeader();
-  const focused=document.activeElement&&document.activeElement.matches('input');
+  const focused=(document.activeElement&&document.activeElement.matches('input'))||(ui.tab==='chat'&&ui.social==='chat');
   if(!focused){renderView();renderSlip()}
 }
 tick(true);
@@ -1210,6 +1302,7 @@ loadFixtures();
 setInterval(()=>tick(false),20000);
 setInterval(loadFixtures,3*60*1000);
 if(session)refreshFromServer();else openAuth();
+chatSoon();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){loadFixtures();refreshFromServer()}});
 </script>
 </body>
