@@ -1,6 +1,7 @@
 // PronoClub — fonction « notifier » (Supabase Edge Function)
 // Appelée chaque minute par Supabase (pg_cron). Elle prépare les notifications prévues
 // (pari terminé, défi du jour, série en danger) puis envoie la file d'attente sur les téléphones.
+// Toutes les 5 minutes, elle règle aussi les paris terminés des joueurs absents.
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -42,6 +43,107 @@ async function ajouter(jid: number, type: string, titre: string, texte: string, 
   await db.from("notifs").insert({ joueur_id: jid, type, titre: titre.slice(0, 80), texte: texte.slice(0, 180), url });
 }
 
+
+// ---------- Règlement des paris côté serveur ----------
+// Les paris des joueurs qui ne sont pas connectés sont réglés ici (gagné / perdu / remboursé),
+// avec exactement les mêmes règles que l'appli : le code des marchés est repris du site lui-même.
+let engine: any = null, engineT = 0;
+async function moteur() {
+  if (engine && Date.now() - engineT < 3600e3) return engine;
+  const html = await (await fetch(SITE + "index.html?t=" + Date.now())).text();
+  const cut = (a: string, b: string) => { const i = html.indexOf(a), j = html.indexOf(b, i); if (i < 0 || j < 0) throw new Error("extraction " + a); return html.slice(i, j); };
+  const src = cut("function pois(", "\n") + "\n" + cut("function weekId(", "\n") + "\n" + cut("const MARKETS=", "\nconst DEFI_GAIN") + "\n" +
+    cut("/* ---------- Sports et marchés", "function findMatch") + "\nreturn {FIX,build,SPORTS,weekId};";
+  engine = new Function(src)(); engineT = Date.now();
+  return engine;
+}
+const DEFI_GAIN = 300;
+async function regler(prefs: Map<number, Record<string, boolean>>) {
+  const E = await moteur();
+  const now = paris();
+  const [y, mo, d] = now.day.split("-").map(Number);
+  const semaine = E.weekId(new Date(y, mo - 1, d));
+  const limite = new Date(Date.now() - 10 * 60e3).toISOString(); // joueurs absents depuis 10 min (les autres règlent eux-mêmes dans l'appli)
+  const { data: js, error } = await db.from("joueurs").select("id,etat,maj_le")
+    .filter("etat->bets", "cs", '[{"status":"pending"}]').lt("maj_le", limite).limit(500);
+  if (error) { console.error("regler", error); return; }
+  const built = new Set<string>();
+  const match = async (mid: string) => {
+    const k = mid.indexOf("_"), day = mid.slice(0, k);
+    if (!built.has(day)) { built.add(day); const arr = await fixtures(day); if (Array.isArray(arr) && arr.length) E.build(day, arr); }
+    return (E.FIX[day] || []).find((m: any) => m.id === mid) || null;
+  };
+  const opt = (m: any, mk: string, o: string) => {
+    const K = E.SPORTS[m.sp].markets(m).find((x: any) => x.key === mk);
+    return K ? K.opts(m).find((x: any) => x.id === o) || null : null;
+  };
+  for (const j of js || []) {
+    const e = j.etat || {};
+    if (!Array.isArray(e.bets)) continue;
+    e.stats = e.stats || { won: 0, lost: 0, earned: 0, best: 0 };
+    let ch = false;
+    const msgs: string[] = [];
+    for (const b of e.bets) {
+      if (b.status !== "pending" || !Array.isArray(b.sels) || !b.sels.length) continue;
+      const ms: any[] = [];
+      for (const s of b.sels) ms.push(await match(String(s.matchId)));
+      if (ms.some((m) => !m || (!m.s && !m.x))) continue;
+      let won = true, odds = 1, allVoid = true;
+      b.sels.forEach((s: any, i: number) => {
+        const m = ms[i];
+        if (m.x) { s.void = true; return; }
+        allVoid = false;
+        const o = opt(m, s.mk, s.opt);
+        if (!(o && o.fn(m.s[0], m.s[1], m.s[2]))) won = false; else odds *= s.odds;
+      });
+      if (b.boost) odds *= 1.1;
+      const quoi = b.sels.length > 1 ? `Ton combiné de ${b.sels.length} matchs` : (b.sels[0].match || "Ton pari");
+      if (allVoid) {
+        b.status = "void"; b.payout = b.stake; e.diamonds = (e.diamonds || 0) + b.stake;
+        msgs.push(`↩️ ${quoi} : match annulé, mise rendue (${b.stake} 💎)`);
+      } else if (won) {
+        b.odds = Math.round(odds * 100) / 100; b.status = "won"; b.payout = Math.round(b.stake * b.odds);
+        e.diamonds = (e.diamonds || 0) + b.payout;
+        e.stats.won++; e.stats.earned += b.payout; e.stats.best = Math.max(e.stats.best || 0, b.odds);
+        if (e.week && e.week.id === semaine) e.week.earned = (e.week.earned || 0) + b.payout;
+        msgs.push(`🎉 ${quoi} : gagné ! +${b.payout} 💎`);
+      } else {
+        b.status = "lost"; b.payout = 0; e.stats.lost++;
+        if (b.shield) { b.refund = b.stake; e.diamonds = (e.diamonds || 0) + b.stake; }
+        msgs.push(`❌ ${quoi} : perdu${b.shield ? " (assuré : mise rendue)" : ""}`);
+      }
+      b.settledAt = Date.now(); b.server = true; ch = true;
+      (b as any)._notif = msgs[msgs.length - 1];
+    }
+    for (const dd of e.defis || []) {
+      if (dd.status !== "pending") continue;
+      const m = await match(String(dd.matchId));
+      if (!m) continue;
+      if (m.x) { dd.status = "void"; ch = true; }
+      else if (m.s) {
+        const o = opt(m, dd.mk, dd.opt);
+        if (o && o.fn(m.s[0], m.s[1], m.s[2])) {
+          dd.status = "won"; e.diamonds = (e.diamonds || 0) + DEFI_GAIN;
+          if (e.week && e.week.id === semaine) e.week.earned = (e.week.earned || 0) + DEFI_GAIN;
+        } else dd.status = "lost";
+        ch = true;
+      }
+    }
+    if (!ch) continue;
+    const notifs = e.bets.filter((b: any) => b._notif).map((b: any) => { const n = { id: b.id, t: b._notif }; delete b._notif; return n; });
+    e.updated = Date.now();
+    const row: Record<string, unknown> = { etat: e, diamants: Math.round(e.diamonds || 0), gagnes: e.stats.won || 0 };
+    // Verrou : si le joueur s'est reconnecté entre-temps (maj_le a changé), on ne touche à rien.
+    let { data: ok, error: err } = await db.from("joueurs").update({ ...row, hebdo: e.week && e.week.id === semaine ? Math.round(e.week.earned || 0) : 0 })
+      .eq("id", j.id).eq("maj_le", j.maj_le).select("id");
+    if (err) ({ data: ok, error: err } = await db.from("joueurs").update(row).eq("id", j.id).eq("maj_le", j.maj_le).select("id"));
+    if (err || !ok || !ok.length) continue;
+    if ((prefs.get(j.id) || {}).paris) {
+      for (const n of notifs) if (await marquer(j.id, "pari:" + n.id)) await ajouter(j.id, "paris", "🏁 Ton pari est terminé !", n.t, "?paris");
+    }
+  }
+}
+
 async function preparer() {
   const { data: subs } = await db.from("abonnements").select("joueur_id,prefs");
   const prefs = new Map<number, Record<string, boolean>>();
@@ -50,6 +152,7 @@ async function preparer() {
     for (const [k, v] of Object.entries(s.prefs || {})) if (v === true) p[k] = true;
     prefs.set(s.joueur_id, p);
   }
+  if (paris().min % 5 === 0) { try { await regler(prefs); } catch (e) { console.error("regler", e); } }
   const ids = [...prefs.keys()];
   if (!ids.length) return;
   const { data: js } = await db.from("joueurs").select("id,pseudo,etat").in("id", ids);
