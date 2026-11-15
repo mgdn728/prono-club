@@ -73,3 +73,33 @@ $$;
 
 grant execute on function public.inscription(text, text), public.connexion(text, text),
   public.charger(uuid), public.sauver(uuid, jsonb), public.classement() to anon, authenticated;
+
+-- Profil public d'un joueur (clic sur un pseudo dans le classement)
+create or replace function public.profil(p_pseudo text)
+returns json language plpgsql security definer set search_path = public as $$
+declare j public.joueurs; e jsonb; auj date; der date; n int;
+begin
+  select * into j from public.joueurs where lower(pseudo) = lower(trim(p_pseudo));
+  if not found then return null; end if;
+  e := coalesce(j.etat, '{}'::jsonb);
+  auj := (now() at time zone 'Europe/Paris')::date;
+  der := nullif(e->'streak'->>'last', '')::date;
+  n := coalesce((e->'streak'->>'n')::int, 0);
+  if der is null or der < auj - 1 then n := 0; end if;  -- série cassée si pas venu hier ni aujourd'hui
+  return json_build_object(
+    'pseudo', j.pseudo,
+    'depuis', j.cree_le,
+    'diamants', j.diamants,
+    'hebdo', case when e->'week'->>'id' = to_char(now() at time zone 'Europe/Paris', 'IYYY-"W"IW')
+                  then coalesce((e->'week'->>'earned')::numeric, 0) else 0 end,
+    'gagnes', coalesce((e->'stats'->>'won')::int, 0),
+    'perdus', coalesce((e->'stats'->>'lost')::int, 0),
+    'en_cours', (select count(*) from jsonb_array_elements(coalesce(e->'bets', '[]'::jsonb)) b where b->>'status' = 'pending'),
+    'total', coalesce((e->'stats'->>'won')::int, 0) + coalesce((e->'stats'->>'lost')::int, 0)
+             + (select count(*) from jsonb_array_elements(coalesce(e->'bets', '[]'::jsonb)) b where b->>'status' in ('pending', 'void')),
+    'meilleure_cote', nullif((e->'stats'->>'best')::numeric, 0),
+    'serie', n,
+    'deco', json_build_object('t', e->>'title', 'c', e->>'nameFx', 'f', e->>'frame')
+  );
+end $$;
+grant execute on function public.profil(text) to anon, authenticated;
