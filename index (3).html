@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PronoClub — Paris sportifs gratuits</title>
+<meta name="theme-color" content="#e5126b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PronoClub">
+<meta name="description" content="Paris sportifs gratuits sur les vrais matchs : 1 000 pièces par jour, des diamants à gagner et un classement entre amis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e13;--panel:#111821;--card:#161f2a;--card2:#1c2734;--line:#253244;
+  --text:#e9eff6;--muted:#8796a8;--acc:#1fd47e;--acc-ink:#04130b;--coin:#f6c445;--dia:#62c6ff;--bad:#ff5d6c;
+  --r:14px;
+}
+body.theme-gold{--acc:#f2b632;--acc-ink:#1a1200}
+body.theme-purple{--acc:#a983ff;--acc-ink:#12082a}
+body.theme-red{--acc:#ff5a5f;--acc-ink:#220405}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:15px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:disabled{cursor:not-allowed}
+input{font:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+
+/* header */
+header{padding-top:env(safe-area-inset-top);position:sticky;top:0;z-index:20;background:rgba(10,14,19,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;gap:14px;height:62px}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.brand i{font-style:normal;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--acc);color:var(--acc-ink);font-size:17px}
+.brand span{color:var(--acc)}
+.title-chip{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;border:1px solid var(--acc);color:var(--acc);white-space:nowrap}
+.bal{margin-left:auto;display:flex;gap:8px}
+.pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);padding:7px 12px;border-radius:99px;font-weight:700;white-space:nowrap}
+.pill.coin b{color:var(--coin)} .pill.dia b{color:var(--dia)}
+.pill small{color:var(--muted);font-weight:500}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav button{padding:11px 14px;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}
+nav button.on{color:var(--text);border-color:var(--acc)}
+nav .badge{background:var(--acc);color:var(--acc-ink);border-radius:99px;font-size:11px;padding:1px 6px;margin-left:4px}
+
+/* layout */
+main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padding:20px 0 120px}
+.reset-note{color:var(--muted);font-size:13px;margin:0 0 14px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{padding:7px 12px;border-radius:8px;color:var(--muted);font-weight:600;font-size:14px}
+.seg button.on{background:var(--card2);color:var(--text)}
+.chip{padding:7px 12px;border-radius:99px;border:1px solid var(--line);color:var(--muted);font-weight:600;font-size:13px;background:var(--panel)}
+.chip.on{border-color:var(--acc);color:var(--text);background:color-mix(in srgb,var(--acc) 14%,transparent)}
+
+/* match */
+.match{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:14px;padding:14px;align-items:center}
+.mmeta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);margin-bottom:8px}
+.st{font-weight:700;padding:2px 7px;border-radius:6px;background:var(--card2);color:var(--text)}
+.st.live{background:var(--bad);color:#fff}
+.st.done{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.teams{display:grid;gap:4px;font-weight:600}
+.teams div{display:flex;justify-content:space-between;gap:10px}
+.teams .sc{font-weight:800;min-width:18px;text-align:right}
+.teams .win{color:var(--acc)}
+.quick{display:grid;grid-template-columns:repeat(3,78px);gap:6px}
+.odd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 6px;min-height:50px;transition:.12s}
+.odd span{font-size:11px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.odd b{font-size:15px}
+.odd:hover:not(:disabled){border-color:var(--acc)}
+.odd.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.odd.on span{color:var(--acc-ink)}
+.odd:disabled{opacity:.4}
+.odd.wonopt{border-color:var(--acc);opacity:1}
+.mfoot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:8px 14px}
+.link{color:var(--acc);font-weight:600;font-size:13px;padding:4px 0}
+.ghost{font-size:12px;color:var(--muted);font-weight:600;padding:5px 9px;border:1px dashed var(--line);border-radius:8px}
+.ghost:hover{color:var(--text);border-color:var(--muted)}
+.markets{border-top:1px solid var(--line);padding:6px 14px 14px;background:color-mix(in srgb,var(--panel) 60%,var(--bg))}
+.mk{margin-top:12px}
+.mk h4{margin:0 0 7px;font-size:13px;color:var(--muted);font-weight:600}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px}
+.opts.cs{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
+
+/* slip */
+aside{position:sticky;top:120px;align-self:start}
+.slip{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.slip-h{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid var(--line);font-weight:800}
+.slip-h .x{display:none;font-size:22px;color:var(--muted)}
+.slip-b{padding:12px 14px;max-height:calc(100vh - 330px);overflow:auto}
+.empty{color:var(--muted);text-align:center;padding:28px 10px;font-size:14px;line-height:1.5}
+.sel{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 11px;margin-bottom:8px}
+.sel .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.sel .pick{font-weight:700}
+.sel .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.sel .o{font-weight:800;color:var(--acc)}
+.sel .rm{color:var(--muted);font-size:18px;line-height:1;margin-left:6px}
+.stake{display:flex;align-items:center;gap:8px;margin-top:8px}
+.stake input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:8px 10px;font-weight:700}
+.stake input:focus{outline:none;border-color:var(--acc)}
+.stake .g{font-size:12px;color:var(--muted);white-space:nowrap}
+.quickstake{display:flex;gap:5px;margin-top:7px}
+.quickstake button{flex:1;font-size:12px;font-weight:700;padding:5px 0;border-radius:7px;background:var(--card2);color:var(--muted)}
+.quickstake button:hover{color:var(--text)}
+.slip-f{border-top:1px solid var(--line);padding:12px 14px}
+.row{display:flex;justify-content:space-between;font-size:14px;margin:4px 0}
+.row .v{font-weight:700}
+.row.big .v{color:var(--dia);font-size:17px}
+.extras{display:grid;gap:6px;margin:8px 0}
+.extras label{display:flex;gap:8px;align-items:center;font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 9px;cursor:pointer}
+.extras label.off{opacity:.45;cursor:not-allowed}
+.btn{width:100%;background:var(--acc);color:var(--acc-ink);font-weight:800;padding:13px;border-radius:11px;font-size:15px;margin-top:8px}
+.btn:disabled{opacity:.45}
+.err{color:var(--bad);font-size:13px;margin-top:6px;min-height:1px}
+.fab{display:none}
+
+/* bets & shop */
+.h2{font-size:20px;font-weight:800;margin:0 0 4px}
+.sub2{color:var(--muted);margin:0 0 16px;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat small{color:var(--muted);font-size:12px}
+.stat b{display:block;font-size:20px;margin-top:3px}
+.bet{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.bet .bh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.tag{font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px}
+.tag.pending{background:var(--card2);color:var(--muted)}
+.tag.won{background:color-mix(in srgb,var(--acc) 20%,transparent);color:var(--acc)}
+.tag.lost{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+.bl{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-top:1px dashed var(--line)}
+.bl:first-of-type{border-top:0}
+.bl .s{color:var(--muted);font-size:12px}
+.mark{font-weight:800}
+.mark.ok{color:var(--acc)} .mark.ko{color:var(--bad)}
+.bf{display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:var(--muted)}
+.bf b{color:var(--text)}
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px}
+.item .ic{font-size:30px}
+.item h3{margin:0;font-size:16px}
+.item p{margin:0;color:var(--muted);font-size:13px;line-height:1.45;flex:1}
+.item .cost{font-weight:800;color:var(--dia)}
+.item button{background:var(--card2);border:1px solid var(--line);padding:10px;border-radius:10px;font-weight:700}
+.item button.buy{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.item button:disabled{opacity:.45}
+.item .own{font-size:12px;color:var(--acc);font-weight:700}
+.sec{font-size:14px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:22px 0 10px}
+.rules{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;line-height:1.6}
+.rules h3{margin:18px 0 6px}
+.rules h3:first-child{margin-top:0}
+.rules ul{margin:0;padding-left:20px}
+.disc{color:var(--muted);font-size:13px;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:var(--card2);border:1px solid var(--line);padding:12px 18px;border-radius:12px;font-weight:700;z-index:60;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr}
+  aside{position:fixed;inset:auto 0 0 0;top:auto;z-index:50;transform:translateY(105%);transition:.25s}
+  aside.open{transform:none}
+  .slip{border-radius:18px 18px 0 0;max-height:85vh;display:flex;flex-direction:column}
+  .slip-b{max-height:none;flex:1}
+  .slip-h .x{display:block}
+  .fab{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;background:var(--acc);color:var(--acc-ink);border-radius:14px;padding:14px 16px;font-weight:800;justify-content:space-between;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .fab.hide{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .hbar{gap:8px}
+  .brand{font-size:17px}
+  .title-chip{display:none}
+  .pill{padding:6px 9px;font-size:14px}
+  .pill small{display:none}
+  .mrow{grid-template-columns:1fr}
+  .quick{grid-template-columns:repeat(3,1fr)}
+}
+
+/* comptes */
+.pill.user{cursor:pointer;color:var(--text)}
+.pill.user:hover{border-color:var(--acc)}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(5,8,12,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.auth{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px}
+.auth .brand{justify-content:center;font-size:24px;margin-bottom:6px}
+.auth p.lead{text-align:center;color:var(--muted);margin:0 0 18px;font-size:14px;line-height:1.5}
+.auth .seg{margin-bottom:16px}
+.auth .seg button{flex:1}
+.auth label{display:block;font-size:13px;color:var(--muted);font-weight:600;margin:10px 0 5px}
+.auth input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px 12px;font-size:15px}
+.auth input:focus{outline:none;border-color:var(--acc)}
+.auth .hint{font-size:12px;color:var(--muted);margin-top:5px}
+.auth .err{text-align:center;margin-top:10px}
+.auth .menu{display:grid;gap:8px;margin-top:8px}
+.auth .menu button{background:var(--card2);border:1px solid var(--line);padding:11px;border-radius:10px;font-weight:700}
+.board{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.brow{display:grid;grid-template-columns:44px 1fr auto auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.brow:first-child{border-top:0}
+.brow .rk{font-weight:800;color:var(--muted);text-align:center}
+.brow.me{background:color-mix(in srgb,var(--acc) 12%,transparent)}
+.brow .d{font-weight:800;color:var(--dia)}
+.brow .w{color:var(--muted);font-size:13px}
+.install{display:flex;align-items:center;gap:12px;background:color-mix(in srgb,var(--acc) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--acc) 45%,var(--line));border-radius:var(--r);padding:12px 14px;margin-bottom:14px}
+.install img{width:40px;height:40px;border-radius:10px}
+.install div{flex:1;font-size:14px;line-height:1.4}
+.install .go{background:var(--acc);color:var(--acc-ink);font-weight:800;padding:9px 14px;border-radius:10px;white-space:nowrap}
+.install .no{color:var(--muted);font-size:20px;padding:0 4px}
+.ios-steps{text-align:left;line-height:1.7;margin:0 0 14px;padding-left:20px}
+
+/* ===== Thème « rouge sport » ===== */
+:root{
+  --bg:#eef0f4;--panel:#ffffff;--card:#f3f4f7;--card2:#e7e9ee;--line:#dde1e8;
+  --text:#121722;--muted:#687285;--acc:#e0182d;--acc-ink:#ffffff;--coin:#c88a00;--dia:#1a73d9;--bad:#e0182d;
+  --head:#161b26;--head2:#202736;--good:#14a05a;
+}
+body.theme-gold{--acc:#d99a00;--acc-ink:#1a1200}
+body.theme-purple{--acc:#7b3fe4;--acc-ink:#fff}
+body.theme-red{--acc:#b30f22;--acc-ink:#fff}
+header{background:var(--head);border-bottom:0;box-shadow:0 2px 0 var(--acc)}
+header .brand,header .pill{color:#fff}
+header .brand span{color:var(--acc)}
+.brand i{background:var(--acc);color:#fff}
+header .pill,header .pill.user{background:var(--head2);border-color:#2c3446;color:#fff}
+header .pill.coin b{color:#ffc93c} header .pill.dia b{color:#6cc0ff}
+header .pill small{color:#9aa4b8}
+header .title-chip{border-color:#fff;color:#fff}
+nav#nav button{color:#a8b1c3}
+nav#nav button.on{color:#fff;border-color:var(--acc)}
+.modal{background:rgba(18,23,34,.7)}
+.auth .brand{color:var(--text)}
+.toast{background:var(--head);color:#fff;border-color:var(--head)}
+.hero{background:linear-gradient(110deg,var(--acc),color-mix(in srgb,var(--acc) 55%,#5a0010));color:#fff;border-radius:var(--r);padding:16px 18px;margin-bottom:14px}
+.hero b{display:block;font-size:17px}
+.hero span{font-size:13px;opacity:.9}
+.toolbar{gap:10px}
+.chips-m{display:none;gap:8px;overflow-x:auto;width:100%;padding-bottom:2px}
+.chips-m .chip{white-space:nowrap}
+.mlayout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:start}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px;position:sticky;top:120px}
+.side-h{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 10px}
+.side button{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;padding:9px 10px;border-radius:9px;font-weight:600;font-size:14px}
+.side button:hover{background:var(--card)}
+.side button.on{background:color-mix(in srgb,var(--acc) 10%,transparent);color:var(--acc)}
+.side small{background:var(--card2);color:var(--muted);border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700}
+.grp{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.grp-h{display:grid;grid-template-columns:minmax(0,1fr) 258px 44px;align-items:center;gap:8px;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line);font-weight:800;font-size:14px}
+.grp-h .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;color:var(--muted);font-size:12px}
+.grp-h .cols i{font-style:normal}
+.mrow2{display:grid;grid-template-columns:58px minmax(0,1fr) 258px 44px;gap:8px;align-items:center;padding:9px 12px;border-top:1px solid var(--line)}
+.grp .mrow2:nth-child(2){border-top:0}
+.mrow2.open{background:color-mix(in srgb,var(--acc) 4%,transparent)}
+.when{font-size:12px;text-align:center;line-height:1.25}
+.when .st{background:transparent;color:var(--text);font-weight:700;padding:0}
+.when .st.live{background:var(--acc);color:#fff;padding:2px 6px;border-radius:5px}
+.when .st.done{border:0;color:var(--muted);font-size:11px}
+.tm{display:grid;gap:3px;text-align:left;min-width:0;font-weight:600;font-size:14px}
+.tm span{display:flex;justify-content:space-between;gap:8px}
+.tm i{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm .sc{min-width:16px;text-align:right}
+.tm .sc.win{color:var(--acc)}
+.tm em{font-style:normal;font-size:11px;color:var(--acc);font-weight:700}
+.tm:hover i{color:var(--acc)}
+.q3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.odd{background:var(--card);border:1px solid var(--line);border-radius:8px;min-height:44px;padding:5px 4px}
+.q3 .odd span{display:none}
+.odd b{font-size:15px;color:var(--text)}
+.odd:hover:not(:disabled){border-color:var(--acc);background:#fff}
+.odd.on{background:var(--acc);border-color:var(--acc)}
+.odd.on b,.odd.on span{color:#fff}
+.odd.wonopt{border-color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}
+.more{height:44px;border-radius:8px;background:var(--card);border:1px solid var(--line);font-size:12px;font-weight:800;color:var(--muted)}
+.more:hover{color:var(--acc);border-color:var(--acc)}
+.markets{background:var(--card);border-top:1px solid var(--line)}
+.opts .odd span{display:block}
+.slip{box-shadow:0 6px 24px rgba(18,23,34,.08)}
+.slip-h{background:var(--head);color:#fff;border-bottom:0}
+.slip-h .x{color:#fff}
+.sel .o{color:var(--acc)}
+.btn{background:var(--acc);color:#fff}
+.row.big .v{color:var(--dia)}
+.tag.won{color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
+.mark.ok{color:var(--good)}
+.chip.on{border-color:var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,#fff)}
+.seg button.on{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg{background:var(--card2)}
+.fab{background:var(--acc);color:#fff}
+.item button.buy{color:#fff}
+.install .go{color:#fff}
+@media (max-width:900px){main{grid-template-columns:minmax(0,1fr)}}
+.odd.on,.odd.on:hover:not(:disabled){background:var(--acc);border-color:var(--acc)}
+.odd.on:hover b{color:#fff}
+@media (max-width:1100px){.mlayout{grid-template-columns:minmax(0,1fr)}.side{display:none}.chips-m{display:flex}}
+@media (max-width:560px){
+  .grp-h{grid-template-columns:minmax(0,1fr) 186px 34px;padding:9px 10px}
+  .mrow2{grid-template-columns:44px minmax(0,1fr) 186px 34px;gap:6px;padding:8px 10px}
+  .tm{font-size:13px}
+  .odd{min-height:40px}.odd b{font-size:14px}
+  .more{height:40px;font-size:11px}
+}
+@media (max-width:400px){
+  .grp-h{grid-template-columns:minmax(0,1fr) 168px 30px}
+  .mrow2{grid-template-columns:40px minmax(0,1fr) 168px 30px}
+}
+
+/* ===== Cartes de match aérées + onglets par sport ===== */
+.sports{display:flex;gap:8px;overflow-x:auto;margin:0 -2px 14px;padding:2px 2px 4px;scrollbar-width:none}
+.sports::-webkit-scrollbar{display:none}
+.sports button{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:11px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--line);font-weight:700;font-size:15px;box-shadow:0 1px 2px rgba(18,23,34,.05)}
+.sports .si{font-size:18px}
+.sports small{background:var(--card2);color:var(--muted);border-radius:99px;padding:1px 8px;font-size:11px;font-weight:800}
+.sports button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.sports button.on small{background:rgba(255,255,255,.25);color:#fff}
+.comps{display:flex;gap:8px;overflow-x:auto;margin-bottom:4px;padding-bottom:4px;scrollbar-width:none}
+.comps::-webkit-scrollbar{display:none}
+.comps .chip{white-space:nowrap;flex:0 0 auto}
+.day{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:20px 4px 10px}
+.mc{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(18,23,34,.05)}
+.mc.open{border-color:color-mix(in srgb,var(--acc) 40%,var(--line))}
+.mc-h{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.mc-h .st{font-weight:700;color:var(--text);background:none;padding:0;border:0}
+.mc-h .st.live{color:var(--acc)}
+.mc-h .st.done{color:var(--muted)}
+.mc-b{margin-left:auto;color:var(--acc);font-weight:700}
+.mc-t{display:grid;gap:7px;width:100%;text-align:left;font-size:16px;font-weight:700;margin-bottom:14px}
+.mc-t span{display:flex;justify-content:space-between;gap:10px}
+.mc-t i{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mc-t .sc{font-size:17px}
+.mc-t .sc.win{color:var(--acc)}
+.mc-t:hover i{color:var(--acc)}
+.mc-o{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mc-o.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mc-o .odd{flex-direction:row;justify-content:space-between;align-items:center;padding:0 14px;min-height:50px;border-radius:12px}
+.mc-o .odd span{display:block;font-size:13px;color:var(--muted);font-weight:800}
+.mc-o .odd b{font-size:16px}
+.mc-o .odd.on span{color:#fff}
+.mc-m{display:block;width:100%;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--acc);text-align:center}
+.mc .markets{margin:12px -16px -14px;padding:2px 16px 16px;border-radius:0 0 16px 16px}
+.mc .markets .mk h4{color:var(--text);font-size:13.5px}
+.opts{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.opts .odd{min-height:52px;border-radius:10px}
+.opts .odd span{font-size:12px;white-space:normal;text-align:center;line-height:1.25}
+.hero{display:flex;flex-direction:column;gap:2px}
+@media (max-width:420px){
+  .mc{padding:12px 13px}
+  .mc .markets{margin:12px -13px -12px;padding:2px 13px 14px}
+  .mc-o .odd{padding:0 10px;min-height:48px}
+  .mc-o .odd b{font-size:15px}
+  .sports button{padding:10px 13px;font-size:14px}
+}
+
+/* ===== Interface « pro » colorée ===== */
+:root{--bg:#edf0f5;--head:#0f1624;--head2:#1c2436}
+body{background:linear-gradient(180deg,#e3e8f1 0,#edf0f5 260px) fixed}
+header{background:linear-gradient(100deg,#0f1624 0%,#1a2236 60%,#2a1220 100%);box-shadow:0 3px 0 var(--acc),0 8px 24px rgba(15,22,36,.25)}
+.brand{letter-spacing:-.6px}
+.brand i{background:linear-gradient(135deg,#ff3b4d,#b3001b);box-shadow:0 4px 12px rgba(224,24,45,.45)}
+header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);backdrop-filter:blur(4px)}
+/* onglets de sport */
+.sports button{gap:9px;padding:8px 14px 8px 8px;border-radius:999px;border-color:transparent;background:#fff;box-shadow:0 2px 6px rgba(15,22,36,.07)}
+.sports .si{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--sc) 16%,#fff);font-size:17px}
+.sports button.on{background:var(--sc);border-color:var(--sc);color:#fff;box-shadow:0 6px 16px color-mix(in srgb,var(--sc) 40%,transparent)}
+.sports button.on .si{background:rgba(255,255,255,.22)}
+/* bannière */
+.hero{position:relative;overflow:hidden;background:radial-gradient(circle at 92% 20%,rgba(255,214,90,.55) 0,transparent 32%),radial-gradient(circle at 75% 120%,rgba(255,255,255,.18) 0,transparent 40%),linear-gradient(115deg,#e0182d 0%,#b5102a 55%,#6d0a2c 100%);padding:18px 20px;border-radius:18px;box-shadow:0 10px 24px rgba(224,24,45,.25)}
+.hero::after{content:"🪙";position:absolute;right:18px;top:50%;transform:translateY(-50%) rotate(-12deg);font-size:46px;opacity:.9;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+.hero b{font-size:18px;padding-right:56px}
+.hero span{padding-right:56px}
+/* à la une */
+.feat-h{display:flex;align-items:baseline;gap:10px;margin:4px 4px 10px}
+.feat-h b{font-size:17px}
+.feat-h span{font-size:12.5px;color:var(--muted)}
+.feat{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 14px;margin:0 -2px 6px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.feat::-webkit-scrollbar{display:none}
+.fc{flex:0 0 268px;scroll-snap-align:start;border-radius:18px;padding:14px;color:#fff;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.22) 0,transparent 45%),linear-gradient(140deg,var(--sc) 0%,color-mix(in srgb,var(--sc) 55%,#0f1624) 100%);box-shadow:0 10px 22px color-mix(in srgb,var(--sc) 30%,transparent)}
+.fc-h{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;font-weight:700;opacity:.92;margin-bottom:10px}
+.fc-h span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fc-t{display:flex;align-items:center;gap:9px;margin:6px 0;font-size:15px}
+.fc-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fc-t .av{box-shadow:0 0 0 2px rgba(255,255,255,.5)}
+.fc-o{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.fc-o.two{grid-template-columns:repeat(2,1fr)}
+.fc .odd{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.25);min-height:44px;flex-direction:row;justify-content:space-between;padding:0 10px;border-radius:10px}
+.fc .odd span{display:block;color:rgba(255,255,255,.8);font-size:12px;font-weight:800}
+.fc .odd b{color:#fff;font-size:15px}
+.fc .odd:hover:not(:disabled){background:rgba(255,255,255,.28);border-color:#fff}
+.fc .odd.on,.fc .odd.on:hover:not(:disabled){background:#fff;border-color:#fff}
+.fc .odd.on b,.fc .odd.on span{color:var(--sc)}
+/* avatars d'équipe */
+.av{flex:0 0 auto;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;font-size:11px;font-weight:800;letter-spacing:-.3px;color:#fff;background:linear-gradient(135deg,hsl(var(--h) 70% 52%),hsl(calc(var(--h) + 30) 70% 38%))}
+/* cartes de match */
+.mc{position:relative;border:0;border-radius:18px;padding:14px 16px 12px 20px;box-shadow:0 2px 10px rgba(15,22,36,.06)}
+.mc::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--sc)}
+.mc.open{box-shadow:0 8px 26px rgba(15,22,36,.10)}
+.mc-c{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--sc) 12%,#fff);color:color-mix(in srgb,var(--sc) 75%,#0f1624);font-weight:700}
+.mc-h .st{font-size:12.5px}
+.mc-h .st.live{display:inline-flex;align-items:center;gap:6px;color:#fff;background:var(--acc);padding:3px 9px;border-radius:999px;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,24,45,.5)}50%{box-shadow:0 0 0 6px rgba(224,24,45,0)}}
+.mc-t span{align-items:center;justify-content:flex-start}
+.mc-t i{flex:1}
+.mc-o .odd{background:#f5f7fa;border-color:#e3e7ee}
+.mc-o .odd:hover:not(:disabled){background:#fff;border-color:var(--acc);box-shadow:0 3px 10px rgba(224,24,45,.12)}
+.odd.on,.odd.on:hover:not(:disabled){background:linear-gradient(135deg,#ff2a3f,#c50f25)!important;border-color:#c50f25!important;box-shadow:0 4px 12px rgba(224,24,45,.35)}
+.mc-m{color:color-mix(in srgb,var(--acc) 85%,#000)}
+.day{display:flex;align-items:center;gap:10px}
+.day::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#cfd6e2,transparent)}
+.chip{background:#fff;border-color:transparent;box-shadow:0 1px 4px rgba(15,22,36,.07);color:#3a4354}
+.chip.on{background:var(--head);color:#fff;border-color:var(--head)}
+/* coupon */
+.slip{border:0;border-radius:18px;box-shadow:0 10px 30px rgba(15,22,36,.12)}
+.slip-h{background:linear-gradient(110deg,#0f1624,#2a1220)}
+.btn{background:linear-gradient(135deg,#ff2a3f,#c50f25);box-shadow:0 6px 16px rgba(224,24,45,.3)}
+.mc-t span.av{display:inline-grid;place-items:center;gap:0;justify-content:center}
+/* barre de navigation du bas (mobile) */
+.bnav{display:none}
+@media (max-width:900px){
+  .bnav{grid-template-columns:repeat(6,1fr)!important}
+  #nav{display:none}
+  .fab{display:none!important}
+  main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+  /* coque d'appli : la page défile à l'intérieur, la barre du navigateur ne bouge plus et la barre du bas reste entière */
+  html{height:100%;overflow:hidden}
+  body{height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;background-attachment:scroll}
+  .bnav{transform:translateZ(0);will-change:transform}
+  .bnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;background:#fff;box-shadow:0 -6px 24px rgba(15,22,36,.10);padding:6px 4px calc(6px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0}
+  .bnav button{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;color:#7a8396;font-size:10.5px;font-weight:700}
+  .bnav button i{font-style:normal;font-size:21px;line-height:1.1;filter:grayscale(.6);opacity:.8}
+  .bnav button.on{color:var(--acc)}
+  .bnav button.on i{filter:none;opacity:1}
+  .bnav .slipbtn i{display:grid;place-items:center;width:50px;height:50px;margin-top:-26px;border-radius:50%;background:linear-gradient(135deg,#ff2a3f,#c50f25);filter:none;opacity:1;box-shadow:0 6px 16px rgba(224,24,45,.45);border:4px solid #fff;font-size:22px}
+  .bnav .slipbtn{color:var(--acc)}
+  .bdg{position:absolute;top:0;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--acc);color:#fff;font-size:11px;line-height:18px;font-style:normal}
+  .bnav .slipbtn .bdg{top:-24px;left:calc(50% + 12px);background:#0f1624}
+  .toast{bottom:96px}
+}
+@media (max-width:420px){.fc{flex-basis:240px}.hero::after{font-size:38px}}
+
+/* ===== Onglet Live ===== */
+.live-hero{background:linear-gradient(115deg,#0f1624,#3a0d1c);color:#fff;border-radius:18px;padding:16px 18px;margin-bottom:6px;display:flex;flex-direction:column;gap:4px;box-shadow:0 8px 22px rgba(15,22,36,.2)}
+.live-hero b{font-size:18px}
+.live-hero span{font-size:13px;opacity:.85;line-height:1.45}
+.day .cnt{background:var(--acc);color:#fff;border-radius:99px;padding:1px 8px;font-size:11px;letter-spacing:0}
+.lv-t{font-size:12px;color:var(--muted)}
+.lv .mc-t{margin-bottom:8px}
+.lv-b{margin-top:6px;padding:9px 12px;border-radius:12px;background:color-mix(in srgb,var(--acc) 8%,#fff);font-size:13px;color:#4a2028}
+.lv-r{margin:2px 0 6px;font-weight:700;color:var(--acc)}
+.lv-l{display:block;width:100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);text-align:center;font-size:13px;font-weight:700;color:var(--acc);text-decoration:none}
+.empty.small{padding:14px;font-size:13.5px;background:#fff;border-radius:14px}
+.bdg.live{background:#e0182d}
+
+/* ===== Chat ===== */
+.seg.social{display:flex;margin-bottom:12px}
+.seg.social button{flex:1}
+.chat{background:#fff;border-radius:18px;box-shadow:0 2px 10px rgba(15,22,36,.06);overflow:hidden;display:flex;flex-direction:column}
+.chat-h{padding:14px 16px;background:linear-gradient(110deg,#0f1624,#2a1220);color:#fff;display:flex;flex-direction:column;gap:2px}
+.chat-h span{font-size:12.5px;opacity:.8}
+.follow{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:10px 12px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
+.follow>b{font-size:13px;color:var(--text);margin-right:auto;white-space:nowrap}
+.follow a{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;color:#fff;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap}
+.follow a.ig{background:linear-gradient(45deg,#f9a03f,#e1306c 50%,#833ab4)}
+.follow a.tt{background:#111;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+@media(max-width:360px){.follow>b{display:none}.follow{justify-content:center}}
+.chat-list{height:min(56vh,520px);overflow-y:auto;padding:12px 12px 6px;background:#f4f6fa;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain}
+.chat-empty{margin:auto;text-align:center;color:var(--muted);font-size:14px;line-height:1.6;padding:20px}
+.chat-empty.small{margin:6px auto;padding:4px;font-size:12px}
+.cm{display:flex;gap:8px;align-items:flex-end;max-width:86%}
+.cm.same{margin-top:-3px}
+.cm .av{width:30px;height:30px;font-size:11px}
+.av-sp{flex:0 0 30px}
+.cm.me{align-self:flex-end;flex-direction:row-reverse}
+.cm.me .av-sp{display:none}
+.cb{background:#fff;border-radius:16px 16px 16px 6px;padding:7px 11px;box-shadow:0 1px 2px rgba(15,22,36,.08);min-width:0}
+.cm.me .cb{background:linear-gradient(135deg,#ff2a3f,#c50f25);color:#fff;border-radius:16px 16px 6px 16px}
+.cn{font-size:12px;font-weight:800;color:#3a4354;margin-bottom:2px}
+.cn small{font-weight:600;color:var(--muted);margin-left:4px}
+.cm.me .cn,.cm.me .cn small{color:rgba(255,255,255,.85)}
+.ct{font-size:14.5px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
+.chat-form input{flex:1;min-width:0;border:1px solid var(--line);background:#f4f6fa;border-radius:999px;padding:11px 16px;font-size:15px;color:var(--text)}
+.chat-form input:focus{outline:none;border-color:var(--acc);background:#fff}
+.chat-form button{flex:0 0 46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#ff2a3f,#c50f25);color:#fff;font-size:18px;box-shadow:0 4px 12px rgba(224,24,45,.3)}
+.chat .err{padding:0 14px}
+.chat-login{padding:12px}
+.chat-rules{margin:0;padding:8px 14px 12px;font-size:11.5px;color:var(--muted)}
+@media (max-width:900px){.chat-list{height:calc(100vh - 420px);min-height:260px}}
+
+/* ===== Thème 2026 : des couleurs partout ===== */
+:root{
+  --red:#ff1f3d;--pink:#e5126b;--violet:#6a2cf5;--indigo:#3b1fa8;--orange:#ff7a1a;--yellow:#ffc21a;--teal:#00c2a8;--blue:#1f7bff;--green:#18b85c;--ink:#0d1220;
+  --grad-main:linear-gradient(120deg,#ff1f3d 0%,#e5126b 48%,#6a2cf5 100%);
+  --acc:#e8143a;--bg:#f3f4f9;--line:#e4e7ef;--muted:#6b7385;--dia:#1f6fe0;
+  --sh:0 4px 14px rgba(13,18,32,.07);--sh2:0 12px 28px rgba(13,18,32,.14);
+}
+body.theme-gold{--grad-main:linear-gradient(120deg,#ffb000 0%,#ff7a1a 55%,#c2410c 100%);--acc:#e07a00}
+body.theme-purple{--grad-main:linear-gradient(120deg,#a855f7 0%,#6a2cf5 50%,#2b0f8a 100%);--acc:#7c3aed}
+body.theme-red{--grad-main:linear-gradient(120deg,#ff2d2d 0%,#c4001d 55%,#5c0011 100%);--acc:#d1001f}
+body{background:transparent!important}
+html{background-attachment:fixed!important;background:
+  radial-gradient(520px 380px at -5% -5%,rgba(255,31,61,.13),transparent 65%),
+  radial-gradient(560px 460px at 105% 8%,rgba(106,44,245,.13),transparent 65%),
+  radial-gradient(640px 460px at 40% 108%,rgba(0,194,168,.11),transparent 65%),
+  radial-gradient(420px 320px at 100% 70%,rgba(255,194,26,.10),transparent 65%),#f3f4f9}
+html{background-attachment:fixed}
+
+/* en-tête */
+header{background:var(--grad-main);box-shadow:0 8px 26px rgba(106,44,245,.28)}
+header::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(300px 120px at 85% 0,rgba(255,255,255,.22),transparent 70%)}
+.hbar{position:relative;z-index:1}
+.brand span{margin-left:-6px}
+.brand i{background:#fff!important;color:#e5126b;box-shadow:0 4px 14px rgba(0,0,0,.2)!important}
+header .brand span{color:#ffe14d}
+header .pill{background:rgba(255,255,255,.17)!important;border-color:rgba(255,255,255,.28)!important;color:#fff}
+header .pill.coin b{color:#ffe14d} header .pill.dia b{color:#c9ecff}
+header .pill.fire b{color:#ffe14d}
+.pill.user{gap:7px;padding:4px 12px 4px 4px}
+.pill.user .av,.pill.user .frm{width:28px;height:28px}
+.pill.user .frm .av{width:24px;height:24px;font-size:10px}
+.pill.user .av{font-size:11px}
+nav#nav{position:relative;z-index:1}
+nav#nav button{color:rgba(255,255,255,.78)}
+nav#nav button.on{color:#fff;border-color:#ffe14d}
+nav .badge{background:#ffe14d;color:#3b1fa8}
+@media (max-width:560px){.pill.fire{display:none!important}.pill.user .un{display:none}.pill.user{padding:4px}}
+
+/* invité */
+.guest{display:flex;gap:12px;align-items:center;justify-content:space-between;background:linear-gradient(120deg,#0d1220,#2a1450 70%,#4a1fd0);color:#fff;border-radius:20px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--sh2)}
+.guest b{display:block;font-size:16px;margin-bottom:2px}
+.guest span{font-size:12.5px;opacity:.88;line-height:1.4}
+.guest span b{display:inline;font-size:inherit;margin:0;color:#ffe14d}
+.guest button{flex:0 0 auto;background:#ffe14d;color:#2a1450;font-weight:800;padding:11px 14px;border-radius:12px;box-shadow:0 4px 12px rgba(255,225,77,.35)}
+
+/* tuiles du tableau de bord */
+.dash{display:flex;gap:10px;overflow-x:auto;margin:0 -16px 14px;padding:2px 16px 8px;scrollbar-width:none;scroll-snap-type:x proximity}
+.dash::-webkit-scrollbar{display:none}
+.tile{flex:0 0 148px;scroll-snap-align:start;text-align:left;display:flex;flex-direction:column;gap:3px;padding:13px;border-radius:20px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 18px rgba(13,18,32,.13);transition:transform .15s}
+.tile:active{transform:scale(.97)}
+.tile::after{content:"";position:absolute;right:-28px;top:-28px;width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.16)}
+.tile .ti{font-size:26px;margin-bottom:4px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
+.tile b{font-size:14.5px;line-height:1.2}
+.tile span{font-size:11.5px;opacity:.92;line-height:1.3}
+.t-coin{background:linear-gradient(135deg,#ffc21a,#ff7a1a)}
+.t-fire{background:linear-gradient(135deg,#ff5a1a,#e5126b)}
+.t-gift{background:linear-gradient(135deg,#18b85c,#00a3a3)}
+.t-league{background:linear-gradient(135deg,#1f7bff,#6a2cf5)}
+.t-trophy{background:linear-gradient(135deg,#a855f7,#d4148f)}
+@media (min-width:901px){.dash{margin:0 0 14px;padding:2px 2px 8px}.tile{flex:1 1 0;min-width:140px}}
+
+/* défi du jour */
+.defi{position:relative;overflow:hidden;border-radius:22px;padding:16px;margin-bottom:16px;color:#fff;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.22),transparent 45%),linear-gradient(130deg,#6a2cf5,#3b1fa8 60%,#1c0f66);box-shadow:0 12px 26px rgba(106,44,245,.32)}
+.defi::after{content:"🎯";position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.13;transform:rotate(-12deg)}
+.defi-h{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;flex-wrap:wrap;position:relative;z-index:1}
+.defi-tag{background:#ffe14d;color:#3b1fa8;font-weight:800;padding:4px 10px;border-radius:99px}
+.defi-q{font-size:18px;margin:12px 0 3px;line-height:1.3;position:relative;z-index:1}
+.defi-s{font-size:12.5px;opacity:.82}
+.defi-o{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px;position:relative;z-index:1}
+.defi-o.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:12px;padding:12px 6px;font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:.15s}
+.dbtn:hover:not(:disabled){background:rgba(255,255,255,.26)}
+.dbtn.on{background:#ffe14d;color:#3b1fa8;border-color:#ffe14d;opacity:1}
+.dbtn:disabled:not(.on){opacity:.5;cursor:default}
+.dres{margin-top:10px;font-size:13.5px;background:rgba(255,255,255,.13);border-radius:12px;padding:9px 12px;position:relative;z-index:1}
+.dres.ok{background:#18b85c}
+
+/* onglets de sport */
+.sports button{background:#fff;box-shadow:var(--sh)}
+.sports .si{background:color-mix(in srgb,var(--sc) 18%,#fff)}
+
+/* cartes de match */
+.mc{background:linear-gradient(180deg,color-mix(in srgb,var(--sc) 9%,#fff) 0,#fff 62px);box-shadow:var(--sh)}
+.mc.open{box-shadow:var(--sh2)}
+.mc-c{background:color-mix(in srgb,var(--sc) 16%,#fff)}
+.mc-o .odd{background:#f5f6fb;border:1px solid #e6e8f1;border-radius:13px}
+.mc-o .odd span{color:color-mix(in srgb,var(--sc) 70%,#3a4354)}
+.mc-o .odd:hover:not(:disabled){background:#fff;border-color:var(--sc);box-shadow:0 4px 12px color-mix(in srgb,var(--sc) 22%,transparent)}
+.odd.on,.odd.on:hover:not(:disabled){background:var(--grad-main)!important;border-color:transparent!important;box-shadow:0 6px 16px rgba(229,18,107,.35)}
+.odd.on span,.odd.on b{color:#fff!important}
+.mc-m{color:color-mix(in srgb,var(--sc) 80%,#0d1220)}
+.markets{background:color-mix(in srgb,var(--sc) 5%,#f7f8fc)}
+.mc .markets .mk h4{display:flex;align-items:center;gap:7px}
+.mc .markets .mk h4::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--sc)}
+.day{color:#2a3142}
+.day::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--grad-main);box-shadow:0 0 0 3px rgba(229,18,107,.15)}
+.day::after{background:linear-gradient(90deg,rgba(229,18,107,.35),transparent)}
+.chip.on{background:var(--grad-main);color:#fff;border-color:transparent}
+.feat-h b{background:var(--grad-main);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:18px}
+.fc{border-radius:20px}
+
+/* coupon */
+.slip-h{background:var(--grad-main)!important}
+.slip-h #slipCount{color:rgba(255,255,255,.8)!important}
+.btn{background:var(--grad-main)!important;box-shadow:0 8px 20px rgba(229,18,107,.32)!important;border-radius:14px}
+.sel{border-radius:14px;background:#f7f8fc}
+.sel .o{color:#e5126b}
+.quickstake button{background:#eef0f7}
+.quickstake button:hover{background:#ffe8ef;color:#e5126b}
+.row.big .v{color:#1f6fe0}
+
+/* bannières de page */
+.phero{position:relative;overflow:hidden;border-radius:22px;padding:18px;margin-bottom:14px;color:#fff;box-shadow:var(--sh2)}
+.phero::before{content:"";position:absolute;right:-40px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.14)}
+.phero::after{content:attr(data-ic);position:absolute;right:16px;top:18px;font-size:50px;transform:rotate(-10deg);filter:drop-shadow(0 6px 10px rgba(0,0,0,.2))}
+.phero b{display:block;font-size:21px;padding-right:70px;position:relative}
+.phero>span{display:block;font-size:13px;opacity:.92;margin-top:4px;padding-right:70px;line-height:1.45;position:relative}
+.ph-bets{background:linear-gradient(130deg,#1f7bff,#3b1fa8)}
+.ph-shop{background:linear-gradient(130deg,#a855f7,#e5126b 70%,#ff7a1a)}
+.ph-board{background:linear-gradient(130deg,#ffb000,#ff5a1a 60%,#e5126b)}
+.ph-league{background:linear-gradient(130deg,#00b3a4,#1f7bff 60%,#6a2cf5)}
+.ph-live{background:linear-gradient(130deg,#ff7a1a,#ff1f3d 60%,#b3127a)}
+.code{letter-spacing:2px;background:rgba(255,255,255,.22);padding:1px 8px;border-radius:8px}
+.pbtn.light{background:#fff!important;color:#3b1fa8!important;flex:0 0 auto}
+
+/* mes paris */
+.stats{gap:10px}
+.stat{border:0!important;color:#fff;border-radius:18px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;right:-20px;bottom:-30px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.15)}
+.stats .stat:nth-child(1){background:linear-gradient(135deg,#18b85c,#00a3a3)}
+.stats .stat:nth-child(2){background:linear-gradient(135deg,#ffb000,#ff7a1a)}
+.stats .stat:nth-child(3){background:linear-gradient(135deg,#1f7bff,#6a2cf5)}
+.stats .stat:nth-child(4){background:linear-gradient(135deg,#ff3d9a,#e5126b)}
+.stat small{color:rgba(255,255,255,.88)} .stat b{color:#fff!important}
+.bet{border:0;border-radius:18px;box-shadow:var(--sh);position:relative;overflow:hidden;padding-left:18px}
+.bet::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#1f7bff}
+.bet.won::before{background:#18b85c}.bet.lost::before{background:#ff1f3d}.bet.void::before{background:#9aa2b1}
+.bet.won{background:linear-gradient(180deg,rgba(24,184,92,.08),#fff 70px)}
+.tag.pending{background:#e8f0ff;color:#1f6fe0}
+.sharebtn{display:block;width:100%;margin-top:10px;padding:10px;border-radius:12px;font-weight:800;font-size:13.5px;color:#e5126b;background:#fff0f5;border:1px dashed rgba(229,18,107,.35)}
+.sharebtn:hover{background:#ffe3ee}
+.seg{background:#e9ebf3;border:0;border-radius:14px}
+.seg button{border-radius:11px}
+.seg button.on{background:#fff;color:#0d1220;box-shadow:0 2px 8px rgba(13,18,32,.1)}
+
+/* boutique */
+.wallet{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(120deg,#0d1220,#1f2a6b);color:#fff;border-radius:18px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--sh2)}
+.wallet span{opacity:.8;font-size:13px}
+.wallet b{font-size:22px;color:#c9ecff}
+.prof{display:flex;gap:14px;align-items:center;background:#fff;border-radius:18px;padding:14px 16px;box-shadow:var(--sh);margin-bottom:6px}
+.prof>.av,.prof>.frm{transform:scale(1.6);margin:10px 14px 10px 12px}
+.prof-n{font-size:17px;margin-bottom:2px}
+.prof small{color:var(--muted);font-size:12px}
+.sec{display:inline-flex;align-items:center;gap:8px;color:#fff!important;background:var(--ig,var(--grad-main));padding:6px 14px;border-radius:99px;font-size:12px!important;box-shadow:0 4px 12px rgba(13,18,32,.12)}
+.item{border:0!important;border-radius:20px;box-shadow:var(--sh)}
+.item .ic{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:28px;background:var(--ig,var(--grad-main));box-shadow:0 6px 14px rgba(13,18,32,.15)}
+.item .ic.prev{width:auto;min-width:58px;padding:0 14px;background:#fff;border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--ig) border-box;font-size:16px}
+.item .cost{color:#1f6fe0}
+.item button.buy{background:var(--grad-main)!important;border:0;color:#fff;box-shadow:0 6px 14px rgba(229,18,107,.25)}
+.item button{border-radius:12px}
+.item .own{color:#18b85c}
+
+/* joueurs : pseudos et cadres */
+.pn{font-weight:800}
+.nx-gold{background:linear-gradient(90deg,#a86b00,#ffcf33,#b8860b,#ffe27a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nx-neon{color:#00a6ff;text-shadow:0 0 10px rgba(0,166,255,.55)}
+.nx-fire{background:linear-gradient(90deg,#ff1f3d,#ff7a1a,#ffb000);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nx-rainbow{background:linear-gradient(90deg,#ff1f3d,#ff7a1a,#ffc21a,#18b85c,#1f7bff,#8a3dff,#ff1f3d);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 3s linear infinite}
+@keyframes rb{to{background-position:200% center}}
+.cm.me .pn{color:#fff}
+.ptitle{font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:99px;background:#efe7ff;color:#6a2cf5;vertical-align:middle;white-space:nowrap}
+.frm{display:inline-grid;place-items:center;border-radius:50%;padding:2.5px;flex:0 0 auto;position:relative;line-height:0}
+.frm .av{box-shadow:0 0 0 2px #fff}
+.fr-fire{background:conic-gradient(#ff1f3d,#ff7a1a,#ffc21a,#ff7a1a,#ff1f3d)}
+.fr-ice{background:conic-gradient(#7fe7ff,#1f7bff,#b8f3ff,#1f7bff,#7fe7ff)}
+.fr-gold{background:conic-gradient(#a86b00,#ffe27a,#b8860b,#ffd34d,#a86b00)}
+.fr-crown{background:conic-gradient(#ffd34d,#ff7a1a,#ffe27a,#ffb000,#ffd34d);animation:glow 2s ease-in-out infinite}
+.fr-crown::after{content:"👑";position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-10deg);font-size:12px;line-height:1}
+@keyframes glow{50%{box-shadow:0 0 12px rgba(255,194,26,.9)}}
+
+/* classements */
+.seg.mini{display:flex;margin-bottom:12px}.seg.mini button{flex:1}
+.board{border:0!important;border-radius:20px;box-shadow:var(--sh)}
+.brow{grid-template-columns:38px minmax(0,1fr) auto!important;gap:10px!important}
+.brow .rk{font-size:15px}
+.brow .who{display:flex;align-items:center;gap:10px;min-width:0}
+.brow .wn{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.brow .wn>small{color:var(--muted);font-size:11.5px}
+.brow .wn .pn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .val{text-align:right;line-height:1.2}
+.brow .val b{display:block;color:#1f6fe0;font-size:15px}
+.brow .val small{color:var(--muted);font-size:11px}
+.brow.r1{background:linear-gradient(90deg,rgba(255,194,26,.28),rgba(255,194,26,.04))}
+.brow.r2{background:linear-gradient(90deg,rgba(160,170,190,.28),rgba(160,170,190,.04))}
+.brow.r3{background:linear-gradient(90deg,rgba(205,127,50,.25),rgba(205,127,50,.04))}
+.brow.me{box-shadow:inset 4px 0 0 #e5126b}
+
+/* ligues */
+.lg-forms{background:#fff;border-radius:20px;padding:14px;box-shadow:var(--sh);margin-bottom:6px;display:grid;gap:10px}
+.lg-f{display:flex;gap:8px}
+.lg-f input{flex:1;min-width:0;border:1px solid var(--line);background:#f4f6fa;border-radius:12px;padding:12px;font-size:15px;color:var(--text)}
+.lg-f input:focus{outline:none;border-color:#e5126b;background:#fff}
+.lg-f button{padding:0 16px;border-radius:12px;font-weight:800;color:#fff;background:var(--grad-main);white-space:nowrap}
+#lgJoin button{background:linear-gradient(135deg,#1f7bff,#6a2cf5)}
+#lgCode{text-transform:uppercase;letter-spacing:2px}
+.lgc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--sh)}
+.lgc .lgi{flex:0 0 46px;height:46px;border-radius:15px;display:grid;place-items:center;font-size:21px;background:linear-gradient(135deg,hsl(var(--h) 85% 58%),hsl(calc(var(--h) + 45) 80% 45%))}
+.lgc b{display:block;font-size:15.5px}
+.lgc small{color:var(--muted);font-size:12.5px}
+.lgc .arr{margin-left:auto;color:#c2c8d4;font-size:26px}
+.back{font-weight:800;color:#1f6fe0;margin-bottom:10px;padding:6px 0}
+.leave{display:block;margin:18px auto 0;color:var(--muted);font-size:13px;text-decoration:underline}
+
+/* notifications */
+.t-bell{background:linear-gradient(135deg,#00b8d9,#1f5bd6)}
+.nlist{text-align:left;margin:0 0 14px;display:grid;gap:8px}
+.nrow{display:flex;align-items:center;gap:11px;background:#f5f6fb;border-radius:14px;padding:10px 12px;cursor:pointer}
+.nrow .ni{font-size:22px;flex:0 0 auto}
+.nrow .nt{flex:1;min-width:0;line-height:1.3}
+.nrow .nt b{display:block;font-size:14.5px}
+.nrow .nt small{color:var(--muted);font-size:12px}
+.nsec{font-weight:800;font-size:12.5px;color:#6a2cf5;margin:6px 2px 0}
+.nwarn{background:#fff4e5;color:#8a4b00!important;border-radius:12px;padding:9px 11px;font-size:13px!important;text-align:left}
+input.sw{appearance:none;-webkit-appearance:none;flex:0 0 46px;width:46px;height:28px;border-radius:99px;background:#d5d9e3;position:relative;cursor:pointer;transition:.2s;margin:0}
+input.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:.2s}
+input.sw:checked{background:linear-gradient(135deg,#18b85c,#00a3a3)}
+input.sw:checked::after{left:21px}
+/* soutenir */
+.don{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:linear-gradient(120deg,#fff0f5,#f3ecff);border:2px solid transparent;background:linear-gradient(120deg,#fff5f8,#f6f0ff) padding-box,var(--grad-main) border-box;border-radius:20px;padding:14px 16px;margin:12px 0 4px;box-shadow:var(--sh)}
+.don-ic{font-size:34px;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{15%{transform:scale(1.15)}30%{transform:scale(1)}}
+.don-t{flex:1;min-width:200px}
+.don-t b{display:block;font-size:16px}
+.don-t span{font-size:12.5px;color:#4a5263;line-height:1.4}
+.don .pbtn{flex:0 0 auto}
+/* chat */
+.seg.social button{white-space:nowrap;font-size:13px;padding:10px 2px}
+.phero b.code{display:inline;font-size:inherit;padding:1px 8px}
+.brow .wn .nm{display:flex;align-items:center;gap:5px;min-width:0;flex-wrap:wrap}
+.brow .wn .nm small{color:var(--muted);font-size:11.5px}
+@media (max-width:560px){
+  .shop{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .item{padding:12px;gap:6px}
+  .item h3{font-size:14px}.item p{font-size:12px}
+  .item .ic{width:48px;height:48px;font-size:24px;border-radius:15px}
+  .item .ic.prev{min-width:0;padding:0 8px;font-size:14px}
+  .item button{padding:9px 6px;font-size:13.5px}
+}
+.chat{border-radius:20px;box-shadow:var(--sh)}
+.chat-h{background:linear-gradient(120deg,#18b85c,#0a8f8f 55%,#1f5bd6)!important}
+.cm.me .cb{background:var(--grad-main)!important}
+.chat-form button{background:var(--grad-main)!important}
+
+/* fenêtres */
+.modal.pop{z-index:90;background:rgba(13,18,32,.6)}
+.popbox{position:relative;width:100%;max-width:390px;max-height:90vh;overflow:auto;background:#fff;border-radius:26px;padding:26px 20px 20px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.3);animation:popin .25s ease}
+.popbox::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--grad-main)}
+@keyframes popin{from{transform:scale(.9) translateY(10px);opacity:0}}
+.pop-x{position:absolute;right:12px;top:10px;font-size:26px;color:var(--muted);line-height:1}
+.pop-ic{font-size:44px;line-height:1;margin-bottom:6px}
+.pop-ic.big{font-size:62px;animation:bounce .6s ease}
+@keyframes bounce{40%{transform:scale(1.18)}70%{transform:scale(.95)}}
+.popbox h3{margin:6px 0 8px;font-size:21px}
+.popbox p{margin:0 0 16px;color:#4a5263;line-height:1.5;font-size:14.5px}
+.pop-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pbtn{flex:1 1 auto;min-width:108px;padding:12px 14px;border-radius:14px;font-weight:800;color:#fff;background:var(--grad-main);text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:6px;font-size:14.5px;box-shadow:0 6px 14px rgba(229,18,107,.22)}
+.pbtn.wa{background:linear-gradient(135deg,#25d366,#128c7e);box-shadow:0 6px 14px rgba(18,140,126,.25)}
+.pbtn.ghost2{background:#eef0f6;color:#0d1220;box-shadow:none}
+.linkbox{background:#f4f6fa;border:1px dashed #c9cfdc;border-radius:12px;padding:10px;font-size:13px;word-break:break-all;margin-bottom:12px;color:#3a4354}
+.brow[data-prof]{cursor:pointer}
+.brow[data-prof]:active{filter:brightness(.96)}
+.pfv{position:fixed;inset:0;z-index:88;background:var(--bg);display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pfv.open{display:block;animation:pfin .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes pfin{from{transform:translateY(24px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pfv.open{animation:none}}
+body.pf-lock{overflow:hidden}
+.pf-wrap{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+.pf-key,.pf-sec,.pf-skel,.pf-state{max-width:560px}
+@media (min-width:588px){.pf-key,.pf-sec,.pf-skel,.pf-state{margin-left:auto!important;margin-right:auto!important}}
+.pf-hero{position:relative;background:var(--grad-main);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 64px;text-align:center;overflow:hidden}
+.pf-hero::before,.pf-hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.10);pointer-events:none}
+.pf-hero::before{width:240px;height:240px;right:-80px;top:-90px}
+.pf-hero::after{width:170px;height:170px;left:-60px;bottom:-70px}
+.pf-bar{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:8px}
+.pf-bar span{font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.pf-back{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:22px;line-height:1;display:grid;place-items:center}
+.pf-back:active{background:rgba(255,255,255,.34)}
+.pf-ava{position:relative;z-index:1;display:inline-grid;place-items:center;margin:4px 0 12px}
+.pf-ava .av{width:96px;height:96px;font-size:34px;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 14px 30px rgba(0,0,0,.25)}
+.pf-ava .frm{padding:5px}
+.pf-ava .frm .av{box-shadow:0 0 0 3px #fff}
+.pf-name{position:relative;z-index:1;margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15;overflow-wrap:anywhere}
+.pf-name .pn{color:#fff}
+.pf-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
+.pf-tags span{font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.2);white-space:nowrap}
+.pf-tags .pf-rk{background:#fff;color:#0d1220}
+.pf-key{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:-44px 14px 0}
+.pf-key div{background:#fff;border-radius:18px;padding:14px 6px 12px;text-align:center;box-shadow:var(--sh2);line-height:1.2}
+.pf-key i{font-style:normal;font-size:20px;display:block;margin-bottom:4px}
+.pf-key b{display:block;font-size:20px;font-weight:800;color:#0d1220;font-variant-numeric:tabular-nums}
+.pf-key small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
+.pf-sec{margin:14px 14px 0;background:#fff;border-radius:20px;padding:16px;box-shadow:var(--sh)}
+.pf-sec h4{margin:0 0 12px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pf-ratio{display:flex;height:12px;border-radius:99px;overflow:hidden;background:#eef0f6;gap:2px}
+.pf-ratio i{display:block;height:100%}
+.pf-ratio .w{background:#18b85c}
+.pf-ratio .l{background:#ff4d5e}
+.pf-leg{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin:8px 0 14px}
+.pf-leg .w{color:#0e8f45}
+.pf-leg .l{color:#d92b3d}
+.pf-rows{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pf-rows div{background:#f5f6fa;border-radius:14px;padding:11px 12px;line-height:1.25}
+.pf-rows b{display:block;font-size:18px;font-weight:800;color:#0d1220;font-variant-numeric:tabular-nums}
+.pf-rows small{color:var(--muted);font-size:12px}
+.pf-form{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-width:360px}
+.pf-form span{aspect-ratio:1;border-radius:9px;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff}
+.pf-form .w{background:#18b85c}
+.pf-form .l{background:#ff4d5e}
+.pf-form .v{background:#aab1c0}
+.pf-note{margin:10px 0 0;color:var(--muted);font-size:12.5px;line-height:1.45}
+.pf-sec .sdots{margin:0}
+.pf-bets{display:grid;gap:8px}
+.pf-bet{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;background:#f5f6fa;border-radius:14px;padding:10px 12px}
+.pf-bet b{font-size:14px;color:#0d1220;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pf-bet small{color:var(--muted);font-size:12px;line-height:1.35}
+.pf-bet em{font-style:normal;font-weight:800;font-size:13px;grid-row:span 2;text-align:right;white-space:nowrap}
+.pf-bet em.w{color:#0e8f45}
+.pf-bet em.l{color:#d92b3d}
+.pf-bet em.v{color:var(--muted)}
+.pf-bet em.p{color:#d97706}
+.pf-bet .pk{grid-column:1/-1;font-size:12.5px;color:#3a4354;font-weight:600;white-space:normal}
+.pf-act{display:flex;gap:8px;margin:14px 14px 0;max-width:560px}
+@media (min-width:588px){.pf-act{margin-left:auto;margin-right:auto}}
+.pf-act button{flex:1;min-height:50px;border-radius:16px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px}
+.pf-act .go{background:#18b85c;color:#fff;box-shadow:0 8px 18px rgba(24,184,92,.32)}
+.pf-act .go:active{background:#12994b}
+.pf-act .soft{background:#fff;color:#0d1220;box-shadow:var(--sh)}
+.pf-act .wait{background:#eef0f6;color:#5b6475}
+.pf-act .no{flex:0 0 auto;background:#fff;color:#d92b3d;box-shadow:var(--sh)}
+.pf-act button:disabled{opacity:.6}
+.am-list{display:grid;gap:8px;margin-bottom:16px}
+.am-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:10px 12px;box-shadow:var(--sh)}
+.am-row .av{width:44px;height:44px;font-size:15px}
+.am-row .frm .av{width:40px;height:40px}
+.am-who{flex:1;min-width:0;text-align:left;display:flex;align-items:center;gap:12px}
+.am-who span{min-width:0}
+.am-who b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.am-who small{display:block;color:var(--muted);font-size:12.5px}
+.am-row .ok,.am-row .ko,.am-row .msg{flex:0 0 auto;height:38px;border-radius:12px;padding:0 12px;font-weight:800;font-size:13.5px}
+.am-row .ok{background:#18b85c;color:#fff}
+.am-row .ko{background:#f1f2f6;color:#5b6475}
+.am-row .msg{background:var(--grad-main);color:#fff;position:relative}
+.am-nl{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:#18b85c;color:#fff;font-size:11px;display:grid;place-items:center;padding:0 5px;box-shadow:0 0 0 2px #fff}
+.am-hint{background:#fff;border-radius:18px;padding:16px;box-shadow:var(--sh);color:#4a5263;font-size:14px;line-height:1.5;text-align:center;margin-bottom:16px}
+.seg.social .sb{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:#18b85c;color:#fff;font-size:11px;margin-left:4px;padding:0 4px;vertical-align:1px}
+.mpv{position:fixed;inset:0;z-index:89;background:var(--bg);display:none;flex-direction:column}
+.mpv.open{display:flex;animation:pfin .25s cubic-bezier(.2,.8,.2,1)}
+.mp-h{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 12px 10px;background:var(--grad-main);color:#fff;box-shadow:0 6px 20px rgba(106,44,245,.25)}
+.mp-h .pf-back{flex:0 0 44px}
+.mp-who{display:flex;align-items:center;gap:10px;min-width:0;flex:1;text-align:left;color:#fff}
+.mp-who .av{width:40px;height:40px;font-size:14px;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+.mp-who b{display:block;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-who small{display:block;font-size:12px;opacity:.85}
+.mp-who .pn{color:#fff}
+.mp-list{flex:1;overflow-y:auto;padding:14px 12px 8px;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.mp-list>*{max-width:640px;width:100%;margin-left:auto;margin-right:auto}
+.mp-day{align-self:center;font-size:11.5px;font-weight:700;color:var(--muted);background:#e9ebf3;border-radius:99px;padding:3px 10px;margin:6px auto;width:auto!important}
+.mp-m{display:flex}
+.mp-m.me{justify-content:flex-end}
+.mp-m .cb{max-width:80%}
+.mp-m.me .cb{background:linear-gradient(135deg,#ff2a3f,#c50f25);color:#fff;border-radius:16px 16px 6px 16px}
+.mp-m .ct{font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.mp-m small{display:block;font-size:10.5px;opacity:.65;text-align:right;margin-top:2px}
+.mp-f{flex:0 0 auto;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
+.mp-f>*{max-width:640px}
+.mp-f input{flex:1;min-width:0;height:46px;border-radius:23px;border:1px solid var(--line);background:#f4f6fa;padding:0 16px;font-size:16px;color:#0d1220}
+.mp-f input:focus{outline:2px solid #6a2cf5;outline-offset:-1px;background:#fff}
+.mp-f button{flex:0 0 46px;height:46px;border-radius:50%;background:var(--grad-main);color:#fff;font-size:18px}
+.mp-err{color:#d92b3d;font-size:12.5px;text-align:center;padding:0 12px 6px;background:#fff}
+.mp-err:empty{display:none}
+.mp-lock{text-align:center;color:var(--muted);font-size:13px;margin:auto;padding:20px;line-height:1.5}
+.pf-state{padding:60px 24px;text-align:center;color:var(--muted);font-size:15px;line-height:1.5}
+.pf-state b{display:block;font-size:44px;margin-bottom:10px}
+.pf-skel{height:92px;border-radius:20px;margin:14px 14px 0;background:linear-gradient(90deg,#e9ecf3 25%,#f4f6fa 50%,#e9ecf3 75%);background-size:200% 100%;animation:pfsk 1.2s linear infinite}
+@keyframes pfsk{to{background-position:-200% 0}}
+.sdots{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:0 0 16px}
+.sdots div{border-radius:11px;padding:7px 0;font-size:10.5px;font-weight:800;background:#f1f2f6;color:#9aa2b1;line-height:1.3}
+.sdots div.on{background:linear-gradient(135deg,#ff7a1a,#e5126b);color:#fff;box-shadow:0 4px 10px rgba(229,18,107,.25)}
+.popbox img.prev{width:100%;border-radius:16px;margin:4px 0 12px;box-shadow:var(--sh2)}
+
+/* connexion */
+.auth{border:3px solid transparent!important;background:linear-gradient(#fff,#fff) padding-box,var(--grad-main) border-box!important;border-radius:26px!important}
+.auth .seg button.on{color:#e5126b}
+.parr{background:linear-gradient(120deg,#e9fbf1,#e6f6ff);border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;color:#0b5d36}
+.later{display:block;margin:14px auto 0;color:var(--muted);font-size:13.5px;font-weight:600;text-decoration:underline}
+
+/* barre du bas */
+@media (max-width:900px){
+  .bnav{overflow:visible!important;background:#fff!important;box-shadow:0 -8px 28px rgba(13,18,32,.12)!important}
+  .bnav button{--bc:#e8143a}
+  .bnav button[data-tab=live]{--bc:#ff6a00}
+  .bnav button[data-tab=paris]{--bc:#1f7bff}
+  .bnav button[data-tab=boutique]{--bc:#8a3dff}
+  .bnav button[data-tab=chat]{--bc:#13a356}
+  .bnav button i{display:grid;place-items:center;width:44px;height:30px;border-radius:12px;filter:saturate(.5)!important;opacity:.85!important;transition:.2s}
+  .bnav button.on{color:var(--bc)!important}
+  .bnav button.on i{background:color-mix(in srgb,var(--bc) 15%,#fff);filter:none!important;opacity:1!important;transform:translateY(-1px)}
+  .bnav .slipbtn i{width:56px!important;height:56px!important;margin-top:-30px!important;border-radius:50%!important;background:var(--grad-main)!important;filter:none!important;opacity:1!important;box-shadow:0 8px 18px rgba(229,18,107,.45)!important}
+  .bnav .slipbtn{color:#e5126b!important}
+  .bnav .slipbtn i{font-size:0!important}
+  .bnav .slipbtn i::before{content:"🎟️";font-size:24px;filter:brightness(0) invert(1)}
+  .bdg{background:#e5126b}
+  .bnav .slipbtn .bdg{background:#ffc21a;color:#3b1fa8}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hbar">
+    <div class="brand"><i>⚽</i>Prono<span>Club</span></div>
+    <div id="titleChip"></div>
+    <div class="bal">
+      <div class="pill fire" id="streakPill" title="Série de jours de connexion" style="display:none"></div>
+      <div class="pill coin" title="Pièces du jour (à parier)">🪙 <b id="coins">1 000</b> <small>pièces</small></div>
+      <div class="pill dia" title="Diamants (gains, à échanger en boutique)">💎 <b id="dias">0</b> <small>diamants</small></div>
+      <button class="pill user" id="userBtn" title="Mon compte"></button>
+    </div>
+  </div>
+  <div class="wrap">
+    <nav id="nav">
+      <button data-tab="matchs" class="on">Matchs</button>
+      <button data-tab="live">🔴 Live</button>
+      <button data-tab="paris">Mes paris</button>
+      <button data-tab="boutique">Boutique</button>
+      <button data-tab="chat">💬 Social</button>
+      <button data-tab="regles">Règles</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <main>
+    <section id="view"></section>
+    <aside id="aside">
+      <div class="slip">
+        <div class="slip-h"><span>Coupon <span id="slipCount" style="color:var(--muted);font-weight:600"></span></span><button class="x" id="closeSlip" aria-label="Fermer">×</button></div>
+        <div class="slip-b" id="slipBody"></div>
+        <div class="slip-f" id="slipFoot"></div>
+      </div>
+    </aside>
+  </main>
+</div>
+<button class="fab hide" id="fab"></button>
+<nav class="bnav" id="bnav">
+  <button data-tab="matchs"><i>🏟️</i><span>Matchs</span></button>
+  <button data-tab="live"><i>📡</i><span>Live</span><b class="bdg live" id="bnLive"></b></button>
+  <button data-tab="paris"><i>🧾</i><span>Mes paris</span><b class="bdg" id="bnBets"></b></button>
+  <button class="slipbtn" id="bnSlip"><i>🎟️</i><span>Coupon</span><b class="bdg" id="bnSlipN"></b></button>
+  <button data-tab="boutique"><i>🎁</i><span>Boutique</span></button>
+  <button data-tab="chat"><i>💬</i><span>Social</span><b class="bdg" id="bnChat"></b></button>
+</nav>
+<div class="toast" id="toast"></div>
+<div class="modal" id="authModal"><div class="auth" id="authBox"></div></div>
+<div class="mpv" id="mpView" role="dialog" aria-modal="true" aria-label="Messages privés"></div>
+<div class="pfv" id="profView" role="dialog" aria-modal="true" aria-label="Profil du joueur"><div class="pf-wrap" id="profBox"></div></div>
+<div class="modal pop" id="popModal"><div class="popbox" id="popBox"></div></div>
+
+<script>
+function toTop(){try{window.scrollTo({top:0});document.body.scrollTop=0;document.documentElement.scrollTop=0}catch(e){}}
+/* ---------- Configuration ---------- */
+const SB_URL='https://akxsucplmrdrbsmhdmvj.supabase.co';
+const SB_KEY='sb_publishable_y0r-6RnFOCPZffZJSCxvQg_whwl47yx';
+const DAILY=1000;
+
+const MARKETS=[
+ {key:'1x2',title:'Résultat du match',opts:m=>[{id:'1',label:m.home,fn:(h,a)=>h>a},{id:'N',label:'Match nul',fn:(h,a)=>h==a},{id:'2',label:m.away,fn:(h,a)=>h<a}]},
+ {key:'dc',title:'Double chance',opts:m=>[{id:'1N',label:m.home+' ou nul',fn:(h,a)=>h>=a},{id:'12',label:m.home+' ou '+m.away,fn:(h,a)=>h!=a},{id:'N2',label:'Nul ou '+m.away,fn:(h,a)=>h<=a}]},
+ {key:'btts',title:'Les deux équipes marquent',opts:()=>[{id:'oui',label:'Oui',fn:(h,a)=>h>0&&a>0},{id:'non',label:'Non',fn:(h,a)=>!(h>0&&a>0)}]},
+ ...[1.5,2.5,3.5].map(l=>({key:'ou'+String(l).replace('.',''),title:'Nombre de buts : plus/moins de '+String(l).replace('.',','),opts:()=>[{id:'plus',label:'Plus de '+String(l).replace('.',','),fn:(h,a)=>h+a>l},{id:'moins',label:'Moins de '+String(l).replace('.',','),fn:(h,a)=>h+a<l}]})),
+ {key:'ehome',title:m=>m.home+' marque',opts:()=>[{id:'oui',label:'Oui',fn:(h)=>h>0},{id:'non',label:'Non',fn:(h)=>h==0}]},
+ {key:'eaway',title:m=>m.away+' marque',opts:()=>[{id:'oui',label:'Oui',fn:(h,a)=>a>0},{id:'non',label:'Non',fn:(h,a)=>a==0}]},
+ {key:'v_btts',title:'Résultat + les deux équipes marquent',opts:m=>[{id:'1',label:m.home+' & Oui',fn:(h,a)=>h>a&&a>0},{id:'N',label:'Nul & Oui',fn:(h,a)=>h==a&&h>0},{id:'2',label:m.away+' & Oui',fn:(h,a)=>a>h&&h>0}]},
+ {key:'tot',title:'Nombre exact de buts',opts:()=>[0,1,2,3,4].map(n=>({id:String(n),label:n+' but'+(n>1?'s':''),fn:(h,a)=>h+a==n})).concat([{id:'5+',label:'5 buts ou +',fn:(h,a)=>h+a>=5}])},
+ {key:'cs',title:'Score exact',cs:true,opts:()=>{const o=[];for(let i=0;i<=3;i++)for(let j=0;j<=3;j++)o.push({id:i+'-'+j,label:i+' - '+j,fn:(h,a)=>h==i&&a==j});o.push({id:'autre',label:'Autre',fn:(h,a)=>h>3||a>3});return o}}
+];
+
+const DEFI_GAIN=300,PARRAIN_BONUS=500;
+const STRIPE_DON='https://buy.stripe.com/cNi7sKeCH6Kf56N5NI3ZK01'; // lien de paiement Stripe (montant libre) pour le bouton « Soutenir PronoClub »
+const SHOP=[
+ {id:'c250',sec:'Bonus',ic:'🪙',name:'+250 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:400,kind:'coins',val:250},
+ {id:'c1000',sec:'Bonus',ic:'💰',name:'+1 000 pièces',desc:'Doublez votre budget du jour.',cost:1400,kind:'coins',val:1000},
+ {id:'boost',sec:'Bonus',ic:'🚀',name:'Boost de cote +10 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,10.',cost:600,kind:'inv'},
+ {id:'shield',sec:'Bonus',ic:'🛡️',name:'Assurance',desc:'Si le pari assuré est perdu, la mise vous est rendue en diamants.',cost:900,kind:'inv'},
+ {id:'nx_gold',sec:'Pseudo en couleur',ic:'✨',name:'Pseudo doré',desc:'Votre pseudo brille en or dans le chat et les classements.',cost:1500,kind:'name',cls:'nx-gold'},
+ {id:'nx_neon',sec:'Pseudo en couleur',ic:'💡',name:'Pseudo néon',desc:'Un pseudo bleu électrique qui se voit de loin.',cost:2500,kind:'name',cls:'nx-neon'},
+ {id:'nx_fire',sec:'Pseudo en couleur',ic:'🔥',name:'Pseudo de feu',desc:'Un dégradé rouge, orange et jaune.',cost:3000,kind:'name',cls:'nx-fire'},
+ {id:'nx_rainbow',sec:'Pseudo en couleur',ic:'🌈',name:'Pseudo arc-en-ciel',desc:'Toutes les couleurs, animées.',cost:4000,kind:'name',cls:'nx-rainbow'},
+ {id:'fr_fire',sec:'Cadres d\'avatar',ic:'🟠',name:'Cadre Feu',desc:'Un cercle de flammes autour de votre avatar.',cost:1200,kind:'frame',cls:'fr-fire'},
+ {id:'fr_ice',sec:'Cadres d\'avatar',ic:'🔵',name:'Cadre Glace',desc:'Un cadre bleu glacier.',cost:1200,kind:'frame',cls:'fr-ice'},
+ {id:'fr_gold',sec:'Cadres d\'avatar',ic:'🟡',name:'Cadre Or',desc:'Le cadre des champions.',cost:3000,kind:'frame',cls:'fr-gold'},
+ {id:'fr_crown',sec:'Cadres d\'avatar',ic:'👑',name:'Cadre Couronne',desc:'Cadre doré qui brille, avec une couronne.',cost:6000,kind:'frame',cls:'fr-crown'},
+ {id:'t1',sec:'Titres',ic:'🥉',name:'Titre « Pronostiqueur »',desc:'Affiché à côté de votre pseudo dans le chat et les classements.',cost:1000,kind:'title',label:'Pronostiqueur'},
+ {id:'t2',sec:'Titres',ic:'🥈',name:'Titre « Expert »',desc:'Pour ceux qui lisent le jeu.',cost:3000,kind:'title',label:'Expert'},
+ {id:'t3',sec:'Titres',ic:'🥇',name:'Titre « Légende »',desc:'Le titre ultime du club.',cost:10000,kind:'title',label:'Légende'},
+ {id:'t4',sec:'Titres',ic:'🎯',name:'Titre « Sniper »',desc:'Pour les pronostics qui font mouche.',cost:2000,kind:'title',label:'Sniper'},
+ {id:'t5',sec:'Titres',ic:'👑',name:'Titre « Roi du combiné »',desc:'Les gros combinés, c\'est vous.',cost:5000,kind:'title',label:'Roi du combiné'},
+ {id:'th_gold',sec:'Thèmes',ic:'🟡',name:'Thème Or',desc:'Change la couleur du site.',cost:2500,kind:'theme',cls:'theme-gold'},
+ {id:'th_purple',sec:'Thèmes',ic:'🟣',name:'Thème Violet',desc:'Change la couleur du site.',cost:2500,kind:'theme',cls:'theme-purple'},
+ {id:'th_red',sec:'Thèmes',ic:'🔴',name:'Thème Rouge',desc:'Change la couleur du site.',cost:2500,kind:'theme',cls:'theme-red'}
+];
+
+/* ---------- Outils ---------- */
+const $=s=>document.querySelector(s);
+const nf=n=>Math.round(n).toLocaleString('fr-FR');
+const fo=o=>o.toFixed(2).replace('.',',');
+function dkey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addDays(k,n){const[y,m,d]=k.split('-').map(Number);return dkey(new Date(y,m-1,d+n))}
+const today=()=>dkey(new Date());
+function pois(k,l){let p=Math.exp(-l);for(let i=1;i<=k;i++)p*=l/i;return p}
+function weekId(d){d=d||new Date();const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const w0=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-w0);const y=t.getUTCFullYear();const w=Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7);return y+'-W'+String(w).padStart(2,'0')}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const hhmm=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+function dayLabel(t,day){const k=dkey(new Date(t));if(k===day)return hhmm(t);return(k===addDays(day,1)?'Nuit ':new Date(t).toLocaleDateString('fr-FR',{weekday:'short'})+' ')+hhmm(t)}
+
+/* ---------- Sports et marchés ---------- */
+const fr=x=>String(x).replace('.',',');
+const ou=(key,title,l)=>({key,title,opts:()=>[{id:'plus',label:'Plus de '+fr(l),fn:(h,a)=>h+a>l},{id:'moins',label:'Moins de '+fr(l),fn:(h,a)=>h+a<l}]});
+const HOCKEY_MARKETS=[
+ {key:'1x2',title:'Résultat (temps réglementaire)',opts:m=>[{id:'1',label:m.home,fn:(h,a)=>h>a},{id:'N',label:'Match nul',fn:(h,a)=>h==a},{id:'2',label:m.away,fn:(h,a)=>h<a}]},
+ MARKETS[1],
+ ou('ou45','Nombre de buts : plus/moins de 4,5',4.5),ou('ou55','Nombre de buts : plus/moins de 5,5',5.5),ou('ou65','Nombre de buts : plus/moins de 6,5',6.5),
+ {key:'btts',title:'Les deux équipes marquent',opts:()=>[{id:'oui',label:'Oui',fn:(h,a)=>h>0&&a>0},{id:'non',label:'Non',fn:(h,a)=>!(h>0&&a>0)}]},
+ {key:'hcp',title:'Handicap -1,5',opts:m=>[{id:'1',label:m.home+' -1,5',fn:(h,a)=>h-a>1.5},{id:'2',label:m.away+' -1,5',fn:(h,a)=>a-h>1.5}]}
+];
+const WIN=title=>({key:'win',title,opts:m=>[{id:'1',label:m.home,fn:(h,a)=>h>a},{id:'2',label:m.away,fn:(h,a)=>a>h}]});
+function setsMarkets(m){
+  const n=m.bo===5?3:2,list=[];
+  for(let w=0;w<n;w++){list.push({id:n+'-'+w,label:m.home+' '+n+'-'+w,fn:(h,a)=>h==n&&a==w})}
+  for(let w=0;w<n;w++){list.push({id:w+'-'+n,label:m.away+' '+n+'-'+w,fn:(h,a)=>a==n&&h==w})}
+  const lines=m.bo===5?[3.5,4.5]:[2.5];
+  return [WIN('Vainqueur du match'),{key:'cs',title:'Score exact en sets',opts:()=>list},
+    ...lines.map(l=>ou('ns'+String(l).replace('.',''),'Nombre de sets : plus/moins de '+fr(l),l)),
+    {key:'set1',title:'Gagne au moins un set',opts:m=>[{id:'1',label:m.home,fn:(h)=>h>0},{id:'2',label:m.away,fn:(h,a)=>a>0}]}];
+}
+function basketMarkets(m){
+  const tl=m.tl||200,hl=m.hl;
+  return [WIN('Vainqueur (prolongations incluses)'),
+    ...[tl-10,tl,tl+10].map(l=>ou('tp'+Math.round(l*10),'Total de points : plus/moins de '+fr(l),l)),
+    {key:'hcp',title:'Handicap ('+m.home+' '+(hl>0?'+':'')+fr(hl)+')',opts:m=>[{id:'1',label:m.home+' '+(hl>0?'+':'')+fr(hl),fn:(h,a)=>h-a+hl>0},{id:'2',label:m.away+' '+(hl>0?'-':'+')+fr(Math.abs(hl)),fn:(h,a)=>h-a+hl<0}]},
+    {key:'marg',title:'Écart de victoire',opts:m=>[
+      {id:'1a',label:m.home+' de 1 à 5',fn:(h,a)=>h-a>0&&h-a<=5},{id:'1b',label:m.home+' de 6 à 10',fn:(h,a)=>h-a>5&&h-a<=10},{id:'1c',label:m.home+' de 11 ou +',fn:(h,a)=>h-a>10},
+      {id:'2a',label:m.away+' de 1 à 5',fn:(h,a)=>a-h>0&&a-h<=5},{id:'2b',label:m.away+' de 6 à 10',fn:(h,a)=>a-h>5&&a-h<=10},{id:'2c',label:m.away+' de 11 ou +',fn:(h,a)=>a-h>10}]}];
+}
+function teamPointsMarkets(m,cfg){
+  const tl=m.tl||cfg.tl,hl=m.hl,sg=x=>(x>0?'+':'')+fr(x);
+  return [{key:'1x2',title:'Résultat du match',opts:m=>[{id:'1',label:m.home,fn:(h,a)=>h>a},{id:'N',label:'Match nul',fn:(h,a)=>h==a},{id:'2',label:m.away,fn:(h,a)=>h<a}]},
+    MARKETS[1],
+    ...[tl-cfg.step,tl,tl+cfg.step].map(l=>ou('tp'+Math.round(l*10),'Total de '+cfg.unit+' : plus/moins de '+fr(l),l)),
+    {key:'hcp',title:'Handicap ('+m.home+' '+sg(hl)+')',opts:m=>[{id:'1',label:m.home+' '+sg(hl),fn:(h,a)=>h-a+hl>0},{id:'2',label:m.away+' '+sg(-hl),fn:(h,a)=>h-a+hl<0}]},
+    {key:'marg',title:'Écart de victoire',opts:m=>{const b=cfg.bands,L=[];
+      [[m.home,1],[m.away,-1]].forEach(([n,sgn],k)=>b.forEach((r,i)=>L.push({id:(k+1)+'abc'[i],label:n+' '+(r[1]?'de '+r[0]+' à '+r[1]:'de '+r[0]+' ou +'),fn:(h,a)=>{const d=(h-a)*sgn;return d>=r[0]&&(!r[1]||d<=r[1])}})));return L}}];
+}
+const RUGBY={tl:45,step:10,unit:'points',sd:14,bands:[[1,7],[8,14],[15]]};
+const HAND={tl:58,step:4,unit:'buts',sd:5,bands:[[1,3],[4,6],[7]]};
+function mmaMarkets(m){
+  const M=[['KO','par KO/TKO'],['SUB','par soumission'],['DEC','aux points (décision)']];
+  return [WIN('Vainqueur du combat'),
+    {key:'meth',title:'Vainqueur et méthode',opts:m=>{const L=[];[[m.home,1],[m.away,2]].forEach(([n,k])=>M.forEach(([c,t])=>L.push({id:k+c,label:n+' '+t,fn:(h,a,w)=>(k===1?h>a:a>h)&&w===c})));return L}},
+    {key:'dist',title:'Le combat va jusqu\'à la décision',opts:()=>[{id:'oui',label:'Oui',fn:(h,a,w)=>w==='DEC'},{id:'non',label:'Non',fn:(h,a,w)=>w!=='DEC'}]}];
+}
+function scoreTxt(m){
+  if(!m.s)return'';
+  if(m.sp==='mma'){const w={KO:'KO/TKO',SUB:'soumission',DEC:'décision'}[m.s[2]]||'';return 'victoire '+(m.s[0]>m.s[1]?m.home:m.away)+(w?' ('+w+')':'')}
+  return m.s[0]+'-'+m.s[1];
+}
+const SPORTS={
+  foot:{name:'Football',ic:'⚽',col:'#16a34a',three:true,markets:()=>MARKETS},
+  tennis:{name:'Tennis',ic:'🎾',col:'#9bb10a',three:false,markets:setsMarkets},
+  basket:{name:'Basket',ic:'🏀',col:'#f0640f',three:false,markets:basketMarkets},
+  hockey:{name:'Hockey',ic:'🏒',col:'#0ea5e9',three:true,markets:()=>HOCKEY_MARKETS},
+  tt:{name:'Ping-pong',ic:'🏓',col:'#14b8a6',three:false,markets:setsMarkets},
+  rugby:{name:'Rugby',ic:'🏉',col:'#b45309',three:true,markets:m=>teamPointsMarkets(m,RUGBY)},
+  hand:{name:'Handball',ic:'🤾',col:'#8b5cf6',three:true,markets:m=>teamPointsMarkets(m,HAND)},
+  mma:{name:'MMA',ic:'🥊',col:'#e11d48',three:false,markets:mmaMarkets}
+};
+const SPORT_ORDER=['foot','tennis','basket','rugby','hockey','hand','mma','tt'];
+function marketsOf(m){if(!m._mk)m._mk=SPORTS[m.sp].markets(m);return m._mk}
+
+/* ---------- Modèle de cotes : on part des cotes du vainqueur pour calculer les autres marchés ---------- */
+const GRID=[];for(let i=1;i<=120;i++)GRID.push(i*0.05);
+const PV=GRID.map(l=>{const v=[];for(let k=0;k<=14;k++)v.push(pois(k,l));return v});
+const CV=PV.map(v=>{const c=[];let s=0;for(let k=0;k<=14;k++){c.push(s);s+=v[k]}return c});
+function fitGoals(o){
+  const inv=o.map(x=>1/x),s=inv[0]+inv[1]+inv[2],q=inv.map(x=>x/s);
+  let best=1e9,bi=20,bj=20;
+  for(let i=0;i<GRID.length;i++){const A=PV[i];
+    for(let j=0;j<GRID.length;j++){const B=PV[j],C=CV[j];let p1=0,pn=0;
+      for(let x=0;x<=14;x++){p1+=A[x]*C[x];pn+=A[x]*B[x]}
+      const e=(p1-q[0])**2+(pn-q[1])**2+(1-p1-pn-q[2])**2;
+      if(e<best){best=e;bi=i;bj=j}}}
+  return[GRID[bi],GRID[bj]];
+}
+function fitHockey(o,T){ // total de buts fixé (≈6 en NHL), on ajuste la répartition sur les cotes 1 et 2
+  const t=1/o[0]/(1/o[0]+1/o[2]);let best=1e9,bk=.5;
+  for(let k=0.15;k<=0.85;k+=0.005){const lh=T*k,la=T*(1-k);let p1=0,p2=0;
+    for(let i=0;i<=14;i++)for(let j=0;j<=14;j++){const p=pois(i,lh)*pois(j,la);if(i>j)p1+=p;else if(j>i)p2+=p}
+    const e=Math.abs(p1/(p1+p2)-t);if(e<best){best=e;bk=k}}
+  return[T*bk,T*(1-bk)];
+}
+const p2way=o=>{const a=1/o[0],b=1/o[1];return a/(a+b)};
+function setsDist(p,bo){
+  const n=bo===5?3:2,C=(a,b)=>{let r=1;for(let i=1;i<=b;i++)r=r*(a-b+i)/i;return r};
+  const win=q=>{let t=0;for(let w=0;w<n;w++)t+=C(n-1+w,w)*Math.pow(q,n)*Math.pow(1-q,w);return t};
+  let lo=0.01,hi=0.99;for(let k=0;k<50;k++){const mid=(lo+hi)/2;if(win(mid)<p)lo=mid;else hi=mid}
+  const q=(lo+hi)/2,d=[];
+  for(let w=0;w<n;w++){d.push([n,w,C(n-1+w,w)*Math.pow(q,n)*Math.pow(1-q,w)]);d.push([w,n,C(n-1+w,w)*Math.pow(1-q,n)*Math.pow(q,w)])}
+  return d;
+}
+function invPhi(p){ // approximation de la loi normale inverse
+  const a=[-39.69683028665376,220.9460984245205,-275.9285104469687,138.357751867269,-30.66479806614716,2.506628277459239],b=[-54.47609879822406,161.5858368580409,-155.6989798598866,66.80131188771972,-13.28068155211218],c=[-0.007784894002430293,-0.3223964580411365,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783],dd=[0.007784695709041462,0.3224671290700398,2.445134137142996,3.754408661907416];
+  const pl=0.02425;let q,r;
+  if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1)}
+  if(p>1-pl){q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1)}
+  q=p-0.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+}
+function pointsDist(p,tl){
+  const sdM=12,sdT=16,mu=sdM*invPhi(Math.min(.995,Math.max(.005,p))),d=[];
+  const g=(x,s)=>Math.exp(-x*x/(2*s*s));
+  for(let D=-60.5;D<=60.5;D+=1){const wD=g(D-mu,sdM);if(wD<1e-6)continue;
+    for(let T=-60;T<=60;T+=2){const wT=g(T,sdT);d.push([(tl+T+D)/2,(tl+T-D)/2,wD*wT])}}
+  return{d,mu};
+}
+function points3Dist(o,tl,sdM){
+  const p1=1/o[0],p2=1/o[2],mu=sdM*invPhi(Math.min(.995,Math.max(.005,p1/(p1+p2)))),sdT=Math.max(6,tl*0.22),d=[];
+  const g=(x,s)=>Math.exp(-x*x/(2*s*s));
+  for(let D=-Math.round(5*sdM);D<=Math.round(5*sdM);D++){const wD=g(D-mu,sdM);if(wD<1e-6)continue;
+    for(let T=-Math.round(3*sdT);T<=Math.round(3*sdT);T+=2){d.push([(tl+T+D)/2,(tl+T-D)/2,wD*g(T,sdT)])}}
+  return{d,mu};
+}
+function mmaDist(p){
+  const f={KO:.4,SUB:.2,DEC:.4},d=[];
+  for(const w in f){d.push([1,0,p*f[w],w]);d.push([0,1,(1-p)*f[w],w])}
+  return d;
+}
+const FIX={};
+let lastSync=null;
+function build(day,arr){
+  const old=FIX[day]||[];
+  FIX[day]=arr.map(r=>{
+    const sp=SPORTS[r.sp]?r.sp:'foot';
+    const prev=old.find(m=>m.id===day+'_'+r.id);
+    const m={id:day+'_'+r.id,day,sp,comp:r.c||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:r.h,away:r.a,ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
+    const same=prev&&prev.o.join()===r.o.join()&&prev.tl===r.tl&&prev.bo===m.bo;
+    if(same){m.dist=prev.dist;m.hl=prev.hl}
+    else if(sp==='foot'||sp==='hockey'){
+      const lam=sp==='hockey'?fitHockey(r.o,r.tl||6):fitGoals(r.o),d=[];for(let i=0;i<=14;i++)for(let j=0;j<=14;j++)d.push([i,j,pois(i,lam[0])*pois(j,lam[1])]);m.dist=d;
+    }else if(sp==='basket'){const pd=pointsDist(p2way(r.o),r.tl||200);m.dist=pd.d;m.hl=-(Math.round(pd.mu)+(pd.mu>=0?0.5:-0.5))}
+    else if(sp==='rugby'||sp==='hand'){const cfg=sp==='rugby'?RUGBY:HAND,pd=points3Dist(r.o,r.tl||cfg.tl,cfg.sd);m.dist=pd.d;m.hl=-(Math.round(pd.mu)+(pd.mu>=0?0.5:-0.5))}
+    else if(sp==='mma')m.dist=mmaDist(p2way(r.o));
+    else m.dist=setsDist(p2way(r.o),m.bo);
+    if((sp==='basket'||sp==='rugby'||sp==='hand')&&m.hl==null)m.hl=-0.5;
+    let t=0;for(const x of m.dist)t+=x[2];m.tot=t;
+    return m;
+  }).sort((a,b)=>a.ko-b.ko);
+}
+function findMatch(id){const d=id.split('_')[0];return(FIX[d]||[]).find(m=>m.id===id)}
+function mkTitle(mk,m){return typeof mk.title==='function'?mk.title(m):mk.title}
+function marketOf(m,mk){return marketsOf(m).find(k=>k.key===mk)||null}
+function getOpt(m,mk,opt){const K=marketOf(m,mk);if(!K)return null;return K.opts(m).find(o=>o.id===opt)||null}
+function oddsOf(m,mk,opt){
+  if(mk==='1x2'){const i={'1':0,'N':1,'2':2}[opt];return m.o[i]}
+  if(mk==='win'){return m.o[opt==='1'?0:1]}
+  const key=mk+'|'+opt;if(key in m._o)return m._o[key];
+  const o=getOpt(m,mk,opt);if(!o)return null;
+  let p=0;for(const x of m.dist)if(o.fn(x[0],x[1],x[3]))p+=x[2];
+  p/=m.tot;
+  const v=p<0.004?null:Math.min(250,Math.max(1.01,Math.floor(100/(p*1.065))/100));
+  return m._o[key]=v;
+}
+function status(m){
+  if(m.x)return'annule';
+  if(m.s)return'fini';
+  if(Date.now()>=m.ko)return'live';
+  return'avenir';
+}
+
+/* ---------- État & sauvegarde ---------- */
+function fresh(){return{v:2,updated:0,day:today(),coins:DAILY,diamonds:0,bets:[],inv:{boost:0,shield:0},owned:[],title:null,theme:null,nameFx:null,frame:null,stats:{won:0,lost:0,earned:0,best:0},streak:{n:0,last:null},week:{id:weekId(),earned:0},defis:[]}}
+let state=fresh();
+const ui={tab:'matchs',sport:'foot',comp:'all',open:null,slip:[],mode:'simple',stakes:{},combi:100,boost:false,shield:false,betFilter:'pending',authMode:'login',board:null,boards:{week:null,all:null},boardMode:'week',social:'chat',chatDraft:'',ligues:null,ligue:null,ligueBoard:null,filleuls:0};
+const LS_SESSION='pronoclub_session';
+let session=null,writing=false,pending=false,saveTimer=null,synced=false;
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+try{session=JSON.parse(lsGet(LS_SESSION)||'null')}catch(e){}
+(function(){try{const q=new URLSearchParams(location.search),p=q.get('p'),l=q.get('l');
+  if(p&&/^[A-Za-z0-9_.-]{3,20}$/.test(p)&&!(session&&session.pseudo.toLowerCase()===p.toLowerCase()))lsSet('pc_parrain',p);
+  if(l&&/^[A-Za-z0-9]{6}$/.test(l))lsSet('pc_ligue',l.toUpperCase());
+  if(q.has('paris'))ui.tab='paris';
+  if(q.has('chat')){ui.tab='chat';ui.social='chat'}
+  if(q.has('amis')){ui.tab='chat';ui.social='amis';const ap=q.get('amis');if(ap)ui.mpStart=ap}
+  if(q.has('ligues')){ui.tab='chat';ui.social='ligues'}
+  if(location.search)history.replaceState(null,'',location.pathname)}catch(e){}})();
+if(session){try{const s=lsGet('pronoclub_state_'+session.pseudo.toLowerCase());if(s)state=Object.assign(fresh(),JSON.parse(s))}catch(e){}}
+
+/* --- Supabase : comptes, sauvegarde, classement --- */
+async function rpc(fn,args){
+  const r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(args||{})});
+  const txt=await r.text();let data=null;try{data=txt?JSON.parse(txt):null}catch(e){}
+  if(!r.ok){const e=new Error((data&&data.message)||('Erreur '+r.status));e.code=data&&data.message;throw e}
+  return data;
+}
+const ERR={pseudo_invalide:'Pseudo : 3 à 20 caractères (lettres, chiffres, _ . -).',mdp_court:'Le mot de passe doit faire au moins 6 caractères.',pseudo_pris:'Ce pseudo est déjà pris.',identifiants:'Pseudo ou mot de passe incorrect.',session:'Session expirée, reconnectez-vous.'};
+function save(){
+  if(!session||!synced)return;
+  state.updated=Date.now();
+  if(session)lsSet('pronoclub_state_'+session.pseudo.toLowerCase(),JSON.stringify(state));
+  clearTimeout(saveTimer);saveTimer=setTimeout(pushRemote,1200);
+}
+async function pushRemote(){
+  if(!session)return;
+  if(writing){pending=true;return}
+  writing=true;
+  try{await rpc('sauver',{p_token:session.token,p_etat:state})}catch(e){if(e.code==='session')logout(ERR.session)}
+  writing=false;
+  if(pending){pending=false;pushRemote()}
+}
+async function startSession(res){
+  session={token:res.token,pseudo:res.pseudo};
+  lsSet(LS_SESSION,JSON.stringify(session));
+  state=res.etat?Object.assign(fresh(),res.etat):fresh();
+  synced=true;
+  closeAuth();tick(true);loadFixtures();
+  toast('👋 Bienvenue '+session.pseudo+' !');
+  afterLogin();
+}
+async function afterLogin(){
+  await claimBonus();
+  const lc=lsGet('pc_ligue');
+  if(lc&&session){try{const r=await rpc('ligue_rejoindre',{p_token:session.token,p_code:lc});lsSet('pc_ligue',null);ui.ligues=null;
+    popup('<div class="pop-ic big">👥</div><h3>Bienvenue dans la ligue</h3><p>Vous avez rejoint <b>'+esc(r.nom)+'</b>. Retrouvez son classement dans l\'onglet Social.</p><div class="pop-btns"><button class="pbtn" data-tab="chat" data-social="ligues" data-ligue="'+esc(r.code)+'">Voir la ligue</button></div>')}
+    catch(e){if(e.code==='code_inconnu'||e.code==='ligue_pleine'||e.code==='trop_de_ligues'){lsSet('pc_ligue',null);toast(LG_ERR[e.code])}}}
+}
+async function claimBonus(){
+  if(!session||!synced)return;
+  try{const r=await rpc('bonus_recuperer',{p_token:session.token});if(!r)return;ui.filleuls=r.filleuls||0;
+    if(r.bonus>0){state.coins+=r.bonus;save();renderAll();
+      celebrate('🎁','Bonus de parrainage','<b>+'+nf(r.bonus)+' pièces</b> ajoutées à vos pièces du jour. Merci de faire grandir le club !')}}catch(e){}
+}
+async function refreshFromServer(){
+  if(!session)return;
+  try{const res=await rpc('charger',{p_token:session.token});
+    if(res&&res.etat&&(!synced||(res.etat.updated||0)>(state.updated||0)))state=Object.assign(fresh(),res.etat);
+    const first=!synced;synced=true;
+    if(first&&!(res&&res.etat))save();
+    tick(false);
+    if(first)afterLogin();
+  }catch(e){if(e.code==='session')logout(ERR.session)}
+}
+function logout(msg){
+  session=null;synced=false;lsSet(LS_SESSION,null);state=fresh();ui.slip=[];ui.ligues=null;ui.ligue=null;ui.filleuls=0;ui.amis=null;
+  try{if(mp.open)closeMp();if(profOpen)closeProfil()}catch(e){}
+  renderAll();openAuth(msg);
+}
+async function loadBoard(){
+  const mode=ui.boardMode;
+  try{ui.boards[mode]=await rpc('classement',{p_semaine:mode==='week'})}
+  catch(e){try{const r=await rpc('classement',{});ui.boards.all=r;ui.boards.week='old'}catch(e2){ui.boards[mode]='err'}}
+  if(ui.tab==='chat'&&ui.social==='board')renderView();
+}
+
+/* --- Matchs : fichiers fixtures/AAAA-MM-JJ.json publiés avec le site --- */
+async function loadFixtures(){
+  const days=new Set([addDays(today(),-1),today(),addDays(today(),1)]);
+  for(const b of state.bets)if(b.status==='pending')for(const s of b.sels)days.add(s.matchId.split('_')[0]);
+  for(const d of state.defis||[])if(d.status==='pending')days.add(d.matchId.split('_')[0]);
+  let changed=false;const v=Math.floor(Date.now()/60000);
+  await Promise.all([...days].map(async d=>{
+    try{const r=await fetch('fixtures/'+d+'.json?v='+v,{cache:'no-store'});
+      if(!r.ok)return;const arr=await r.json();
+      if(Array.isArray(arr)){build(d,arr);changed=true}}catch(e){}
+  }));
+  lastSync=Date.now();
+  tick(changed);
+}
+
+const streakBonus=n=>Math.min(Math.max(n,1),7)*100;
+function streakDots(n){let h='<div class="sdots">';const f=n>7?7:n;for(let i=1;i<=7;i++)h+='<div class="'+(i<=f?'on':'')+'">J'+i+'<br>+'+i*100+'</div>';return h+'</div>'}
+function daily(){
+  let ch=false;
+  if(!state.week||state.week.id!==weekId()){state.week={id:weekId(),earned:0};ch=true}
+  if(!state.streak)state.streak={n:0,last:null};
+  if(!state.defis)state.defis=[];
+  if(state.day!==today()){
+    state.day=today();state.coins=DAILY;
+    if(state.bets.length>300)state.bets=state.bets.slice(-300);
+    if(!session)toast('☀️ Nouvelle journée : vous avez '+nf(DAILY)+' pièces !');
+    ch=true;
+  }
+  if(session&&synced&&state.streak.last!==today()){
+    const s=state.streak;s.n=s.last===addDays(today(),-1)?s.n+1:1;s.last=today();
+    const bonus=streakBonus(s.n);state.coins+=bonus;ch=true;
+    setTimeout(()=>celebrate('🔥','Série de '+s.n+' jour'+(s.n>1?'s':''),nf(DAILY)+' pièces du jour + <b>'+nf(bonus)+' pièces de bonus</b> !<br>Revenez demain pour <b>+'+nf(streakBonus(s.n+1))+'</b>.',streakDots(s.n)),600);
+  }
+  return ch;
+}
+function settle(){
+  let ch=false;
+  for(const b of state.bets){
+    if(b.status!=='pending')continue;
+    const ms=b.sels.map(s=>findMatch(s.matchId));
+    if(ms.some(m=>!m||(status(m)!=='fini'&&status(m)!=='annule')))continue;
+    let won=true,odds=1,allVoid=true;
+    b.sels.forEach((s,i)=>{const m=ms[i];
+      if(status(m)==='annule'){s.void=true;return}
+      allVoid=false;const o=getOpt(m,s.mk,s.opt);
+      if(!(o&&o.fn(m.s[0],m.s[1],m.s[2])))won=false;else odds*=s.odds});
+    if(b.boost)odds*=1.1;
+    if(allVoid){b.status='void';b.payout=b.stake;state.diamonds+=b.stake;toast('↩️ Match annulé : mise rendue ('+nf(b.stake)+' 💎)')}
+    else if(won){
+      b.odds=Math.round(odds*100)/100;b.status='won';b.payout=Math.round(b.stake*b.odds);state.diamonds+=b.payout;
+      state.stats.won++;state.stats.earned+=b.payout;state.stats.best=Math.max(state.stats.best,b.odds);
+      if(state.week)state.week.earned+=b.payout;
+      toast('🎉 Pari gagné ! +'+nf(b.payout)+' 💎');
+    }else{
+      b.status='lost';b.payout=0;state.stats.lost++;
+      if(b.shield){b.refund=b.stake;state.diamonds+=b.stake;toast('🛡️ Pari perdu, mais assuré : +'+nf(b.stake)+' 💎')}
+    }
+    b.settledAt=Date.now();ch=true;
+  }
+  for(const d of state.defis||[]){
+    if(d.status!=='pending')continue;
+    const m=findMatch(d.matchId);if(!m)continue;const st=status(m);
+    if(st==='annule'){d.status='void';ch=true}
+    else if(st==='fini'){const o=getOpt(m,d.mk,d.opt);
+      if(o&&o.fn(m.s[0],m.s[1],m.s[2])){d.status='won';state.diamonds+=DEFI_GAIN;if(state.week)state.week.earned+=DEFI_GAIN;toast('🎯 Défi du jour réussi ! +'+DEFI_GAIN+' 💎')}
+      else d.status='lost';ch=true}
+  }
+  return ch;
+}
+
+/* ---------- Coupon ---------- */
+const selKey=s=>s.matchId+'|'+s.mk+'|'+s.opt;
+function inSlip(id,mk,opt){return ui.slip.some(s=>s.matchId===id&&s.mk===mk&&s.opt===opt)}
+function toggleSel(id,mk,opt){
+  const i=ui.slip.findIndex(s=>s.matchId===id&&s.mk===mk&&s.opt===opt);
+  if(i>=0)ui.slip.splice(i,1);
+  else{
+    if(ui.slip.length>=12){toast('12 sélections maximum');return}
+    const s={matchId:id,mk,opt};ui.slip.push(s);
+    if(!(selKey(s) in ui.stakes))ui.stakes[selKey(s)]=100;
+  }
+  renderSlip();renderView();
+}
+function slipCalc(){
+  const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?oddsOf(m,s.mk,s.opt):1,open:m&&status(m)==='avenir'}}).filter(s=>s.m);
+  const single=(ui.mode==='simple'&&sels.length===1)||(ui.mode==='combi'&&sels.length>=2);
+  const boostOn=ui.boost&&single&&state.inv.boost>0, shieldOn=ui.shield&&single&&state.inv.shield>0;
+  let total=0,gain=0,err='',combiOdds=1;
+  if(ui.mode==='simple'){
+    for(const s of sels){const st=Math.max(0,Math.floor(+ui.stakes[selKey(s)]||0));total+=st;gain+=st*s.odds*(boostOn?1.1:1)}
+  }else{
+    for(const s of sels)combiOdds*=s.odds;
+    combiOdds=Math.round(combiOdds*(boostOn?1.1:1)*100)/100;
+    total=Math.max(0,Math.floor(+ui.combi||0));gain=total*combiOdds;
+    const ids=sels.map(s=>s.matchId);
+    if(sels.length<2)err='Un combiné demande au moins 2 sélections.';
+    else if(new Set(ids).size!==ids.length)err='Un combiné ne peut pas contenir 2 paris sur le même match.';
+  }
+  if(!err&&sels.some(s=>!s.open))err='Un des matchs a commencé : retirez-le du coupon.';
+  if(!err&&total>state.coins)err='Pas assez de pièces (il vous reste '+nf(state.coins)+').';
+  if(!err&&sels.length&&(ui.mode==='simple'?sels.some(s=>!(Math.floor(+ui.stakes[selKey(s)]||0)>0)):!(total>0)))err='Indiquez une mise pour chaque pari.';
+  return{sels,single,boostOn,shieldOn,total,gain,err,combiOdds};
+}
+function placeBets(){
+  const c=slipCalc();if(c.err||!c.sels.length)return;
+  const snap=s=>({matchId:s.matchId,mk:s.mk,opt:s.opt,odds:s.odds,match:s.m.home+' – '+s.m.away,market:mkTitle(marketOf(s.m,s.mk),s.m),pick:getOpt(s.m,s.mk,s.opt).label,comp:s.m.flag+' '+s.m.comp,ko:s.m.ko});
+  const base={placedAt:Date.now(),status:'pending',boost:c.boostOn,shield:c.shieldOn};
+  if(ui.mode==='simple'){
+    for(const s of c.sels){const st=Math.floor(+ui.stakes[selKey(s)]);state.bets.push({...base,id:uid(),type:'Simple',sels:[snap(s)],stake:st,odds:Math.round(s.odds*(c.boostOn?1.1:1)*100)/100})}
+  }else{
+    state.bets.push({...base,id:uid(),type:'Combiné ('+c.sels.length+')',sels:c.sels.map(snap),stake:Math.floor(+ui.combi),odds:c.combiOdds});
+  }
+  state.coins-=c.total;
+  if(c.boostOn)state.inv.boost--;
+  if(c.shieldOn)state.inv.shield--;
+  ui.slip=[];ui.boost=false;ui.shield=false;
+  save();
+  $('#aside').classList.remove('open');
+  renderAll();
+  const last=state.bets[state.bets.length-1];
+  popup('<div class="pop-ic big">✅</div><h3>Pari validé !</h3><p><b>'+nf(c.total)+' pièces</b> misées · gain possible <b style="color:#1f7bff">'+nf(c.gain)+' 💎</b></p><div class="pop-btns"><button class="pbtn" data-sharebet="'+last.id+'">📤 Partager mon coupon</button><button class="pbtn ghost2" data-popclose="1">Continuer</button></div>'+(notifSupport()&&!notifOn()?'<button class="later" data-notifs="1">🔔 Me prévenir quand le résultat tombe</button>':''));
+}
+
+/* ---------- Joueurs : décorations ---------- */
+const NAMEFX=['nx-gold','nx-neon','nx-fire','nx-rainbow'],FRAMES=['fr-fire','fr-ice','fr-gold','fr-crown'];
+function myDeco(){return{t:state.title||undefined,c:state.nameFx||undefined,f:state.frame||undefined}}
+function pav(p,d){d=d||{};return FRAMES.includes(d.f)?'<span class="frm '+d.f+'">'+avatar(p)+'</span>':avatar(p)}
+function pname(p,d,extra){d=d||{};return '<span class="pn'+(NAMEFX.includes(d.c)?' '+d.c:'')+'">'+esc(p)+'</span>'+(extra||'')+(d.t?' <span class="ptitle">'+esc(d.t)+'</span>':'')}
+function compRank(m){const i=TOP.findIndex(t=>m.comp===t||m.comp.startsWith(t+' '));return i<0?99:i}
+
+/* ---------- Fenêtres (popups) ---------- */
+const popQ=[];
+function popup(html){
+  const M=$('#popModal');
+  if(M.classList.contains('open')){popQ.push(html);return}
+  $('#popBox').innerHTML='<button class="pop-x" data-popclose="1" aria-label="Fermer">×</button>'+html;M.classList.add('open');
+}
+function closePop(){$('#popModal').classList.remove('open');if(popQ.length)setTimeout(()=>popup(popQ.shift()),180)}
+function celebrate(ic,title,text,extra){popup('<div class="pop-ic big">'+ic+'</div><h3>'+title+'</h3><p>'+text+'</p>'+(extra||'')+'<div class="pop-btns"><button class="pbtn" data-popclose="1">Super !</button></div>')}
+const SITE=()=>location.origin+location.pathname;
+function copyText(t){
+  const ok=()=>toast('📋 Lien copié !');
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(ok,()=>fallback());else fallback();
+  function fallback(){const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){toast('Copiez le lien à la main')}a.remove()}
+}
+async function shareLink(text,url){
+  if(navigator.share){try{await navigator.share({title:'PronoClub',text,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  copyText(url);
+}
+function sharePopup(ic,title,desc,text,url){
+  popup('<div class="pop-ic big">'+ic+'</div><h3>'+title+'</h3><p>'+desc+'</p><div class="linkbox">'+esc(url)+'</div><div class="pop-btns">'+
+    '<a class="pbtn wa" href="https://wa.me/?text='+encodeURIComponent(text+' '+url)+'" target="_blank" rel="noopener">WhatsApp</a>'+
+    '<button class="pbtn" data-sharetxt="'+esc(text)+'" data-shareurl="'+esc(url)+'">📤 Partager</button>'+
+    '<button class="pbtn ghost2" data-copy="'+esc(url)+'">📋 Copier</button></div>');
+}
+function openInvite(){
+  if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour obtenir votre lien d\'invitation.');return}
+  const url=SITE()+'?p='+encodeURIComponent(session.pseudo);
+  sharePopup('🎁','Invite tes potes','Chaque ami qui crée son compte avec ton lien : <b>+'+PARRAIN_BONUS+' pièces pour toi et +'+PARRAIN_BONUS+' pour lui</b>.'+(ui.filleuls?'<br>Déjà <b>'+ui.filleuls+'</b> ami'+(ui.filleuls>1?'s':'')+' parrainé'+(ui.filleuls>1?'s':'')+' 💪':''),
+    'Viens parier gratuitement avec moi sur PronoClub ⚽🏀🎾 1 000 pièces par jour, et '+PARRAIN_BONUS+' pièces offertes avec mon lien !',url);
+}
+function shareLigue(code,nom){
+  const url=SITE()+'?l='+code+(session?'&p='+encodeURIComponent(session.pseudo):'');
+  sharePopup('👥','Inviter dans « '+esc(nom)+' »','Vos amis rejoignent la ligue en ouvrant ce lien (ou avec le code <b>'+code+'</b> dans l\'onglet Social → Ligues).',
+    'Rejoins ma ligue « '+nom+' » sur PronoClub et viens me battre ! Code : '+code,url);
+}
+
+/* ---------- Notifications ---------- */
+const NPREFS=[['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat']];
+const NPROPRIO=[['proprio_comptes','👤','Nouveaux joueurs','Chaque nouveau compte créé'],['proprio_chat','💬','Messages du chat','Tous les messages, pour surveiller le salon']];
+const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+function notifSupport(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
+function notifOn(){return session&&lsGet('pc_notif')===session.pseudo&&notifSupport()&&Notification.permission==='granted'}
+function b64u(k){const p='='.repeat((4-k.length%4)%4),b=atob((k+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0))}
+async function swReg(){const r=await Promise.race([navigator.serviceWorker.ready,new Promise(x=>setTimeout(()=>x(null),6000))]);if(!r)throw new Error('sw');return r}
+async function openNotifs(){
+  closeAuth();
+  if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour recevoir des notifications.');return}
+  if(!notifSupport()){
+    if(isIOS&&!isStandalone())popup('<div class="pop-ic big">📲</div><h3>D\'abord, installez l\'appli</h3><p>Sur iPhone, les notifications marchent seulement avec l\'appli installée :<br>1. Touchez <b>Partager</b> (le carré avec la flèche) en bas de Safari.<br>2. Choisissez <b>« Sur l\'écran d\'accueil »</b>.<br>3. Ouvrez PronoClub <b>depuis la nouvelle icône</b>, puis revenez ici.</p><div class="pop-btns"><button class="pbtn" data-popclose="1">Compris</button></div>');
+    else popup('<div class="pop-ic big">🔕</div><h3>Pas disponible ici</h3><p>Ce navigateur ne permet pas les notifications. Essayez avec Chrome, Firefox ou Edge (ou Safari sur iPhone, avec l\'appli installée).</p><div class="pop-btns"><button class="pbtn" data-popclose="1">OK</button></div>');
+    return}
+  ui.notif={loading:true};renderNotifPop();
+  let sub=null,st=null;
+  try{const reg=await swReg();sub=await reg.pushManager.getSubscription()}catch(e){}
+  try{st=await rpc('notif_etat',{p_token:session.token,p_endpoint:sub?sub.endpoint:''})}
+  catch(e){ui.notif={off:true};renderNotifPop();return}
+  const def={};NPREFS.forEach(x=>def[x[0]]=true);if(st&&st.proprio)NPROPRIO.forEach(x=>def[x[0]]=true);
+  const on=!!(sub&&st&&st.abonne&&Notification.permission==='granted');
+  if(on)lsSet('pc_notif',session.pseudo);else if(lsGet('pc_notif')===session.pseudo)lsSet('pc_notif',null);
+  ui.notif={sub,on,proprio:!!(st&&st.proprio),prefs:Object.assign(def,(st&&st.prefs)||{})};
+  renderNotifPop();
+}
+function renderNotifPop(){
+  const N=ui.notif||{};let h='<div class="pop-ic big">🔔</div><h3>Notifications</h3>';
+  if(N.loading)h+='<p>Chargement…</p>';
+  else if(N.off)h+='<p>Les notifications ne sont pas encore activées sur le serveur. Il faut terminer la mise en place dans Supabase.</p><div class="pop-btns"><button class="pbtn" data-popclose="1">OK</button></div>';
+  else{
+    const row=x=>'<label class="nrow"><span class="ni">'+x[1]+'</span><span class="nt"><b>'+x[2]+'</b><small>'+x[3]+'</small></span><input type="checkbox" class="sw" data-npref="'+x[0]+'"'+(N.prefs[x[0]]?' checked':'')+'></label>';
+    h+='<p>'+(N.on?'✅ Activées sur ce téléphone. Choisissez ce que vous voulez recevoir :':'Soyez prévenu même quand l\'appli est fermée. Choisissez ce que vous voulez recevoir :')+'</p>'+
+      '<div class="nlist">'+NPREFS.map(row).join('')+(N.proprio?'<div class="nsec">👑 Propriétaire du site</div>'+NPROPRIO.map(row).join(''):'')+'</div>'+
+      (Notification.permission==='denied'?'<p class="nwarn">Les notifications sont bloquées pour ce site. Autorisez-les dans les réglages du navigateur (le cadenas à côté de l\'adresse), puis réessayez.</p>':'')+
+      '<div class="pop-btns">'+(N.on?'<button class="pbtn ghost2" id="notifOff">Désactiver sur ce téléphone</button><button class="pbtn" id="notifTest">Tester</button>':'<button class="pbtn" id="notifOnBtn">🔔 Activer les notifications</button>')+'</div>';
+  }
+  const M=$('#popModal');
+  if(M.classList.contains('open')&&$('#popBox').querySelector('.nbox')){$('#popBox .nbox').innerHTML=h;return}
+  popQ.length=0;M.classList.remove('open');popup('<div class="nbox">'+h+'</div>');
+}
+async function notifSave(){
+  const N=ui.notif;if(!N||!N.sub)return;
+  try{await rpc('notif_abonner',{p_token:session.token,p_sub:N.sub.toJSON(),p_prefs:N.prefs})}catch(e){toast('Réglage non enregistré, réessayez')}
+}
+async function notifActiver(){
+  const btn=$('#notifOnBtn');if(btn){btn.disabled=true;btn.textContent='⏳ Activation…'}
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){toast('🔕 Notifications refusées');renderNotifPop();return}
+    const key=await rpc('notif_cle',{});
+    if(!key){toast('Le serveur de notifications n\'est pas encore prêt. Réessayez dans 2 minutes.');renderNotifPop();return}
+    const reg=await swReg();
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(key)});
+    ui.notif.sub=sub;
+    const r=await rpc('notif_abonner',{p_token:session.token,p_sub:sub.toJSON(),p_prefs:ui.notif.prefs});
+    ui.notif.on=true;lsSet('pc_notif',session.pseudo);
+    if(r&&r.proprio&&!ui.notif.proprio){ui.notif.proprio=true;NPROPRIO.forEach(x=>ui.notif.prefs[x[0]]=true);notifSave()}
+    renderNotifPop();renderView();
+    reg.showNotification('🔔 Notifications activées',{body:'Vous serez prévenu des résultats de vos paris et des défis du jour.',icon:'icons/icon-192.png',badge:'icons/favicon.png'});
+  }catch(e){toast('Activation impossible sur ce navigateur');renderNotifPop()}
+}
+async function notifDesactiver(){
+  const N=ui.notif;
+  try{if(N.sub){await rpc('notif_desabonner',{p_token:session.token,p_endpoint:N.sub.endpoint});await N.sub.unsubscribe()}}catch(e){}
+  ui.notif.on=false;ui.notif.sub=null;lsSet('pc_notif',null);renderNotifPop();renderView();toast('🔕 Notifications désactivées');
+}
+async function notifUnlinkOnLogout(tok){
+  try{if(!notifSupport()||!tok)return;const reg=await swReg();const sub=await reg.pushManager.getSubscription();
+    if(sub)await rpc('notif_desabonner',{p_token:tok,p_endpoint:sub.endpoint})}catch(e){}
+  lsSet('pc_notif',null);
+}
+
+/* ---------- Image du coupon à partager ---------- */
+function rr(x,X,Y,W,H,R){x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()}
+function fitT(x,t,w){t=String(t);if(x.measureText(t).width<=w)return t;while(t.length>1&&x.measureText(t+'…').width>w)t=t.slice(0,-1);return t+'…'}
+function betImage(b){
+  const W=1080,sels=b.sels.slice(0,6),rowH=132,cardH=60+sels.length*rowH+(b.sels.length>6?50:0)+170,H=Math.max(1350,360+cardH+260);
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#ff1f3d');g.addColorStop(.5,'#d4148f');g.addColorStop(1,'#4a1fd0');x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.globalAlpha=.13;x.fillStyle='#fff';x.beginPath();x.arc(W-90,150,260,0,7);x.fill();x.beginPath();x.arc(60,H-140,240,0,7);x.fill();x.globalAlpha=1;
+  const F='Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+  x.fillStyle='#fff';x.font='800 60px '+F;x.textBaseline='alphabetic';x.fillText('⚽ PronoClub',70,125);
+  const won=b.status==='won',title=won?'PARI GAGNÉ ✅':b.status==='lost'?'MON PARI':'MON PARI 🔥';
+  x.font='900 96px '+F;x.fillText(title,70,255);
+  x.globalAlpha=.88;x.font='600 38px '+F;x.fillText(fitT(x,b.type+(session?' · par '+session.pseudo:''),W-140),72,315);x.globalAlpha=1;
+  const cy=360+Math.max(0,(H-(360+cardH+260))/2);x.fillStyle='#fff';rr(x,50,cy,W-100,cardH,40);x.fill();
+  let y=cy+40;
+  sels.forEach((s,i)=>{
+    if(i){x.fillStyle='#eceef4';x.fillRect(90,y-10,W-180,3)}
+    x.fillStyle='#7a8396';x.font='600 30px '+F;x.fillText(fitT(x,s.match,W-200),90,y+38);
+    x.fillStyle='#111827';x.font='800 40px '+F;x.fillText(fitT(x,s.pick,W-380),90,y+92);
+    x.fillStyle='#e0182d';x.font='900 44px '+F;x.textAlign='right';x.fillText(fo(s.odds),W-90,y+92);x.textAlign='left';
+    y+=rowH;
+  });
+  if(b.sels.length>6){x.fillStyle='#7a8396';x.font='600 30px '+F;x.fillText('+ '+(b.sels.length-6)+' autres sélections',90,y+20);y+=50}
+  const by=cy+cardH-170;x.fillStyle='#f4f5fa';rr(x,80,by,W-160,130,28);x.fill();
+  const col=(lbl,val,cx,color)=>{x.textAlign='center';x.fillStyle='#7a8396';x.font='700 28px '+F;x.fillText(lbl,cx,by+50);x.fillStyle=color;x.font='900 42px '+F;x.fillText(val,cx,by+102);x.textAlign='left'};
+  col('Mise',nf(b.stake)+' 🪙',W*0.22,'#111827');col('Cote',fo(b.odds),W*0.5,'#e0182d');col(won?'Gagné':'Gain possible',nf(won?b.payout:b.stake*b.odds)+' 💎',W*0.78,'#1f6fe0');
+  x.fillStyle='#fff';x.textAlign='center';x.font='800 44px '+F;x.fillText('Parie gratuitement avec moi 👇',W/2,H-150);
+  x.font='700 36px '+F;x.globalAlpha=.92;x.fillText(SITE().replace(/^https?:\/\//,'').replace(/\/$/,''),W/2,H-90);x.globalAlpha=1;x.textAlign='left';
+  return new Promise(r=>c.toBlob(r,'image/png'));
+}
+async function shareBet(id){
+  const b=state.bets.find(x=>x.id===id);if(!b)return;
+  closePop();
+  const blob=await betImage(b);if(!blob){toast('Image impossible à créer');return}
+  const url=SITE()+(session?'?p='+encodeURIComponent(session.pseudo):''),txt=(b.status==='won'?'Pari gagné sur PronoClub ✅ ':'Mon pari sur PronoClub 🔥 ')+'Viens jouer gratuitement :';
+  const file=new File([blob],'pronoclub-pari.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:txt+' '+url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  const u=URL.createObjectURL(blob);
+  popup('<h3>📤 Votre coupon</h3><img class="prev" src="'+u+'" alt="Coupon"><div class="pop-btns"><a class="pbtn" href="'+u+'" download="pronoclub-pari.png">⬇️ Télécharger l\'image</a><a class="pbtn wa" href="https://wa.me/?text='+encodeURIComponent(txt+' '+url)+'" target="_blank" rel="noopener">WhatsApp</a></div>');
+}
+
+/* ---------- Rendu ---------- */
+function renderHeader(){
+  $('#coins').textContent=nf(state.coins);$('#dias').textContent=nf(state.diamonds);
+  $('#titleChip').innerHTML=state.title?'<span class="title-chip">'+esc(state.title)+'</span>':'';
+  document.body.className=state.theme||'';
+  $('#userBtn').innerHTML=session?pav(session.pseudo,myDeco())+'<span class="un">'+esc(session.pseudo)+'</span>':'👤 <span class="un">Connexion</span>';
+  const sp=$('#streakPill');if(sp){const n=session&&state.streak?state.streak.n:0;sp.style.display=n?'':'none';sp.innerHTML='🔥 <b>'+n+'</b>'}
+  const n=state.bets.filter(b=>b.status==='pending').length;
+  document.querySelectorAll('.bnav button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===ui.tab));
+  const nl=liveMatches().filter(m=>status(m)==='live'&&Date.now()<m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3).length,bl=document.getElementById('bnLive');if(bl){bl.textContent=nl||'';bl.style.display=nl?'':'none'}
+  document.querySelectorAll('#nav button[data-tab="live"]').forEach(b=>b.textContent=nl?'🔴 Live ('+nl+')':'🔴 Live');
+  const bb=document.getElementById('bnBets');if(bb){bb.textContent=n||'';bb.style.display=n?'':'none'}
+  document.querySelectorAll('#nav button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.tab===ui.tab);
+    if(b.dataset.tab==='paris')b.innerHTML='Mes paris'+(n?'<span class="badge">'+n+'</span>':'');
+  });
+}
+function untilMidnight(){const n=new Date(),m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1);const mins=Math.ceil((m-n)/60000);return Math.floor(mins/60)+' h '+String(mins%60).padStart(2,'0')}
+
+function oddBtn(m,mk,o,closed,res,short){
+  const v=oddsOf(m,mk,o.id);
+  if(v==null)return'';
+  const on=inSlip(m.id,mk,o.id),won=res&&o.fn(res[0],res[1],res[2]);
+  return '<button class="odd'+(on?' on':'')+(won?' wonopt':'')+'" data-sel="'+m.id+'|'+mk+'|'+o.id+'" '+(closed?'disabled':'')+'><span>'+esc(short||o.label)+'</span><b>'+fo(v)+'</b></button>';
+}
+function whenHtml(m){
+  const st=status(m),late=st==='live'&&Date.now()>m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3;
+  if(st==='live')return late?'<span class="st done">Résultat bientôt</span>':'<span class="st live">● En direct</span>';
+  if(st==='fini')return'<span class="st done">Terminé</span>';
+  if(st==='annule')return'<span class="st done">'+esc(m.x)+'</span>';
+  const d=new Date(m.ko),tk=today(),k=dkey(d);
+  const lbl=k===tk?"Aujourd'hui":k===addDays(tk,1)?'Demain':d.toLocaleDateString('fr-FR',{weekday:'long'});
+  return '<span class="st">'+lbl+' · '+hhmm(m.ko)+'</span>';
+}
+function hashH(t){let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))%360;return h}
+function avatar(n){const w=n.replace(/[^\p{L}\p{N} ]/gu,'').split(/\s+/).filter(Boolean);const ini=(w.length>1?w[0][0]+w[w.length-1][0]:(w[0]||'?').slice(0,2)).toUpperCase();return '<span class="av" style="--h:'+hashH(n)+'">'+esc(ini)+'</span>'}
+function matchCard(m){
+  const st=status(m),closed=st!=='avenir',res=st==='fini'?m.s:null,three=SPORTS[m.sp].three;
+  const mks=marketsOf(m),first=mks[0];
+  const quick=first.opts(m).map(o=>oddBtn(m,first.key,o,closed,res,three?o.id:(o.id==='1'?'1':'2'))).join('');
+  const nb=mks.slice(1).reduce((n,k)=>n+k.opts(m).filter(o=>oddsOf(m,k.key,o.id)!=null).length,0);
+  const sc=(i)=>res?(m.sp==='mma'?(res[i]>res[1-i]?'<b class="sc win">✓ '+({KO:'KO',SUB:'Soum.',DEC:'Déc.'}[res[2]]||'')+'</b>':''):'<b class="sc'+(res[i]>res[1-i]?' win':'')+'">'+res[i]+'</b>'):'';
+  const myBets=state.bets.some(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
+  let html='<article class="mc'+(ui.open===m.id?' open':'')+'" style="--sc:'+SPORTS[m.sp].col+'">'+
+    '<div class="mc-h"><span class="mc-w">'+whenHtml(m)+'</span><span class="mc-c">'+m.flag+' '+esc(m.comp)+'</span>'+(myBets?'<span class="mc-b">Pari en cours</span>':'')+'</div>'+
+    '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+'<i>'+esc(m.home)+'</i>'+sc(0)+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+'</i>'+sc(1)+'</span></button>'+
+    '<div class="mc-o'+(three?'':' two')+'">'+quick+'</div>'+
+    '<button class="mc-m" data-open="'+m.id+'">'+(ui.open===m.id?'Masquer les paris ▲':'+'+nb+' paris ▼')+'</button>';
+  if(ui.open===m.id){
+    html+='<div class="markets">'+mks.slice(1).map(k=>{const btns=k.opts(m).map(o=>oddBtn(m,k.key,o,closed,res)).join('');return btns?'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.cs?' cs':'')+'">'+btns+'</div></div>':''}).join('')+'</div>';
+  }
+  return html+'</article>';
+}
+function visibleMatches(){
+  const t=today(),days=[t,addDays(t,1)];
+  let all=[];for(const d of days)all=all.concat(FIX[d]||[]);
+  // on cache les matchs terminés depuis plus de 12 h
+  return all.filter(m=>!(m.s&&Date.now()>m.ko+12*3600e3));
+}
+const TOP=['Ligue des champions','Ligue 1','Premier League','Liga','Serie A','Bundesliga','Ligue des nations','Championnat des nations','NBA','EuroLeague','ATP Finals','NHL','UFC','Coupe de France','Match amical'];
+function featured(vis){
+  const rank=compRank;
+  const up=vis.filter(m=>status(m)==='avenir').sort((a,b)=>rank(a)-rank(b)||a.ko-b.ko);
+  const pick=[],seen=new Set();
+  for(const m of up){if(pick.length>=6)break;if(seen.has(m.sp+m.comp)&&pick.length<4)continue;seen.add(m.sp+m.comp);pick.push(m)}
+  if(!pick.length)return'';
+  return '<div class="feat-h"><b>🔥 À la une</b><span>Les grosses affiches, tous sports</span></div><div class="feat">'+pick.map(m=>{
+    const k=marketsOf(m)[0],three=SPORTS[m.sp].three;
+    return '<div class="fc" style="--sc:'+SPORTS[m.sp].col+'"><div class="fc-h"><span>'+SPORTS[m.sp].ic+' '+esc(m.comp)+'</span><span>'+whenHtml(m).replace(/<[^>]+>/g,'')+'</span></div>'+
+      '<div class="fc-t">'+avatar(m.home)+'<b>'+esc(m.home)+'</b></div><div class="fc-t">'+avatar(m.away)+'<b>'+esc(m.away)+'</b></div>'+
+      '<div class="fc-o'+(three?'':' two')+'">'+k.opts(m).map(o=>oddBtn(m,k.key,o,false,null,three?o.id:o.id)).join('')+'</div></div>'}).join('')+'</div>';
+}
+function renderMatches(){
+  const vis=visibleMatches();
+  const count=sp=>vis.filter(m=>m.sp===sp&&status(m)==='avenir').length;
+  if(!SPORTS[ui.sport])ui.sport='foot';
+  const all=vis.filter(m=>m.sp===ui.sport);
+  const comps=[...new Set(all.map(m=>m.comp))];
+  if(ui.comp!=='all'&&!comps.includes(ui.comp))ui.comp='all';
+  const order={avenir:0,live:1,fini:2,annule:3};
+  const list=(ui.comp==='all'?all:all.filter(m=>m.comp===ui.comp)).slice().sort((a,b)=>order[status(a)]-order[status(b)]||a.ko-b.ko);
+  const flag=c=>all.find(m=>m.comp===c).flag;
+  const tabs='<div class="sports">'+SPORT_ORDER.map(k=>{const n=count(k);return '<button class="'+(ui.sport===k?'on':'')+'" style="--sc:'+SPORTS[k].col+'" data-sport="'+k+'"><span class="si">'+SPORTS[k].ic+'</span><span class="sn">'+SPORTS[k].name+'</span>'+(n?'<small>'+n+'</small>':'')+'</button>'}).join('')+'</div>';
+  const chip=(c,lbl)=>'<button class="chip'+(ui.comp===c?' on':'')+'" data-comp="'+esc(c)+'">'+lbl+'</button>';
+  const comp=comps.length>1?'<div class="comps">'+chip('all','Toutes')+comps.map(c=>chip(c,flag(c)+' '+esc(c))).join('')+'</div>':'';
+  // regroupe par jour puis par compétition
+  let body='';
+  if(!list.length){
+    body='<div class="empty"><div style="font-size:34px">'+SPORTS[ui.sport].ic+'</div>Pas de match de '+SPORTS[ui.sport].name.toLowerCase()+' à parier pour le moment.<br>Les prochains matchs seront ajoutés lors de la prochaine mise à jour.</div>';
+  }else{
+    const sections=[];
+    for(const m of list){
+      const k=status(m)==='avenir'?dkey(new Date(m.ko)):'zz';
+      let sec=sections.find(x=>x.k===k);if(!sec){sec={k,items:[]};sections.push(sec)}
+      sec.items.push(m);
+    }
+    sections.sort((a,b)=>a.k<b.k?-1:1);
+    const t=today();
+    body=sections.map(sec=>{
+      const title=sec.k==='zz'?'En cours et terminés':sec.k===t?"Aujourd'hui":sec.k===addDays(t,1)?'Demain':new Date(sec.k+'T12:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+      return '<h3 class="day">'+title+'</h3>'+sec.items.map(matchCard).join('');
+    }).join('');
+  }
+  return installBanner()+guestBanner()+dashHtml()+defiCard()+tabs+
+   (ui.comp==='all'&&ui.sport==='foot'?featured(vis):'')+
+   comp+body+
+   '<p class="reset-note" style="margin-top:14px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>';
+}
+function guestBanner(){
+  if(session)return'';const par=lsGet('pc_parrain');
+  return '<div class="guest"><div><b>🎉 Jouez gratuitement</b><span>'+nf(DAILY)+' pièces par jour'+(par?' + <b>'+PARRAIN_BONUS+' offertes</b> par '+esc(par):'')+'. Compte créé en 10 secondes.</span></div><button data-auth="signup">Créer mon compte</button></div>';
+}
+function dashHtml(){
+  const n=session&&state.streak?state.streak.n:0;
+  return '<div class="dash">'+
+   '<div class="tile t-coin"><div class="ti">🪙</div><b>'+nf(state.coins)+' pièces</b><span>'+nf(DAILY)+' de plus dans '+untilMidnight()+'</span></div>'+
+   '<button class="tile t-bell" data-notifs="1"><div class="ti">🔔</div><b>Notifications</b><span>'+(notifOn()?'Activées ✓':'Résultats, défis, série…')+'</span></button>'+
+   '<button class="tile t-fire" data-streak="1"><div class="ti">🔥</div><b>Série : '+n+' jour'+(n>1?'s':'')+'</b><span>'+(session?'Demain : +'+nf(streakBonus(n+1))+' pièces':'Bonus chaque jour')+'</span></button>'+
+   '<button class="tile t-gift" data-invite="1"><div class="ti">🎁</div><b>Invite tes potes</b><span>+'+PARRAIN_BONUS+' pièces chacun</span></button>'+
+   '<button class="tile t-league" data-tab="chat" data-social="ligues"><div class="ti">👥</div><b>Ligues entre potes</b><span>Ton classement privé</span></button>'+
+   '<button class="tile t-trophy" data-tab="chat" data-social="board"><div class="ti">🏆</div><b>Top de la semaine</b><span>Remis à zéro le lundi</span></button>'+
+  '</div>';
+}
+function defiToday(){return (state.defis||[]).find(d=>d.day===today())}
+function defiMatch(){
+  const d=defiToday();if(d){const m=findMatch(d.matchId);if(m)return m}
+  const list=(FIX[today()]||[]).filter(m=>status(m)==='avenir');
+  if(!list.length)return null;
+  return list.slice().sort((a,b)=>compRank(a)-compRank(b)||a.ko-b.ko)[0];
+}
+function defiCard(){
+  const m=defiMatch();if(!m)return'';
+  const d=defiToday(),k=marketsOf(m)[0],st=status(m),opts=k.opts(m);
+  let foot='';
+  if(d){const lbl=(getOpt(m,d.mk,d.opt)||{}).label||'';
+    foot=d.status==='won'?'<div class="dres ok">✅ Bien joué ! +'+DEFI_GAIN+' 💎 gagnés</div>':d.status==='lost'?'<div class="dres">❌ Raté cette fois. Nouveau défi demain !</div>':d.status==='void'?'<div class="dres">Match annulé.</div>':'<div class="dres">Votre choix : <b>'+esc(d.opt==='N'?'Match nul':lbl)+'</b> · réponse après le match</div>'}
+  const btns=opts.map(o=>'<button class="dbtn'+(d&&d.opt===o.id?' on':'')+'" data-defi="'+m.id+'|'+k.key+'|'+o.id+'" '+(d||st!=='avenir'?'disabled':'')+'>'+esc(o.id==='N'?'Nul':o.label)+'</button>').join('');
+  return '<div class="defi"><div class="defi-h"><span class="defi-tag">🎯 Défi du jour</span><span>Gratuit · <b>+'+DEFI_GAIN+' 💎</b> si vous avez bon</span></div>'+
+    '<div class="defi-q">Qui gagne <b>'+esc(m.home)+' – '+esc(m.away)+'</b> ?</div><div class="defi-s">'+SPORTS[m.sp].ic+' '+esc(m.comp)+' · '+whenHtml(m).replace(/<[^>]+>/g,'')+'</div>'+
+    '<div class="defi-o'+(opts.length===3?'':' two')+'">'+btns+'</div>'+foot+'</div>';
+}
+function pageHero(cls,ic,title,sub){return '<div class="phero '+cls+'" data-ic="'+ic+'"><b>'+title+'</b><span>'+sub+'</span></div>'}
+function liveMatches(){
+  const t=today();let all=[];
+  for(const d of [addDays(t,-1),t,addDays(t,1)])all=all.concat(FIX[d]||[]);
+  return all;
+}
+function renderLive(){
+  const all=liveMatches();
+  const lim=m=>m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3;
+  const live=all.filter(m=>status(m)==='live'&&Date.now()<lim(m)).sort((a,b)=>a.ko-b.ko);
+  const wait=all.filter(m=>status(m)==='live'&&Date.now()>=lim(m)).sort((a,b)=>b.ko-a.ko);
+  const done=all.filter(m=>status(m)==='fini'&&Date.now()-m.ko<20*3600e3).sort((a,b)=>b.ko-a.ko);
+  const soon=all.filter(m=>status(m)==='avenir'&&m.ko-Date.now()<2*3600e3).sort((a,b)=>a.ko-b.ko);
+  const myBets=m=>state.bets.filter(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
+  const ago=m=>{const mn=Math.max(0,Math.round((Date.now()-m.ko)/60000));return mn<60?mn+' min':Math.floor(mn/60)+' h '+String(mn%60).padStart(2,'0')};
+  const q=m=>'https://www.google.com/search?q='+encodeURIComponent(m.home+' '+m.away+' score');
+  const card=(m,kind)=>{
+    const bets=myBets(m),late=kind==='live'&&Date.now()>m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3;
+    const st=kind==='live'?(late?'<span class="st done">Terminé · résultat bientôt</span>':'<span class="st live">● En direct</span><span class="lv-t">commencé il y a '+ago(m)+'</span>'):kind==='done'?'<span class="st done">Terminé</span>':'<span class="st">Dans '+Math.max(1,Math.round((m.ko-Date.now())/60000))+' min</span>';
+    const res=kind==='done'?m.s:null,sc=i=>res&&m.sp!=='mma'?'<b class="sc'+(res[i]>res[1-i]?' win':'')+'">'+res[i]+'</b>':'';
+    let h='<article class="mc lv" style="--sc:'+SPORTS[m.sp].col+'"><div class="mc-h">'+st+'<span class="mc-c">'+SPORTS[m.sp].ic+' '+esc(m.comp)+'</span></div>'+
+      '<div class="mc-t"><span>'+avatar(m.home)+'<i>'+esc(m.home)+'</i>'+sc(0)+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+'</i>'+sc(1)+'</span></div>';
+    if(kind==='done'&&m.sp==='mma')h+='<p class="lv-r">'+esc(scoreTxt(m))+'</p>';
+    if(bets.length)h+='<div class="lv-b">🎟️ <b>'+bets.length+' pari'+(bets.length>1?'s':'')+' en cours</b> · mise '+nf(bets.reduce((a,b)=>a+b.stake,0))+' 🪙 · gain possible '+nf(bets.reduce((a,b)=>a+b.stake*b.odds,0))+' 💎</div>';
+    if(kind==='live')h+='<a class="lv-l" href="'+q(m)+'" target="_blank" rel="noopener">Voir le score en direct ↗</a>';
+    if(kind==='soon')h+='<button class="lv-l" data-go="'+m.sp+'">Parier avant le coup d\'envoi →</button>';
+    return h+'</article>';
+  };
+  const sec=(title,list,kind,empty)=>'<h3 class="day">'+title+(list.length?' <small class="cnt">'+list.length+'</small>':'')+'</h3>'+(list.length?list.map(m=>card(m,kind)).join(''):'<div class="empty small">'+empty+'</div>');
+  return pageHero('ph-live','📡','Live','Les matchs en cours et vos paris en attente. Les paris sont fermés une fois le match commencé, et réglés dès que le résultat officiel est publié.')+
+    sec('En direct',live,'live','Aucun match en cours pour le moment.')+
+    sec('Bientôt',soon,'soon','Aucun match dans les 2 prochaines heures.')+
+    (wait.length?sec('En attente du résultat',wait,'live',''):'')+
+    sec('Résultats récents',done,'done','Pas encore de résultats.');
+}
+function renderBets(){
+  const s=state.stats,tot=s.won+s.lost;
+  const list=state.bets.filter(b=>ui.betFilter==='pending'?b.status==='pending':b.status!=='pending').slice().reverse();
+  const card=b=>{
+    const tag=b.status==='pending'?'<span class="tag pending">En cours</span>':b.status==='won'?'<span class="tag won">Gagné +'+nf(b.payout)+' 💎</span>':b.status==='void'?'<span class="tag pending">Annulé · mise rendue</span>':'<span class="tag lost">Perdu'+(b.refund?' · remboursé '+nf(b.refund)+' 💎':'')+'</span>';
+    const lines=b.sels.map(x=>{const m=findMatch(x.matchId);let mark='',score='';
+      if(m&&status(m)==='fini'){const o=getOpt(m,x.mk,x.opt),ok=o&&o.fn(m.s[0],m.s[1],m.s[2]);mark='<span class="mark '+(ok?'ok':'ko')+'">'+(ok?'✓':'✗')+'</span>';score=' · '+scoreTxt(m)}
+      else if(m&&status(m)==='annule')score=' · '+m.x;
+      else if(m&&status(m)==='live')score=' · en cours';else score=' · '+hhmm(x.ko||(m&&m.ko));
+      return '<div class="bl"><div><div><b>'+esc(x.pick)+'</b> <span style="color:var(--acc);font-weight:700">'+fo(x.odds)+'</span></div><div class="s">'+esc(x.market)+'</div><div class="s">'+esc(x.match)+score+'</div></div>'+mark+'</div>'}).join('');
+    return '<div class="bet '+b.status+'"><div class="bh"><b>'+b.type+(b.boost?' 🚀':'')+(b.shield?' 🛡️':'')+'</b>'+tag+'</div>'+lines+
+      '<div class="bf"><span>Mise <b>'+nf(b.stake)+' 🪙</b></span><span>Cote <b>'+fo(b.odds)+'</b></span><span>Gain possible <b>'+nf(b.stake*b.odds)+' 💎</b></span></div>'+
+      (b.status!=='void'?'<button class="sharebtn" data-sharebet="'+b.id+'">📤 Partager ce pari</button>':'')+'</div>'};
+  return pageHero('ph-bets','🧾','Mes paris','Réglés automatiquement dès que le résultat réel du match est publié. Partagez vos plus beaux coupons !')+
+   '<div class="stats"><div class="stat"><small>Paris gagnés</small><b>'+s.won+' / '+tot+'</b></div><div class="stat"><small>Réussite</small><b>'+(tot?Math.round(s.won/tot*100):0)+' %</b></div><div class="stat"><small>Diamants gagnés</small><b style="color:var(--dia)">'+nf(s.earned)+'</b></div><div class="stat"><small>Plus grosse cote gagnée</small><b>'+(s.best?fo(s.best):'–')+'</b></div></div>'+
+   '<div class="toolbar"><div class="seg"><button data-bf="pending" class="'+(ui.betFilter==='pending'?'on':'')+'">En cours</button><button data-bf="done" class="'+(ui.betFilter==='done'?'on':'')+'">Terminés</button></div></div>'+
+   (list.length?list.map(card).join(''):'<div class="empty">'+(ui.betFilter==='pending'?'Aucun pari en cours. Choisissez une cote dans l\'onglet Matchs !':'Aucun pari terminé pour l\'instant.')+'</div>');
+}
+const EQUIP={title:'title',theme:'theme',name:'nameFx',frame:'frame'};
+const eqVal=i=>i.kind==='title'?i.label:i.cls;
+function renderShop(){
+  const secs=[...new Set(SHOP.map(i=>i.sec))];
+  const SECCOL={'Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)'};
+  const me=session?session.pseudo:'Vous';
+  const icon=i=>i.kind==='name'?'<div class="ic prev"><span class="pn '+i.cls+'">'+esc(me)+'</span></div>':i.kind==='frame'?'<div class="ic prev">'+pav(me,{f:i.cls})+'</div>':'<div class="ic">'+i.ic+'</div>';
+  const item=i=>{
+    let btn,own='';
+    if(EQUIP[i.kind]){
+      const owned=state.owned.includes(i.id),active=state[EQUIP[i.kind]]===eqVal(i);
+      if(owned){own='<span class="own">✓ Acheté</span>';btn='<button data-equip="'+i.id+'">'+(active?'Retirer':(i.kind==='title'?'Afficher':'Activer'))+'</button>'}
+      else btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
+    }else{
+      if(i.kind==='inv')own='<span class="own">'+(state.inv[i.id]?'En stock : '+state.inv[i.id]:'')+'</span>';
+      btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
+    }
+    return '<div class="item" style="--ig:'+(SECCOL[i.sec]||'var(--grad-main)')+'">'+icon(i)+'<h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' 💎</div>'+own+btn+'</div>'};
+  const prof=session?'<div class="prof">'+pav(session.pseudo,myDeco())+'<div><div class="prof-n">'+pname(session.pseudo,myDeco())+'</div><small>Comme les autres joueurs vous voient dans le chat et les classements</small></div></div>':'';
+  return pageHero('ph-shop','🎁','Boutique','Échangez vos diamants contre des bonus et des récompenses à montrer à tout le monde.')+
+    '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div>'+prof+
+    (STRIPE_DON?'<div class="don"><div class="don-ic">❤️</div><div class="don-t"><b>Soutenir PronoClub</b><span>Le site est gratuit et le restera. Si vous l\'aimez, vous pouvez aider à le faire grandir avec le montant de votre choix. Un don ne donne ni pièces ni diamants.</span></div><a class="pbtn" href="'+STRIPE_DON+'" target="_blank" rel="noopener">Je soutiens ❤️</a></div>':'')+
+    secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+'</div><div class="shop">'+SHOP.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
+}
+function renderRules(){
+  return '<div class="rules"><h3>Comment ça marche ?</h3><ul>'+
+  '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙</b>. Les pièces non jouées ne se gardent pas : elles repartent à '+nf(DAILY)+' à minuit.</li>'+
+  '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
+  '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
+  '<li>Les diamants ne se parient pas : ils s\'échangent dans la <b>Boutique</b> contre des bonus (pièces en plus, boost de cote, assurance) ou des récompenses (titres, thèmes).</li>'+
+  '<li><b>Simple</b> : un pari par sélection. <b>Combiné</b> : plusieurs matchs dans un seul pari, les cotes se multiplient, mais tout doit être gagnant.</li>'+
+  '<li>On ne peut plus parier sur un match une fois qu\'il a commencé. Les paris sont réglés dès que le résultat réel est publié (plusieurs mises à jour par jour). Football : temps réglementaire (90 minutes, sans prolongation ni tirs au but). Hockey : temps réglementaire (60 minutes). Basket : prolongations incluses. Tennis et ping-pong : résultat final du match. Rugby et handball : temps réglementaire. MMA : résultat officiel du combat (un match nul ou « no contest » est remboursé, comme un match annulé).</li>'+
+  '<li>Si un match est reporté ou annulé, la sélection est annulée et la mise vous est rendue.</li></ul>'+
+  '<h3>Les bonus</h3><ul>'+
+  '<li><b>Série de connexion 🔥</b> : chaque jour de suite où vous ouvrez l\'appli, des pièces en plus (+100 le 1er jour, +200 le 2e… jusqu\'à +700). Un jour raté et la série repart à zéro.</li>'+
+  '<li><b>Défi du jour 🎯</b> : un pronostic gratuit par jour sur la grosse affiche. Bonne réponse = <b>+'+DEFI_GAIN+' 💎</b>.</li>'+
+  '<li><b>Parrainage 🎁</b> : invitez vos amis avec votre lien. Pour chaque ami inscrit, <b>+'+PARRAIN_BONUS+' pièces</b> pour vous et pour lui (20 amis maximum).</li>'+
+  '<li><b>Ligues 👥</b> : créez une ligue, partagez le code et affrontez vos amis dans votre propre classement. Le classement de la semaine repart à zéro chaque lundi.</li></ul>'+
+  '<h3>Notifications 🔔</h3><ul><li>Touchez la tuile <b>🔔 Notifications</b> (ou votre avatar en haut) pour être prévenu même appli fermée : résultat de vos paris, défi du jour, série en danger, amis et ligues. Vous choisissez ce que vous recevez.</li><li>Sur iPhone, il faut d\'abord installer l\'appli sur l\'écran d\'accueil.</li></ul>'+
+  '<h3>Installer l\'appli sur son téléphone</h3><ul>'+
+  '<li><b>Android</b> : ouvrez le site dans Chrome, menu ⋮ puis « Installer l\'application » (ou « Ajouter à l\'écran d\'accueil »).</li>'+
+  '<li><b>iPhone / iPad</b> : ouvrez le site dans Safari, bouton Partager (carré avec une flèche) puis « Sur l\'écran d\'accueil ».</li></ul>'+
+  '<h3>Les cotes</h3><p style="margin:0">Les cotes du vainqueur (1N2) sont relevées ou estimées d\'après le marché au moment de la mise à jour : elles sont proches de celles de Betclic ou Winamax, sans être exactement les leurs. Les cotes des autres marchés sont calculées à partir de ces cotes.</p>'+
+  '<p class="disc">Jeu gratuit, sans argent réel. Les pièces et les diamants n\'ont aucune valeur et ne peuvent être ni achetés ni convertis en argent. Si les jeux d\'argent vous posent problème : Joueurs Info Service, 09 74 75 13 13 (appel non surtaxé).</p></div>';
+}
+/* ---------- Chat ---------- */
+const chat={msgs:[],last:0,timer:null,state:'loading',sending:false};
+const CHAT_ERR={trop_vite:'Doucement : attendez quelques secondes entre deux messages.',trop_long:'Message trop long (300 caractères maximum).',vide:'Écrivez un message.',session:ERR.session};
+function chatSeen(){return +(lsGet('pc_chat_seen')||0)}
+function chatUnread(){const me=session&&session.pseudo.toLowerCase(),s=chatSeen();return chat.msgs.filter(m=>m.id>s&&m.pseudo.toLowerCase()!==me).length}
+function markChatSeen(){if(chat.last)lsSet('pc_chat_seen',String(chat.last));updateChatBadge()}
+function updateChatBadge(){const n=ui.tab==='chat'?0:chatUnread(),b=document.getElementById('bnChat');if(b){b.textContent=n>9?'9+':(n||'');b.style.display=n?'':'none'}
+  document.querySelectorAll('#nav button[data-tab="chat"]').forEach(x=>x.textContent=n?'💬 Social ('+n+')':'💬 Social')}
+async function chatPoll(){
+  try{const r=await rpc('chat_lire',{p_apres:chat.last});chat.state='ok';
+    if(Array.isArray(r)&&r.length){chat.msgs=chat.msgs.concat(r).slice(-200);chat.last=r[r.length-1].id;
+      if(ui.tab==='chat'&&ui.social==='chat'){renderChatList();if(document.visibilityState==='visible')markChatSeen()}}
+    else if(ui.tab==='chat'&&ui.social==='chat'&&!document.getElementById('chatList').dataset.ready)renderChatList();
+  }catch(e){chat.state=/function|404|PGRST/i.test(e.message||'')?'off':'err';if(ui.tab==='chat'&&ui.social==='chat')renderChatList()}
+  updateChatBadge();
+}
+function chatSchedule(){clearTimeout(chat.timer);const fast=ui.tab==='chat'&&document.visibilityState==='visible';chat.timer=setTimeout(async()=>{await chatPoll();chatSchedule()},fast?4000:45000)}
+function chatSoon(){clearTimeout(chat.timer);chatPoll().then(chatSchedule)}
+function chatTime(t){const d=new Date(t),k=dkey(d);return (k===today()?'':d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' ')+hhmm(t)}
+function chatListHtml(){
+  if(chat.state==='off')return '<div class="chat-empty">💬 Le chat n\'est pas encore activé.<br><small>Il faut ajouter la partie « chat » dans Supabase.</small></div>';
+  if(chat.state==='loading'&&!chat.msgs.length)return '<div class="chat-empty">Chargement des messages…</div>';
+  if(!chat.msgs.length)return '<div class="chat-empty">👋 Aucun message pour l\'instant.<br>Lancez la discussion !</div>';
+  const me=session&&session.pseudo.toLowerCase();let prev=null;
+  return chat.msgs.map(m=>{const mine=m.pseudo.toLowerCase()===me,same=prev&&prev.pseudo===m.pseudo&&(new Date(m.cree_le)-new Date(prev.cree_le))<300000;prev=m;
+    return '<div class="cm'+(mine?' me':'')+(same?' same':'')+'">'+(!mine&&!same?pav(m.pseudo,m.deco):'<span class="av-sp"></span>')+'<div class="cb">'+(!same?'<div class="cn">'+(mine?'Vous':pname(m.pseudo,m.deco))+' <small>'+chatTime(m.cree_le)+'</small></div>':'')+'<div class="ct">'+esc(m.texte)+'</div></div></div>'}).join('')+(chat.state==='err'?'<div class="chat-empty small">Connexion perdue, nouvelle tentative…</div>':'');
+}
+function renderChatList(){
+  const el=document.getElementById('chatList');if(!el)return;
+  const atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<80||!el.dataset.ready;
+  el.innerHTML=chatListHtml();el.dataset.ready='1';
+  if(atBottom)el.scrollTop=el.scrollHeight;
+}
+function renderSocial(){
+  const b=(k,l)=>'<button data-social="'+k+'" class="'+(ui.social===k?'on':'')+'">'+l+'</button>';
+  const nA=amiCount();const seg='<div class="seg social">'+b('chat','💬 Chat')+b('board','🏆 Classement')+b('amis','🤝 Amis<span class="sb" id="amiBadge"'+(nA?'':' style="display:none"')+'>'+(nA>9?'9+':nA)+'</span>')+b('ligues','👥 Ligues')+'</div>';
+  const follow='<div class="follow"><b>📲 Suis-nous</b>'+
+    '<a class="ig" href="https://www.instagram.com/pronoclub_" target="_blank" rel="noopener">📸 Instagram</a>'+
+    '<a class="tt" href="https://www.tiktok.com/@pronoclub_" target="_blank" rel="noopener">🎵 TikTok</a></div>';
+  if(ui.social==='board')return seg+follow+renderBoard();
+  if(ui.social==='ligues')return seg+follow+renderLigues();
+  if(ui.social==='amis')return seg+follow+renderAmis();
+  setTimeout(()=>{renderChatList();markChatSeen()},0);
+  return seg+follow+'<div class="chat"><div class="chat-h"><b>💬 Le salon PronoClub</b><span>Discutez des matchs avec tous les joueurs</span></div>'+
+    '<div class="chat-list" id="chatList"></div>'+
+    (session?'<form class="chat-form" id="chatForm" autocomplete="off"><input id="chatIn" maxlength="300" placeholder="Votre message…" value="'+esc(ui.chatDraft)+'" enterkeyhint="send"><button type="submit" aria-label="Envoyer">➤</button></form><div class="err" id="chatErr"></div>'
+      :'<div class="chat-login"><button class="btn" data-auth="login">Connectez-vous pour écrire</button></div>')+
+    '<p class="chat-rules">Restez respectueux. Ne partagez jamais d\'informations personnelles (adresse, téléphone, mot de passe).</p></div>';
+}
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='chatForm')return;
+  e.preventDefault();
+  if(!session){ui.authMode='login';openAuth();return}
+  const inp=$('#chatIn'),txt=inp.value.trim(),er=$('#chatErr');
+  if(!txt||chat.sending)return;
+  chat.sending=true;er.textContent='';
+  try{const m=await rpc('chat_envoyer',{p_token:session.token,p_texte:txt});
+    inp.value='';ui.chatDraft='';
+    await chatPoll();if(m&&!chat.msgs.some(x=>x.id===m.id)){chat.msgs.push(m);chat.last=Math.max(chat.last,m.id)}
+    const el=document.getElementById('chatList');if(el)el.dataset.ready='';renderChatList();markChatSeen();
+  }catch(err){er.textContent=CHAT_ERR[err.code]||(/function|404|PGRST/i.test(err.message||'')?'Le chat n\'est pas encore activé.':'Envoi impossible, réessayez.');if(err.code==='session')logout(ERR.session)}
+  chat.sending=false;inp.focus();
+});
+document.addEventListener('input',e=>{if(e.target.id==='chatIn')ui.chatDraft=e.target.value});
+function openLigue(code){ui.ligue=code||null;ui.ligueBoard=null;if(code&&session)loadLigueBoard(code);if(ui.ligues==null)loadLigues()}
+function confirmLeave(){try{return window.confirm('Quitter cette ligue ?')}catch(e){return true}}
+document.addEventListener('submit',async e=>{
+  const id=e.target.id;if(id!=='lgCreate'&&id!=='lgJoin')return;
+  e.preventDefault();if(!session)return;
+  const er=$('#lgErr'),btn=e.target.querySelector('button');er.textContent='';btn.disabled=true;
+  try{
+    if(id==='lgCreate'){const r=await rpc('ligue_creer',{p_token:session.token,p_nom:$('#lgName').value});ui.ligues=null;await loadLigues();openLigue(r.code);renderView();shareLigue(r.code,r.nom)}
+    else{const r=await rpc('ligue_rejoindre',{p_token:session.token,p_code:$('#lgCode').value});ui.ligues=null;await loadLigues();openLigue(r.code);renderView();toast('👥 Bienvenue dans « '+r.nom+' » !')}
+  }catch(err){er.textContent=LG_ERR[err.code]||(isMissingFn(err)?'Les ligues ne sont pas encore activées.':'Impossible pour le moment, réessayez.');btn.disabled=false}
+});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')chatSoon()});
+
+let profOpen=false,profSeq=0;
+const mp={open:false,p:null,deco:null,msgs:[],last:0,timer:null,sending:false,seq:0};
+function profHero(p,deco,tags){return '<div class="pf-hero"><div class="pf-bar"><button class="pf-back" data-ovback="1" aria-label="Retour">←</button><span>Profil</span><i style="width:44px"></i></div><div class="pf-ava">'+pav(p,deco)+'</div><h2 class="pf-name">'+pname(p,{c:deco&&deco.c})+'</h2><div class="pf-tags">'+(tags||'')+'</div></div>'}
+function ovLock(){document.body.classList.toggle('pf-lock',profOpen||mp.open)}
+function ovPush(k){try{history.pushState({ov:k},'')}catch(e){}}
+function ovBack(){if(history.state&&history.state.ov)history.back();else ovCloseTop()}
+function ovCloseTop(){if(mp.open)closeMp();else if(profOpen)closeProfil()}
+function closeProfil(){if(!profOpen)return;profOpen=false;profSeq++;$('#profView').classList.remove('open');ovLock()}
+function profRank(p){
+  const lp=p.toLowerCase(),f=(b,k)=>{if(!Array.isArray(b))return 0;const rows=b.slice().sort((x,y)=>(y[k]||0)-(x[k]||0)||(y.diamants||0)-(x.diamants||0));return rows.findIndex(r=>r.pseudo.toLowerCase()===lp)+1};
+  const a=f(ui.boards.all,'diamants'),w=f(ui.boards.week,'hebdo');
+  return (a?'<span class="pf-rk">🏆 '+a+(a===1?'er':'e')+' au général</span>':'')+(w?'<span>📅 '+w+(w===1?'er':'e')+' cette semaine</span>':'');
+}
+async function openProfil(p){
+  const V=$('#profView'),B=$('#profBox'),seq=++profSeq;
+  B.innerHTML=profHero(p,null,'')+'<div class="pf-skel" style="margin-top:-44px;position:relative;z-index:2"></div><div class="pf-skel"></div><div class="pf-skel"></div>';
+  if(!profOpen){profOpen=true;V.classList.add('open');ovLock();ovPush('prof')}
+  ui.profP=p;ui.amiEtat=null;
+  V.scrollTop=0;
+  let r;
+  const etatP=session&&p.toLowerCase()!==session.pseudo.toLowerCase()?rpc('ami_etat',{p_token:session.token,p_pseudo:p}).catch(e=>/function|PGRST2|schema cache/i.test(e.message||'')?'off':'err'):Promise.resolve(session?'moi':'invite');
+  try{r=await rpc('profil',{p_pseudo:p})}
+  catch(e){if(seq!==profSeq)return;const off=/function|PGRST2|schema cache/i.test(e.message||'');
+    B.innerHTML=profHero(p,null,'')+'<div class="pf-state"><b>'+(off?'🛠️':'📡')+'</b>'+(off?'Les profils ne sont pas encore disponibles.':'Impossible de charger ce profil pour le moment.<br>Vérifiez votre connexion et réessayez.')+'</div>';return}
+  if(seq!==profSeq)return;
+  if(!r){B.innerHTML=profHero(p,null,'')+'<div class="pf-state"><b>👻</b>Ce joueur n\'existe plus.</div>';return}
+  const g=r.gagnes||0,l=r.perdus||0,fin=g+l,taux=fin?Math.round(g*100/fin):0,n=r.serie||0;
+  const me=session&&r.pseudo.toLowerCase()===session.pseudo.toLowerCase();
+  const since=r.depuis?new Date(r.depuis).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}):'';
+  const deco=r.deco||{};
+  const tags=(deco.t?'<span>'+esc(deco.t)+'</span>':'')+(me?'<span>C\'est vous</span>':'')+profRank(r.pseudo)+(since?'<span>Membre depuis '+since+'</span>':'');
+  const row=(v,lbl)=>'<div><b>'+v+'</b><small>'+lbl+'</small></div>';
+  const key='<div class="pf-key"><div><i>💎</i><b>'+nf(r.diamants||0)+'</b><small>diamants</small></div><div><i>🔥</i><b>'+n+'</b><small>jour'+(n>1?'s':'')+' de série</small></div><div><i>🎯</i><b>'+(fin?taux+' %':'–')+'</b><small>de réussite</small></div></div>';
+  const bilan='<div class="pf-sec"><h4>Bilan des paris</h4>'+
+    (fin?'<div class="pf-ratio"><i class="w" style="flex:'+g+'"></i><i class="l" style="flex:'+l+'"></i></div><div class="pf-leg"><span class="w">'+nf(g)+' gagné'+(g>1?'s':'')+'</span><span class="l">'+nf(l)+' perdu'+(l>1?'s':'')+'</span></div>':'<p class="pf-note" style="margin:0 0 12px">Aucun pari terminé pour l\'instant.</p>')+
+    '<div class="pf-rows">'+row(nf(r.total||0),'paris joués')+row(nf(r.en_cours||0),'en cours')+row(r.meilleure_cote?fo(Number(r.meilleure_cote)):'–','meilleure cote gagnée')+row(nf(r.hebdo||0)+' 💎','gagnés cette semaine')+(r.gains!=null?row(nf(r.gains)+' 💎','gagnés au total'):'')+(r.gains!=null&&g?row(nf(r.gains/g)+' 💎','gain moyen par pari gagné'):'')+'</div></div>';
+  const fm=Array.isArray(r.forme)?r.forme:null;
+  const forme=fm&&fm.length?'<div class="pf-sec"><h4>Forme récente</h4><div class="pf-form">'+fm.map(x=>x==='won'?'<span class="w" title="Gagné">G</span>':x==='lost'?'<span class="l" title="Perdu">P</span>':'<span class="v" title="Annulé">A</span>').join('')+'</div><p class="pf-note">Ses '+fm.length+' derniers paris terminés, du plus récent au plus ancien.</p></div>':'';
+  const serie='<div class="pf-sec"><h4>Série de connexion</h4>'+streakDots(n)+'<p class="pf-note">'+(n?(n>=7?'Série au maximum : +700 pièces de bonus chaque jour.':'Connecté '+n+' jour'+(n>1?'s':'')+' de suite.'):'Pas de série en cours.')+'</p></div>';
+  const dn=Array.isArray(r.derniers)?r.derniers:null;
+  const dern=dn&&dn.length?'<div class="pf-sec"><h4>Derniers paris</h4><div class="pf-bets">'+dn.map(b=>{const st=b.status,cl=st==='won'?'w':st==='lost'?'l':st==='pending'?'p':'v';
+    return '<div class="pf-bet"><b>'+esc(b.match||b.type||'Pari')+'</b><em class="'+cl+'">'+(st==='won'?'+'+nf(b.payout||0)+' 💎':st==='lost'?'Perdu':st==='pending'?'⏳ En attente':'Annulé')+'</em><small>'+[b.type&&b.type!==b.match?esc(b.type):'',b.odds?'cote '+fo(Number(b.odds)):'',b.stake?'mise '+nf(b.stake)+' 💎':'',st==='pending'&&b.stake&&b.odds?'gain possible '+nf(b.stake*b.odds)+' 💎':''].filter(Boolean).join(' · ')+'</small>'+(b.pick?'<span class="pk">Pronostic : '+esc(b.pick)+(st==='pending'&&b.ko&&+b.ko>Date.now()?' · '+new Date(+b.ko).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+' '+hhmm(+b.ko):'')+'</span>':'')+'</div>'}).join('')+'</div></div>':'';
+  ui.amiEtat=await etatP;if(seq!==profSeq)return;
+  B.innerHTML=profHero(r.pseudo,deco,tags)+key+'<div id="pfAct">'+profActions()+'</div>'+bilan+forme+serie+dern;
+}
+window.addEventListener('popstate',()=>ovCloseTop());
+
+/* ---------- Amis et messages privés ---------- */
+const AMI_ERR={session:ERR.session,joueur_inconnu:'Ce joueur n\'existe plus.',soi_meme:'Vous ne pouvez pas vous ajouter vous-même.',trop_demandes:'Trop de demandes en attente (30 maximum).',trop_amis:'Vous avez déjà 200 amis.',pas_de_demande:'Cette demande n\'existe plus.',pas_amis:'Vous n\'êtes plus amis.',vide:'Écrivez un message.',trop_long:'Message trop long (500 caractères maximum).',trop_vite:'Doucement, une seconde entre deux messages.'};
+const amiOff=e=>/function|PGRST2|schema cache/i.test(e&&e.message||'');
+function amiErr(e){if(e&&e.code==='session'){logout(ERR.session);return}toast(AMI_ERR[e&&e.code]||(amiOff(e)?'Les amis ne sont pas encore activés.':'Action impossible, réessayez.'))}
+function profActions(){
+  const st=ui.amiEtat;if(st==='moi'||st==='off'||st==='err'||st==null)return '';
+  if(st==='invite')return '<div class="pf-act"><button class="go" data-amiadd="1">＋ Ajouter en ami</button></div>';
+  if(st==='aucun')return '<div class="pf-act"><button class="go" data-amiadd="1">＋ Ajouter en ami</button></div>';
+  if(st==='envoyee')return '<div class="pf-act"><button class="wait" disabled>⏳ Demande envoyée</button><button class="no" data-amidel="1">Annuler</button></div>';
+  if(st==='recue')return '<div class="pf-act"><button class="go" data-amiok="1">✅ Accepter la demande</button><button class="no" data-amino="1">Refuser</button></div>';
+  return '<div class="pf-act"><button class="go" data-mpopen="'+esc(ui.profP)+'">💬 Envoyer un message</button><button class="no" data-amidel="1" title="Retirer des amis">Retirer</button></div>';
+}
+async function amiAction(kind,pseudo,btn){
+  if(!session){if(mp.open)closeMp();if(profOpen)closeProfil();ui.authMode='signup';openAuth('Créez un compte pour ajouter des amis.');return}
+  if(kind==='del'){const ami=ui.amiEtat==='amis'||(ui.amis||[]).some(a=>a.pseudo.toLowerCase()===pseudo.toLowerCase()&&a.statut==='amis');
+    if(ami){try{if(!window.confirm('Retirer '+pseudo+' de vos amis ? Vos messages ne seront plus accessibles.'))return}catch(e){}}}
+  if(btn)btn.disabled=true;
+  try{
+    const r=kind==='add'?await rpc('ami_demander',{p_token:session.token,p_pseudo:pseudo}):
+            kind==='del'?await rpc('ami_retirer',{p_token:session.token,p_pseudo:pseudo}):
+            await rpc('ami_repondre',{p_token:session.token,p_pseudo:pseudo,p_ok:kind==='ok'});
+    if(profOpen&&ui.profP&&ui.profP.toLowerCase()===pseudo.toLowerCase()){ui.amiEtat=r;const el=$('#pfAct');if(el)el.innerHTML=profActions()}
+    toast(r==='amis'?'🤝 Vous êtes maintenant amis avec '+pseudo+' !':r==='envoyee'?'📨 Demande envoyée à '+pseudo:kind==='no'?'Demande refusée':kind==='del'?'C\'est fait':'');
+    await loadAmis();
+  }catch(e){amiErr(e);if(btn)btn.disabled=false}
+}
+async function loadAmis(){
+  if(!session){ui.amis=null;updateAmiBadge();return}
+  try{ui.amis=await rpc('mes_amis',{p_token:session.token})||[]}catch(e){if(e.code==='session'){logout(ERR.session);return}ui.amis=amiOff(e)?'off':(Array.isArray(ui.amis)?ui.amis:'err')}
+  updateAmiBadge();
+  if(ui.mpStart&&Array.isArray(ui.amis)){const w=ui.mpStart.toLowerCase();ui.mpStart=null;const a=ui.amis.find(x=>x.pseudo.toLowerCase()===w&&x.statut==='amis');if(a)openMp(a.pseudo)}
+  if(ui.tab==='chat'&&ui.social==='amis'&&!document.querySelector('#view input:focus'))renderView();
+}
+function amiCount(){const A=ui.amis;if(!Array.isArray(A))return 0;return A.filter(a=>a.statut==='recue').length+A.reduce((n,a)=>n+(a.statut==='amis'?a.non_lus||0:0),0)}
+function updateAmiBadge(){const n=amiCount(),b=document.getElementById('amiBadge');if(b){b.textContent=n>9?'9+':n;b.style.display=n?'':'none'}}
+setInterval(()=>{if(session&&document.visibilityState==='visible'&&!mp.open)loadAmis()},30000);
+function amiRow(a){
+  const who='<button class="am-who" data-prof="'+esc(a.pseudo)+'">'+pav(a.pseudo,a.deco)+'<span><b>'+pname(a.pseudo,a.deco)+'</b><small>';
+  if(a.statut==='recue')return '<div class="am-row">'+who+'veut être votre ami</small></span></button><button class="ok" data-amiok="'+esc(a.pseudo)+'">Accepter</button><button class="ko" data-amino="'+esc(a.pseudo)+'">Refuser</button></div>';
+  if(a.statut==='envoyee')return '<div class="am-row">'+who+'demande envoyée</small></span></button><button class="ko" data-amidel="'+esc(a.pseudo)+'">Annuler</button></div>';
+  return '<div class="am-row">'+who+nf(a.diamants||0)+' 💎'+(a.dernier?' · '+chatTime(a.dernier):'')+'</small></span></button><button class="msg" data-mpopen="'+esc(a.pseudo)+'">💬 Message'+(a.non_lus?'<span class="am-nl">'+(a.non_lus>9?'9+':a.non_lus)+'</span>':'')+'</button></div>';
+}
+function renderAmis(){
+  const hero=pageHero('ph-league','🤝','Mes amis','Ajoutez des joueurs en ami depuis leur profil (touchez un pseudo dans le classement), puis discutez en privé.');
+  if(!session)return hero+'<div class="lg-forms"><p style="margin:0;color:var(--muted)">Connectez-vous pour ajouter des amis et discuter en privé.</p><button class="btn" data-auth="signup">Créer mon compte</button></div>';
+  const A=ui.amis;
+  if(A==null){loadAmis();return hero+'<div class="empty">Chargement…</div>'}
+  if(A==='off')return hero+'<div class="empty">Les amis ne sont pas encore activés.<br><small>Il faut ajouter la partie « amis » dans Supabase.</small></div>';
+  if(A==='err')return hero+'<div class="empty">Impossible de charger vos amis pour le moment.</div>';
+  const rec=A.filter(a=>a.statut==='recue'),ok=A.filter(a=>a.statut==='amis'),env=A.filter(a=>a.statut==='envoyee');
+  let h=hero;
+  if(rec.length)h+='<h3 class="day">Demandes reçues ('+rec.length+')</h3><div class="am-list">'+rec.map(amiRow).join('')+'</div>';
+  h+='<h3 class="day">Amis ('+ok.length+')</h3>'+(ok.length?'<div class="am-list">'+ok.map(amiRow).join('')+'</div>':'<div class="am-hint">👋 Pas encore d\'amis.<br>Allez dans le <b>Classement</b>, touchez un pseudo puis <b>« Ajouter en ami »</b>.<br><button class="btn" data-social="board" style="margin-top:12px">Voir le classement</button></div>');
+  if(env.length)h+='<h3 class="day">Demandes envoyées</h3><div class="am-list">'+env.map(amiRow).join('')+'</div>';
+  return h;
+}
+function mpDay(t){const k=dkey(new Date(t));return k===today()?'Aujourd\'hui':k===addDays(today(),-1)?'Hier':new Date(t).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}
+function mpListHtml(){
+  if(mp.state==='loading'&&!mp.msgs.length)return '<div class="mp-lock">Chargement…</div>';
+  if(mp.state==='pas_amis')return '<div class="mp-lock">🔒 Vous n\'êtes plus amis avec '+esc(mp.p)+'.<br>Les messages privés sont réservés aux amis.</div>';
+  if(!mp.msgs.length)return '<div class="mp-lock">🔒 Conversation privée : seuls vous et '+esc(mp.p)+' la voyez.<br>Dites bonjour 👋</div>';
+  let d=null;return mp.msgs.map(m=>{const k=dkey(new Date(m.cree_le)),sep=k!==d?'<div class="mp-day">'+mpDay(m.cree_le)+'</div>':'';d=k;
+    return sep+'<div class="mp-m'+(m.moi?' me':'')+'"><div class="cb"><div class="ct">'+esc(m.texte)+'</div><small>'+hhmm(m.cree_le)+'</small></div></div>'}).join('')+(mp.state==='err'?'<div class="mp-day">Connexion perdue, nouvelle tentative…</div>':'');
+}
+function mpRender(stick){const el=$('#mpList');if(!el)return;const atB=stick||el.scrollHeight-el.scrollTop-el.clientHeight<80;el.innerHTML=mpListHtml();if(atB)el.scrollTop=el.scrollHeight}
+async function mpPoll(){
+  const seq=mp.seq;
+  try{const r=await rpc('mp_lire',{p_token:session.token,p_pseudo:mp.p,p_apres:mp.last});if(seq!==mp.seq||!mp.open)return;
+    mp.state='ok';if(Array.isArray(r)&&r.length){const ids=new Set(mp.msgs.map(x=>x.id));mp.msgs=mp.msgs.concat(r.filter(x=>!ids.has(x.id))).slice(-300);mp.last=r[r.length-1].id;mpRender()}else if(mp.first){mpRender(true)}
+    mp.first=false;
+  }catch(e){if(seq!==mp.seq)return;if(e.code==='session'){closeMp();logout(ERR.session);return}mp.state=e.code==='pas_amis'?'pas_amis':'err';mpRender()}
+}
+function mpSchedule(){clearTimeout(mp.timer);if(!mp.open)return;mp.timer=setTimeout(async()=>{await mpPoll();mpSchedule()},document.visibilityState==='visible'?3500:30000)}
+function openMp(p){
+  if(!session){ui.authMode='login';openAuth();return}
+  const a=Array.isArray(ui.amis)?ui.amis.find(x=>x.pseudo.toLowerCase()===p.toLowerCase()):null;
+  mp.seq++;mp.p=a?a.pseudo:p;mp.deco=a?a.deco:null;mp.msgs=[];mp.last=0;mp.state='loading';mp.first=true;
+  const V=$('#mpView');
+  V.innerHTML='<div class="mp-h"><button class="pf-back" data-ovback="1" aria-label="Retour">←</button><button class="mp-who" data-prof="'+esc(mp.p)+'">'+pav(mp.p,mp.deco)+'<span><b>'+pname(mp.p,mp.deco)+'</b><small>🔒 Conversation privée · voir le profil</small></span></button></div>'+
+    '<div class="mp-list" id="mpList"></div><div class="mp-err" id="mpErr"></div><form class="mp-f" id="mpForm" autocomplete="off"><input id="mpIn" maxlength="500" placeholder="Message à '+esc(mp.p)+'…" enterkeyhint="send"><button type="submit" aria-label="Envoyer">➤</button></form>';
+  if(!mp.open){mp.open=true;V.classList.add('open');ovLock();ovPush('mp')}
+  mpRender(true);mpPoll().then(()=>{mpSchedule();loadAmis()});
+}
+function closeMp(){if(!mp.open)return;mp.open=false;mp.seq++;clearTimeout(mp.timer);$('#mpView').classList.remove('open');ovLock();loadAmis()}
+document.addEventListener('visibilitychange',()=>{if(mp.open&&document.visibilityState==='visible'){mpPoll();mpSchedule()}});
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='mpForm')return;e.preventDefault();
+  const inp=$('#mpIn'),txt=inp.value.trim(),er=$('#mpErr');if(!txt||mp.sending||!session)return;
+  mp.sending=true;er.textContent='';
+  try{const m=await rpc('mp_envoyer',{p_token:session.token,p_pseudo:mp.p,p_texte:txt});inp.value='';
+    if(m&&!mp.msgs.some(x=>x.id===m.id)){mp.msgs.push(m)}mpRender(true);mpPoll();
+  }catch(err){if(err.code==='session'){closeMp();logout(ERR.session)}else{er.textContent=AMI_ERR[err.code]||'Envoi impossible, réessayez.';if(err.code==='pas_amis'){mp.state='pas_amis';mpRender()}}}
+  mp.sending=false;inp.focus();
+});
+
+function boardSeg(){return '<div class="seg mini"><button data-bmode="week" class="'+(ui.boardMode==='week'?'on':'')+'">📅 Cette semaine</button><button data-bmode="all" class="'+(ui.boardMode==='all'?'on':'')+'">⭐ Depuis le début</button></div>'}
+function boardRows(b,mode,emptyMsg){
+  if(b==null)return '<div class="empty">Chargement du classement…</div>';
+  if(b==='err')return '<div class="empty">Impossible de charger le classement pour le moment.</div>';
+  const key=mode==='week'?'hebdo':'diamants';
+  const rows=b.slice().sort((x,y)=>(y[key]||0)-(x[key]||0)||(y.diamants||0)-(x.diamants||0));
+  if(!rows.length)return '<div class="empty">'+(emptyMsg||'Personne au classement pour l\'instant.')+'</div>';
+  return '<div class="board">'+rows.map((r,i)=>{const me=session&&r.pseudo.toLowerCase()===session.pseudo.toLowerCase();
+    return '<div class="brow r'+(i+1)+(me?' me':'')+'" data-prof="'+esc(r.pseudo)+'" role="button" tabindex="0" title="Voir le profil"><span class="rk">'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</span><span class="who">'+pav(r.pseudo,r.deco)+'<span class="wn"><span class="nm">'+pname(r.pseudo,r.deco,me?' <small>(vous)</small>':'')+'</span><small>'+r.gagnes+' paris gagnés</small></span></span><span class="val"><b>'+nf(r[key]||0)+' 💎</b><small>'+(mode==='week'?'cette semaine':'au total')+'</small></span></div>'}).join('')+'</div>';
+}
+function renderBoard(){
+  let mode=ui.boardMode,b=ui.boards[mode];
+  if(mode==='week'&&b==='old'){mode='all';b=ui.boards.all}
+  return pageHero('ph-board','🏆','Classement','Le classement de la semaine repart à zéro chaque lundi : tout le monde a sa chance !')+boardSeg()+
+    boardRows(b,mode,mode==='week'?'Personne n\'a encore gagné de diamants cette semaine. À vous de jouer !':'');
+}
+const LG_ERR={nom_invalide:'Le nom doit faire entre 2 et 30 caractères.',trop_de_ligues:'10 ligues maximum par joueur.',code_inconnu:'Aucune ligue avec ce code.',ligue_pleine:'Cette ligue est complète (50 joueurs).',pas_membre:'Vous ne faites pas partie de cette ligue.',session:'Session expirée, reconnectez-vous.'};
+const isMissingFn=e=>!LG_ERR[e.code]&&/function|PGRST2|schema cache/i.test(e.message||'');
+async function loadLigues(){
+  if(!session){ui.ligues=[];return}
+  try{ui.ligues=await rpc('mes_ligues',{p_token:session.token})||[]}catch(e){ui.ligues=isMissingFn(e)?'off':'err'}
+  if(ui.tab==='chat'&&ui.social==='ligues')renderView();
+}
+async function loadLigueBoard(code){
+  ui.ligueBoard=null;
+  try{ui.ligueBoard=await rpc('ligue_classement',{p_token:session.token,p_code:code})}catch(e){ui.ligueBoard='err';if(e.code==='pas_membre'){ui.ligue=null;loadLigues()}}
+  if(ui.tab==='chat'&&ui.social==='ligues'&&ui.ligue===code)renderView();
+}
+function renderLigues(){
+  const hero=pageHero('ph-league','👥','Ligues entre potes','Créez une ligue, envoyez le code à vos amis et affrontez-les dans votre propre classement.');
+  if(!session)return hero+'<div class="lg-forms"><p style="margin:0;color:var(--muted)">Connectez-vous pour créer ou rejoindre une ligue.</p><button class="btn" data-auth="signup">Créer mon compte</button></div>';
+  const L=ui.ligues;
+  if(L==='off')return hero+'<div class="empty">Les ligues ne sont pas encore activées.<br><small>Il faut ajouter la partie « social » dans Supabase.</small></div>';
+  if(ui.ligue){
+    const lg=(Array.isArray(L)?L:[]).find(x=>x.code===ui.ligue)||{code:ui.ligue,nom:'Ma ligue',membres:0};
+    return '<button class="back" data-ligue="">← Mes ligues</button><div class="phero ph-league" data-ic="🏆"><b>'+esc(lg.nom)+'</b><span>Code <b class="code">'+lg.code+'</b>'+(lg.membres?' · '+lg.membres+' membre'+(lg.membres>1?'s':''):'')+'</span><div class="pop-btns" style="margin-top:12px;justify-content:flex-start"><button class="pbtn light" data-ligue-share="'+lg.code+'" data-nom="'+esc(lg.nom)+'">📤 Inviter des amis</button></div></div>'+
+      boardSeg()+boardRows(ui.ligueBoard,ui.boardMode,ui.boardMode==='week'?'Personne n\'a encore gagné de diamants cette semaine.':'')+
+      '<button class="leave" data-ligue-leave="'+lg.code+'">Quitter la ligue</button>';
+  }
+  const list=L==null?'<div class="empty">Chargement…</div>':L==='err'?'<div class="empty">Impossible de charger vos ligues.</div>':!L.length?'<div class="empty">Vous n\'êtes dans aucune ligue. Créez-en une et invitez vos amis !</div>':
+    L.map(l=>'<button class="lgc" data-ligue="'+l.code+'"><span class="lgi" style="--h:'+hashH(l.nom)+'">👥</span><span><b>'+esc(l.nom)+'</b><small>'+l.membres+' membre'+(l.membres>1?'s':'')+' · code '+l.code+'</small></span><span class="arr">›</span></button>').join('');
+  return hero+'<div class="lg-forms"><form id="lgCreate" class="lg-f" autocomplete="off"><input id="lgName" maxlength="30" placeholder="Nom de la ligue (ex. Les potes du foot)"><button type="submit">Créer</button></form>'+
+    '<form id="lgJoin" class="lg-f" autocomplete="off"><input id="lgCode" maxlength="6" placeholder="Code reçu (6 caractères)" autocapitalize="characters"><button type="submit">Rejoindre</button></form><div class="err" id="lgErr"></div></div>'+
+    '<h3 class="day">Mes ligues</h3>'+list;
+}
+function renderView(){
+  if(ui.tab==='classement'){ui.tab='chat';ui.social='board'}
+  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='chat'?renderSocial():ui.tab==='live'?renderLive():renderRules();
+}
+
+/* --- Installation de l'appli (PWA) --- */
+let deferredPrompt=null;
+const standalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(ui.tab==='matchs')renderView()});
+window.addEventListener('appinstalled',()=>{deferredPrompt=null;lsSet('pc_inst_hide','1');toast('📲 PronoClub est installé !');renderView()});
+function installBanner(){
+  if(standalone()||lsGet('pc_inst_hide'))return'';
+  if(!deferredPrompt&&!isIOS)return'';
+  return '<div class="install"><img src="icons/icon-192.png" alt=""><div><b>Installez l\'appli PronoClub</b><br><span style="color:var(--muted)">Une icône sur votre écran d\'accueil, en plein écran.</span></div><button class="go" id="installBtn">Installer</button><button class="no" id="installHide" aria-label="Masquer">×</button></div>';
+}
+function iosHelp(){
+  $('#authBox').innerHTML='<div class="brand"><i>⚽</i>Prono<span>Club</span></div><p class="lead">Pour installer l\'appli sur iPhone :</p><ol class="ios-steps"><li>Ouvrez ce site dans <b>Safari</b>.</li><li>Touchez le bouton <b>Partager</b> (le carré avec une flèche vers le haut).</li><li>Choisissez <b>« Sur l\'écran d\'accueil »</b>, puis <b>Ajouter</b>.</li></ol><div class="menu"><button id="closeAuth">J\'ai compris</button></div>';
+  $('#authModal').classList.add('open');
+}
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+/* --- Écran de connexion --- */
+function openAuth(msg){
+  const m=ui.authMode;
+  const brand='<div class="brand"><i>⚽</i>Prono<span>Club</span></div>';
+  if(session&&m==='menu'){
+    $('#authBox').innerHTML=brand+'<p class="lead">Connecté en tant que <b style="color:var(--text)">'+esc(session.pseudo)+'</b></p><div class="menu"><button data-notifs="1">🔔 Notifications</button><button data-tab="regles">📖 Règles du jeu</button><button id="doLogout">Se déconnecter</button><button id="closeAuth">Fermer</button></div>';
+  }else{
+    const par=lsGet('pc_parrain');
+    $('#authBox').innerHTML=brand+'<p class="lead">Paris sportifs gratuits sur les vrais matchs.<br>1 000 pièces offertes chaque jour !</p>'+
+    (par&&m==='signup'?'<div class="parr">🎁 Invité par <b>'+esc(par)+'</b> : +'+PARRAIN_BONUS+' pièces offertes à l\'inscription</div>':'')+
+    '<div class="seg"><button data-auth="login" class="'+(m==='login'?'on':'')+'">Se connecter</button><button data-auth="signup" class="'+(m==='signup'?'on':'')+'">Créer un compte</button></div>'+
+    '<form id="authForm" autocomplete="on"><label for="fPseudo">Pseudo</label><input id="fPseudo" name="username" autocomplete="username" maxlength="20" required>'+
+    (m==='signup'?'<div class="hint">3 à 20 caractères : lettres, chiffres, _ . -</div>':'')+
+    '<label for="fMdp">Mot de passe</label><input id="fMdp" name="password" type="password" autocomplete="'+(m==='signup'?'new-password':'current-password')+'" required>'+
+    (m==='signup'?'<div class="hint">Au moins 6 caractères. Notez-le bien : il n\'y a pas de récupération par e-mail.</div>':'')+
+    '<button class="btn" type="submit" id="authSubmit">'+(m==='signup'?'Créer mon compte':'Se connecter')+'</button><div class="err" id="authErr">'+(msg?esc(msg):'')+'</div></form>'+
+    '<button class="later" id="closeAuth">Continuer sans compte</button>';
+  }
+  $('#authModal').classList.add('open');
+  const f=$('#fPseudo');if(f)setTimeout(()=>f.focus(),50);
+}
+function closeAuth(){$('#authModal').classList.remove('open')}
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='authForm')return;
+  e.preventDefault();
+  const p=$('#fPseudo').value.trim(),w=$('#fMdp').value,btn=$('#authSubmit'),er=$('#authErr');
+  btn.disabled=true;er.textContent='';
+  try{let res;
+    if(ui.authMode==='signup'){
+      const par=lsGet('pc_parrain');
+      try{res=await rpc('inscription',par?{p_pseudo:p,p_mdp:w,p_parrain:par}:{p_pseudo:p,p_mdp:w})}
+      catch(e1){if(par&&!ERR[e1.code]&&/function|PGRST2|schema cache/i.test(e1.message||''))res=await rpc('inscription',{p_pseudo:p,p_mdp:w});else throw e1}
+      lsSet('pc_parrain',null);
+    }else res=await rpc('connexion',{p_pseudo:p,p_mdp:w});
+    await startSession(res)}
+  catch(err){er.textContent=ERR[err.code]||'Connexion impossible. Vérifiez votre réseau et réessayez.'}
+  btn.disabled=false;
+});
+function renderSlip(){
+  const c=slipCalc();
+  $('#slipCount').textContent=c.sels.length?'('+c.sels.length+')':'';
+  const fab=$('#fab');fab.classList.toggle('hide',!c.sels.length);
+  const bn=document.getElementById('bnSlipN');if(bn){bn.textContent=c.sels.length||'';bn.style.display=c.sels.length?'':'none'}
+  fab.innerHTML='<span>🧾 Coupon · '+c.sels.length+'</span><span>Gain possible '+nf(c.gain)+' 💎</span>';
+  if(!c.sels.length){
+    $('#slipBody').innerHTML='<div class="empty">Votre coupon est vide.<br>Cliquez sur une cote pour l\'ajouter.<br><br>Il vous reste <b style="color:var(--coin)">'+nf(state.coins)+' 🪙</b> à parier aujourd\'hui.</div>';
+    $('#slipFoot').innerHTML='';return;
+  }
+  const qs=k=>'<div class="quickstake">'+[50,100,250,500].map(n=>'<button data-qs="'+k+'" data-v="'+n+'">'+n+'</button>').join('')+'<button data-qs="'+k+'" data-v="max">Max</button></div>';
+  let body='';
+  if(c.sels.length>1||ui.mode==='combi')body+='<div class="seg" style="margin-bottom:10px"><button data-mode="simple" class="'+(ui.mode==='simple'?'on':'')+'" style="flex:1">Simple</button><button data-mode="combi" class="'+(ui.mode==='combi'?'on':'')+'" style="flex:1">Combiné</button></div>';
+  body+=c.sels.map(s=>{const k=selKey(s),o=getOpt(s.m,s.mk,s.opt);
+    return '<div class="sel"><div class="top"><div><div class="pick">'+esc(o.label)+'</div><div class="sub">'+esc(mkTitle(marketOf(s.m,s.mk),s.m))+'</div><div class="sub">'+esc(s.m.home+' – '+s.m.away)+(s.open?'':' · <span style="color:var(--bad)">commencé</span>')+'</div></div><div style="display:flex;align-items:flex-start"><span class="o">'+fo(s.odds)+'</span><button class="rm" data-rm="'+k+'" aria-label="Retirer">×</button></div></div>'+
+    (ui.mode==='simple'?'<div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="'+k+'" value="'+(ui.stakes[k]??'')+'" aria-label="Mise"><span class="g" data-g="'+k+'">→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*(c.boostOn?1.1:1))+' 💎</span></div>'+qs(k):'')+'</div>'}).join('');
+  if(ui.mode==='combi')body+='<div class="sel"><div class="row"><span>Cote totale</span><span class="v" style="color:var(--acc)">'+fo(c.combiOdds)+'</span></div><div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="__combi" value="'+ui.combi+'" aria-label="Mise du combiné"></div>'+qs('__combi')+'</div>';
+  $('#slipBody').innerHTML=body;
+  $('#slipFoot').innerHTML=slipFootHtml(c);
+}
+function slipFootHtml(c){
+  const ex=(id,icon,label,on,n)=>{const dis=!c.single||n<=0;return '<label class="'+(dis?'off':'')+'"><input type="checkbox" data-ex="'+id+'" '+(on&&!dis?'checked':'')+' '+(dis?'disabled':'')+'>'+icon+' '+label+' <span style="margin-left:auto;color:var(--muted)">×'+n+'</span></label>'};
+  let extras='';
+  if(state.inv.boost>0||state.inv.shield>0)extras='<div class="extras">'+(state.inv.boost>0?ex('boost','🚀','Boost +10 %',ui.boost,state.inv.boost):'')+(state.inv.shield>0?ex('shield','🛡️','Assurance',ui.shield,state.inv.shield):'')+(!c.single?'<span style="font-size:12px;color:var(--muted)">Bonus utilisables sur un seul pari (1 simple ou 1 combiné).</span>':'')+'</div>';
+  return extras+'<div class="row"><span>Mise totale</span><span class="v" style="color:var(--coin)">'+nf(c.total)+' 🪙</span></div>'+
+   '<div class="row big"><span>Gain possible</span><span class="v">'+nf(c.gain)+' 💎</span></div>'+
+   '<button class="btn" id="place" '+(c.err?'disabled':'')+'>Valider le pari</button><div class="err">'+(c.err||'')+'</div>';
+}
+function refreshSlipNumbers(){
+  const c=slipCalc();
+  if(ui.mode==='simple')for(const s of c.sels){const k=selKey(s),el=document.querySelector('[data-g="'+k+'"]');if(el)el.textContent='→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*(c.boostOn?1.1:1))+' 💎'}
+  $('#slipFoot').innerHTML=slipFootHtml(c);
+  $('#fab').innerHTML='<span>🧾 Coupon · '+c.sels.length+'</span><span>Gain possible '+nf(c.gain)+' 💎</span>';
+}
+function renderAll(){renderHeader();renderView();renderSlip()}
+
+let tt;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800)}
+
+/* ---------- Événements ---------- */
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-ovback]')){ovBack();return}
+  const ab=e.target.closest('[data-amiadd],[data-amidel],[data-amiok],[data-amino]');
+  if(ab){const d=ab.dataset,k=d.amiadd!=null?'add':d.amidel!=null?'del':d.amiok!=null?'ok':'no',v=d.amiadd||d.amidel||d.amiok||d.amino;amiAction(k,v&&v!=='1'?v:ui.profP,ab);return}
+  const mo=e.target.closest('[data-mpopen]');if(mo){openMp(mo.dataset.mpopen);return}
+  const pp=e.target.closest('.mp-who[data-prof]');if(pp){const same=profOpen&&ui.profP&&ui.profP.toLowerCase()===pp.dataset.prof.toLowerCase(),who=pp.dataset.prof;ovBack();if(!same)setTimeout(()=>openProfil(who),80);return}
+  const pr=e.target.closest('[data-prof]');if(pr){openProfil(pr.dataset.prof);return}
+  const t=e.target.closest('button,label');if(!t)return;
+  const d=t.dataset;
+  if(d.popclose!==undefined&&!d.tab){closePop();return}
+  if(d.tab){if(session)closeAuth();closePop();ui.tab=d.tab;if(d.social)ui.social=d.social;if(d.ligue)openLigue(d.ligue);
+    if(d.tab==='classement'){ui.tab='chat';ui.social='board'}
+    if(ui.tab==='chat'){if(ui.social==='board')loadBoard();if(ui.social==='ligues'&&ui.ligues==null)loadLigues();chatSoon()}
+    renderHeader();renderView();toTop();return}
+  if(d.copy){copyText(d.copy);return}
+  if(d.sharetxt!==undefined){shareLink(d.sharetxt,d.shareurl);return}
+  if(d.sharebet){shareBet(d.sharebet);return}
+  if(d.invite){openInvite();return}
+  if(d.notifs){openNotifs();return}
+  if(t.id==='notifOnBtn'){notifActiver();return}
+  if(t.id==='notifOff'){notifDesactiver();return}
+  if(t.id==='notifTest'){swReg().then(r=>r.showNotification('⚽ PronoClub',{body:'Test réussi : les notifications marchent sur ce téléphone !',icon:'icons/icon-192.png',badge:'icons/favicon.png'})).catch(()=>toast('Test impossible'));return}
+  if(d.streak){const n=session&&state.streak?state.streak.n:0;
+    if(!session){ui.authMode='signup';openAuth('Créez un compte pour lancer votre série de connexion.');return}
+    popup('<div class="pop-ic big">🔥</div><h3>Série de '+n+' jour'+(n>1?'s':'')+'</h3><p>Connectez-vous chaque jour pour gagner des pièces bonus : +100 le 1er jour, +200 le 2e… jusqu\'à <b>+700 par jour</b>. Un jour raté, et la série repart à zéro !</p>'+streakDots(n)+'<div class="pop-btns"><button class="pbtn" data-popclose="1">C\'est parti</button></div>');return}
+  if(d.bmode){ui.boardMode=d.bmode;if(ui.social==='ligues'&&ui.ligue)renderView();else{if(ui.boards[d.bmode]==null)loadBoard();renderView()}return}
+  if(d.ligueShare){shareLigue(d.ligueShare,d.nom||'Ma ligue');return}
+  if(d.ligueLeave){if(!confirmLeave(d.ligueLeave))return;rpc('ligue_quitter',{p_token:session.token,p_code:d.ligueLeave}).then(()=>{toast('Vous avez quitté la ligue');ui.ligue=null;loadLigues()}).catch(()=>toast('Impossible pour le moment'));return}
+  if(d.ligue!==undefined){openLigue(d.ligue);renderView();toTop();return}
+  if(d.auth){closePop();ui.authMode=d.auth;openAuth();return}
+  if(t.id==='userBtn'){ui.authMode=session?'menu':'login';openAuth();return}
+  if(t.id==='doLogout'){notifUnlinkOnLogout(session&&session.token);ui.authMode='login';logout();return}
+  if(t.id==='closeAuth'){closeAuth();return}
+  if(t.id==='installHide'){lsSet('pc_inst_hide','1');renderView();return}
+  if(t.id==='installBtn'){
+    if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.finally(()=>{deferredPrompt=null;renderView()})}
+    else iosHelp();
+    return}
+  if(!session&&(d.buy||d.defi||t.id==='place')){ui.authMode='signup';$('#aside').classList.remove('open');openAuth(t.id==='place'?'Créez votre compte gratuit pour valider ce pari : votre coupon est gardé.':'Créez un compte gratuit (ou connectez-vous) pour jouer.');return}
+  if(session&&!synced&&(d.sel||d.buy||d.equip||d.defi||t.id==='place')){toast('⏳ Chargement de votre compte…');refreshFromServer();return}
+  if(d.defi){const[id,mk,opt]=d.defi.split('|'),m=findMatch(id);if(!m||status(m)!=='avenir'||defiToday())return;
+    state.defis=(state.defis||[]).concat([{day:today(),matchId:id,mk,opt,status:'pending'}]).slice(-20);save();renderView();toast('🎯 Réponse enregistrée ! Résultat après le match.');return}
+  if(d.sel){const[id,mk,opt]=d.sel.split('|');toggleSel(id,mk,opt);return}
+  if(d.open){ui.open=ui.open===d.open?null:d.open;renderView();return}
+  if(d.go){ui.tab='matchs';ui.sport=d.go;ui.comp='all';renderHeader();renderView();toTop();return}
+  if(d.social){ui.social=d.social;if(d.social==='board')loadBoard();if(d.social==='ligues'){ui.ligue=null;loadLigues()}if(d.social==='amis')loadAmis();renderView();if(d.social==='chat')chatSoon();return}
+  if(d.sport){ui.sport=d.sport;ui.open=null;ui.comp='all';renderView();return}
+  if(d.comp){ui.comp=d.comp;renderView();return}
+  if(d.bf){ui.betFilter=d.bf;renderView();return}
+  if(d.rm){ui.slip=ui.slip.filter(s=>selKey(s)!==d.rm);if(ui.slip.length<2&&ui.mode==='combi')ui.mode='simple';renderSlip();renderView();return}
+  if(d.mode){ui.mode=d.mode;renderSlip();return}
+  if(d.qs){const v=d.v==='max'?state.coins:+d.v;if(d.qs==='__combi')ui.combi=v;else ui.stakes[d.qs]=v;renderSlip();return}
+  if(t.id==='place'){placeBets();return}
+  if(t.id==='closeSlip'){$('#aside').classList.remove('open');return}
+  if(t.id==='fab'||t.id==='bnSlip'){$('#aside').classList.add('open');return}
+  if(d.buy){
+    const i=SHOP.find(x=>x.id===d.buy);if(!i||state.diamonds<i.cost)return;
+    state.diamonds-=i.cost;
+    if(i.kind==='coins'){state.coins+=i.val;toast('🪙 +'+nf(i.val)+' pièces ajoutées')}
+    else if(i.kind==='inv'){state.inv[i.id]=(state.inv[i.id]||0)+1;toast(i.ic+' '+i.name+' : disponible dans votre coupon')}
+    else{state.owned.push(i.id);state[EQUIP[i.kind]]=eqVal(i);toast(i.ic+' '+i.name+' débloqué !')}
+    save();renderAll();return;
+  }
+  if(d.equip){
+    const i=SHOP.find(x=>x.id===d.equip);
+    const f=EQUIP[i.kind];state[f]=state[f]===eqVal(i)?null:eqVal(i);
+    save();renderAll();return;
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(profOpen||mp.open)){ovBack();return}if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.prof)openProfil(e.target.dataset.prof)});
+document.getElementById('popModal').addEventListener('click',e=>{if(e.target.id==='popModal')closePop()});
+document.addEventListener('change',e=>{
+  if(e.target.dataset&&e.target.dataset.npref&&ui.notif&&ui.notif.prefs){ui.notif.prefs[e.target.dataset.npref]=e.target.checked;if(ui.notif.on)notifSave();return}const d=e.target.dataset;if(d.ex){ui[d.ex]=e.target.checked;renderSlip()}});
+document.addEventListener('input',e=>{
+  const d=e.target.dataset;
+  if(d.stake!==undefined){const v=e.target.value;if(d.stake==='__combi')ui.combi=v;else ui.stakes[d.stake]=v;refreshSlipNumbers()}
+});
+
+/* ---------- Boucle ---------- */
+function tick(force){
+  const a=daily(),b=settle();
+  if(a||b)save();
+  renderHeader();
+  const focused=(document.activeElement&&document.activeElement.matches('input'))||(ui.tab==='chat'&&ui.social==='chat');
+  if(!focused){renderView();renderSlip()}
+}
+tick(true);
+loadFixtures();
+setInterval(()=>tick(false),20000);
+setInterval(loadFixtures,3*60*1000);
+if(session)refreshFromServer();
+else if(!lsGet('pc_welcome')){lsSet('pc_welcome','1');const par=lsGet('pc_parrain');
+  popup('<div class="pop-ic big">⚽</div><h3>Bienvenue sur PronoClub</h3><p>Pariez <b>gratuitement</b> sur les vrais matchs : foot, basket, tennis, rugby… <b>'+nf(DAILY)+' pièces offertes chaque jour</b>, des diamants à gagner et des défis entre amis.'+(par?'<br><br>🎁 <b>'+esc(par)+'</b> vous offre <b>'+PARRAIN_BONUS+' pièces</b> à l\'inscription !':'')+'</p><div class="pop-btns"><button class="pbtn" data-auth="signup">Créer mon compte</button><button class="pbtn ghost2" data-popclose="1">Visiter d\'abord</button></div>')}
+chatSoon();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){loadFixtures();refreshFromServer()}});
+</script>
+</body>
+</html>
