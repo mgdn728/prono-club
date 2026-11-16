@@ -157,7 +157,7 @@ aside{position:sticky;top:120px;align-self:start}
 .rules ul{margin:0;padding-left:20px}
 .disc{color:var(--muted);font-size:13px;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
 
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:var(--card2);border:1px solid var(--line);padding:12px 18px;border-radius:12px;font-weight:700;z-index:60;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:var(--card2);border:1px solid var(--line);padding:12px 18px;border-radius:12px;font-weight:700;z-index:95;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media (max-width:900px){
@@ -832,6 +832,21 @@ body.pf-lock{overflow:hidden}
 .pf-act .wait{background:#eef0f6;color:#5b6475}
 .pf-act .no{flex:0 0 auto;background:#fff;color:#d92b3d;box-shadow:var(--sh)}
 .pf-act button:disabled{opacity:.6}
+.pf-act .gift{white-space:nowrap;font-size:14px;background:linear-gradient(135deg,#ffcf3d,#f5a300);color:#3a2600;box-shadow:0 8px 18px rgba(245,163,0,.3)}
+.pf-act .no.wide{flex:1;min-height:44px;font-size:14px}
+.pf-mine{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 14px 0;max-width:560px}
+@media (min-width:588px){.pf-mine{margin-left:auto;margin-right:auto}}
+.pf-mine div{background:#fff;border-radius:16px;box-shadow:var(--sh);padding:12px;text-align:center}
+.pf-mine i{font-style:normal;font-size:20px;display:block}.pf-mine b{display:block;font-size:20px;color:#0d1220}.pf-mine small{color:#5b6475;font-size:12px}
+.pf-menu button{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 4px;background:none;border:0;border-bottom:1px solid #eef0f6;font-size:15px;font-weight:700;color:#0d1220;text-align:left}
+.pf-menu button:last-child{border-bottom:0}
+.pf-menu button i{font-style:normal;font-size:19px;width:26px;text-align:center}.pf-menu button span{flex:1}.pf-menu button em{font-style:normal;color:#9aa3b5;font-size:20px}
+.pf-menu button.out{color:#d92b3d}.pf-menu button.out em{color:#d92b3d}
+.gift-q{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0 10px}
+.gift-q button{padding:9px 14px;border-radius:12px;background:var(--card2,#eef0f6);font-weight:800;border:2px solid transparent}
+.gift-q button.on{border-color:#f5a300;background:#fff6dc;color:#3a2600}
+.gift-in{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:14px;font-size:17px;font-weight:700;text-align:center;border:2px solid #dfe3ec;background:#fff;color:#0d1220}
+.gift-err{color:#d92b3d;font-size:13px;min-height:18px;margin-top:6px;text-align:center}
 .am-list{display:grid;gap:8px;margin-bottom:16px}
 .am-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:10px 12px;box-shadow:var(--sh)}
 .am-row .av{width:44px;height:44px;font-size:15px}
@@ -1367,7 +1382,7 @@ async function startSession(res){
   afterLogin();
 }
 async function afterLogin(){
-  await claimBonus();
+  await claimBonus();claimGifts();
   const lc=lsGet('pc_ligue');
   if(lc&&session){try{const r=await rpc('ligue_rejoindre',{p_token:session.token,p_code:lc});lsSet('pc_ligue',null);ui.ligues=null;
     popup('<div class="pop-ic big">👥</div><h3>Bienvenue dans la ligue</h3><p>Vous avez rejoint <b>'+esc(r.nom)+'</b>. Retrouvez son classement dans l\'onglet Social.</p><div class="pop-btns"><button class="pbtn" data-tab="chat" data-social="ligues" data-ligue="'+esc(r.code)+'">Voir la ligue</button></div>')}
@@ -2152,7 +2167,7 @@ async function openProfil(p){
   const etatP=session&&p.toLowerCase()!==session.pseudo.toLowerCase()?rpc('ami_etat',{p_token:session.token,p_pseudo:p}).catch(e=>/function|PGRST2|schema cache/i.test(e.message||'')?'off':'err'):Promise.resolve(session?'moi':'invite');
   try{r=await rpc('profil',{p_pseudo:p})}
   catch(e){if(seq!==profSeq)return;const off=/function|PGRST2|schema cache/i.test(e.message||'');
-    B.innerHTML=profHero(p,null,'')+'<div class="pf-state"><b>'+(off?'🛠️':'📡')+'</b>'+(off?'Les profils ne sont pas encore disponibles.':'Impossible de charger ce profil pour le moment.<br>Vérifiez votre connexion et réessayez.')+'</div>';return}
+    B.innerHTML=profHero(p,null,'')+'<div class="pf-state"><b>'+(off?'🛠️':'📡')+'</b>'+(off?'Les profils ne sont pas encore disponibles.':'Impossible de charger ce profil pour le moment.<br>Vérifiez votre connexion et réessayez.')+'</div>'+pfMenu(p);return}
   if(seq!==profSeq)return;
   if(!r){B.innerHTML=profHero(p,null,'')+'<div class="pf-state"><b>👻</b>Ce joueur n\'existe plus.</div>';return}
   const g=r.gagnes||0,l=r.perdus||0,fin=g+l,taux=fin?Math.round(g*100/fin):0,n=r.serie||0;
@@ -2172,7 +2187,7 @@ async function openProfil(p){
   const dern=dn&&dn.length?'<div class="pf-sec"><h4>Derniers paris</h4><div class="pf-bets">'+dn.map(b=>{const st=b.status,cl=st==='won'?'w':st==='lost'?'l':st==='pending'?'p':'v';
     return '<div class="pf-bet"><b>'+esc(b.match||b.type||'Pari')+'</b><em class="'+cl+'">'+(st==='won'?'+'+nf(b.payout||0)+' 💎':st==='lost'?'Perdu':st==='pending'?'⏳ En attente':'Annulé')+'</em><small>'+[b.type&&b.type!==b.match?esc(b.type):'',b.odds?'cote '+fo(Number(b.odds)):'',b.stake?'mise '+nf(b.stake)+' 💎':'',st==='pending'&&b.stake&&b.odds?'gain possible '+nf(b.stake*b.odds)+' 💎':''].filter(Boolean).join(' · ')+'</small>'+(b.pick?'<span class="pk">Pronostic : '+esc(b.pick)+(st==='pending'&&b.ko&&+b.ko>Date.now()?' · '+new Date(+b.ko).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+' '+hhmm(+b.ko):'')+'</span>':'')+'</div>'}).join('')+'</div></div>':'';
   ui.amiEtat=await etatP;if(seq!==profSeq)return;
-  B.innerHTML=profHero(r.pseudo,deco,tags)+key+'<div id="pfAct">'+profActions()+'</div>'+bilan+forme+serie+dern;
+  B.innerHTML=profHero(r.pseudo,deco,tags)+key+(me?pfMine():'')+'<div id="pfAct">'+profActions()+'</div>'+bilan+forme+serie+dern+pfMenu(r.pseudo);
 }
 window.addEventListener('popstate',()=>ovCloseTop());
 
@@ -2186,8 +2201,48 @@ function profActions(){
   if(st==='aucun')return '<div class="pf-act"><button class="go" data-amiadd="1">＋ Ajouter en ami</button></div>';
   if(st==='envoyee')return '<div class="pf-act"><button class="wait" disabled>⏳ Demande envoyée</button><button class="no" data-amidel="1">Annuler</button></div>';
   if(st==='recue')return '<div class="pf-act"><button class="go" data-amiok="1">✅ Accepter la demande</button><button class="no" data-amino="1">Refuser</button></div>';
-  return '<div class="pf-act"><button class="go" data-mpopen="'+esc(ui.profP)+'">💬 Envoyer un message</button><button class="no" data-amidel="1" title="Retirer des amis">Retirer</button></div>';
+  return '<div class="pf-act"><button class="go" data-mpopen="'+esc(ui.profP)+'">💬 Message</button><button class="gift" data-gift="'+esc(ui.profP)+'">🪙 Envoyer pièces</button></div><div class="pf-act"><button class="no wide" data-amidel="1" title="Retirer des amis">Retirer des amis</button></div>';
 }
+function isMe(p){return !!(session&&p&&p.toLowerCase()===session.pseudo.toLowerCase())}
+function pfMine(){return '<div class="pf-mine"><div><i>🪙</i><b>'+nf(state.coins)+'</b><small>pièces aujourd\'hui</small></div><div><i>💎</i><b>'+nf(state.diamonds)+'</b><small>diamants à dépenser</small></div></div>'}
+function pfMenu(p){if(!isMe(p))return '';
+  const b=(k,ic,t,cl)=>'<button data-pfgo="'+k+'"'+(cl?' class="'+cl+'"':'')+'><i>'+ic+'</i><span>'+t+'</span><em>›</em></button>';
+  return '<div class="pf-sec pf-menu"><h4>Mon compte</h4>'+b('boutique','🛍️','Boutique')+b('invite','🎁','Inviter des amis')+b('notifs','🔔','Notifications')+b('regles','📖','Règles du jeu')+b('logout','🚪','Se déconnecter','out')+'</div>'}
+function pfGo(k){ovBack();setTimeout(()=>{
+  if(k==='logout'){notifUnlinkOnLogout(session&&session.token);ui.authMode='login';logout();return}
+  if(k==='notifs'){openNotifs();return}
+  if(k==='invite'){openInvite();return}
+  ui.tab=k;renderHeader();renderView();toTop()},120)}
+/* Envoyer des pièces à un ami */
+const GIFT_ERR={session:ERR.session,pas_amis:'Vous devez être amis pour envoyer des pièces.',montant_min:'10 pièces minimum.',pas_assez:'Vous n\'avez pas assez de pièces.',plafond:'Limite atteinte : 5 000 pièces envoyées maximum par jour.',resync:'Rechargez l\'appli puis réessayez.',soi_meme:'Impossible de s\'envoyer des pièces.',joueur_inconnu:'Ce joueur n\'existe plus.'};
+let giftBusy=false;
+function openGift(p){
+  if(!session){ui.authMode='login';openAuth();return}
+  const c=state.coins,q=[100,250,500,1000].filter(v=>v<=c);
+  popup('<div class="pop-ic big">🪙</div><h3>Envoyer des pièces à '+esc(p)+'</h3><p>Vous avez <b>'+nf(c)+' pièces</b> aujourd\'hui. Les pièces envoyées sont retirées de votre compte.</p>'+
+    '<div class="gift-q">'+q.map(v=>'<button data-giftq="'+v+'">'+nf(v)+'</button>').join('')+(c>=10?'<button data-giftq="'+Math.min(c,5000)+'">Max</button>':'')+'</div>'+
+    '<input id="giftN" class="gift-in" type="number" inputmode="numeric" min="10" step="10" max="'+Math.min(c,5000)+'" placeholder="Nombre de pièces">'+
+    '<div class="gift-err" id="giftErr"></div><div class="pop-btns"><button class="pbtn" id="giftSend" data-to="'+esc(p)+'"'+(c<10?' disabled':'')+'>Envoyer</button><button class="pbtn ghost2" data-popclose="1">Annuler</button></div>'+
+    '<p style="font-size:12px;margin-top:10px;color:var(--muted)">10 pièces minimum · 5 000 pièces maximum par jour</p>')}
+async function sendGift(btn){
+  if(giftBusy)return;const p=btn.dataset.to,inp=$('#giftN'),er=$('#giftErr'),n=Math.floor(+(inp&&inp.value)||0);
+  if(n<10){er.textContent='Choisissez au moins 10 pièces.';return}
+  if(n>state.coins){er.textContent='Vous n\'avez que '+nf(state.coins)+' pièces.';return}
+  giftBusy=true;btn.disabled=true;btn.textContent='Envoi…';er.textContent='';
+  try{clearTimeout(saveTimer);state.updated=Date.now();await rpc('sauver',{p_token:session.token,p_etat:state});
+    const r=await rpc('pieces_envoyer',{p_token:session.token,p_pseudo:p,p_montant:n});
+    state.coins=r&&typeof r.pieces==='number'?r.pieces:Math.max(0,state.coins-n);save();renderAll();closePop();
+    celebrate('🪙','Pièces envoyées','<b>'+nf(n)+' pièces</b> envoyées à <b>'+esc(p)+'</b>. Il les recevra dès qu\'il ouvrira l\'appli.')}
+  catch(e){if(e.code==='session'){closePop();logout(ERR.session)}else{er.textContent=GIFT_ERR[e.code]||(amiOff(e)?'L\'envoi de pièces n\'est pas encore activé.':'Envoi impossible, réessayez.');btn.disabled=false;btn.textContent='Envoyer'}}
+  giftBusy=false}
+let giftClaiming=false;
+async function claimGifts(){
+  if(!session||!synced||giftClaiming)return;giftClaiming=true;
+  try{const r=await rpc('pieces_recevoir',{p_token:session.token});
+    if(Array.isArray(r)&&r.length){const tot=r.reduce((a,x)=>a+(x.montant||0),0);state.coins+=tot;save();clearTimeout(saveTimer);pushRemote();renderAll();
+      celebrate('🎁','Vous avez reçu des pièces',r.map(x=>'<b>'+esc(x.de)+'</b> vous a envoyé <b>'+nf(x.montant)+' pièces</b>').join('<br>')+'<br><br>Elles sont ajoutées à vos pièces du jour.')}}
+  catch(e){}
+  giftClaiming=false}
 async function amiAction(kind,pseudo,btn){
   if(!session){if(mp.open)closeMp();if(profOpen)closeProfil();ui.authMode='signup';openAuth('Créez un compte pour ajouter des amis.');return}
   if(kind==='del'){const ami=ui.amiEtat==='amis'||(ui.amis||[]).some(a=>a.pseudo.toLowerCase()===pseudo.toLowerCase()&&a.statut==='amis');
@@ -2211,7 +2266,8 @@ async function loadAmis(){
 }
 function amiCount(){const A=ui.amis;if(!Array.isArray(A))return 0;return A.filter(a=>a.statut==='recue').length+A.reduce((n,a)=>n+(a.statut==='amis'?a.non_lus||0:0),0)}
 function updateAmiBadge(){const n=amiCount(),b=document.getElementById('amiBadge');if(b){b.textContent=n>9?'9+':n;b.style.display=n?'':'none'}}
-setInterval(()=>{if(session&&document.visibilityState==='visible'&&!mp.open)loadAmis()},30000);
+setInterval(()=>{if(session&&document.visibilityState==='visible'){if(!mp.open)loadAmis();claimGifts()}},30000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')claimGifts()});
 function amiRow(a){
   const who='<button class="am-who" data-prof="'+esc(a.pseudo)+'">'+pav(a.pseudo,a.deco)+'<span><b>'+pname(a.pseudo,a.deco)+'</b><small>';
   if(a.statut==='recue')return '<div class="am-row">'+who+'veut être votre ami</small></span></button><button class="ok" data-amiok="'+esc(a.pseudo)+'">Accepter</button><button class="ko" data-amino="'+esc(a.pseudo)+'">Refuser</button></div>';
@@ -2462,6 +2518,10 @@ document.addEventListener('click',e=>{
   const ab=e.target.closest('[data-amiadd],[data-amidel],[data-amiok],[data-amino]');
   if(ab){const d=ab.dataset,k=d.amiadd!=null?'add':d.amidel!=null?'del':d.amiok!=null?'ok':'no',v=d.amiadd||d.amidel||d.amiok||d.amino;amiAction(k,v&&v!=='1'?v:ui.profP,ab);return}
   const mo=e.target.closest('[data-mpopen]');if(mo){openMp(mo.dataset.mpopen);return}
+  const pg=e.target.closest('[data-pfgo]');if(pg){pfGo(pg.dataset.pfgo);return}
+  const gf=e.target.closest('[data-gift]');if(gf){openGift(gf.dataset.gift);return}
+  const gq=e.target.closest('[data-giftq]');if(gq){const i=$('#giftN');if(i){i.value=gq.dataset.giftq;document.querySelectorAll('[data-giftq]').forEach(x=>x.classList.toggle('on',x===gq))}return}
+  if(e.target.closest('#giftSend')){sendGift(e.target.closest('#giftSend'));return}
   const pp=e.target.closest('.mp-who[data-prof]');if(pp){const same=profOpen&&ui.profP&&ui.profP.toLowerCase()===pp.dataset.prof.toLowerCase(),who=pp.dataset.prof;ovBack();if(!same)setTimeout(()=>openProfil(who),80);return}
   const pr=e.target.closest('[data-prof]');if(pr){openProfil(pr.dataset.prof);return}
   const t=e.target.closest('button,label');if(!t)return;
@@ -2492,7 +2552,7 @@ document.addEventListener('click',e=>{
   if(d.ligueLeave){if(!confirmLeave(d.ligueLeave))return;rpc('ligue_quitter',{p_token:session.token,p_code:d.ligueLeave}).then(()=>{toast('Vous avez quitté la ligue');ui.ligue=null;loadLigues()}).catch(()=>toast('Impossible pour le moment'));return}
   if(d.ligue!==undefined){openLigue(d.ligue);renderView();toTop();return}
   if(d.auth){closePop();ui.authMode=d.auth;openAuth();return}
-  if(t.id==='userBtn'){ui.authMode=session?'menu':'login';openAuth();return}
+  if(t.id==='userBtn'){if(session){openProfil(session.pseudo);return}ui.authMode='login';openAuth();return}
   if(t.id==='doLogout'){notifUnlinkOnLogout(session&&session.token);ui.authMode='login';logout();return}
   if(t.id==='closeAuth'){closeAuth();return}
   if(t.id==='installHide'){lsSet('pc_inst_hide','1');renderView();return}
