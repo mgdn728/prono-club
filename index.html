@@ -907,6 +907,67 @@ body.pf-lock{overflow:hidden}
   .bnav .slipbtn .bdg{background:#ffc21a;color:#3b1fa8}
 }
 
+/* ---------- Blackjack ---------- */
+.ph-bj{background:linear-gradient(135deg,#0b6b3a,#0f8f4f 55%,#c99a1e)}
+.t-bj{background:linear-gradient(135deg,#0b6b3a,#16a34a 60%,#d4a017)}
+.bj-info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.bj-info div{background:var(--card,#fff);border-radius:16px;padding:10px 8px;text-align:center;box-shadow:0 4px 12px rgba(13,18,32,.07)}
+.bj-info b{display:block;font-size:17px}.bj-info small{font-size:11px;color:var(--muted)}
+.bj-table{position:relative;border-radius:180px 180px 26px 26px;padding:26px 14px 18px;min-height:430px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;
+ background:radial-gradient(120% 90% at 50% 20%,#1fa463 0%,#0d7a43 45%,#06512b 100%);border:9px solid #6b3f1d;box-shadow:inset 0 0 0 3px #c99a1e,inset 0 10px 40px rgba(0,0,0,.35),0 14px 30px rgba(0,0,0,.25);overflow:hidden;color:#fff}
+.bj-table::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 2px,transparent 2px 6px);pointer-events:none}
+.bj-shoe{position:absolute;right:14px;top:22px;width:46px;height:62px;border-radius:7px;background:linear-gradient(135deg,#b3122e,#6e0a1c);box-shadow:3px 3px 0 #4a0713,6px 6px 0 #2c040b;border:2px solid #fff}
+.bj-zone{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1}
+.bj-lbl{font-size:13px;font-weight:700;letter-spacing:.3px;background:rgba(0,0,0,.28);padding:4px 12px;border-radius:99px}
+.bj-lbl b{color:#ffe27a;font-size:15px;margin-left:4px}
+.bj-hand{display:flex;justify-content:center;min-height:96px;padding-left:24px}
+.bj-ph{width:66px;height:94px;border-radius:9px;border:2px dashed rgba(255,255,255,.3);margin-left:-24px}
+.bj-ph:first-child{margin-left:-24px}
+.bj-arc{text-align:center;position:relative;z-index:1}
+.bj-arc span{display:inline-block;font-size:12px;font-weight:900;letter-spacing:2px;color:#ffd54a;border-top:2px solid rgba(255,213,74,.6);border-bottom:2px solid rgba(255,213,74,.6);padding:4px 10px}
+.bj-arc small{display:block;font-size:10.5px;opacity:.8;margin-top:4px}
+.bj-bet{position:absolute;left:16px;bottom:16px;z-index:2}
+.card{width:66px;height:94px;margin-left:-24px;perspective:600px;flex:0 0 auto;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.card .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s}
+.card.back .in{transform:rotateY(180deg)}
+.card .cf,.card .cb{position:absolute;inset:0;border-radius:9px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.card .cf{background:#fff;color:#111;font-family:Georgia,serif;font-weight:700}
+.card.red .cf{color:#d0102b}
+.c-tl,.c-br{position:absolute;font-size:14px;line-height:1;text-align:center}
+.c-tl{top:5px;left:6px}.c-br{bottom:5px;right:6px;transform:rotate(180deg)}
+.c-mid{position:absolute;inset:0;display:grid;place-items:center;font-size:34px}
+.card .cb{transform:rotateY(180deg);background:repeating-linear-gradient(45deg,#b3122e 0 6px,#8d0d24 6px 12px);border:3px solid #fff;display:grid;place-items:center}
+.card .cb span{width:30px;height:30px;border-radius:50%;background:#fff;color:#b3122e;font:900 17px/30px sans-serif;text-align:center}
+.card.deal{animation:bjdeal .55s cubic-bezier(.2,.8,.25,1) both;animation-delay:var(--d)}
+@keyframes bjdeal{from{transform:translate(170px,-230px) rotate(-35deg) scale(.7);opacity:0}to{transform:none;opacity:1}}
+.card.reveal .in{animation:bjflip .5s ease both}
+@keyframes bjflip{from{transform:rotateY(180deg)}to{transform:rotateY(0)}}
+.bj-res{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;text-align:center;padding:14px 26px;border-radius:20px;animation:bjpop .45s cubic-bezier(.2,1.6,.4,1) both;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.bj-res b{display:block;font-size:24px;font-weight:900;white-space:nowrap}.bj-res span{font-size:15px;font-weight:800}
+.bj-res.win{background:linear-gradient(135deg,#ffd43b,#ff9f1a);color:#3a2300}
+.bj-res.push{background:linear-gradient(135deg,#e7ecf5,#b9c4d8);color:#1b2230}
+.bj-res.lose{background:linear-gradient(135deg,#ff4d6d,#b3122e);color:#fff}
+@keyframes bjpop{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.chip{width:52px;height:52px;border-radius:50%;display:inline-grid;place-items:center;font:900 13px/1 sans-serif;color:#fff;border:4px dashed rgba(255,255,255,.85);box-shadow:0 0 0 3px var(--cc),0 5px 10px rgba(0,0,0,.3);background:var(--cc);cursor:pointer;transition:transform .12s}
+.chip:active{transform:scale(.9) translateY(2px)}.chip:disabled{opacity:.35}
+.chip.c50{--cc:#1f7bff}.chip.c100{--cc:#111}.chip.c250{--cc:#18b85c}.chip.c500{--cc:#8a3dff}.chip.c1000{--cc:#d4a017}
+.bj-bet .chip{animation:bjchip .5s cubic-bezier(.2,1.4,.4,1) both;--cc:#d4a017;width:58px;height:58px;font-size:12px}
+@keyframes bjchip{from{transform:translateY(160px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+.bj-ctl{margin:14px 0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.bj-ctl.acts{flex-direction:row;justify-content:center}
+.bj-mise{font-size:15px}.bj-mise b{font-size:20px}
+.bj-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.bj-row{display:flex;gap:8px}
+.bj-mini{padding:7px 14px;border-radius:99px;font-weight:800;background:var(--card,#fff);box-shadow:0 2px 8px rgba(13,18,32,.12)}
+.bj-deal{width:100%;max-width:340px;padding:16px;border-radius:18px;font-size:19px;font-weight:900;color:#3a2300;background:linear-gradient(90deg,#ffd43b,#ffb703);box-shadow:0 10px 24px rgba(255,180,0,.35)}
+.bj-deal:disabled{opacity:.5}
+.bj-a{flex:1;max-width:120px;padding:15px 6px;border-radius:16px;font-size:16px;font-weight:900;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+.bj-a.hit{background:linear-gradient(135deg,#18b85c,#0b7a3b)}.bj-a.stand{background:linear-gradient(135deg,#ff3d5a,#b3122e)}.bj-a.dbl{background:linear-gradient(135deg,#8a3dff,#4b1fb3)}
+.bj-a:disabled{opacity:.45}
+.bj-note{text-align:center;color:var(--muted);font-size:14px;margin:0}
+.bj-rules{font-size:12px;color:var(--muted);line-height:1.5;text-align:center;margin:6px 4px 20px}
+@media(max-width:380px){.card{width:58px;height:84px;margin-left:-26px}.bj-ph{width:58px;height:84px}}
+
 /* ---------- Page d'installation ---------- */
 #landing{position:fixed;inset:0;z-index:9999;overflow-y:auto;color:#fff;background:radial-gradient(120% 70% at 85% 0%,#ff2d6f 0%,transparent 55%),radial-gradient(120% 70% at 0% 100%,#6a2cf5 0%,transparent 60%),#160b2e;font-family:inherit;display:none}
 #landing.open{display:block}
@@ -950,6 +1011,7 @@ body.pf-lock{overflow:hidden}
       <button data-tab="live">🔴 Live</button>
       <button data-tab="paris">Mes paris</button>
       <button data-tab="boutique">Boutique</button>
+      <button data-tab="bj">🃏 Blackjack</button>
       <button data-tab="chat">💬 Social</button>
       <button data-tab="regles">Règles</button>
     </nav>
@@ -1688,12 +1750,106 @@ function guestBanner(){
   if(session)return'';const par=lsGet('pc_parrain');
   return '<div class="guest"><div><b>🎉 Jouez gratuitement</b><span>'+nf(DAILY)+' pièces par jour'+(par?' + <b>'+PARRAIN_BONUS+' offertes</b> par '+esc(par):'')+'. Compte créé en 10 secondes.</span></div><button data-auth="signup">Créer mon compte</button></div>';
 }
+/* ---------- Blackjack (pièces uniquement) ---------- */
+const BJ_MIN=50,BJ_MAX=1000,BJ_LIMIT=15,BJ_CHIPS=[50,100,250,500,1000];
+let bjBusy=false,bjSeen=new Set(),bjReveal=false,bjCid=0;
+function bjS(){const t=today();let b=state.bj;if(!b||b.day!==t)b=state.bj={day:t,n:0,bet:(b&&b.bet)||100,cur:b?b.cur:null,w:(b&&b.w)||0,l:(b&&b.l)||0};return b}
+function bjRand(n){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}catch(e){return Math.floor(Math.random()*n)}}
+function bjCard(){return{r:['A','2','3','4','5','6','7','8','9','10','J','Q','K'][bjRand(13)],s:'♠♥♦♣'[bjRand(4)],id:Date.now().toString(36)+(bjCid++)}}
+function bjVal(h){let v=0,a=0;for(const c of h){if(c.r==='A'){v+=11;a++}else v+=['J','Q','K'].includes(c.r)?10:+c.r}while(v>21&&a){v-=10;a--}return v}
+function bjSoft(h){let v=0,a=0;for(const c of h){if(c.r==='A'){v+=11;a++}else v+=['J','Q','K'].includes(c.r)?10:+c.r}while(v>21&&a){v-=10;a--}return a>0&&v<=21}
+const bjIsBJ=h=>h.length===2&&bjVal(h)===21;
+function bjCardHtml(c,i,hidden){
+  const fresh=!bjSeen.has(c.id);if(fresh)bjSeen.add(c.id);
+  const red=c.s==='♥'||c.s==='♦';
+  const face='<div class="cf"><span class="c-tl">'+c.r+'<br>'+c.s+'</span><span class="c-mid">'+c.s+'</span><span class="c-br">'+c.r+'<br>'+c.s+'</span></div>';
+  return '<div class="card'+(red?' red':'')+(hidden?' back':'')+(fresh?' deal':'')+(!hidden&&bjReveal&&i===1?' reveal':'')+'" style="--d:'+(fresh?(i*0.18).toFixed(2):0)+'s"><div class="in">'+face+'<div class="cb"><span>P</span></div></div></div>';
+}
+function renderBJ(){
+  if(state.bj&&state.bj.cur&&state.bj.cur.st==='dealer'&&!bjBusy)setTimeout(bjResume,50);
+  const b=bjS(),c=b.cur,left=Math.max(0,BJ_LIMIT-b.n);
+  const hero=pageHero('ph-bj','🃏','Blackjack','Battez le croupier sans dépasser 21. Mise de '+BJ_MIN+' à '+nf(BJ_MAX)+' pièces : si vous gagnez, vous récupérez le double. '+BJ_LIMIT+' parties par jour.');
+  const info='<div class="bj-info"><div><b>'+nf(state.coins)+'</b><small>pièces</small></div><div><b>'+left+' / '+BJ_LIMIT+'</b><small>parties restantes</small></div><div><b>'+(b.w||0)+' – '+(b.l||0)+'</b><small>gagnées – perdues</small></div></div>';
+  const play=c&&c.st!=='done';
+  const dHide=c&&c.st==='play';
+  const dv=c?(dHide?bjVal([c.d[0]]):bjVal(c.d)):'';
+  const pv=c?bjVal(c.p):'';
+  const res=c&&c.st==='done'?({win:['🎉 Gagné !','+'+nf(c.bet*2)+' pièces','win'],bj:['🃏 Blackjack !','+'+nf(c.bet*2)+' pièces','win'],push:['🤝 Égalité','Mise rendue','push'],lose:[c.why==='bust'?'💥 Dépassé !':'😬 Perdu','-'+nf(c.bet)+' pièces','lose']})[c.res]:null;
+  let table='<div class="bj-table"><div class="bj-shoe"></div>'+
+    '<div class="bj-zone"><div class="bj-lbl">Croupier'+(c?' <b>'+dv+(dHide?' + ?':'')+'</b>':'')+'</div><div class="bj-hand">'+(c?c.d.map((x,i)=>bjCardHtml(x,i,dHide&&i===1)).join(''):'<div class="bj-ph"></div><div class="bj-ph"></div>')+'</div></div>'+
+    '<div class="bj-arc"><span>LE BLACKJACK PAIE 2 × LA MISE</span><small>Le croupier tire jusqu\'à 16 et reste à 17</small></div>'+
+    (res?'<div class="bj-res '+res[2]+'"><b>'+res[0]+'</b><span>'+res[1]+'</span></div>':'')+
+    '<div class="bj-zone"><div class="bj-hand">'+(c?c.p.map((x,i)=>bjCardHtml(x,i,false)).join(''):'<div class="bj-ph"></div><div class="bj-ph"></div>')+'</div><div class="bj-lbl">Vous'+(c?' <b>'+pv+(bjSoft(c.p)&&pv<21&&c.st==='play'?' ('+(pv-10)+'/'+pv+')':'')+'</b>':'')+'</div></div>'+
+    '<div class="bj-bet">'+(c?'<span class="chip c'+Math.min(c.bet,1000)+'">'+nf(c.bet)+'</span>':'')+'</div>'+
+  '</div>';
+  let ctl;
+  if(!session)ctl='<div class="bj-ctl"><p class="bj-note">Créez un compte gratuit pour jouer au blackjack avec vos pièces.</p><button class="btn" data-auth="signup">Créer mon compte</button></div>';
+  else if(play)ctl='<div class="bj-ctl acts"><button class="bj-a hit" data-bj="hit"'+(bjBusy||c.st!=='play'?' disabled':'')+'>👆 Tirer</button><button class="bj-a stand" data-bj="stand"'+(bjBusy||c.st!=='play'?' disabled':'')+'>✋ Rester</button><button class="bj-a dbl" data-bj="double"'+(bjBusy||c.st!=='play'||c.p.length!==2||state.coins<c.bet?' disabled':'')+'>✌️ Doubler</button></div>';
+  else{
+    const bet=Math.min(b.bet,BJ_MAX);
+    ctl='<div class="bj-ctl"><div class="bj-mise">Mise : <b>'+nf(bet)+'</b> pièces</div><div class="bj-chips">'+BJ_CHIPS.map(v=>'<button class="chip c'+v+'" data-bjchip="'+v+'"'+(state.coins<v?' disabled':'')+'>'+(v>=1000?'1K':v)+'</button>').join('')+'</div>'+
+    '<div class="bj-row"><button class="bj-mini" data-bjset="'+BJ_MIN+'">Effacer</button><button class="bj-mini" data-bjset="half">½</button><button class="bj-mini" data-bjset="dbl">×2</button><button class="bj-mini" data-bjset="'+BJ_MAX+'">Max</button></div>'+
+    (left?'<button class="bj-deal" data-bj="deal"'+(state.coins<Math.max(bet,BJ_MIN)?' disabled':'')+'>🃏 '+(c?'Rejouer':'Distribuer')+'</button>'+(state.coins<BJ_MIN?'<p class="bj-note">Pas assez de pièces : revenez demain pour '+nf(DAILY)+' pièces.</p>':'')
+      :'<p class="bj-note">🛑 Vous avez joué vos '+BJ_LIMIT+' parties du jour. Revenez demain !</p>')+'</div>';
+  }
+  return hero+info+table+ctl+'<p class="bj-rules">Blackjack (As + 10, Valet, Dame ou Roi en 2 cartes) ou main plus forte que le croupier = <b>mise × 2</b>. Égalité = mise rendue. Au-delà de 21, c\'est perdu. « Doubler » double la mise et donne une seule carte. Jeu gratuit, sans argent réel.</p>';
+}
+function bjRender(){if(ui.tab==='bj'){renderView();renderHeader()}}
+function bjSettle(res,why){
+  const b=bjS(),c=b.cur;if(!c||c.st==='done')return;
+  c.st='done';c.res=res;c.why=why||'';
+  if(res==='win'||res==='bj'){state.coins+=c.bet*2;b.w=(b.w||0)+1}
+  else if(res==='push')state.coins+=c.bet;
+  else b.l=(b.l||0)+1;
+  b.bet=Math.min(Math.max(c.bet/(c.dbl?2:1),BJ_MIN),BJ_MAX);
+  save();bjBusy=false;bjRender();
+}
+function bjDealer(){
+  const c=bjS().cur;if(!c)return;
+  bjBusy=true;
+  const step=()=>{const cur=bjS().cur;if(!cur||cur.st!=='dealer')return;bjReveal=false;
+    if(bjVal(cur.d)<17){cur.d.push(bjCard());save();bjRender();setTimeout(step,750);return}
+    const p=bjVal(cur.p),d=bjVal(cur.d);
+    setTimeout(()=>bjSettle(d>21||p>d?'win':p===d?'push':'lose'),450)};
+  setTimeout(step,800);
+}
+function bjAction(a){
+  const b=bjS();
+  if(a==='deal'){
+    if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour jouer au blackjack.');return}
+    if(bjBusy)return;
+    if(b.n>=BJ_LIMIT){toast('🛑 Limite de '+BJ_LIMIT+' parties atteinte pour aujourd\'hui');return}
+    const bet=Math.min(Math.max(b.bet,BJ_MIN),BJ_MAX);
+    if(state.coins<bet){toast('Pas assez de pièces');return}
+    state.coins-=bet;b.n++;bjSeen=new Set();bjReveal=false;
+    b.cur={bet,dbl:false,st:'play',p:[bjCard(),bjCard()],d:[bjCard(),bjCard()]};
+    // ordre de distribution : joueur, croupier, joueur, croupier
+    save();bjBusy=true;renderView();renderHeader();
+    setTimeout(()=>{bjBusy=false;const c=bjS().cur;if(!c)return;
+      const pb=bjIsBJ(c.p),db=bjIsBJ(c.d);
+      if(pb||db){c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle(pb&&db?'push':pb?'bj':'lose'),700);return}
+      bjRender()},1100);
+    return}
+  const c=b.cur;if(!c||c.st!=='play'||bjBusy)return;
+  if(a==='hit'){c.p.push(bjCard());save();
+    const v=bjVal(c.p);
+    if(v>21){bjBusy=true;bjRender();setTimeout(()=>{c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle('lose','bust'),600)},700);return}
+    if(v===21){bjBusy=true;bjRender();setTimeout(()=>{bjBusy=false;bjAction('stand')},650);return}
+    bjRender();return}
+  if(a==='double'){if(c.p.length!==2||state.coins<c.bet)return;
+    state.coins-=c.bet;c.bet*=2;c.dbl=true;c.p.push(bjCard());save();bjBusy=true;bjRender();
+    setTimeout(()=>{if(bjVal(c.p)>21){c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle('lose','bust'),600)}else{bjBusy=false;bjAction('stand')}},800);return}
+  if(a==='stand'){c.st='dealer';bjReveal=true;save();bjRender();bjDealer()}
+}
+function bjResume(){const c=state.bj&&state.bj.cur;if(c&&c.st==='dealer'&&!bjBusy){c.d.forEach(x=>bjSeen.add(x.id));c.p.forEach(x=>bjSeen.add(x.id));bjDealer()}else if(c){c.d.forEach(x=>bjSeen.add(x.id));c.p.forEach(x=>bjSeen.add(x.id))}}
+
 function dashHtml(){
   const n=session&&state.streak?state.streak.n:0;
   return '<div class="dash">'+
    '<div class="tile t-coin"><div class="ti">🪙</div><b>'+nf(state.coins)+' pièces</b><span>'+nf(DAILY)+' de plus dans '+untilMidnight()+'</span></div>'+
    '<button class="tile t-bell" data-notifs="1"><div class="ti">🔔</div><b>Notifications</b><span>'+(notifOn()?'Activées ✓':'Résultats, défis, série…')+'</span></button>'+
    '<button class="tile t-fire" data-streak="1"><div class="ti">🔥</div><b>Série : '+n+' jour'+(n>1?'s':'')+'</b><span>'+(session?'Demain : +'+nf(streakBonus(n+1))+' pièces':'Bonus chaque jour')+'</span></button>'+
+   '<button class="tile t-bj" data-tab="bj"><div class="ti">🃏</div><b>Blackjack</b><span>'+Math.max(0,BJ_LIMIT-bjS().n)+' parties restantes</span></button>'+
    '<button class="tile t-gift" data-invite="1"><div class="ti">🎁</div><b>Invite tes potes</b><span>+'+PARRAIN_BONUS+' pièces chacun</span></button>'+
    '<button class="tile t-league" data-tab="chat" data-social="ligues"><div class="ti">👥</div><b>Ligues entre potes</b><span>Ton classement privé</span></button>'+
    '<button class="tile t-trophy" data-tab="chat" data-social="board"><div class="ti">🏆</div><b>Top de la semaine</b><span>Remis à zéro le lundi</span></button>'+
@@ -2082,7 +2238,7 @@ function renderLigues(){
 }
 function renderView(){
   if(ui.tab==='classement'){ui.tab='chat';ui.social='board'}
-  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='chat'?renderSocial():ui.tab==='live'?renderLive():renderRules();
+  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='chat'?renderSocial():ui.tab==='live'?renderLive():ui.tab==='bj'?renderBJ():renderRules();
 }
 
 /* --- Installation de l'appli (PWA) --- */
@@ -2235,6 +2391,9 @@ document.addEventListener('click',e=>{
     if(d.tab==='classement'){ui.tab='chat';ui.social='board'}
     if(ui.tab==='chat'){if(ui.social==='board')loadBoard();if(ui.social==='ligues'&&ui.ligues==null)loadLigues();chatSoon()}
     renderHeader();renderView();toTop();return}
+  if(d.bj){bjAction(d.bj);return}
+  if(d.bjchip){const b=bjS();if(b.cur&&b.cur.st!=='done')return;b.bet=Math.min(BJ_MAX,Math.min(state.coins,(b.bet||0)+(+d.bjchip)));if(b.bet<BJ_MIN)b.bet=BJ_MIN;renderView();return}
+  if(d.bjset){const b=bjS();if(b.cur&&b.cur.st!=='done')return;b.bet=d.bjset==='half'?Math.max(BJ_MIN,Math.round(b.bet/2/50)*50):d.bjset==='dbl'?Math.min(BJ_MAX,b.bet*2):+d.bjset;renderView();return}
   if(d.copy){copyText(d.copy);return}
   if(d.sharetxt!==undefined){shareLink(d.sharetxt,d.shareurl);return}
   if(d.sharebet){shareBet(d.sharebet);return}
