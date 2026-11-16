@@ -842,6 +842,64 @@ body.pf-lock{overflow:hidden}
 .pf-menu button:last-child{border-bottom:0}
 .pf-menu button i{font-style:normal;font-size:19px;width:26px;text-align:center}.pf-menu button span{flex:1}.pf-menu button em{font-style:normal;color:#9aa3b5;font-size:20px}
 .pf-menu button.out{color:#d92b3d}.pf-menu button.out em{color:#d92b3d}
+.pf-act .poker{background:linear-gradient(135deg,#0f7a45,#0a5a33);color:#fff;box-shadow:0 8px 18px rgba(10,90,51,.35)}
+.pk-wait{height:6px;border-radius:6px;background:#e6e9f0;overflow:hidden;margin:14px 0 4px}
+.pk-wait i{display:block;height:100%;width:40%;border-radius:6px;background:linear-gradient(90deg,#ff2d55,#7a2cf5);animation:pkwait 1.3s ease-in-out infinite}
+@keyframes pkwait{0%{margin-left:-40%}100%{margin-left:100%}}
+.pkv{position:fixed;inset:0;z-index:89;background:radial-gradient(120% 80% at 50% 0%,#1b2540,#070b16 70%);display:none;color:#fff;overflow:hidden}
+.pkv.open{display:block}
+#pkBox{height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;padding:calc(8px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom));box-sizing:border-box}
+.pk-load{margin:auto;text-align:center;font-size:17px;font-weight:700;line-height:2;opacity:.85}
+.pk-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:#c9d2ea;padding:2px 2px 8px}
+.pk-top button{background:rgba(255,255,255,.1);color:#fff;border:0;border-radius:12px;padding:8px 11px;font-weight:800;font-size:12px}
+.pk-top span:last-child{background:rgba(255,207,61,.14);color:#ffd95e;border-radius:10px;padding:6px 9px;white-space:nowrap}
+.pk-table{flex:1;min-height:0;border-radius:130px/90px;padding:9px;background:linear-gradient(160deg,#6b4423,#3a2412 60%,#5a3a1e);box-shadow:0 18px 40px rgba(0,0,0,.55),inset 0 2px 3px rgba(255,255,255,.18)}
+.pk-felt{height:100%;border-radius:122px/82px;background:radial-gradient(ellipse at 50% 42%,#1f9d57 0%,#12733d 55%,#0a4f29 100%);box-shadow:inset 0 0 0 3px rgba(255,255,255,.07),inset 0 0 50px rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:14px 10px;box-sizing:border-box;position:relative}
+.pk-seat{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.pk-who{display:flex;align-items:center;gap:8px;background:rgba(6,12,24,.72);border:2px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 14px 4px 4px;position:relative;transition:box-shadow .25s,border-color .25s}
+.pk-who .av{width:38px;height:38px;font-size:14px}.pk-who .frm{transform:scale(.9)}
+.pk-who b{display:block;font-size:13px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pk-who small{font-size:12px;color:#ffd95e;font-weight:800}
+.pk-seat.turn .pk-who{border-color:#ffd23f;box-shadow:0 0 0 4px rgba(255,210,63,.22),0 0 22px rgba(255,210,63,.55)}
+.pk-seat.win .pk-who{border-color:#3dff8f;box-shadow:0 0 0 4px rgba(61,255,143,.22),0 0 24px rgba(61,255,143,.6)}
+.pk-d{position:absolute;right:-12px;top:-8px;width:24px;height:24px;border-radius:50%;background:#fff;color:#111;font-weight:900;font-size:12px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.5);border:2px solid #d9d9d9}
+.pk-hand{display:flex;gap:5px}
+.pkc{width:42px;height:60px;border-radius:7px;background:linear-gradient(160deg,#fff,#eef0f5);color:#12151c;position:relative;box-shadow:0 4px 10px rgba(0,0,0,.45);flex:0 0 auto;font-family:Georgia,'Times New Roman',serif}
+.pkc b{position:absolute;left:5px;top:2px;font-size:17px;font-weight:800;letter-spacing:-1px}.pkc i{position:absolute;left:5px;top:20px;font-style:normal;font-size:13px}
+.pkc em{position:absolute;right:4px;bottom:1px;font-style:normal;font-size:26px;line-height:1}
+.pkc.red{color:#d81f36}
+.pkc.big{width:58px;height:82px;border-radius:9px}.pkc.big b{font-size:23px;left:6px}.pkc.big i{font-size:17px;top:27px;left:7px}.pkc.big em{font-size:38px}
+.pkc.back{background:repeating-linear-gradient(45deg,#b3122e 0 6px,#8f0d24 6px 12px);border:3px solid #fff;box-sizing:border-box;display:grid;place-items:center}
+.pkc.back span{width:22px;height:22px;border-radius:50%;background:#fff;color:#b3122e;font:900 13px/22px system-ui;text-align:center}
+.pkc.slot{background:rgba(0,0,0,.16);box-shadow:inset 0 0 0 2px rgba(255,255,255,.1)}
+.pkc.in{animation:pkin .38s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes pkin{0%{transform:translateY(-26px) rotateY(90deg) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+.pk-mid{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%}
+.pk-board{display:flex;gap:5px;justify-content:center}
+.pk-pot{background:rgba(0,0,0,.38);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:700}.pk-pot b{color:#ffd95e;font-size:15px}
+.pk-msg{background:rgba(6,12,24,.86);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:8px 12px;font-size:13px;font-weight:800;text-align:center;max-width:92%;animation:bjpop .45s cubic-bezier(.2,1.7,.4,1) both}
+.pk-label{background:rgba(6,12,24,.8);border-radius:999px;padding:4px 11px;font-size:12px;font-weight:800;color:#fff;white-space:nowrap}
+.pk-label.big{font-size:14px;padding:6px 14px;background:linear-gradient(135deg,#ffcf3d,#f59e00);color:#2b1c00;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.pk-label.big.cat0{background:rgba(6,12,24,.8);color:#dfe6f7}
+.pk-label.big.cat4,.pk-label.big.cat5,.pk-label.big.cat6,.pk-label.big.cat7,.pk-label.big.cat8{background:linear-gradient(135deg,#ff2d55,#7a2cf5);color:#fff}
+.pk-think{font-size:12px;font-weight:700;color:#ffe9a6;animation:pkblink 1.2s infinite}
+@keyframes pkblink{50%{opacity:.35}}
+.pk-bet{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.42);border-radius:999px;padding:3px 10px 3px 4px;font-size:13px;font-weight:800;color:#ffd95e}
+.pk-bet u{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#ffe27a 0 38%,#e0a100 40% 100%);border:2px dashed #fff3c4;box-sizing:border-box;text-decoration:none}
+.pk-timer{height:6px;border-radius:6px;background:rgba(255,255,255,.1);margin:10px 4px 0;overflow:hidden}
+.pk-timer i{display:block;height:100%;width:100%;border-radius:6px;background:#8fa0c7;transition:width .25s linear}
+.pk-timer.me i{background:#ffd23f}.pk-timer i.low{background:#ff4d5e}
+.pk-actions{padding-top:10px;min-height:64px}
+.pk-row{display:flex;gap:8px}
+.pk-b{flex:1;min-height:54px;border:0;border-radius:16px;font-weight:900;font-size:15px;color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.28),0 10px 18px rgba(0,0,0,.3)}
+.pk-b:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.28)}
+.pk-b.fold{background:linear-gradient(180deg,#e2475a,#b9243a)}.pk-b.call{background:linear-gradient(180deg,#25b866,#128a47)}.pk-b.raise{background:linear-gradient(180deg,#ffbf2f,#e08a00);color:#2b1c00}
+.pk-info{text-align:center;font-weight:800;font-size:14px;color:#c9d2ea;padding:16px 0}
+.pk-raise{display:flex;flex-direction:column;gap:9px}
+.pk-rq{display:flex;gap:6px}.pk-rq button{flex:1;border:0;border-radius:11px;background:rgba(255,255,255,.12);color:#fff;font-weight:800;font-size:13px;padding:9px 0}
+.pk-raise input[type=range]{width:100%;accent-color:#ffbf2f;height:28px}
+.pk-end{text-align:center;display:flex;flex-direction:column;gap:6px;animation:bjpop .5s cubic-bezier(.2,1.7,.4,1) both}
+.pk-end>b{font-size:24px}.pk-end.w>b{color:#ffd95e}.pk-end span{font-size:14px;color:#dfe6f7}.pk-end div{display:flex;gap:8px;margin-top:6px}
+@media (max-height:700px){.pkc{width:36px;height:52px}.pkc.big{width:50px;height:70px}.pkc.big em{font-size:30px}.pk-felt{padding:10px 8px}.pk-who .av{width:32px;height:32px}}
 .gift-q{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0 10px}
 .gift-q button{padding:9px 14px;border-radius:12px;background:var(--card2,#eef0f6);font-weight:800;border:2px solid transparent}
 .gift-q button.on{border-color:#f5a300;background:#fff6dc;color:#3a2600}
@@ -1105,6 +1163,7 @@ body.pf-lock{overflow:hidden}
 <div class="toast" id="toast"></div>
 <div class="modal" id="authModal"><div class="auth" id="authBox"></div></div>
 <div class="mpv" id="mpView" role="dialog" aria-modal="true" aria-label="Messages privés"></div>
+<div class="pkv" id="pkView" role="dialog" aria-modal="true" aria-label="Table de poker"><div id="pkBox"></div></div>
 <div class="pfv" id="profView" role="dialog" aria-modal="true" aria-label="Profil du joueur"><div class="pf-wrap" id="profBox"></div></div>
 <div class="modal pop" id="popModal"><div class="popbox" id="popBox"></div></div>
 
@@ -1382,7 +1441,7 @@ async function startSession(res){
   afterLogin();
 }
 async function afterLogin(){
-  await claimBonus();claimGifts();
+  await claimBonus();claimGifts();pkPoll();
   const lc=lsGet('pc_ligue');
   if(lc&&session){try{const r=await rpc('ligue_rejoindre',{p_token:session.token,p_code:lc});lsSet('pc_ligue',null);ui.ligues=null;
     popup('<div class="pop-ic big">👥</div><h3>Bienvenue dans la ligue</h3><p>Vous avez rejoint <b>'+esc(r.nom)+'</b>. Retrouvez son classement dans l\'onglet Social.</p><div class="pop-btns"><button class="pbtn" data-tab="chat" data-social="ligues" data-ligue="'+esc(r.code)+'">Voir la ligue</button></div>')}
@@ -1406,7 +1465,7 @@ async function refreshFromServer(){
 }
 function logout(msg){
   session=null;synced=false;lsSet(LS_SESSION,null);state=fresh();ui.slip=[];ui.ligues=null;ui.ligue=null;ui.filleuls=0;ui.amis=null;
-  try{if(mp.open)closeMp();if(profOpen)closeProfil()}catch(e){}
+  try{if(mp.open)closeMp();if(profOpen)closeProfil();if(pk.open)pkClose();clearInterval(pk.watch);pk.watch=null;pk.sent=null;pk.invId=null}catch(e){}
   renderAll();openAuth(msg);
 }
 async function loadBoard(){
@@ -2147,7 +2206,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 let profOpen=false,profSeq=0;
 const mp={open:false,p:null,deco:null,msgs:[],last:0,timer:null,sending:false,seq:0};
 function profHero(p,deco,tags){return '<div class="pf-hero"><div class="pf-bar"><button class="pf-back" data-ovback="1" aria-label="Retour">←</button><span>Profil</span><i style="width:44px"></i></div><div class="pf-ava">'+pav(p,deco)+'</div><h2 class="pf-name">'+pname(p,{c:deco&&deco.c})+'</h2><div class="pf-tags">'+(tags||'')+'</div></div>'}
-function ovLock(){document.body.classList.toggle('pf-lock',profOpen||mp.open)}
+function ovLock(){document.body.classList.toggle('pf-lock',profOpen||mp.open||(typeof pk!=='undefined'&&pk.open))}
 function ovPush(k){try{history.pushState({ov:k},'')}catch(e){}}
 function ovBack(){if(history.state&&history.state.ov)history.back();else ovCloseTop()}
 function ovCloseTop(){if(mp.open)closeMp();else if(profOpen)closeProfil()}
@@ -2191,11 +2250,195 @@ async function openProfil(p){
 }
 window.addEventListener('popstate',()=>ovCloseTop());
 
+/* ---------- Poker face à face (Texas Hold'em, le gagnant prend tout) ---------- */
+const pk={open:false,id:null,v:null,seq:-1,timer:null,busy:false,raise:null,invId:null,sent:null,seen:new Set(),leftAt:0,left:0,ended:false,claiming:false,polling:false,watch:null};
+const PK_ERR={session:ERR.session,soi_meme:'Impossible de se défier soi-même.',mise_invalide:'La mise doit être entre 50 et 100 000 pièces.',deja_en_jeu:'Vous avez déjà un défi ou une partie en cours.',adv_occupe:'Ce joueur est déjà en partie ou a un défi en attente.',pas_assez:'Vous n\'avez pas assez de pièces.',resync:'Rechargez l\'appli puis réessayez.',plus_dispo:'Ce défi n\'est plus disponible.',joueur_inconnu:'Ce joueur n\'existe plus.',pas_ton_tour:'Ce n\'est pas votre tour.',relance_min:'Relance trop petite.',action_invalide:'Action impossible.'};
+const pkOff=e=>/function|PGRST2|schema cache/i.test(e&&e.message||'');
+function pkErr(e){return PK_ERR[e&&e.code]||(pkOff(e)?'Le poker n\'est pas encore activé.':'Action impossible, réessayez.')}
+const PK_RK='23456789TJQKA',PK_SU={s:'♠',h:'♥',d:'♦',c:'♣'};
+const PK_ONE={14:'As',13:'Roi',12:'Dame',11:'Valet'},PK_MANY={14:'As',13:'Rois',12:'Dames',11:'Valets'};
+const pkRv=c=>PK_RK.indexOf(c[0])+2,pkOne=v=>PK_ONE[v]||String(v),pkMany=v=>PK_MANY[v]||String(v);
+function pkEval5(h){
+  let r=h.map(pkRv).sort((a,b)=>b-a);const fl=h.every(c=>c[1]===h[0][1]);let st=false,hi=0;
+  if(new Set(r).size===5){if(r[0]-r[4]===4){st=true;hi=r[0]}else if(r.join()==='14,5,4,3,2'){st=true;hi=5}}
+  const cnt={};r.forEach(v=>cnt[v]=(cnt[v]||0)+1);
+  const g=Object.keys(cnt).map(Number).sort((a,b)=>cnt[b]-cnt[a]||b-a),n=g.map(v=>cnt[v]);
+  const cat=st&&fl?8:n[0]===4?7:n[0]===3&&n[1]===2?6:fl?5:st?4:n[0]===3?3:n[0]===2&&n[1]===2?2:n[0]===2?1:0;
+  let s=cat;if(st)return{cat,g:[hi],s:s*759375+hi*50625};
+  for(let i=0;i<5;i++)s=s*15+(g[i]||0);return{cat,g,s}}
+function pkBest(cs){
+  if(!cs||cs.length<2)return null;
+  if(cs.length<5){const r=cs.map(pkRv).sort((a,b)=>b-a);return r[0]===r[1]?{cat:1,g:[r[0]]}:{cat:0,g:r}}
+  let best=null;const n=cs.length;
+  const rec=(i,h)=>{if(h.length===5){const e=pkEval5(h);if(!best||e.s>best.s)best=e;return}if(i>=n||h.length+n-i<5)return;rec(i+1,h.concat([cs[i]]));rec(i+1,h)};
+  rec(0,[]);return best}
+function pkName(e){if(!e)return '';const g=e.g;
+  return e.cat===8?(g[0]===14?'Quinte flush royale':'Quinte flush '+pkHi(g[0]))
+   :e.cat===7?'Carré '+(g[0]===14?'d\'As':'de '+pkMany(g[0])):e.cat===6?'Full aux '+pkMany(g[0])+' par les '+pkMany(g[1])
+   :e.cat===5?'Couleur '+pkHi(g[0]):e.cat===4?'Quinte '+pkHi(g[0]):e.cat===3?'Brelan '+(g[0]===14?'d\'As':'de '+pkMany(g[0]))
+   :e.cat===2?'Double paire '+pkMany(g[0])+' et '+pkMany(g[1]):e.cat===1?'Paire '+(g[0]===14?'d\'As':'de '+pkMany(g[0])):'Hauteur '+pkOne(g[0])}
+function pkHi(v){return v===14?'à l\'As':v===12?'à la Dame':v===13?'au Roi':v===11?'au Valet':'au '+v}
+const PK_CAT=['hauteur','paire','double paire','brelan','quinte','couleur','full','carré','quinte flush'];
+function pkCard(c,cls){
+  if(!c)return '<div class="pkc back '+(cls||'')+'"><span>P</span></div>';
+  const fresh=!pk.seen.has(c);if(fresh)pk.seen.add(c);
+  const red=c[1]==='h'||c[1]==='d',r=c[0]==='T'?'10':c[0],s=PK_SU[c[1]];
+  return '<div class="pkc'+(red?' red':'')+(fresh?' in':'')+' '+(cls||'')+'"><b>'+r+'</b><i>'+s+'</i><em>'+s+'</em></div>'}
+function pkChips(n){return '<span class="pk-bet"><u></u>'+nf(n)+'</span>'}
+async function pkFlush(){clearTimeout(saveTimer);state.updated=Date.now();await rpc('sauver',{p_token:session.token,p_etat:state})}
+
+/* Défier un joueur */
+function pkInviteOpen(p){
+  if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour jouer au poker.');return}
+  const c=state.coins,q=[100,250,500,1000].filter(v=>v<=c);
+  popup('<div class="pop-ic big">🃏</div><h3>Défier '+esc(p)+' au poker</h3><p>Texas Hold\'em en face à face. Vous misez chacun la même somme et <b>le gagnant prend tout</b>.<br>Vous avez <b>'+nf(c)+' pièces</b>.</p>'+
+    '<div class="gift-q">'+q.map(v=>'<button data-giftq="'+v+'">'+nf(v)+'</button>').join('')+(c>=50?'<button data-giftq="'+Math.min(c,100000)+'">Max</button>':'')+'</div>'+
+    '<input id="giftN" class="gift-in" type="number" inputmode="numeric" min="50" step="50" placeholder="Mise de chaque joueur">'+
+    '<div class="gift-err" id="giftErr"></div><div class="pop-btns"><button class="pbtn" id="pkSend" data-to="'+esc(p)+'"'+(c<50?' disabled':'')+'>Envoyer le défi</button><button class="pbtn ghost2" data-popclose="1">Annuler</button></div>'+
+    '<p style="font-size:12px;margin-top:10px;color:var(--muted)">Mise minimum : 50 pièces. Si le joueur refuse ou ne répond pas en 2 minutes, votre mise vous est rendue.</p>')}
+async function pkSendInvite(btn){
+  if(pk.busy)return;const p=btn.dataset.to,er=$('#giftErr'),n=Math.floor(+($('#giftN')||{}).value||0);
+  if(n<50){er.textContent='Choisissez au moins 50 pièces.';return}
+  if(n>state.coins){er.textContent='Vous n\'avez que '+nf(state.coins)+' pièces.';return}
+  pk.busy=true;btn.disabled=true;btn.textContent='Envoi…';er.textContent='';
+  try{await pkFlush();const r=await rpc('poker_inviter',{p_token:session.token,p_pseudo:p,p_mise:n});
+    state.coins=typeof r.pieces==='number'?r.pieces:Math.max(0,state.coins-n);save();renderAll();
+    pk.sent={id:r.id,a:p,mise:n};closePop();if(profOpen)ovBack();pkWaitPop();pkWatch()}
+  catch(e){if(e.code==='session'){closePop();logout(ERR.session)}else{er.textContent=pkErr(e);btn.disabled=false;btn.textContent='Envoyer le défi'}}
+  pk.busy=false}
+function pkWaitPop(){const s=pk.sent;if(!s)return;
+  popup('<div id="pkWaitPop"><div class="pop-ic big">⏳</div><h3>Défi envoyé à '+esc(s.a)+'</h3><p>Mise : <b>'+nf(s.mise)+' pièces</b> chacun.<br>En attente de sa réponse (2 minutes maximum)…</p><div class="pk-wait"><i></i></div><div class="pop-btns"><button class="pbtn ghost2" id="pkCancel">Annuler le défi</button></div></div>')}
+function pkWatch(){clearInterval(pk.watch);pk.watch=setInterval(pkPoll,2500)}
+async function pkCancel(){const s=pk.sent;if(!s)return;try{await rpc('poker_annuler',{p_token:session.token,p_id:s.id})}catch(e){}pkPoll()}
+async function pkPoll(){
+  if(!session||!synced||pk.polling||pk.open)return;pk.polling=true;
+  try{const r=await rpc('poker_moi',{p_token:session.token});
+    if(r){
+      if(r.partie){clearInterval(pk.watch);pk.watch=null;pk.sent=null;if($('#pkWaitPop')||$('#pkInvPop'))closePop();pkOpen(r.partie)}
+      else{
+        if(pk.sent&&!r.envoye){clearInterval(pk.watch);pk.watch=null;pk.sent=null;if($('#pkWaitPop'))closePop()}
+        if(!pk.sent&&r.envoye){pk.sent=r.envoye;if(!pk.watch)pkWatch()}
+        const inv=(r.recus||[])[0];
+        if(inv&&pk.invId!==inv.id){pk.invId=inv.id;bjSnd('chip');
+          popup('<div id="pkInvPop" data-id="'+inv.id+'"><div class="pop-ic big">🃏</div><h3>'+esc(inv.de)+' vous défie au poker</h3><p>Mise : <b>'+nf(inv.mise)+' pièces</b> chacun.<br>Le gagnant remporte <b>'+nf(inv.mise*2)+' pièces</b>.</p><div class="gift-err" id="giftErr"></div><div class="pop-btns"><button class="pbtn" id="pkYes" data-id="'+inv.id+'" data-mise="'+inv.mise+'">Accepter</button><button class="pbtn ghost2" id="pkNo" data-id="'+inv.id+'">Refuser</button></div></div>')}
+        if(!inv){const el=$('#pkInvPop');if(el){closePop();toast('Le défi a été annulé')}pk.invId=null}
+        if(r.a_encaisser)pkClaim();
+      }}}
+  catch(e){}
+  pk.polling=false}
+async function pkAnswer(btn,ok){
+  if(pk.busy)return;const id=+btn.dataset.id,er=$('#giftErr');
+  if(ok&&+btn.dataset.mise>state.coins){er.textContent='Il vous faut '+nf(+btn.dataset.mise)+' pièces (vous en avez '+nf(state.coins)+').';return}
+  pk.busy=true;btn.disabled=true;
+  try{if(ok)await pkFlush();const r=await rpc('poker_repondre',{p_token:session.token,p_id:id,p_ok:ok});
+    if(ok){if(typeof r.pieces==='number'){state.coins=r.pieces;save();renderAll()}closePop();pkOpen(id)}else closePop()}
+  catch(e){if(e.code==='session'){closePop();logout(ERR.session)}else if(e.code==='plus_dispo'){closePop();toast(PK_ERR.plus_dispo)}else{er.textContent=pkErr(e);btn.disabled=false}}
+  pk.busy=false}
+async function pkClaim(quiet){
+  if(!session||!synced||pk.claiming)return;pk.claiming=true;
+  try{const r=await rpc('poker_encaisser',{p_token:session.token});
+    if(Array.isArray(r)&&r.length){const tot=r.reduce((a,x)=>a+(x.gain||0),0);state.coins+=tot;save();clearTimeout(saveTimer);pushRemote();renderAll();
+      if(!quiet)for(const x of r){
+        if(x.statut==='refusee')toast('🃏 '+x.adv+' a refusé votre défi : mise rendue');
+        else if(x.statut==='expiree')toast('🃏 '+x.adv+' n\'a pas répondu : mise rendue');
+        else if(x.statut==='finie'&&!pk.open)celebrate('🏆','Poker gagné','Vous remportez <b>'+nf(x.gain)+' pièces</b> contre <b>'+esc(x.adv)+'</b>.')}}}
+  catch(e){}
+  pk.claiming=false}
+
+/* Table de jeu */
+function pkOpen(id){
+  if(pk.open&&pk.id===id)return;
+  pk.open=true;pk.id=id;pk.v=null;pk.seq=-1;pk.raise=null;pk.ended=false;pk.seen=new Set();
+  $('#pkView').classList.add('open');ovLock();
+  $('#pkBox').innerHTML='<div class="pk-load">🃏<br>Installation à la table…</div>';
+  pkTick();clearInterval(pk.timer);pk.timer=setInterval(pkTick,1300)}
+function pkClose(){pk.open=false;clearInterval(pk.timer);pk.timer=null;pk.id=null;pk.v=null;$('#pkView').classList.remove('open');ovLock();renderAll()}
+let pkTicking=false;
+async function pkTick(){
+  if(!pk.open||pkTicking||pk.ended)return;pkTicking=true;const id=pk.id;
+  try{const r=await rpc('poker_etat',{p_token:session.token,p_id:id,p_seq:pk.seq});
+    if(pk.open&&pk.id===id&&r){
+      if(r.pareil){pk.left=r.reste;pk.leftAt=Date.now()}
+      else pkSet(r)}}
+  catch(e){if(e.code==='session'){pkClose();logout(ERR.session)}else if(e.code==='partie_inconnue'){pkClose()}}
+  pkTicking=false}
+function pkSet(v){
+  const old=pk.v;pk.v=v;pk.seq=v.seq;pk.left=v.reste;pk.leftAt=Date.now();
+  if(!old||old.main!==v.main||old.phase!==v.phase||old.tour!==v.tour)pk.raise=null;
+  if(old&&old.main===v.main&&(old.mise_adv!==v.mise_adv||old.pot!==v.pot))bjSnd('chip');
+  if(v.tapis.some(c=>!pk.seen.has(c))||(!old||old.main!==v.main))bjSnd('card');
+  if(v.res&&(!old||!old.res))bjSnd(v.res.g==='moi'?'win':v.res.g==='adv'?'lose':'push');
+  if(v.statut==='finie'&&!pk.ended){pk.ended=true;clearInterval(pk.timer);pk.timer=null;pkClaim(true)}
+  pkRender()}
+function pkRender(){
+  const v=pk.v;if(!v)return;const B=$('#pkBox');
+  const fin=v.phase==='fin',my=v.tour==='moi'&&!fin&&v.statut==='en_cours',toCall=Math.max(0,v.mise_adv-v.mise_tour);
+  const mine=pkBest((v.cartes||[]).concat(v.tapis||[])),advH=v.cartes_adv?pkBest(v.cartes_adv.concat(v.tapis||[])):null;
+  const dealer='<span class="pk-d" title="Donneur">D</span>';
+  let msg='';
+  if(v.res){const r=v.res;
+    msg=r.couche==='moi'?'Vous vous couchez. '+esc(v.adv)+' gagne '+nf(r.pot)+' 🪙':r.couche==='adv'?esc(v.adv)+' se couche. Vous gagnez '+nf(r.pot)+' 🪙'
+      :r.g==='x'?'Égalité : le pot est partagé':r.g==='moi'?'Vous gagnez '+nf(r.pot)+' 🪙 avec '+pkName(mine):esc(v.adv)+' gagne '+nf(r.pot)+' 🪙 avec '+pkName(advH)}
+  const board=[0,1,2,3,4].map(i=>v.tapis[i]?pkCard(v.tapis[i]):'<div class="pkc slot"></div>').join('');
+  const seatAdv='<div class="pk-seat adv'+(v.tour==='adv'&&!fin?' turn':'')+(v.res&&v.res.g==='adv'?' win':'')+'">'+
+    '<div class="pk-who">'+pav(v.adv,v.deco)+'<span><b>'+esc(v.adv)+'</b><small>🪙 '+nf(v.jetons_adv)+'</small></span>'+(v.bouton?'':dealer)+'</div>'+
+    '<div class="pk-hand">'+(v.cartes_adv?v.cartes_adv.map(c=>pkCard(c)).join(''):pkCard(null)+pkCard(null))+'</div>'+
+    (advH?'<div class="pk-label">'+pkName(advH)+'</div>':v.tour==='adv'&&!fin?'<div class="pk-think">réfléchit…</div>':'')+
+    (v.mise_adv?pkChips(v.mise_adv):'')+'</div>';
+  const seatMe='<div class="pk-seat me'+(my?' turn':'')+(v.res&&v.res.g==='moi'?' win':'')+'">'+
+    (v.mise_tour?pkChips(v.mise_tour):'')+
+    (mine?'<div class="pk-label big cat'+mine.cat+'">'+pkName(mine)+'</div>':'')+
+    '<div class="pk-hand">'+(v.cartes||[]).map(c=>pkCard(c,'big')).join('')+'</div>'+
+    '<div class="pk-who">'+pav(session.pseudo,myDeco())+'<span><b>Vous</b><small>🪙 '+nf(v.jetons)+'</small></span>'+(v.bouton?dealer:'')+'</div></div>';
+  let act='';
+  if(v.statut==='finie'){
+    const w=v.gagnant==='moi';
+    act='<div class="pk-end '+(w?'w':'l')+'"><b>'+(w?'🏆 Victoire !':'Défaite…')+'</b><span>'+(w?'Vous remportez <b>'+nf(v.mise*2)+' pièces</b>':esc(v.adv)+' remporte les '+nf(v.mise*2)+' pièces')+'</span><div><button class="pk-b call" data-pkclose="1">Fermer</button><button class="pk-b raise" data-pkrev="'+esc(v.adv)+'">Revanche</button></div></div>';
+  }else if(fin){act='<div class="pk-info">Nouvelle main dans un instant…</div>'}
+  else if(my){
+    const maxTo=Math.min(v.mise_tour+v.jetons,v.mise_adv+v.jetons_adv),minTo=Math.min(v.mise_adv+v.relance,maxTo),canRaise=v.jetons>toCall&&v.jetons_adv>0&&maxTo>v.mise_adv;
+    if(pk.raise!=null&&canRaise){
+      const pot=v.pot+v.mise_tour+v.mise_adv,cl=x=>Math.max(minTo,Math.min(maxTo,Math.round(x)));
+      const q=[['Min',minTo],['½ pot',cl(v.mise_adv+(pot+toCall)/2)],['Pot',cl(v.mise_adv+pot+toCall)],['Tapis',maxTo]];
+      pk.raise=cl(pk.raise);
+      act='<div class="pk-raise"><div class="pk-rq">'+q.map(x=>'<button data-pkr="'+x[1]+'">'+x[0]+'</button>').join('')+'</div>'+
+        '<input type="range" id="pkSl" min="'+minTo+'" max="'+maxTo+'" step="1" value="'+pk.raise+'">'+
+        '<div class="pk-row"><button class="pk-b fold" data-pkr="x">Retour</button><button class="pk-b raise" data-pk="raise" id="pkRaiseGo">'+(pk.raise>=maxTo?'Tapis ':(v.mise_adv?'Relancer à ':'Miser '))+nf(pk.raise)+'</button></div></div>';
+    }else act='<div class="pk-row"><button class="pk-b fold" data-pk="fold">Se coucher</button>'+
+      (toCall>0?'<button class="pk-b call" data-pk="call">'+(v.jetons<=toCall?'Tapis ':'Suivre ')+nf(Math.min(toCall,v.jetons))+'</button>':'<button class="pk-b call" data-pk="check">Parole</button>')+
+      (canRaise?'<button class="pk-b raise" data-pkr="'+minTo+'">'+(v.mise_adv>0?'Relancer':'Miser')+'</button>':'')+'</div>';
+  }else act='<div class="pk-info">⏳ '+esc(v.adv)+' joue…</div>';
+  B.innerHTML='<div class="pk-top"><button data-pkquit="1">✕ Abandonner</button><span>Main '+v.main+' · Blinds '+nf(v.blind/2)+'/'+nf(v.blind)+'</span><span>Mise 🪙 '+nf(v.mise)+'</span></div>'+
+    '<div class="pk-table"><div class="pk-felt">'+seatAdv+
+    '<div class="pk-mid"><div class="pk-pot">Pot <b>'+nf(v.pot+v.mise_tour+v.mise_adv)+'</b> 🪙</div><div class="pk-board">'+board+'</div>'+(msg?'<div class="pk-msg">'+msg+'</div>':'')+'</div>'+
+    seatMe+'</div></div>'+
+    '<div class="pk-timer'+(my?' me':'')+'"'+(fin||v.statut==='finie'?' style="visibility:hidden"':'')+'><i id="pkBar"></i></div>'+
+    '<div class="pk-actions">'+act+'</div>';
+  pkBar()}
+function pkBar(){const b=$('#pkBar');if(!b||!pk.open)return;const l=Math.max(0,pk.left-(Date.now()-pk.leftAt)/1000);b.style.width=(l/30*100)+'%';b.classList.toggle('low',l<8)}
+setInterval(pkBar,250);
+async function pkAct(a){
+  if(pk.busy||!pk.v)return;pk.busy=true;
+  try{const r=await rpc('poker_action',{p_token:session.token,p_id:pk.id,p_act:a,p_montant:a==='raise'?pk.raise:null});if(r&&pk.open)pkSet(r)}
+  catch(e){if(e.code==='session'){pkClose();logout(ERR.session)}else{toast(pkErr(e));pkTick()}}
+  pk.busy=false}
+async function pkQuit(){
+  if(!pk.v||pk.v.statut==='finie'){pkClose();return}
+  try{if(!window.confirm('Abandonner la partie ? '+pk.v.adv+' remportera toutes les pièces.'))return}catch(e){}
+  try{await rpc('poker_quitter',{p_token:session.token,p_id:pk.id})}catch(e){}
+  pkTick()}
+setInterval(()=>{if(session&&document.visibilityState==='visible'&&!pk.watch)pkPoll()},8000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){pkPoll();if(pk.open)pkTick()}});
+document.addEventListener('input',e=>{if(e.target.id==='pkSl'){pk.raise=+e.target.value;const b=$('#pkRaiseGo'),v=pk.v;if(b&&v)b.textContent=(pk.raise>=+e.target.max?'Tapis ':(v.mise_adv?'Relancer à ':'Miser '))+nf(pk.raise)}});
+
+
 /* ---------- Amis et messages privés ---------- */
 const AMI_ERR={session:ERR.session,joueur_inconnu:'Ce joueur n\'existe plus.',soi_meme:'Vous ne pouvez pas vous ajouter vous-même.',trop_demandes:'Trop de demandes en attente (30 maximum).',trop_amis:'Vous avez déjà 200 amis.',pas_de_demande:'Cette demande n\'existe plus.',pas_amis:'Vous n\'êtes plus amis.',vide:'Écrivez un message.',trop_long:'Message trop long (500 caractères maximum).',trop_vite:'Doucement, une seconde entre deux messages.'};
 const amiOff=e=>/function|PGRST2|schema cache/i.test(e&&e.message||'');
 function amiErr(e){if(e&&e.code==='session'){logout(ERR.session);return}toast(AMI_ERR[e&&e.code]||(amiOff(e)?'Les amis ne sont pas encore activés.':'Action impossible, réessayez.'))}
-function profActions(){
+function profActions(){const a=profActions0(),st=ui.amiEtat;
+  return a+(session&&st&&st!=='moi'&&st!=='invite'?'<div class="pf-act"><button class="poker" data-pkinv="'+esc(ui.profP)+'">🃏 Défier au poker</button></div>':'')}
+function profActions0(){
   const st=ui.amiEtat;if(st==='moi'||st==='off'||st==='err'||st==null)return '';
   if(st==='invite')return '<div class="pf-act"><button class="go" data-amiadd="1">＋ Ajouter en ami</button></div>';
   if(st==='aucun')return '<div class="pf-act"><button class="go" data-amiadd="1">＋ Ajouter en ami</button></div>';
@@ -2518,6 +2761,13 @@ document.addEventListener('click',e=>{
   const ab=e.target.closest('[data-amiadd],[data-amidel],[data-amiok],[data-amino]');
   if(ab){const d=ab.dataset,k=d.amiadd!=null?'add':d.amidel!=null?'del':d.amiok!=null?'ok':'no',v=d.amiadd||d.amidel||d.amiok||d.amino;amiAction(k,v&&v!=='1'?v:ui.profP,ab);return}
   const mo=e.target.closest('[data-mpopen]');if(mo){openMp(mo.dataset.mpopen);return}
+  const pkb=e.target.closest('[data-pkinv],[data-pk],[data-pkr],[data-pkquit],[data-pkclose],[data-pkrev],#pkSend,#pkCancel,#pkYes,#pkNo');
+  if(pkb){const d=pkb.dataset;
+    if(d.pkinv){pkInviteOpen(d.pkinv)}else if(pkb.id==='pkSend'){pkSendInvite(pkb)}else if(pkb.id==='pkCancel'){pkCancel()}
+    else if(pkb.id==='pkYes'){pkAnswer(pkb,true)}else if(pkb.id==='pkNo'){pkAnswer(pkb,false)}
+    else if(d.pk){pkAct(d.pk)}else if(d.pkr){pk.raise=d.pkr==='x'?null:+d.pkr;pkRender()}
+    else if(d.pkquit){pkQuit()}else if(d.pkclose){pkClose()}else if(d.pkrev){const w=d.pkrev;pkClose();pkInviteOpen(w)}
+    return}
   const pg=e.target.closest('[data-pfgo]');if(pg){pfGo(pg.dataset.pfgo);return}
   const gf=e.target.closest('[data-gift]');if(gf){openGift(gf.dataset.gift);return}
   const gq=e.target.closest('[data-giftq]');if(gq){const i=$('#giftN');if(i){i.value=gq.dataset.giftq;document.querySelectorAll('[data-giftq]').forEach(x=>x.classList.toggle('on',x===gq))}return}
