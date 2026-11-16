@@ -1,5 +1,5 @@
 // PronoClub — service worker : l'appli s'ouvre même sans réseau (dernière version connue)
-const CACHE = 'pronoclub-v17';
+const CACHE = 'pronoclub-v18';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon.png'];
 
 self.addEventListener('install', e => {
@@ -14,8 +14,10 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // Supabase, polices… : pas de cache
+  // La page elle-même est toujours redemandée au serveur, pour que les mises à jour arrivent tout de suite.
+  const page = req.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
   e.respondWith(
-    fetch(req).then(res => {
+    (page ? fetch(req.url, {cache: 'no-cache', credentials: 'same-origin'}) : fetch(req)).then(res => {
       if (res.ok) {
         const copy = res.clone();
         const key = url.pathname.includes('/fixtures/') ? url.origin + url.pathname : req;
