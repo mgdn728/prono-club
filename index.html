@@ -418,7 +418,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 /* barre de navigation du bas (mobile) */
 .bnav{display:none}
 @media (max-width:900px){
-  .bnav{grid-template-columns:repeat(6,1fr)!important}
+  .bnav{grid-template-columns:repeat(7,1fr)!important}
   #nav{display:none}
   .fab{display:none!important}
   main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
@@ -896,6 +896,10 @@ body.pf-lock{overflow:hidden}
   .bnav button[data-tab=paris]{--bc:#1f7bff}
   .bnav button[data-tab=boutique]{--bc:#8a3dff}
   .bnav button[data-tab=chat]{--bc:#13a356}
+  .bnav button[data-tab=bj]{--bc:#0e8a4a}
+  .bnav button{font-size:9.5px!important;min-width:0}
+  .bnav button span{white-space:nowrap}
+  .bnav button:not(.slipbtn) i{width:40px!important}
   .bnav button i{display:grid;place-items:center;width:44px;height:30px;border-radius:12px;filter:saturate(.5)!important;opacity:.85!important;transition:.2s}
   .bnav button.on{color:var(--bc)!important}
   .bnav button.on i{background:color-mix(in srgb,var(--bc) 15%,#fff);filter:none!important;opacity:1!important;transform:translateY(-1px)}
@@ -1078,6 +1082,7 @@ body.pf-lock{overflow:hidden}
   <button class="slipbtn" id="bnSlip"><i>🎟️</i><span>Coupon</span><b class="bdg" id="bnSlipN"></b></button>
   <button data-tab="boutique"><i>🎁</i><span>Boutique</span></button>
   <button data-tab="chat"><i>💬</i><span>Social</span><b class="bdg" id="bnChat"></b></button>
+  <button data-tab="bj"><i>🃏</i><span>Blackjack</span></button>
 </nav>
 <div class="toast" id="toast"></div>
 <div class="modal" id="authModal"><div class="auth" id="authBox"></div></div>
@@ -1902,7 +1907,6 @@ function dashHtml(){
    '<div class="tile t-coin"><div class="ti">🪙</div><b>'+nf(state.coins)+' pièces</b><span>'+nf(DAILY)+' de plus dans '+untilMidnight()+'</span></div>'+
    '<button class="tile t-bell" data-notifs="1"><div class="ti">🔔</div><b>Notifications</b><span>'+(notifOn()?'Activées ✓':'Résultats, défis, série…')+'</span></button>'+
    '<button class="tile t-fire" data-streak="1"><div class="ti">🔥</div><b>Série : '+n+' jour'+(n>1?'s':'')+'</b><span>'+(session?'Demain : +'+nf(streakBonus(n+1))+' pièces':'Bonus chaque jour')+'</span></button>'+
-   '<button class="tile t-bj" data-tab="bj"><div class="ti">🃏</div><b>Blackjack</b><span>Doublez vos pièces</span></button>'+
    '<button class="tile t-gift" data-invite="1"><div class="ti">🎁</div><b>Invite tes potes</b><span>+'+PARRAIN_BONUS+' pièces chacun</span></button>'+
    '<button class="tile t-league" data-tab="chat" data-social="ligues"><div class="ti">👥</div><b>Ligues entre potes</b><span>Ton classement privé</span></button>'+
    '<button class="tile t-trophy" data-tab="chat" data-social="board"><div class="ti">🏆</div><b>Top de la semaine</b><span>Remis à zéro le lundi</span></button>'+
