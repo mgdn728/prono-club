@@ -658,6 +658,10 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .nx-rainbow{background:linear-gradient(90deg,#ff1f3d,#ff7a1a,#ffc21a,#18b85c,#1f7bff,#8a3dff,#ff1f3d);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 3s linear infinite}
 @keyframes rb{to{background-position:200% center}}
 .cm.me .pn{color:#fff}
+.nx-admin{background:linear-gradient(90deg,#ff1f3d,#ffcf33,#fff6c9,#ffcf33,#ff1f3d);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;animation:rb 2.4s linear infinite;filter:drop-shadow(0 0 4px rgba(255,60,40,.45))}
+.fr-admin{background:conic-gradient(from 0deg,#c8102e,#ffcf33,#111,#c8102e,#ffcf33,#111,#c8102e);animation:glow 1.6s ease-in-out infinite;box-shadow:0 0 10px rgba(255,80,40,.6)}
+.fr-admin::after{content:"🛡️";position:absolute;bottom:-6px;right:-6px;font-size:12px;line-height:1}
+.ptitle.adm{background:linear-gradient(90deg,#111,#c8102e);color:#ffe27a;box-shadow:0 0 0 1px #ffcf33 inset}
 .ptitle{font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:99px;background:#efe7ff;color:#6a2cf5;vertical-align:middle;white-space:nowrap}
 .frm{display:inline-grid;place-items:center;border-radius:50%;padding:2.5px;flex:0 0 auto;position:relative;line-height:0}
 .frm .av{box-shadow:0 0 0 2px #fff}
@@ -1020,7 +1024,10 @@ const SHOP=[
  {id:'t5',sec:'Titres',ic:'👑',name:'Titre « Roi du combiné »',desc:'Les gros combinés, c\'est vous.',cost:50000,kind:'title',label:'Roi du combiné'},
  {id:'th_gold',sec:'Thèmes',ic:'🟡',name:'Thème Or',desc:'Change la couleur du site.',cost:10000,kind:'theme',cls:'theme-gold'},
  {id:'th_purple',sec:'Thèmes',ic:'🟣',name:'Thème Violet',desc:'Change la couleur du site.',cost:10000,kind:'theme',cls:'theme-purple'},
- {id:'th_red',sec:'Thèmes',ic:'🔴',name:'Thème Rouge',desc:'Change la couleur du site.',cost:10000,kind:'theme',cls:'theme-red'}
+ {id:'th_red',sec:'Thèmes',ic:'🔴',name:'Thème Rouge',desc:'Change la couleur du site.',cost:10000,kind:'theme',cls:'theme-red'},
+ {id:'nx_admin',sec:'Exclusif',ic:'🛡️',name:'Pseudo Administrateur',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'name',cls:'nx-admin',hidden:true},
+ {id:'fr_admin',sec:'Exclusif',ic:'🛡️',name:'Cadre Administrateur',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'frame',cls:'fr-admin',hidden:true},
+ {id:'t_admin',sec:'Exclusif',ic:'🛡️',name:'Titre « Administrateur »',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'title',label:'Administrateur',hidden:true}
 ];
 
 /* ---------- Outils ---------- */
@@ -1408,10 +1415,10 @@ function placeBets(){
 }
 
 /* ---------- Joueurs : décorations ---------- */
-const NAMEFX=['nx-gold','nx-neon','nx-fire','nx-rainbow'],FRAMES=['fr-fire','fr-ice','fr-gold','fr-crown'];
+const NAMEFX=['nx-gold','nx-neon','nx-fire','nx-rainbow','nx-admin'],FRAMES=['fr-fire','fr-ice','fr-gold','fr-crown','fr-admin'];
 function myDeco(){return{t:state.title||undefined,c:state.nameFx||undefined,f:state.frame||undefined}}
 function pav(p,d){d=d||{};return FRAMES.includes(d.f)?'<span class="frm '+d.f+'">'+avatar(p)+'</span>':avatar(p)}
-function pname(p,d,extra){d=d||{};return '<span class="pn'+(NAMEFX.includes(d.c)?' '+d.c:'')+'">'+esc(p)+'</span>'+(extra||'')+(d.t?' <span class="ptitle">'+esc(d.t)+'</span>':'')}
+function pname(p,d,extra){d=d||{};return '<span class="pn'+(NAMEFX.includes(d.c)?' '+d.c:'')+'">'+esc(p)+'</span>'+(extra||'')+(d.t?' <span class="ptitle'+(d.t==='Administrateur'?' adm':'')+'">'+(d.t==='Administrateur'?'🛡️ ':'')+esc(d.t)+'</span>':'')}
 function compRank(m){const i=TOP.findIndex(t=>m.comp===t||m.comp.startsWith(t+' '));return i<0?99:i}
 
 /* ---------- Fenêtres (popups) ---------- */
@@ -1763,8 +1770,9 @@ function renderBets(){
 const EQUIP={title:'title',theme:'theme',name:'nameFx',frame:'frame'};
 const eqVal=i=>i.kind==='title'?i.label:i.cls;
 function renderShop(){
-  const secs=[...new Set(SHOP.map(i=>i.sec))];
-  const SECCOL={'Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)'};
+  const VIS=SHOP.filter(i=>!i.hidden||state.owned.includes(i.id));
+  const secs=[...new Set(VIS.map(i=>i.sec))];
+  const SECCOL={'Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)','Exclusif':'linear-gradient(135deg,#111,#c8102e 55%,#ffcf33)'};
   const me=session?session.pseudo:'Vous';
   const icon=i=>i.kind==='name'?'<div class="ic prev"><span class="pn '+i.cls+'">'+esc(me)+'</span></div>':i.kind==='frame'?'<div class="ic prev">'+pav(me,{f:i.cls})+'</div>':'<div class="ic">'+i.ic+'</div>';
   const item=i=>{
@@ -1782,7 +1790,7 @@ function renderShop(){
   return pageHero('ph-shop','🎁','Boutique','Échangez vos diamants contre des bonus et des récompenses à montrer à tout le monde.')+
     '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div>'+prof+
     (STRIPE_DON?'<div class="don"><div class="don-ic">❤️</div><div class="don-t"><b>Soutenir PronoClub</b><span>Le site est gratuit et le restera. Si vous l\'aimez, vous pouvez aider à le faire grandir avec le montant de votre choix. Un don ne donne ni pièces ni diamants.</span></div><a class="pbtn" href="'+STRIPE_DON+'" target="_blank" rel="noopener">Je soutiens ❤️</a></div>':'')+
-    secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+'</div><div class="shop">'+SHOP.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
+    secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+'</div><div class="shop">'+VIS.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
 }
 function renderRules(){
   return '<div class="rules"><h3>Comment ça marche ?</h3><ul>'+
@@ -2266,7 +2274,7 @@ document.addEventListener('click',e=>{
   if(t.id==='closeSlip'){$('#aside').classList.remove('open');return}
   if(t.id==='fab'||t.id==='bnSlip'){$('#aside').classList.add('open');return}
   if(d.buy){
-    const i=SHOP.find(x=>x.id===d.buy);if(!i||state.diamonds<i.cost)return;
+    const i=SHOP.find(x=>x.id===d.buy);if(!i||i.hidden||state.diamonds<i.cost)return;
     state.diamonds-=i.cost;
     if(i.kind==='coins'){state.coins+=i.val;toast('🪙 +'+nf(i.val)+' pièces ajoutées')}
     else if(i.kind==='inv'){state.inv[i.id]=(state.inv[i.id]||0)+1;toast(i.ic+' '+i.name+' : disponible dans votre coupon')}
