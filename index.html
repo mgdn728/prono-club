@@ -908,65 +908,105 @@ body.pf-lock{overflow:hidden}
 }
 
 /* ---------- Blackjack ---------- */
-.ph-bj{background:linear-gradient(135deg,#0b6b3a,#0f8f4f 55%,#c99a1e)}
 .t-bj{background:linear-gradient(135deg,#0b6b3a,#16a34a 60%,#d4a017)}
-.bj-info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.bj-info div{background:var(--card,#fff);border-radius:16px;padding:10px 8px;text-align:center;box-shadow:0 4px 12px rgba(13,18,32,.07)}
-.bj-info b{display:block;font-size:17px}.bj-info small{font-size:11px;color:var(--muted)}
-.bj-table{position:relative;border-radius:180px 180px 26px 26px;padding:26px 14px 18px;min-height:430px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;
- background:radial-gradient(120% 90% at 50% 20%,#1fa463 0%,#0d7a43 45%,#06512b 100%);border:9px solid #6b3f1d;box-shadow:inset 0 0 0 3px #c99a1e,inset 0 10px 40px rgba(0,0,0,.35),0 14px 30px rgba(0,0,0,.25);overflow:hidden;color:#fff}
-.bj-table::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 2px,transparent 2px 6px);pointer-events:none}
-.bj-shoe{position:absolute;right:14px;top:22px;width:46px;height:62px;border-radius:7px;background:linear-gradient(135deg,#b3122e,#6e0a1c);box-shadow:3px 3px 0 #4a0713,6px 6px 0 #2c040b;border:2px solid #fff}
-.bj-zone{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1}
-.bj-lbl{font-size:13px;font-weight:700;letter-spacing:.3px;background:rgba(0,0,0,.28);padding:4px 12px;border-radius:99px}
-.bj-lbl b{color:#ffe27a;font-size:15px;margin-left:4px}
-.bj-hand{display:flex;justify-content:center;min-height:96px;padding-left:24px}
-.bj-ph{width:66px;height:94px;border-radius:9px;border:2px dashed rgba(255,255,255,.3);margin-left:-24px}
-.bj-ph:first-child{margin-left:-24px}
-.bj-arc{text-align:center;position:relative;z-index:1}
-.bj-arc span{display:inline-block;font-size:12px;font-weight:900;letter-spacing:2px;color:#ffd54a;border-top:2px solid rgba(255,213,74,.6);border-bottom:2px solid rgba(255,213,74,.6);padding:4px 10px}
-.bj-arc small{display:block;font-size:10.5px;opacity:.8;margin-top:4px}
-.bj-bet{position:absolute;left:16px;bottom:16px;z-index:2}
-.card{width:66px;height:94px;margin-left:-24px;perspective:600px;flex:0 0 auto;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
-.card .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s}
+.bj-wrap{max-width:520px;margin:0 auto}
+.bj-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.bj-h b{display:block;font-size:21px;font-weight:900}.bj-h small{color:var(--muted);font-size:12.5px}
+.bj-snd{width:40px;height:40px;border-radius:50%;background:var(--card,#fff);box-shadow:0 2px 8px rgba(13,18,32,.12);font-size:18px}
+.bj-info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.bj-info div{background:var(--card,#fff);border-radius:14px;padding:8px 6px;text-align:center;box-shadow:0 3px 10px rgba(13,18,32,.06)}
+.bj-info b{display:block;font-size:16px}.bj-info small{font-size:10.5px;color:var(--muted)}
+.bj-info em{font-style:normal}.bj-info .g{color:#12a150}.bj-info .r{color:#e11d48}
+.bj-table{position:relative;border-radius:30px;padding:16px 12px 14px;min-height:400px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;color:#fff;overflow:hidden;
+ background:radial-gradient(130% 85% at 50% 0%,#23b06b 0%,#0e7c45 48%,#064a27 100%);border:8px solid #5a3417;box-shadow:inset 0 0 0 2px #d9ae3c,inset 0 14px 50px rgba(0,0,0,.35),0 16px 32px rgba(13,18,32,.28)}
+.bj-table::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.022) 0 2px,transparent 2px 6px);pointer-events:none}
+.bj-table::after{content:"";position:absolute;left:8%;right:8%;top:38%;height:70%;border:2px solid rgba(255,220,120,.16);border-radius:50%;pointer-events:none}
+.bj-shoe{position:absolute;right:12px;top:12px;width:40px;height:56px;z-index:1}
+.bj-shoe i{position:absolute;inset:0;border-radius:6px;border:2px solid #fff;background:repeating-linear-gradient(45deg,#b3122e 0 5px,#8d0d24 5px 10px);box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.bj-shoe i:nth-child(1){transform:translate(4px,4px)}.bj-shoe i:nth-child(2){transform:translate(2px,2px)}
+.bj-zone{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;z-index:2}
+.bj-lbl{font-size:12.5px;font-weight:700;background:rgba(0,0,0,.32);padding:4px 12px;border-radius:99px;backdrop-filter:blur(2px)}
+.bj-lbl b{color:#ffe27a;font-size:15px;margin-left:6px}.bj-lbl b small{color:#fff;opacity:.75;font-size:11px;font-weight:600}
+.bj-lbl.late b{animation:bjfade .3s ease 1.25s both}
+@keyframes bjfade{from{opacity:0}to{opacity:1}}
+.bj-hand{display:flex;justify-content:center;min-height:102px;padding-left:28px}
+.bj-ph{width:70px;height:100px;border-radius:9px;border:2px dashed rgba(255,255,255,.25);margin-left:-28px}
+.bj-mid{position:relative;z-index:3;min-height:58px;display:grid;place-items:center;text-align:center}
+.bj-arc span{display:inline-block;font-size:11px;font-weight:900;letter-spacing:1.6px;color:#ffd54a;border-top:1.5px solid rgba(255,213,74,.55);border-bottom:1.5px solid rgba(255,213,74,.55);padding:4px 10px}
+.bj-arc small{display:block;font-size:10.5px;opacity:.75;margin-top:4px}
+.bj-res{padding:9px 24px;border-radius:99px;box-shadow:0 8px 22px rgba(0,0,0,.35);display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+.bj-res b{font-size:20px;font-weight:900}.bj-res span{font-size:14px;font-weight:800}
+.bj-res.win{background:linear-gradient(135deg,#ffe066,#ffab1a);color:#3a2300}
+.bj-res.push{background:linear-gradient(135deg,#eef2f8,#b9c4d8);color:#1b2230}
+.bj-res.lose{background:linear-gradient(135deg,#ff4d6d,#a80f2a);color:#fff}
+.bj-res.pop{animation:bjpop .5s cubic-bezier(.2,1.7,.4,1) both}
+@keyframes bjpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.card{width:70px;height:100px;margin-left:-28px;perspective:700px;flex:0 0 auto;filter:drop-shadow(0 5px 7px rgba(0,0,0,.38));--fx:150px;--fy:-250px}
+.bj-zone.top .card{--fy:-30px}
+.card .in{position:relative;width:100%;height:100%;transform-style:preserve-3d}
 .card.back .in{transform:rotateY(180deg)}
 .card .cf,.card .cb{position:absolute;inset:0;border-radius:9px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.card .cf{background:#fff;color:#111;font-family:Georgia,serif;font-weight:700}
+.card .cf{background:linear-gradient(160deg,#fff,#f1f1f4);color:#15171c;font-family:Georgia,'Times New Roman',serif;font-weight:700;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
 .card.red .cf{color:#d0102b}
-.c-tl,.c-br{position:absolute;font-size:14px;line-height:1;text-align:center}
-.c-tl{top:5px;left:6px}.c-br{bottom:5px;right:6px;transform:rotate(180deg)}
-.c-mid{position:absolute;inset:0;display:grid;place-items:center;font-size:34px}
+.c-tl,.c-br{position:absolute;font-size:15px;line-height:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}
+.c-tl i,.c-br i{font-style:normal;font-size:12px}
+.c-tl{top:6px;left:6px}.c-br{bottom:6px;right:6px;transform:rotate(180deg)}
+.c-mid{position:absolute;inset:0;display:grid;place-items:center;font-size:36px}
+.c-mid.fig{inset:16px 14px;border:1.5px solid currentColor;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;opacity:.95;background:rgba(0,0,0,.03)}
+.c-mid.fig b{font-size:26px;line-height:1}.c-mid.fig i{font-style:normal;font-size:16px;line-height:1}
 .card .cb{transform:rotateY(180deg);background:repeating-linear-gradient(45deg,#b3122e 0 6px,#8d0d24 6px 12px);border:3px solid #fff;display:grid;place-items:center}
 .card .cb span{width:30px;height:30px;border-radius:50%;background:#fff;color:#b3122e;font:900 17px/30px sans-serif;text-align:center}
-.card.deal{animation:bjdeal .55s cubic-bezier(.2,.8,.25,1) both;animation-delay:var(--d)}
-@keyframes bjdeal{from{transform:translate(170px,-230px) rotate(-35deg) scale(.7);opacity:0}to{transform:none;opacity:1}}
+.card.deal{animation:bjdeal .5s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--d)}
+@keyframes bjdeal{from{transform:translate(var(--fx),var(--fy)) rotate(-28deg) scale(.6);opacity:0}15%{opacity:1}to{transform:none;opacity:1}}
+.card.flipin .in{animation:bjflip .42s ease both;animation-delay:calc(var(--d) + .3s)}
 .card.reveal .in{animation:bjflip .5s ease both}
 @keyframes bjflip{from{transform:rotateY(180deg)}to{transform:rotateY(0)}}
-.bj-res{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;text-align:center;padding:14px 26px;border-radius:20px;animation:bjpop .45s cubic-bezier(.2,1.6,.4,1) both;box-shadow:0 12px 30px rgba(0,0,0,.4)}
-.bj-res b{display:block;font-size:24px;font-weight:900;white-space:nowrap}.bj-res span{font-size:15px;font-weight:800}
-.bj-res.win{background:linear-gradient(135deg,#ffd43b,#ff9f1a);color:#3a2300}
-.bj-res.push{background:linear-gradient(135deg,#e7ecf5,#b9c4d8);color:#1b2230}
-.bj-res.lose{background:linear-gradient(135deg,#ff4d6d,#b3122e);color:#fff}
-@keyframes bjpop{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
-.chip{width:52px;height:52px;border-radius:50%;display:inline-grid;place-items:center;font:900 13px/1 sans-serif;color:#fff;border:4px dashed rgba(255,255,255,.85);box-shadow:0 0 0 3px var(--cc),0 5px 10px rgba(0,0,0,.3);background:var(--cc);cursor:pointer;transition:transform .12s}
-.chip:active{transform:scale(.9) translateY(2px)}.chip:disabled{opacity:.35}
-.chip.c50{--cc:#1f7bff}.chip.c100{--cc:#111}.chip.c250{--cc:#18b85c}.chip.c500{--cc:#8a3dff}.chip.c1000{--cc:#d4a017}
-.bj-bet .chip{animation:bjchip .5s cubic-bezier(.2,1.4,.4,1) both;--cc:#d4a017;width:58px;height:58px;font-size:12px}
-@keyframes bjchip{from{transform:translateY(160px) scale(.6);opacity:0}to{transform:none;opacity:1}}
-.bj-ctl{margin:14px 0;display:flex;flex-direction:column;align-items:center;gap:12px}
-.bj-ctl.acts{flex-direction:row;justify-content:center}
-.bj-mise{font-size:15px}.bj-mise b{font-size:20px}
+.bj-bet{position:absolute;left:14px;bottom:14px;z-index:4;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bj-bet b{font-size:12.5px;font-weight:900;background:rgba(0,0,0,.45);padding:2px 9px;border-radius:99px;color:#ffe27a}
+.bj-bet .stk{position:relative;width:40px;height:34px}
+.bj-bet .stk i{position:absolute;left:0;width:40px;height:26px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#ffe58a,#d4a017 70%);border:3px dashed #fff8d6;box-shadow:0 3px 0 #8a6508,0 5px 6px rgba(0,0,0,.35)}
+.bj-bet .stk i:nth-child(1){bottom:0}.bj-bet .stk i:nth-child(2){bottom:5px}.bj-bet .stk i:nth-child(3){bottom:10px}
+.bj-bet.in{animation:bjchip .45s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes bjchip{from{transform:translateY(140px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+.bj-bet.gone{animation:bjgone .7s ease-in both}
+@keyframes bjgone{to{transform:translate(120px,-300px) scale(.5);opacity:0}}
+.bj-bet.paid .stk{animation:bjpaid .6s cubic-bezier(.2,1.6,.4,1) both}
+.bj-bet.paid b{background:#ffd43b;color:#3a2300}
+@keyframes bjpaid{0%{transform:scale(1)}50%{transform:scale(1.35) translateY(-6px)}100%{transform:scale(1.12)}}
+.bj-coins{position:absolute;left:50%;bottom:90px;z-index:6;pointer-events:none}
+.bj-coins i{position:absolute;font-style:normal;font-size:22px;opacity:0;animation:bjcoin 1.1s ease-out both}
+.bj-coins i:nth-child(1){--x:-120px;--y:-170px}.bj-coins i:nth-child(2){--x:-80px;--y:-230px;animation-delay:.05s}.bj-coins i:nth-child(3){--x:-40px;--y:-190px;animation-delay:.1s}
+.bj-coins i:nth-child(4){--x:0px;--y:-250px;animation-delay:.03s}.bj-coins i:nth-child(5){--x:40px;--y:-200px;animation-delay:.12s}.bj-coins i:nth-child(6){--x:80px;--y:-235px;animation-delay:.07s}
+.bj-coins i:nth-child(7){--x:120px;--y:-165px;animation-delay:.02s}.bj-coins i:nth-child(8){--x:-100px;--y:-110px;animation-delay:.15s}.bj-coins i:nth-child(9){--x:100px;--y:-115px;animation-delay:.17s}
+.bj-coins i:nth-child(10){--x:-60px;--y:-280px;animation-delay:.2s}.bj-coins i:nth-child(11){--x:60px;--y:-285px;animation-delay:.22s}.bj-coins i:nth-child(12){--x:-140px;--y:-240px;animation-delay:.25s}
+.bj-coins i:nth-child(13){--x:140px;--y:-245px;animation-delay:.27s}.bj-coins i:nth-child(14){--x:0px;--y:-310px;animation-delay:.3s}
+@keyframes bjcoin{0%{transform:translate(0,0) scale(.4);opacity:0}15%{opacity:1}70%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1.15) rotate(360deg);opacity:0}}
+.bj-table.fx-win{animation:bjglow 1.2s ease-out}
+@keyframes bjglow{0%,100%{box-shadow:inset 0 0 0 2px #d9ae3c,inset 0 14px 50px rgba(0,0,0,.35),0 16px 32px rgba(13,18,32,.28)}35%{box-shadow:inset 0 0 0 3px #ffe27a,inset 0 0 70px rgba(255,220,90,.55),0 0 40px rgba(255,200,40,.75)}}
+.bj-table.fx-lose{animation:bjshake .45s ease}
+@keyframes bjshake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.chip{width:54px;height:54px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;background:var(--cc);border:5px dashed rgba(255,255,255,.9);box-shadow:0 0 0 3px var(--cc),0 4px 0 3px rgba(0,0,0,.28),0 9px 12px rgba(0,0,0,.25);cursor:pointer;transition:transform .12s}
+.chip span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:900 12.5px/1 sans-serif;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
+.chip:active{transform:translateY(3px) scale(.94)}.chip:disabled{opacity:.3}
+.chip.c50{--cc:#1f7bff}.chip.c100{--cc:#16181d}.chip.c250{--cc:#12a150}.chip.c500{--cc:#8a3dff}.chip.c1000{--cc:#d4a017}
+.bj-ctl{margin:14px 0 10px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.bj-ctl.acts{flex-direction:row;justify-content:center;gap:10px}
+.bj-mise{display:flex;align-items:baseline;gap:8px}.bj-mise small{color:var(--muted);font-size:13px}.bj-mise b{font-size:26px;font-weight:900}
 .bj-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .bj-row{display:flex;gap:8px}
-.bj-mini{padding:7px 14px;border-radius:99px;font-weight:800;background:var(--card,#fff);box-shadow:0 2px 8px rgba(13,18,32,.12)}
-.bj-deal{width:100%;max-width:340px;padding:16px;border-radius:18px;font-size:19px;font-weight:900;color:#3a2300;background:linear-gradient(90deg,#ffd43b,#ffb703);box-shadow:0 10px 24px rgba(255,180,0,.35)}
+.bj-mini{padding:7px 14px;border-radius:99px;font-weight:800;font-size:13.5px;background:var(--card,#fff);box-shadow:0 2px 8px rgba(13,18,32,.1)}
+.bj-deal{width:100%;max-width:360px;padding:16px;border-radius:18px;font-size:18px;font-weight:900;color:#3a2300;background:linear-gradient(180deg,#ffe066,#ffb703);box-shadow:0 5px 0 #c98500,0 14px 24px rgba(255,170,0,.3);transition:transform .1s,box-shadow .1s}
+.bj-deal:active{transform:translateY(4px);box-shadow:0 1px 0 #c98500}
 .bj-deal:disabled{opacity:.5}
-.bj-a{flex:1;max-width:120px;padding:15px 6px;border-radius:16px;font-size:16px;font-weight:900;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.18)}
-.bj-a.hit{background:linear-gradient(135deg,#18b85c,#0b7a3b)}.bj-a.stand{background:linear-gradient(135deg,#ff3d5a,#b3122e)}.bj-a.dbl{background:linear-gradient(135deg,#8a3dff,#4b1fb3)}
-.bj-a:disabled{opacity:.45}
+.bj-a{flex:1;max-width:124px;padding:11px 6px 12px;border-radius:16px;font-size:15px;font-weight:900;color:#fff;display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:0 5px 0 var(--sd),0 10px 16px rgba(0,0,0,.16);transition:transform .1s,box-shadow .1s,opacity .2s}
+.bj-a i{font-style:normal;font-size:19px;line-height:1}
+.bj-a:active{transform:translateY(4px);box-shadow:0 1px 0 var(--sd)}
+.bj-a.hit{background:linear-gradient(180deg,#22c55e,#12964a);--sd:#0b6b33}.bj-a.stand{background:linear-gradient(180deg,#ff4d6d,#d01a3c);--sd:#8f0e26}.bj-a.dbl{background:linear-gradient(180deg,#9b5cff,#6a2cf5);--sd:#4318ad}
+.bj-a:disabled{opacity:.4}
 .bj-note{text-align:center;color:var(--muted);font-size:14px;margin:0}
-.bj-rules{font-size:12px;color:var(--muted);line-height:1.5;text-align:center;margin:6px 4px 20px}
-@media(max-width:380px){.card{width:58px;height:84px;margin-left:-26px}.bj-ph{width:58px;height:84px}}
+.bj-rules{font-size:12px;color:var(--muted);line-height:1.5;text-align:center;margin:8px 4px 20px}
+@media(max-width:380px){.card{width:62px;height:90px;margin-left:-28px}.bj-ph{width:62px;height:90px}.bj-hand{min-height:92px}}
+@media(prefers-reduced-motion:reduce){.card.deal,.card.flipin .in,.bj-coins i,.bj-table.fx-win,.bj-table.fx-lose{animation-duration:.01s;animation-delay:0s}}
 
 /* ---------- Page d'installation ---------- */
 #landing{position:fixed;inset:0;z-index:9999;overflow-y:auto;color:#fff;background:radial-gradient(120% 70% at 85% 0%,#ff2d6f 0%,transparent 55%),radial-gradient(120% 70% at 0% 100%,#6a2cf5 0%,transparent 60%),#160b2e;font-family:inherit;display:none}
@@ -1751,48 +1791,61 @@ function guestBanner(){
   return '<div class="guest"><div><b>🎉 Jouez gratuitement</b><span>'+nf(DAILY)+' pièces par jour'+(par?' + <b>'+PARRAIN_BONUS+' offertes</b> par '+esc(par):'')+'. Compte créé en 10 secondes.</span></div><button data-auth="signup">Créer mon compte</button></div>';
 }
 /* ---------- Blackjack (pièces uniquement) ---------- */
-const BJ_MIN=50,BJ_MAX=1000,BJ_LIMIT=15,BJ_CHIPS=[50,100,250,500,1000];
-let bjBusy=false,bjSeen=new Set(),bjReveal=false,bjCid=0;
-function bjS(){const t=today();let b=state.bj;if(!b||b.day!==t)b=state.bj={day:t,n:0,bet:(b&&b.bet)||100,cur:b?b.cur:null,w:(b&&b.w)||0,l:(b&&b.l)||0};return b}
+const BJ_MIN=50,BJ_MAX=1000,BJ_CHIPS=[50,100,250,500,1000];
+let bjBusy=false,bjSeen=new Set(),bjReveal=false,bjCid=0,bjFx='',bjAC=null;
+function bjS(){const t=today();let b=state.bj;if(!b||b.day!==t)b=state.bj={day:t,n:0,bet:(b&&b.bet)||100,cur:b?b.cur:null,w:0,l:0};return b}
+function bjBet(){const b=bjS();return Math.max(BJ_MIN,Math.min(b.bet||100,BJ_MAX,Math.floor(state.coins/50)*50))}
 function bjRand(n){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}catch(e){return Math.floor(Math.random()*n)}}
 function bjCard(){return{r:['A','2','3','4','5','6','7','8','9','10','J','Q','K'][bjRand(13)],s:'♠♥♦♣'[bjRand(4)],id:Date.now().toString(36)+(bjCid++)}}
-function bjVal(h){let v=0,a=0;for(const c of h){if(c.r==='A'){v+=11;a++}else v+=['J','Q','K'].includes(c.r)?10:+c.r}while(v>21&&a){v-=10;a--}return v}
-function bjSoft(h){let v=0,a=0;for(const c of h){if(c.r==='A'){v+=11;a++}else v+=['J','Q','K'].includes(c.r)?10:+c.r}while(v>21&&a){v-=10;a--}return a>0&&v<=21}
-const bjIsBJ=h=>h.length===2&&bjVal(h)===21;
-function bjCardHtml(c,i,hidden){
-  const fresh=!bjSeen.has(c.id);if(fresh)bjSeen.add(c.id);
-  const red=c.s==='♥'||c.s==='♦';
-  const face='<div class="cf"><span class="c-tl">'+c.r+'<br>'+c.s+'</span><span class="c-mid">'+c.s+'</span><span class="c-br">'+c.r+'<br>'+c.s+'</span></div>';
-  return '<div class="card'+(red?' red':'')+(hidden?' back':'')+(fresh?' deal':'')+(!hidden&&bjReveal&&i===1?' reveal':'')+'" style="--d:'+(fresh?(i*0.18).toFixed(2):0)+'s"><div class="in">'+face+'<div class="cb"><span>P</span></div></div></div>';
+function bjCount(h){let v=0,a=0;for(const c of h){if(c.r==='A'){v+=11;a++}else v+=['J','Q','K'].includes(c.r)?10:+c.r}while(v>21&&a){v-=10;a--}return[v,a>0]}
+const bjVal=h=>bjCount(h)[0],bjSoft=h=>bjCount(h)[1],bjIsBJ=h=>h.length===2&&bjVal(h)===21;
+const bjSndOn=()=>lsGet('pc_bjsnd')!=='0';
+function bjSnd(k){if(!bjSndOn())return;try{
+  bjAC=bjAC||new(window.AudioContext||window.webkitAudioContext)();const a=bjAC,t=a.currentTime;if(a.state==='suspended')a.resume();
+  const tone=(f,d,st,type,v)=>{const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t+st);g.gain.setValueAtTime(v||.08,t+st);g.gain.exponentialRampToValueAtTime(.0001,t+st+d);o.connect(g);g.connect(a.destination);o.start(t+st);o.stop(t+st+d+.02)};
+  if(k==='card'){const n=a.createBufferSource(),buf=a.createBuffer(1,Math.floor(a.sampleRate*.07),a.sampleRate),ch=buf.getChannelData(0);for(let i=0;i<ch.length;i++)ch[i]=(Math.random()*2-1)*(1-i/ch.length);n.buffer=buf;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=2500;const g=a.createGain();g.gain.value=.22;n.connect(f);f.connect(g);g.connect(a.destination);n.start()}
+  else if(k==='chip'){tone(1900,.05,0,'triangle',.07);tone(2600,.04,.03,'triangle',.05)}
+  else if(k==='win')[523,659,784,1047].forEach((f,i)=>tone(f,.22,i*.09,'triangle',.09));
+  else if(k==='bj')[523,659,784,1047,1319,1568].forEach((f,i)=>tone(f,.25,i*.08,'triangle',.09));
+  else if(k==='lose'){tone(220,.25,0,'sawtooth',.045);tone(165,.35,.15,'sawtooth',.045)}
+  else if(k==='push')tone(440,.15,0,'sine',.06);
+}catch(e){}}
+function bjCardHtml(c,delay,hidden,flip){
+  const fresh=!bjSeen.has(c.id);if(fresh){bjSeen.add(c.id);setTimeout(()=>bjSnd('card'),delay*1000)}
+  const red=c.s==='♥'||c.s==='♦',fig=['J','Q','K'].includes(c.r);
+  const face='<div class="cf"><span class="c-tl">'+c.r+'<i>'+c.s+'</i></span>'+(fig?'<span class="c-mid fig"><b>'+c.r+'</b><i>'+c.s+'</i></span>':'<span class="c-mid">'+c.s+'</span>')+'<span class="c-br">'+c.r+'<i>'+c.s+'</i></span></div>';
+  return '<div class="card'+(red?' red':'')+(hidden?' back':'')+(fresh?' deal':'')+(fresh&&!hidden?' flipin':'')+(flip?' reveal':'')+'" style="--d:'+(fresh?delay.toFixed(2):0)+'s"><div class="in">'+face+'<div class="cb"><span>P</span></div></div></div>';
 }
 function renderBJ(){
   if(state.bj&&state.bj.cur&&state.bj.cur.st==='dealer'&&!bjBusy)setTimeout(bjResume,50);
-  const b=bjS(),c=b.cur,left=Math.max(0,BJ_LIMIT-b.n);
-  const hero=pageHero('ph-bj','🃏','Blackjack','Battez le croupier sans dépasser 21. Mise de '+BJ_MIN+' à '+nf(BJ_MAX)+' pièces : si vous gagnez, vous récupérez le double. '+BJ_LIMIT+' parties par jour.');
-  const info='<div class="bj-info"><div><b>'+nf(state.coins)+'</b><small>pièces</small></div><div><b>'+left+' / '+BJ_LIMIT+'</b><small>parties restantes</small></div><div><b>'+(b.w||0)+' – '+(b.l||0)+'</b><small>gagnées – perdues</small></div></div>';
-  const play=c&&c.st!=='done';
-  const dHide=c&&c.st==='play';
-  const dv=c?(dHide?bjVal([c.d[0]]):bjVal(c.d)):'';
-  const pv=c?bjVal(c.p):'';
-  const res=c&&c.st==='done'?({win:['🎉 Gagné !','+'+nf(c.bet*2)+' pièces','win'],bj:['🃏 Blackjack !','+'+nf(c.bet*2)+' pièces','win'],push:['🤝 Égalité','Mise rendue','push'],lose:[c.why==='bust'?'💥 Dépassé !':'😬 Perdu','-'+nf(c.bet)+' pièces','lose']})[c.res]:null;
-  let table='<div class="bj-table"><div class="bj-shoe"></div>'+
-    '<div class="bj-zone"><div class="bj-lbl">Croupier'+(c?' <b>'+dv+(dHide?' + ?':'')+'</b>':'')+'</div><div class="bj-hand">'+(c?c.d.map((x,i)=>bjCardHtml(x,i,dHide&&i===1)).join(''):'<div class="bj-ph"></div><div class="bj-ph"></div>')+'</div></div>'+
-    '<div class="bj-arc"><span>LE BLACKJACK PAIE 2 × LA MISE</span><small>Le croupier tire jusqu\'à 16 et reste à 17</small></div>'+
-    (res?'<div class="bj-res '+res[2]+'"><b>'+res[0]+'</b><span>'+res[1]+'</span></div>':'')+
-    '<div class="bj-zone"><div class="bj-hand">'+(c?c.p.map((x,i)=>bjCardHtml(x,i,false)).join(''):'<div class="bj-ph"></div><div class="bj-ph"></div>')+'</div><div class="bj-lbl">Vous'+(c?' <b>'+pv+(bjSoft(c.p)&&pv<21&&c.st==='play'?' ('+(pv-10)+'/'+pv+')':'')+'</b>':'')+'</div></div>'+
-    '<div class="bj-bet">'+(c?'<span class="chip c'+Math.min(c.bet,1000)+'">'+nf(c.bet)+'</span>':'')+'</div>'+
+  const b=bjS(),c=b.cur,play=c&&c.st!=='done',dHide=c&&c.st==='play';
+  const init=!!c&&c.p.length===2&&c.d.length===2&&c.p.concat(c.d).every(x=>!bjSeen.has(x.id));
+  const rev=bjReveal;bjReveal=false;const fx=bjFx;bjFx='';
+  const dv=c?(dHide?bjVal([c.d[0]]):bjVal(c.d)):'',pv=c?bjVal(c.p):'';
+  const R=c&&c.st==='done'?({win:['Gagné !','+'+nf(c.bet*2)+' pièces','win'],bj:['Blackjack !','+'+nf(c.bet*2)+' pièces','win'],push:['Égalité','Mise rendue','push'],lose:[c.why==='bust'?'Dépassé !':'Perdu','−'+nf(c.bet)+' pièces','lose']})[c.res]:null;
+  const hand=(h,isD)=>h.map((x,i)=>bjCardHtml(x,init?(isD?.22:0)+i*.44:0,isD&&dHide&&i===1,isD&&rev&&i===1&&!dHide)).join('');
+  const ph='<div class="bj-ph"></div><div class="bj-ph"></div>';
+  const lbl=(n,v,extra)=>'<div class="bj-lbl'+(init?' late':'')+'">'+n+(c?'<b>'+v+(extra||'')+'</b>':'')+'</div>';
+  const won=R&&R[2]==='win';
+  const chip=c&&(play||won||(fx&&R))?'<div class="bj-bet'+(fx==='lose'?' gone':'')+(won?' paid':'')+(init?' in':'')+'"><span class="stk"><i></i><i></i><i></i></span><b>'+(won?'+'+nf(c.bet*2):nf(c.bet))+'</b></div>':'';
+  const table='<div class="bj-table'+(fx?' fx-'+(fx==='bj'?'win':fx):'')+'">'+
+    '<div class="bj-shoe"><i></i><i></i><i></i></div>'+
+    '<div class="bj-zone top">'+lbl('Croupier',dv,dHide?' + ?':'')+'<div class="bj-hand">'+(c?hand(c.d,true):ph)+'</div></div>'+
+    '<div class="bj-mid">'+(R?'<div class="bj-res '+R[2]+(fx?' pop':'')+'"><b>'+R[0]+'</b><span>'+R[1]+'</span></div>':'<div class="bj-arc"><span>BLACKJACK · GAIN = MISE × 2</span><small>Le croupier tire jusqu\'à 16 et reste à 17</small></div>')+'</div>'+
+    '<div class="bj-zone">'+'<div class="bj-hand">'+(c?hand(c.p,false):ph)+'</div>'+lbl('Vous',pv,c&&bjSoft(c.p)&&pv<21&&c.st==='play'?' <small>ou '+(pv-10)+'</small>':'')+'</div>'+
+    chip+((fx==='win'||fx==='bj')?'<div class="bj-coins">'+'<i>🪙</i>'.repeat(fx==='bj'?14:9)+'</div>':'')+
   '</div>';
   let ctl;
-  if(!session)ctl='<div class="bj-ctl"><p class="bj-note">Créez un compte gratuit pour jouer au blackjack avec vos pièces.</p><button class="btn" data-auth="signup">Créer mon compte</button></div>';
-  else if(play)ctl='<div class="bj-ctl acts"><button class="bj-a hit" data-bj="hit"'+(bjBusy||c.st!=='play'?' disabled':'')+'>👆 Tirer</button><button class="bj-a stand" data-bj="stand"'+(bjBusy||c.st!=='play'?' disabled':'')+'>✋ Rester</button><button class="bj-a dbl" data-bj="double"'+(bjBusy||c.st!=='play'||c.p.length!==2||state.coins<c.bet?' disabled':'')+'>✌️ Doubler</button></div>';
-  else{
-    const bet=Math.min(b.bet,BJ_MAX);
-    ctl='<div class="bj-ctl"><div class="bj-mise">Mise : <b>'+nf(bet)+'</b> pièces</div><div class="bj-chips">'+BJ_CHIPS.map(v=>'<button class="chip c'+v+'" data-bjchip="'+v+'"'+(state.coins<v?' disabled':'')+'>'+(v>=1000?'1K':v)+'</button>').join('')+'</div>'+
+  if(!session)ctl='<div class="bj-ctl"><p class="bj-note">Créez un compte gratuit pour jouer au blackjack avec vos pièces.</p><button class="bj-deal" data-auth="signup">Créer mon compte</button></div>';
+  else if(play){const off=bjBusy||c.st!=='play';
+    ctl='<div class="bj-ctl acts"><button class="bj-a hit" data-bj="hit"'+(off?' disabled':'')+'><i>＋</i>Tirer</button><button class="bj-a stand" data-bj="stand"'+(off?' disabled':'')+'><i>✋</i>Rester</button><button class="bj-a dbl" data-bj="double"'+(off||c.p.length!==2||state.coins<c.bet?' disabled':'')+'><i>×2</i>Doubler</button></div>'}
+  else{const bet=bjBet(),ok=state.coins>=BJ_MIN;
+    ctl='<div class="bj-ctl"><div class="bj-mise"><small>Votre mise</small><b>'+nf(bet)+'</b><small>pièces</small></div><div class="bj-chips">'+BJ_CHIPS.map(v=>'<button class="chip c'+v+'" data-bjchip="'+v+'"'+(state.coins<v?' disabled':'')+'><span>'+(v>=1000?'1K':v)+'</span></button>').join('')+'</div>'+
     '<div class="bj-row"><button class="bj-mini" data-bjset="'+BJ_MIN+'">Effacer</button><button class="bj-mini" data-bjset="half">½</button><button class="bj-mini" data-bjset="dbl">×2</button><button class="bj-mini" data-bjset="'+BJ_MAX+'">Max</button></div>'+
-    (left?'<button class="bj-deal" data-bj="deal"'+(state.coins<Math.max(bet,BJ_MIN)?' disabled':'')+'>🃏 '+(c?'Rejouer':'Distribuer')+'</button>'+(state.coins<BJ_MIN?'<p class="bj-note">Pas assez de pièces : revenez demain pour '+nf(DAILY)+' pièces.</p>':'')
-      :'<p class="bj-note">🛑 Vous avez joué vos '+BJ_LIMIT+' parties du jour. Revenez demain !</p>')+'</div>';
-  }
-  return hero+info+table+ctl+'<p class="bj-rules">Blackjack (As + 10, Valet, Dame ou Roi en 2 cartes) ou main plus forte que le croupier = <b>mise × 2</b>. Égalité = mise rendue. Au-delà de 21, c\'est perdu. « Doubler » double la mise et donne une seule carte. Jeu gratuit, sans argent réel.</p>';
+    '<button class="bj-deal" data-bj="deal"'+(ok?'':' disabled')+'>'+(c?'Rejouer':'Distribuer')+' · '+nf(bet)+' 🪙</button>'+(ok?'':'<p class="bj-note">Pas assez de pièces : revenez demain pour '+nf(DAILY)+' pièces.</p>')+'</div>'}
+  return '<div class="bj-wrap"><div class="bj-top"><div class="bj-h"><b>🃏 Blackjack</b><small>Mise de '+BJ_MIN+' à '+nf(BJ_MAX)+' pièces · gagné = mise × 2</small></div><button class="bj-snd" data-bjsnd="1" title="Son">'+(bjSndOn()?'🔊':'🔇')+'</button></div>'+
+    '<div class="bj-info"><div><b>'+nf(state.coins)+'</b><small>pièces</small></div><div><b>'+(b.n||0)+'</b><small>parties aujourd\'hui</small></div><div><b><em class="g">'+(b.w||0)+'</em> – <em class="r">'+(b.l||0)+'</em></b><small>gagnées – perdues</small></div></div>'+
+    table+ctl+'<p class="bj-rules">Blackjack (As + 10 ou figure) ou main plus forte que le croupier : vous récupérez <b>2 × votre mise</b>. Égalité : mise rendue. Au-delà de 21 : perdu. « Doubler » double la mise et donne une seule carte. Jeu gratuit, sans argent réel.</p></div>';
 }
 function bjRender(){if(ui.tab==='bj'){renderView();renderHeader()}}
 function bjSettle(res,why){
@@ -1802,46 +1855,46 @@ function bjSettle(res,why){
   else if(res==='push')state.coins+=c.bet;
   else b.l=(b.l||0)+1;
   b.bet=Math.min(Math.max(c.bet/(c.dbl?2:1),BJ_MIN),BJ_MAX);
+  bjFx=res;bjSnd(res);try{if(navigator.vibrate)navigator.vibrate(res==='lose'?[60,40,60]:res==='push'?20:[30,30,30,30,120])}catch(e){}
   save();bjBusy=false;bjRender();
 }
 function bjDealer(){
-  const c=bjS().cur;if(!c)return;
-  bjBusy=true;
-  const step=()=>{const cur=bjS().cur;if(!cur||cur.st!=='dealer')return;bjReveal=false;
-    if(bjVal(cur.d)<17){cur.d.push(bjCard());save();bjRender();setTimeout(step,750);return}
+  if(!bjS().cur)return;bjBusy=true;
+  const step=()=>{const cur=bjS().cur;if(!cur||cur.st!=='dealer')return;
+    if(bjVal(cur.d)<17){cur.d.push(bjCard());save();bjRender();setTimeout(step,850);return}
     const p=bjVal(cur.p),d=bjVal(cur.d);
-    setTimeout(()=>bjSettle(d>21||p>d?'win':p===d?'push':'lose'),450)};
-  setTimeout(step,800);
+    setTimeout(()=>bjSettle(d>21||p>d?'win':p===d?'push':'lose'),500)};
+  setTimeout(step,900);
 }
 function bjAction(a){
   const b=bjS();
   if(a==='deal'){
     if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour jouer au blackjack.');return}
     if(bjBusy)return;
-    if(b.n>=BJ_LIMIT){toast('🛑 Limite de '+BJ_LIMIT+' parties atteinte pour aujourd\'hui');return}
-    const bet=Math.min(Math.max(b.bet,BJ_MIN),BJ_MAX);
+    const bet=bjBet();
     if(state.coins<bet){toast('Pas assez de pièces');return}
-    state.coins-=bet;b.n++;bjSeen=new Set();bjReveal=false;
+    state.coins-=bet;b.n=(b.n||0)+1;b.bet=bet;bjSeen=new Set();bjReveal=false;bjFx='';
     b.cur={bet,dbl:false,st:'play',p:[bjCard(),bjCard()],d:[bjCard(),bjCard()]};
-    // ordre de distribution : joueur, croupier, joueur, croupier
-    save();bjBusy=true;renderView();renderHeader();
+    save();bjBusy=true;bjSnd('chip');bjRender();
+    const w=document.querySelector('.bj-wrap');if(w&&w.scrollIntoView)try{w.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
     setTimeout(()=>{bjBusy=false;const c=bjS().cur;if(!c)return;
       const pb=bjIsBJ(c.p),db=bjIsBJ(c.d);
-      if(pb||db){c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle(pb&&db?'push':pb?'bj':'lose'),700);return}
-      bjRender()},1100);
+      if(pb||db){bjBusy=true;c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle(pb&&db?'push':pb?'bj':'lose'),900);return}
+      bjRender()},1500);
     return}
   const c=b.cur;if(!c||c.st!=='play'||bjBusy)return;
+  const bust=()=>setTimeout(()=>{c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle('lose','bust'),700)},750);
   if(a==='hit'){c.p.push(bjCard());save();
     const v=bjVal(c.p);
-    if(v>21){bjBusy=true;bjRender();setTimeout(()=>{c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle('lose','bust'),600)},700);return}
-    if(v===21){bjBusy=true;bjRender();setTimeout(()=>{bjBusy=false;bjAction('stand')},650);return}
+    if(v>21){bjBusy=true;bjRender();bust();return}
+    if(v===21){bjBusy=true;bjRender();setTimeout(()=>{bjBusy=false;bjAction('stand')},750);return}
     bjRender();return}
   if(a==='double'){if(c.p.length!==2||state.coins<c.bet)return;
-    state.coins-=c.bet;c.bet*=2;c.dbl=true;c.p.push(bjCard());save();bjBusy=true;bjRender();
-    setTimeout(()=>{if(bjVal(c.p)>21){c.st='dealer';bjReveal=true;bjRender();setTimeout(()=>bjSettle('lose','bust'),600)}else{bjBusy=false;bjAction('stand')}},800);return}
+    state.coins-=c.bet;c.bet*=2;c.dbl=true;c.p.push(bjCard());save();bjBusy=true;bjSnd('chip');bjRender();
+    if(bjVal(c.p)>21)bust();else setTimeout(()=>{bjBusy=false;bjAction('stand')},850);return}
   if(a==='stand'){c.st='dealer';bjReveal=true;save();bjRender();bjDealer()}
 }
-function bjResume(){const c=state.bj&&state.bj.cur;if(c&&c.st==='dealer'&&!bjBusy){c.d.forEach(x=>bjSeen.add(x.id));c.p.forEach(x=>bjSeen.add(x.id));bjDealer()}else if(c){c.d.forEach(x=>bjSeen.add(x.id));c.p.forEach(x=>bjSeen.add(x.id))}}
+function bjResume(){const c=state.bj&&state.bj.cur;if(!c)return;c.d.concat(c.p).forEach(x=>bjSeen.add(x.id));if(c.st==='dealer'&&!bjBusy)bjDealer()}
 
 function dashHtml(){
   const n=session&&state.streak?state.streak.n:0;
@@ -1849,7 +1902,7 @@ function dashHtml(){
    '<div class="tile t-coin"><div class="ti">🪙</div><b>'+nf(state.coins)+' pièces</b><span>'+nf(DAILY)+' de plus dans '+untilMidnight()+'</span></div>'+
    '<button class="tile t-bell" data-notifs="1"><div class="ti">🔔</div><b>Notifications</b><span>'+(notifOn()?'Activées ✓':'Résultats, défis, série…')+'</span></button>'+
    '<button class="tile t-fire" data-streak="1"><div class="ti">🔥</div><b>Série : '+n+' jour'+(n>1?'s':'')+'</b><span>'+(session?'Demain : +'+nf(streakBonus(n+1))+' pièces':'Bonus chaque jour')+'</span></button>'+
-   '<button class="tile t-bj" data-tab="bj"><div class="ti">🃏</div><b>Blackjack</b><span>'+Math.max(0,BJ_LIMIT-bjS().n)+' parties restantes</span></button>'+
+   '<button class="tile t-bj" data-tab="bj"><div class="ti">🃏</div><b>Blackjack</b><span>Doublez vos pièces</span></button>'+
    '<button class="tile t-gift" data-invite="1"><div class="ti">🎁</div><b>Invite tes potes</b><span>+'+PARRAIN_BONUS+' pièces chacun</span></button>'+
    '<button class="tile t-league" data-tab="chat" data-social="ligues"><div class="ti">👥</div><b>Ligues entre potes</b><span>Ton classement privé</span></button>'+
    '<button class="tile t-trophy" data-tab="chat" data-social="board"><div class="ti">🏆</div><b>Top de la semaine</b><span>Remis à zéro le lundi</span></button>'+
@@ -2392,8 +2445,9 @@ document.addEventListener('click',e=>{
     if(ui.tab==='chat'){if(ui.social==='board')loadBoard();if(ui.social==='ligues'&&ui.ligues==null)loadLigues();chatSoon()}
     renderHeader();renderView();toTop();return}
   if(d.bj){bjAction(d.bj);return}
-  if(d.bjchip){const b=bjS();if(b.cur&&b.cur.st!=='done')return;b.bet=Math.min(BJ_MAX,Math.min(state.coins,(b.bet||0)+(+d.bjchip)));if(b.bet<BJ_MIN)b.bet=BJ_MIN;renderView();return}
-  if(d.bjset){const b=bjS();if(b.cur&&b.cur.st!=='done')return;b.bet=d.bjset==='half'?Math.max(BJ_MIN,Math.round(b.bet/2/50)*50):d.bjset==='dbl'?Math.min(BJ_MAX,b.bet*2):+d.bjset;renderView();return}
+  if(d.bjsnd){lsSet('pc_bjsnd',bjSndOn()?'0':'1');bjSnd('chip');renderView();return}
+  if(d.bjchip){const b=bjS();if(b.cur&&b.cur.st!=='done')return;b.bet=Math.min(BJ_MAX,(b.bet||0)+(+d.bjchip));b.bet=bjBet();bjSnd('chip');renderView();return}
+  if(d.bjset){const b=bjS();if(b.cur&&b.cur.st!=='done')return;b.bet=d.bjset==='half'?Math.max(BJ_MIN,Math.round(b.bet/2/50)*50):d.bjset==='dbl'?Math.min(BJ_MAX,b.bet*2):+d.bjset;b.bet=bjBet();bjSnd('chip');renderView();return}
   if(d.copy){copyText(d.copy);return}
   if(d.sharetxt!==undefined){shareLink(d.sharetxt,d.shareurl);return}
   if(d.sharebet){shareBet(d.sharebet);return}
