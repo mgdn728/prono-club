@@ -102,10 +102,11 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
         b.status = "void"; b.payout = b.stake; e.diamonds = (e.diamonds || 0) + b.stake;
         msgs.push(`↩️ ${quoi} : match annulé, mise rendue (${b.stake} 💎)`);
       } else if (won) {
-        b.odds = Math.round(odds * 100) / 100; b.status = "won"; b.payout = Math.round(b.stake * b.odds);
+        b.odds = Math.round(odds * 100) / 100; b.status = "won"; b.payout = Math.round(b.stake * b.odds * (Number(b.evx) > 1 && Number(b.evx) <= 2 ? Number(b.evx) : 1));
         e.diamonds = (e.diamonds || 0) + b.payout;
         e.stats.won++; e.stats.earned += b.payout; e.stats.best = Math.max(e.stats.best || 0, b.odds);
         if (e.week && e.week.id === semaine) e.week.earned = (e.week.earned || 0) + b.payout;
+        if (e.month && e.month.id === now.day.slice(0, 7)) e.month.earned = (e.month.earned || 0) + b.payout;
         msgs.push(`🎉 ${quoi} : gagné ! +${b.payout} 💎`);
       } else {
         b.status = "lost"; b.payout = 0; e.stats.lost++;
@@ -125,6 +126,7 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
         if (o && o.fn(m.s[0], m.s[1], m.s[2])) {
           dd.status = "won"; e.diamonds = (e.diamonds || 0) + DEFI_GAIN;
           if (e.week && e.week.id === semaine) e.week.earned = (e.week.earned || 0) + DEFI_GAIN;
+          if (e.month && e.month.id === now.day.slice(0, 7)) e.month.earned = (e.month.earned || 0) + DEFI_GAIN;
         } else dd.status = "lost";
         ch = true;
       }
@@ -153,6 +155,8 @@ async function preparer() {
     prefs.set(s.joueur_id, p);
   }
   if (paris().min % 5 === 0) { try { await regler(prefs); } catch (e) { console.error("regler", e); } }
+  if (paris().min % 5 === 2) { try { await duels(); } catch (e) { console.error("duels", e); } }
+  if (paris().min === 30) { try { await rangs(prefs); } catch (e) { console.error("rangs", e); } }
   const ids = [...prefs.keys()];
   if (!ids.length) return;
   const { data: js } = await db.from("joueurs").select("id,pseudo,etat").in("id", ids);
@@ -193,6 +197,25 @@ async function preparer() {
     }
   }
 
+  // 2 bis. Coffre du jour pas encore ouvert (entre 12 h et 14 h)
+  if (now.hour >= 12 && now.hour < 14) {
+    for (const j of js || []) {
+      if (!prefs.get(j.id)!.defi) continue;
+      const c = j.etat && j.etat.chest;
+      if (c && c.day === now.day) continue;
+      if (await marquer(j.id, "coffre:" + now.day)) await ajouter(j.id, "defi", "🧰 Ton coffre du jour t'attend !", "Pièces, diamants, boost… ou le jackpot de 5 000 pièces. Ouvre-le vite !", "?");
+    }
+  }
+  // 2 ter. Pièces pas jouées (entre 20 h et 22 h)
+  if (now.hour >= 20 && now.hour < 22) {
+    for (const j of js || []) {
+      if (!prefs.get(j.id)!.serie) continue;
+      const e = j.etat || {};
+      if (e.day !== now.day || (e.coins || 0) < 300) continue;
+      if (await marquer(j.id, "pieces:" + now.day)) await ajouter(j.id, "serie", `🪙 Il te reste ${Math.round(e.coins)} pièces !`, "Elles repartent à 1 000 à minuit : joue-les avant qu'il soit trop tard ⏳", "?");
+    }
+  }
+
   // 3. Série en danger (à partir de 19 h)
   if (now.hour >= 19) {
     const hier = addDays(now.day, -1);
@@ -203,6 +226,41 @@ async function preparer() {
         await ajouter(j.id, "serie", `🔥 Ta série de ${s.n} jours est en danger !`, `Ouvre PronoClub avant minuit pour la garder et gagner +${Math.min(s.n + 1, 7) * 100} pièces.`, "?");
       }
     }
+  }
+}
+
+// ---------- Duels sur un match (réglés quand le match est terminé) ----------
+async function duels() {
+  const E = await moteur();
+  const { data: ds } = await db.from("duels").select("id,match_id,ko").eq("statut", "accepte").lt("ko", new Date(Date.now() - 100 * 60e3).toISOString()).limit(200);
+  const built = new Set<string>();
+  for (const d of ds || []) {
+    const mid = String(d.match_id), k = mid.indexOf("_"), day = mid.slice(0, k);
+    if (!built.has(day)) { built.add(day); const arr = await fixtures(day); if (Array.isArray(arr) && arr.length) E.build(day, arr); }
+    const m = (E.FIX[day] || []).find((x: any) => x.id === mid);
+    if (!m) { if (Date.parse(d.ko) < Date.now() - 4 * 864e5) await db.rpc("duel_regler", { p_id: d.id, p_h: 0, p_a: 0, p_annule: true }); continue; }
+    if (m.x) await db.rpc("duel_regler", { p_id: d.id, p_h: 0, p_a: 0, p_annule: true });
+    else if (m.s) await db.rpc("duel_regler", { p_id: d.id, p_h: m.s[0], p_a: m.s[1], p_annule: false });
+  }
+}
+
+// ---------- « Tu t'es fait dépasser » au classement de la semaine (une fois par heure) ----------
+async function rangs(prefs: Map<number, Record<string, boolean>>) {
+  const E = await moteur();
+  const now = paris();
+  const [y, mo, d] = now.day.split("-").map(Number);
+  const semaine = E.weekId(new Date(y, mo - 1, d));
+  const { data: top } = await db.from("joueurs").select("id,pseudo,rang_sem").eq("semaine", semaine).gt("hebdo", 0).order("hebdo", { ascending: false }).limit(50);
+  const list = top || [];
+  for (let i = 0; i < list.length; i++) {
+    const j = list[i], r = i + 1, old = j.rang_sem;
+    if (old && r > old && old <= 20 && (prefs.get(j.id) || {}).social) {
+      const qui = list[old - 1];
+      if (qui && qui.id !== j.id && await marquer(j.id, `rang:${semaine}:${now.day}:${now.hour}`)) {
+        await ajouter(j.id, "social", `📉 ${qui.pseudo} t'a dépassé !`, `Tu es maintenant ${r}e du classement de la semaine. Reprends ta place 💪`, "?classement");
+      }
+    }
+    if (old !== r) await db.from("joueurs").update({ rang_sem: r }).eq("id", j.id);
   }
 }
 
