@@ -1366,6 +1366,10 @@ body.pf-lock{overflow:hidden}
 #landing .hp b{color:#e5126b}
 #landing .hp .cp{margin-top:12px;width:100%;border:0;border-radius:12px;padding:12px;font-weight:800;font-size:15px;background:#1b1030;color:#fff;cursor:pointer}
 #landing .ok{font-size:15px;opacity:.85;margin-top:14px}
+.adm-sug{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px;min-height:0}
+.adm-sug button{border:1px solid var(--line,#e3e0ee);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;color:#111;cursor:pointer}
+.adm-sug small{color:#8a86a0;font-weight:600}
+.adm-ok,.adm-ko{font-size:14px;margin:8px 0 0;text-align:left}.adm-ok{color:#0f8a4b}.adm-ko{color:#d92d4a}
 </style>
 </head>
 <body>
@@ -3318,12 +3322,47 @@ function isMe(p){return !!(session&&p&&p.toLowerCase()===session.pseudo.toLowerC
 function pfMine(){return '<div class="pf-mine"><div><i>🪙</i><b>'+nf(state.coins)+'</b><small>pièces aujourd\'hui</small></div><div><i>💎</i><b>'+nf(state.diamonds)+'</b><small>diamants à dépenser</small></div></div>'}
 function pfMenu(p){if(!isMe(p))return '';
   const b=(k,ic,t,cl)=>'<button data-pfgo="'+k+'"'+(cl?' class="'+cl+'"':'')+'><i>'+ic+'</i><span>'+t+'</span><em>›</em></button>';
-  return '<div class="pf-sec pf-menu"><h4>Mon compte</h4>'+b('boutique','🛍️','Boutique')+b('invite','🎁','Inviter des amis')+b('prog','🎯','Progression · missions · badges')+b('notifs','🔔','Notifications')+b('regles','📖','Règles du jeu')+b('logout','🚪','Se déconnecter','out')+'</div>'}
+  return '<div class="pf-sec pf-menu"><h4>Mon compte</h4>'+b('boutique','🛍️','Boutique')+b('invite','🎁','Inviter des amis')+b('prog','🎯','Progression · missions · badges')+b('notifs','🔔','Notifications')+b('regles','📖','Règles du jeu')+(isAdmin()?b('admin','🛡️','Admin · donner des pièces'):'')+b('logout','🚪','Se déconnecter','out')+'</div>'}
 function pfGo(k){ovBack();setTimeout(()=>{
   if(k==='logout'){notifUnlinkOnLogout(session&&session.token);ui.authMode='login';logout();return}
   if(k==='notifs'){openNotifs();return}
   if(k==='invite'){openInvite();return}
+  if(k==='admin'){openAdmin();return}
   ui.tab=k;renderHeader();renderView();toTop()},120)}
+/* Admin : donner des pièces */
+function isAdmin(){return !!session&&((state.owned||[]).includes('t_admin')||state.title==='Administrateur')}
+const ADM_ERR={pas_admin:'Ce compte n\'est pas administrateur.',montant:'Montant entre 1 et 10 000 000.',aucun:'Écris au moins un pseudo.',trop:'50 joueurs maximum à la fois.'};
+let admBusy=false,admT=null;
+function admList(){const v=($('#admP')&&$('#admP').value)||'';return v.split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean)}
+function openAdmin(){
+  if(!session)return;
+  popup('<div class="pop-ic big">🛡️</div><h3>Donner des pièces</h3><p>Écris un ou plusieurs pseudos (séparés par un espace ou une virgule). Les joueurs reçoivent les pièces automatiquement, même si l\'appli est ouverte.</p>'+
+    '<input id="admP" class="gift-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Pseudos, ex : mtt78 abd">'+
+    '<div class="adm-sug" id="admSug"></div>'+
+    '<div class="gift-q">'+[1000,5000,10000,25000,100000].map(v=>'<button data-giftq="'+v+'">'+(v>=1000?(v/1000)+'K':v)+'</button>').join('')+'</div>'+
+    '<input id="giftN" class="gift-in" type="number" inputmode="numeric" min="1" placeholder="Nombre de pièces">'+
+    '<div class="gift-err" id="giftErr"></div><div id="admRes"></div>'+
+    '<div class="pop-btns"><button class="pbtn" id="admGo">Donner</button><button class="pbtn ghost2" data-popclose="1">Fermer</button></div>');
+  const i=$('#admP');if(i){i.addEventListener('input',()=>{clearTimeout(admT);admT=setTimeout(admSuggest,250)});setTimeout(()=>i.focus(),50)}}
+async function admSuggest(){const S=$('#admSug');if(!S)return;const L=admList(),q=(($('#admP').value||'').match(/[^\s,;]*$/)||[''])[0];
+  if(!q){S.innerHTML='';return}
+  try{const r=await rpc('admin_chercher',{p_token:session.token,p_q:q});
+    S.innerHTML=(r||[]).filter(x=>!L.slice(0,-1).some(y=>y.toLowerCase()===x.pseudo.toLowerCase())).map(x=>'<button data-admadd="'+esc(x.pseudo)+'">'+esc(x.pseudo)+' <small>'+nf(x.pieces)+' 🪙</small></button>').join('')}
+  catch(e){S.innerHTML=''}}
+function admAdd(p){const i=$('#admP');if(!i)return;const L=admList();L.pop();L.push(p);i.value=L.join(' ')+' ';$('#admSug').innerHTML='';i.focus()}
+async function admGo(btn){
+  if(admBusy)return;const er=$('#giftErr'),R=$('#admRes'),L=admList(),n=Math.floor(+($('#giftN')&&$('#giftN').value)||0);
+  er.textContent='';R.innerHTML='';
+  if(!L.length){er.textContent=ADM_ERR.aucun;return}
+  if(n<1){er.textContent='Choisis le nombre de pièces.';return}
+  admBusy=true;btn.disabled=true;btn.textContent='Envoi…';
+  try{const r=await rpc('admin_donner',{p_token:session.token,p_pseudos:L,p_montant:n});
+    const ok=r.ok||[],ko=r.inconnus||[];
+    R.innerHTML=(ok.length?'<p class="adm-ok">✅ <b>'+nf(n)+' pièces</b> données à : <b>'+ok.map(esc).join(', ')+'</b></p>':'')+(ko.length?'<p class="adm-ko">❌ Pseudo introuvable : <b>'+ko.map(esc).join(', ')+'</b></p>':'');
+    if(ok.length){$('#admP').value='';bjSnd('win')}
+    if(ok.some(x=>x.toLowerCase()===session.pseudo.toLowerCase()))setTimeout(claimGifts,400)}
+  catch(e){if(e.code==='session'){closePop();logout(ERR.session)}else er.textContent=ADM_ERR[e.code]||(/admin_donner|function/.test(e.message||'')?'La page admin n\'est pas encore activée dans Supabase.':'Envoi impossible, réessaie.')}
+  admBusy=false;btn.disabled=false;btn.textContent='Donner'}
 /* Envoyer des pièces à un ami */
 const GIFT_ERR={session:ERR.session,pas_amis:'Vous devez être amis pour envoyer des pièces.',montant_min:'10 pièces minimum.',pas_assez:'Vous n\'avez pas assez de pièces.',plafond:'Limite atteinte : 5 000 pièces envoyées maximum par jour.',resync:'Rechargez l\'appli puis réessayez.',soi_meme:'Impossible de s\'envoyer des pièces.',joueur_inconnu:'Ce joueur n\'existe plus.'};
 let giftBusy=false;
@@ -3648,6 +3687,8 @@ document.addEventListener('click',e=>{
   const gf=e.target.closest('[data-gift]');if(gf){openGift(gf.dataset.gift);return}
   const gq=e.target.closest('[data-giftq]');if(gq){const i=$('#giftN');if(i){i.value=gq.dataset.giftq;document.querySelectorAll('[data-giftq]').forEach(x=>x.classList.toggle('on',x===gq))}return}
   if(e.target.closest('#giftSend')){sendGift(e.target.closest('#giftSend'));return}
+  if(e.target.closest('#admGo')){admGo(e.target.closest('#admGo'));return}
+  const aa=e.target.closest('[data-admadd]');if(aa){admAdd(aa.dataset.admadd);return}
   const pp=e.target.closest('.mp-who[data-prof]');if(pp){const same=profOpen&&ui.profP&&ui.profP.toLowerCase()===pp.dataset.prof.toLowerCase(),who=pp.dataset.prof;ovBack();if(!same)setTimeout(()=>openProfil(who),80);return}
   const pr=e.target.closest('[data-prof]');if(pr){openProfil(pr.dataset.prof);return}
   const t=e.target.closest('button,label');if(!t)return;
