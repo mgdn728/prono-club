@@ -1381,6 +1381,7 @@ body.pf-lock{overflow:hidden}
 .myst-res{position:absolute;inset:0;opacity:0;transform:scale(.6);transition:all .45s cubic-bezier(.2,1.6,.4,1)}.myst-res.on{opacity:1;transform:none}
 @keyframes mshake{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
 .vipc{margin-left:3px}
+.adm-t{display:flex;margin:4px 0 12px}.adm-t button{flex:1}
 </style>
 </head>
 <body>
@@ -3378,7 +3379,7 @@ function isMe(p){return !!(session&&p&&p.toLowerCase()===session.pseudo.toLowerC
 function pfMine(){return '<div class="pf-mine"><div><i>🪙</i><b>'+nf(state.coins)+'</b><small>pièces aujourd\'hui</small></div><div><i>💎</i><b>'+nf(state.diamonds)+'</b><small>diamants à dépenser</small></div></div>'}
 function pfMenu(p){if(!isMe(p))return '';
   const b=(k,ic,t,cl)=>'<button data-pfgo="'+k+'"'+(cl?' class="'+cl+'"':'')+'><i>'+ic+'</i><span>'+t+'</span><em>›</em></button>';
-  return '<div class="pf-sec pf-menu"><h4>Mon compte</h4>'+b('boutique','🛍️','Boutique')+b('invite','🎁','Inviter des amis')+b('prog','🎯','Progression · missions · badges')+b('notifs','🔔','Notifications')+b('regles','📖','Règles du jeu')+(isAdmin()?b('admin','🛡️','Admin · donner des pièces'):'')+b('logout','🚪','Se déconnecter','out')+'</div>'}
+  return '<div class="pf-sec pf-menu"><h4>Mon compte</h4>'+b('boutique','🛍️','Boutique')+b('invite','🎁','Inviter des amis')+b('prog','🎯','Progression · missions · badges')+b('notifs','🔔','Notifications')+b('regles','📖','Règles du jeu')+(isAdmin()?b('admin','🛡️','Admin · donner pièces et diamants'):'')+b('logout','🚪','Se déconnecter','out')+'</div>'}
 function pfGo(k){ovBack();setTimeout(()=>{
   if(k==='logout'){notifUnlinkOnLogout(session&&session.token);ui.authMode='login';logout();return}
   if(k==='notifs'){openNotifs();return}
@@ -3392,11 +3393,12 @@ let admBusy=false,admT=null;
 function admList(){const v=($('#admP')&&$('#admP').value)||'';return v.split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean)}
 function openAdmin(){
   if(!session)return;
-  popup('<div class="pop-ic big">🛡️</div><h3>Donner des pièces</h3><p>Écris un ou plusieurs pseudos (séparés par un espace ou une virgule). Les joueurs reçoivent les pièces automatiquement, même si l\'appli est ouverte.</p>'+
+  ui.admT=ui.admT==='d'?'d':'c';
+  popup('<div class="pop-ic big">🛡️</div><h3>Faire un cadeau</h3><div class="seg adm-t"><button data-admt="c" class="'+(ui.admT==='c'?'on':'')+'">🪙 Pièces</button><button data-admt="d" class="'+(ui.admT==='d'?'on':'')+'">💎 Diamants</button></div><p>Écris un ou plusieurs pseudos (séparés par un espace ou une virgule). Les joueurs reçoivent le cadeau automatiquement, même si l\'appli est ouverte.</p>'+
     '<input id="admP" class="gift-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Pseudos, ex : mtt78 abd">'+
     '<div class="adm-sug" id="admSug"></div>'+
     '<div class="gift-q">'+[1000,5000,10000,25000,100000].map(v=>'<button data-giftq="'+v+'">'+(v>=1000?(v/1000)+'K':v)+'</button>').join('')+'</div>'+
-    '<input id="giftN" class="gift-in" type="number" inputmode="numeric" min="1" placeholder="Nombre de pièces">'+
+    '<input id="giftN" class="gift-in" type="number" inputmode="numeric" min="1" placeholder="Nombre de '+(ui.admT==='d'?'diamants':'pièces')+'">'+
     '<div class="gift-err" id="giftErr"></div><div id="admRes"></div>'+
     '<div class="pop-btns"><button class="pbtn" id="admGo">Donner</button><button class="pbtn ghost2" data-popclose="1">Fermer</button></div>');
   const i=$('#admP');if(i){i.addEventListener('input',()=>{clearTimeout(admT);admT=setTimeout(admSuggest,250)});setTimeout(()=>i.focus(),50)}}
@@ -3410,11 +3412,11 @@ async function admGo(btn){
   if(admBusy)return;const er=$('#giftErr'),R=$('#admRes'),L=admList(),n=Math.floor(+($('#giftN')&&$('#giftN').value)||0);
   er.textContent='';R.innerHTML='';
   if(!L.length){er.textContent=ADM_ERR.aucun;return}
-  if(n<1){er.textContent='Choisis le nombre de pièces.';return}
+  const dia=ui.admT==='d';if(n<1){er.textContent='Choisis le nombre de '+(dia?'diamants':'pièces')+'.';return}
   admBusy=true;btn.disabled=true;btn.textContent='Envoi…';
-  try{const r=await rpc('admin_donner',{p_token:session.token,p_pseudos:L,p_montant:n});
+  try{const r=await rpc('admin_donner',{p_token:session.token,p_pseudos:L,p_montant:n,p_type:dia?'d':'c'});
     const ok=r.ok||[],ko=r.inconnus||[];
-    R.innerHTML=(ok.length?'<p class="adm-ok">✅ <b>'+nf(n)+' pièces</b> données à : <b>'+ok.map(esc).join(', ')+'</b></p>':'')+(ko.length?'<p class="adm-ko">❌ Pseudo introuvable : <b>'+ko.map(esc).join(', ')+'</b></p>':'');
+    R.innerHTML=(ok.length?'<p class="adm-ok">✅ <b>'+nf(n)+(dia?' diamants 💎':' pièces 🪙')+'</b> donné'+(dia?'s':'es')+' à : <b>'+ok.map(esc).join(', ')+'</b></p>':'')+(ko.length?'<p class="adm-ko">❌ Pseudo introuvable : <b>'+ko.map(esc).join(', ')+'</b></p>':'');
     if(ok.length){$('#admP').value='';bjSnd('win')}
     if(ok.some(x=>x.toLowerCase()===session.pseudo.toLowerCase()))setTimeout(claimGifts,400)}
   catch(e){if(e.code==='session'){closePop();logout(ERR.session)}else er.textContent=ADM_ERR[e.code]||(/admin_donner|function/.test(e.message||'')?'La page admin n\'est pas encore activée dans Supabase.':'Envoi impossible, réessaie.')}
@@ -3445,8 +3447,9 @@ let giftClaiming=false;
 async function claimGifts(){
   if(!session||!synced||giftClaiming)return;giftClaiming=true;
   try{const r=await rpc('pieces_recevoir',{p_token:session.token});
-    if(Array.isArray(r)&&r.length){const tot=r.reduce((a,x)=>a+(x.montant||0),0);state.coins+=tot;save();clearTimeout(saveTimer);pushRemote();renderAll();
-      celebrate('🎁','Vous avez reçu des pièces',r.map(x=>'<b>'+esc(x.de)+'</b> vous a envoyé <b>'+nf(x.montant)+' pièces</b>').join('<br>')+'<br><br>Elles sont ajoutées à vos pièces du jour.')}}
+    if(Array.isArray(r)&&r.length){const tc=r.filter(x=>!x.dia).reduce((a,x)=>a+(x.montant||0),0),td=r.filter(x=>x.dia).reduce((a,x)=>a+(x.montant||0),0);
+      state.coins+=tc;state.diamonds+=td;save();clearTimeout(saveTimer);pushRemote();renderAll();
+      celebrate(td&&!tc?'💎':'🎁',td&&!tc?'Vous avez reçu des diamants':tc&&!td?'Vous avez reçu des pièces':'Vous avez reçu un cadeau',r.map(x=>'<b>'+esc(x.de)+'</b> vous a envoyé <b>'+nf(x.montant)+(x.dia?' diamants 💎':' pièces 🪙')+'</b>').join('<br>')+(tc?'<br><br>Les pièces sont ajoutées à vos pièces du jour.':''))}}
   catch(e){}
   giftClaiming=false;claimWeek()}
 async function amiAction(kind,pseudo,btn){
@@ -3746,6 +3749,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('#giftSend')){sendGift(e.target.closest('#giftSend'));return}
   if(e.target.closest('#admGo')){admGo(e.target.closest('#admGo'));return}
   const aa=e.target.closest('[data-admadd]');if(aa){admAdd(aa.dataset.admadd);return}
+  const at=e.target.closest('[data-admt]');if(at){ui.admT=at.dataset.admt;document.querySelectorAll('[data-admt]').forEach(x=>x.classList.toggle('on',x===at));const n=$('#giftN');if(n)n.placeholder='Nombre de '+(ui.admT==='d'?'diamants':'pièces');return}
   const pp=e.target.closest('.mp-who[data-prof]');if(pp){const same=profOpen&&ui.profP&&ui.profP.toLowerCase()===pp.dataset.prof.toLowerCase(),who=pp.dataset.prof;ovBack();if(!same)setTimeout(()=>openProfil(who),80);return}
   const pr=e.target.closest('[data-prof]');if(pr){openProfil(pr.dataset.prof);return}
   const t=e.target.closest('button,label');if(!t)return;
