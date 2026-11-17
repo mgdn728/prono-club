@@ -250,7 +250,7 @@ async function rangs(prefs: Map<number, Record<string, boolean>>) {
   const now = paris();
   const [y, mo, d] = now.day.split("-").map(Number);
   const semaine = E.weekId(new Date(y, mo - 1, d));
-  const { data: top } = await db.from("joueurs").select("id,pseudo,rang_sem").eq("semaine", semaine).gt("hebdo", 0).order("hebdo", { ascending: false }).limit(50);
+  const { data: top } = await db.from("joueurs").select("id,pseudo,rang_sem").eq("semaine", semaine).eq("admin", false).gt("hebdo", 0).order("hebdo", { ascending: false }).limit(50);
   const list = top || [];
   for (let i = 0; i < list.length; i++) {
     const j = list[i], r = i + 1, old = j.rang_sem;

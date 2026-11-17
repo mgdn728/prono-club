@@ -3486,10 +3486,10 @@ function boardRows(b,mode,emptyMsg,prizes){
   if(b==null)return '<div class="empty">Chargement du classement…</div>';
   if(b==='err')return '<div class="empty">Impossible de charger le classement pour le moment.</div>';
   const key=mode==='week'?'hebdo':mode==='season'?'mensuel':'diamants';
-  const rows=b.slice().sort((x,y)=>(y[key]||0)-(x[key]||0)||(y.diamants||0)-(x.diamants||0));
+  const adm=r=>r.deco&&r.deco.adm?1:0;const rows=b.slice().sort((x,y)=>adm(x)-adm(y)||(y[key]||0)-(x[key]||0)||(y.diamants||0)-(x.diamants||0));
   if(!rows.length)return '<div class="empty">'+(emptyMsg||'Personne au classement pour l\'instant.')+'</div>';
   return '<div class="board">'+rows.map((r,i)=>{const me=session&&r.pseudo.toLowerCase()===session.pseudo.toLowerCase();
-    return '<div class="brow r'+(i+1)+(me?' me':'')+'" data-prof="'+esc(r.pseudo)+'" role="button" tabindex="0" title="Voir le profil"><span class="rk">'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</span><span class="who">'+pav(r.pseudo,r.deco)+'<span class="wn"><span class="nm">'+pname(r.pseudo,r.deco,me?' <small>(vous)</small>':'')+'</span><small>'+r.gagnes+' paris gagnés</small></span></span><span class="val">'+(prizes&&i<3?'<em class="prize p'+(i+1)+'">+'+nf((Array.isArray(prizes)?prizes:WEEK_PRIZE)[i])+' 🪙</em>':'')+'<b>'+nf(r[key]||0)+' 💎</b><small>'+(mode==='week'?'cette semaine':mode==='season'?'ce mois':'au total')+'</small></span></div>'}).join('')+'</div>';
+    const A=adm(r);return '<div class="brow r'+(A?'x':i+1)+(me?' me':'')+'" data-prof="'+esc(r.pseudo)+'" role="button" tabindex="0" title="Voir le profil"><span class="rk">'+(A?'🛡️':i<3?['🥇','🥈','🥉'][i]:i+1)+'</span><span class="who">'+pav(r.pseudo,r.deco)+'<span class="wn"><span class="nm">'+pname(r.pseudo,r.deco,me?' <small>(vous)</small>':'')+'</span><small>'+r.gagnes+' paris gagnés</small></span></span><span class="val">'+(prizes&&i<3&&!adm(r)?'<em class="prize p'+(i+1)+'">+'+nf((Array.isArray(prizes)?prizes:WEEK_PRIZE)[i])+' 🪙</em>':'')+'<b>'+nf(r[key]||0)+' 💎</b><small>'+(mode==='week'?'cette semaine':mode==='season'?'ce mois':'au total')+'</small></span></div>'}).join('')+'</div>';
 }
 function renderBoard(){
   let mode=ui.boardMode,b=ui.boards[mode];
