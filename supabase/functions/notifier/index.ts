@@ -211,8 +211,8 @@ async function preparer() {
     for (const j of js || []) {
       if (!prefs.get(j.id)!.serie) continue;
       const e = j.etat || {};
-      if (e.day !== now.day || (e.coins || 0) < 300) continue;
-      if (await marquer(j.id, "pieces:" + now.day)) await ajouter(j.id, "serie", `🪙 Il te reste ${Math.round(e.coins)} pièces !`, "Elles repartent à 1 000 à minuit : joue-les avant qu'il soit trop tard ⏳", "?");
+      if (e.day !== now.day || (e.coins || 0) < 5000) continue;
+      if (await marquer(j.id, "pieces:" + now.day)) await ajouter(j.id, "serie", `🪙 Il te reste ${Math.round(e.coins)} pièces !`, "Elles repartent à 20 000 à minuit : joue-les avant qu'il soit trop tard ⏳", "?");
     }
   }
 

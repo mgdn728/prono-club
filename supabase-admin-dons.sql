@@ -55,7 +55,7 @@ begin
   select json_agg(x) into r from (
     select pseudo,
            case when etat->>'day' = to_char((now() at time zone 'Europe/Paris')::date, 'YYYY-MM-DD')
-                then coalesce((etat->>'coins')::int, 0) else 1000 end as pieces
+                then coalesce((etat->>'coins')::int, 0) else 20000 end as pieces
       from public.joueurs
      where pseudo ilike replace(replace(coalesce(p_q, ''), '%', ''), '_', '\_') || '%'
      order by maj_le desc nulls last
