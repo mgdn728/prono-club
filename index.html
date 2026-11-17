@@ -635,6 +635,8 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .tag.pending{background:#e8f0ff;color:#1f6fe0}
 .sharebtn{display:block;width:100%;margin-top:10px;padding:10px;border-radius:12px;font-weight:800;font-size:13.5px;color:#e5126b;background:#fff0f5;border:1px dashed rgba(229,18,107,.35)}
 .sharebtn:hover{background:#ffe3ee}
+.sharebtn.win{color:#3a2300;background:linear-gradient(135deg,#ffe066,#ffab1a);border:0;font-size:14.5px;padding:12px;box-shadow:0 6px 16px rgba(255,171,26,.35)}
+.popbox img.prev.story{width:auto;max-width:100%;max-height:52vh;display:block;margin:4px auto 12px}
 .seg{background:#e9ebf3;border:0;border-radius:14px}
 .seg button{border-radius:11px}
 .seg button.on{background:#fff;color:#0d1220;box-shadow:0 2px 8px rgba(13,18,32,.1)}
@@ -1628,6 +1630,7 @@ function settle(){
       state.stats.won++;state.stats.earned+=b.payout;state.stats.best=Math.max(state.stats.best,b.odds);
       if(state.week)state.week.earned+=b.payout;
       toast('🎉 Pari gagné ! +'+nf(b.payout)+' 💎');
+      if(session){if(!winOffer)setTimeout(offerShare,2500);winOffer=b.id}
     }else{
       b.status='lost';b.payout=0;state.stats.lost++;
       if(b.shield){b.refund=b.stake;state.diamonds+=b.stake;toast('🛡️ Pari perdu, mais assuré : +'+nf(b.stake)+' 💎')}
@@ -1846,16 +1849,70 @@ function betImage(b){
   x.font='700 36px '+F;x.globalAlpha=.92;x.fillText(SITE().replace(/^https?:\/\//,'').replace(/\/$/,''),W/2,H-90);x.globalAlpha=1;x.textAlign='left';
   return new Promise(r=>c.toBlob(r,'image/png'));
 }
+/* ---------- Story « ticket gagnant » (1080×1920) ---------- */
+function loadImg(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})}
+async function storyImage(b){
+  const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const F='Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+  const g=x.createLinearGradient(0,0,W*.4,H);g.addColorStop(0,'#2a0a5e');g.addColorStop(.45,'#7a1fd0');g.addColorStop(1,'#ff1f5a');x.fillStyle=g;x.fillRect(0,0,W,H);
+  const glow=(cx,cy,r,col)=>{const rg=x.createRadialGradient(cx,cy,0,cx,cy,r);rg.addColorStop(0,col);rg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=rg;x.fillRect(cx-r,cy-r,2*r,2*r)};
+  glow(900,260,520,'rgba(255,200,60,.35)');glow(120,1650,560,'rgba(255,60,140,.35)');
+  const cols=['#ffd23f','#3dff8f','#4fc3ff','#ff5c8a','#ffffff'];
+  for(let i=0;i<60;i++){const cx=i%2?40+(i*37)%170:870+(i*53)%180;x.save();x.translate(cx,(i*577)%1500+40);x.rotate(i);x.fillStyle=cols[i%5];x.globalAlpha=.75;x.fillRect(-9,-4,18+(i%4)*4,8);x.restore()}
+  x.globalAlpha=1;
+  const ic=await loadImg('icons/icon-192.png');
+  if(ic){x.save();rr(x,70,90,96,96,24);x.clip();x.drawImage(ic,70,90,96,96);x.restore()}
+  x.fillStyle='#fff';x.font='900 64px '+F;x.textBaseline='alphabetic';x.fillText('PronoClub',186,160);
+  // tampon
+  x.save();x.translate(W/2,400);x.rotate(-.06);
+  x.fillStyle='#ffd23f';rr(x,-400,-110,800,200,40);x.fill();x.strokeStyle='#fff';x.lineWidth=8;rr(x,-388,-98,776,176,32);x.stroke();
+  x.fillStyle='#2b1700';x.textAlign='center';x.font='900 84px '+F;x.fillText('TICKET GAGNANT',0,28);x.restore();
+  x.textAlign='center';x.fillStyle='#fff';
+  x.font='900 150px '+F;x.fillText('+'+nf(b.payout)+' 💎',W/2,690);
+  x.globalAlpha=.9;x.font='700 46px '+F;x.fillText(b.type+' · cote ×'+fo(b.odds)+' · mise '+nf(b.stake)+' 🪙',W/2,770);x.globalAlpha=1;
+  // carte des sélections
+  const sels=b.sels.slice(0,6),rowH=150,more=b.sels.length>6?60:0,cardH=50+sels.length*rowH+more,cy=850;
+  x.fillStyle='rgba(255,255,255,.97)';rr(x,60,cy,W-120,cardH,44);x.fill();
+  let y=cy+30;x.textAlign='left';
+  sels.forEach((s,i)=>{const m=findMatch(s.matchId);
+    if(i){x.fillStyle='#eceef4';x.fillRect(100,y,W-200,3)}
+    x.fillStyle='#12a150';x.beginPath();x.arc(140,y+75,34,0,7);x.fill();x.fillStyle='#fff';x.font='900 40px '+F;x.textAlign='center';x.fillText(s.void?'–':'✓',140,y+89);x.textAlign='left';
+    x.fillStyle='#7a8396';x.font='600 32px '+F;x.fillText(fitT(x,s.match+(m&&m.s&&!s.void?' · '+m.s[0]+'-'+m.s[1]:''),W-330),200,y+60);
+    x.fillStyle='#111827';x.font='800 44px '+F;x.fillText(fitT(x,s.pick,W-470),200,y+115);
+    x.fillStyle='#e0182d';x.font='900 48px '+F;x.textAlign='right';x.fillText(fo(s.odds),W-100,y+115);x.textAlign='left';
+    y+=rowH});
+  if(more){x.fillStyle='#7a8396';x.font='700 32px '+F;x.fillText('+ '+(b.sels.length-6)+' autres sélections gagnées ✓',100,y+40)}
+  // bas
+  x.textAlign='center';x.fillStyle='#fff';
+  const by=Math.max(cy+cardH+80,1500);
+  x.font='900 60px '+F;x.fillText('À toi de jouer 👇',W/2,by);
+  x.globalAlpha=.92;x.font='600 40px '+F;x.fillText('Paris sportifs 100 % gratuits entre potes',W/2,by+66);x.globalAlpha=1;
+  const site=SITE().replace(/^https?:\/\//,'').replace(/index\.html$/,'').replace(/\/$/,'');
+  x.font='800 42px '+F;const tw=Math.min(W-140,x.measureText(site).width+90);
+  x.fillStyle='#fff';rr(x,(W-tw)/2,by+110,tw,96,48);x.fill();x.fillStyle='#7a1fd0';x.fillText(site,W/2,by+173);
+  x.fillStyle='#fff';x.font='700 38px '+F;x.fillText((session?'Code ami : '+session.pseudo+' · ':'')+'@pronoclub_',W/2,by+275);
+  x.textAlign='left';
+  return new Promise(r=>c.toBlob(r,'image/png'));
+}
+
 async function shareBet(id){
   const b=state.bets.find(x=>x.id===id);if(!b)return;
   closePop();
-  const blob=await betImage(b);if(!blob){toast('Image impossible à créer');return}
-  const url=SITE()+(session?'?p='+encodeURIComponent(session.pseudo):''),txt=(b.status==='won'?'Pari gagné sur PronoClub ✅ ':'Mon pari sur PronoClub 🔥 ')+'Viens jouer gratuitement :';
-  const file=new File([blob],'pronoclub-pari.png',{type:'image/png'});
-  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:txt+' '+url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  const won=b.status==='won',blob=won?await storyImage(b):await betImage(b);if(!blob){toast('Image impossible à créer');return}
+  const url=SITE()+(session?'?p='+encodeURIComponent(session.pseudo):''),txt=(won?'Ticket gagnant sur PronoClub ✅ +'+nf(b.payout)+' 💎 ':'Mon pari sur PronoClub 🔥 ')+'Viens jouer gratuitement :';
+  const file=new File([blob],won?'pronoclub-ticket-gagnant.png':'pronoclub-pari.png',{type:'image/png'});
+  const canFile=!!(navigator.canShare&&navigator.canShare({files:[file]}));
+  shareFile={file,txt,url};
   const u=URL.createObjectURL(blob);
-  popup('<h3>📤 Votre coupon</h3><img class="prev" src="'+u+'" alt="Coupon"><div class="pop-btns"><a class="pbtn" href="'+u+'" download="pronoclub-pari.png">⬇️ Télécharger l\'image</a><a class="pbtn wa" href="https://wa.me/?text='+encodeURIComponent(txt+' '+url)+'" target="_blank" rel="noopener">WhatsApp</a></div>');
+  popup('<h3>'+(won?'📸 Ton ticket gagnant':'📤 Ton coupon')+'</h3><img class="prev'+(won?' story':'')+'" src="'+u+'" alt="Ticket">'+
+    (won?'<p style="font-size:13px;margin:0 0 10px">Pour la story : touche <b>Partager</b>, choisis <b>Instagram</b> ou <b>TikTok</b>, puis <b>Story</b>. Tes amis verront le lien de l\'appli.</p>':'')+
+    '<div class="pop-btns">'+(canFile?'<button class="pbtn" data-sharego="1">📲 Partager</button>':'')+'<a class="pbtn'+(canFile?' ghost2':'')+'" href="'+u+'" download="'+file.name+'">⬇️ Enregistrer l\'image</a><a class="pbtn wa" href="https://wa.me/?text='+encodeURIComponent(txt+' '+url)+'" target="_blank" rel="noopener">WhatsApp</a></div>');
 }
+let shareFile=null;
+async function shareGo(){const f=shareFile;if(!f)return;try{await navigator.share({files:[f.file],text:f.txt+' '+f.url})}catch(e){if(!(e&&e.name==='AbortError'))toast('Partage impossible : enregistrez l\'image')}}
+let winOffer=null;
+function offerShare(){const b=state.bets.find(x=>x.id===winOffer);winOffer=null;if(!b)return;
+  popup('<div class="pop-ic big">🎉</div><h3>Pari gagné !</h3><p>Tu remportes <b style="color:#1f7bff">+'+nf(b.payout)+' 💎</b> avec une cote de <b>'+fo(b.odds)+'</b>.</p><p style="font-size:13px">Montre-le à tes potes en story Insta ou TikTok 👇</p><div class="pop-btns"><button class="pbtn" data-sharebet="'+b.id+'">📸 Partager mon ticket</button><button class="pbtn ghost2" data-popclose="1">Plus tard</button></div>')}
 
 /* ---------- Rendu ---------- */
 function renderHeader(){
@@ -2312,7 +2369,7 @@ function renderBets(){
       return '<div class="bl"><div><div><b>'+esc(x.pick)+'</b> <span style="color:var(--acc);font-weight:700">'+fo(x.odds)+'</span></div><div class="s">'+esc(x.market)+'</div><div class="s">'+esc(x.match)+score+'</div></div>'+mark+'</div>'}).join('');
     return '<div class="bet '+b.status+'"><div class="bh"><b>'+b.type+(b.boost?' 🚀':'')+(b.shield?' 🛡️':'')+'</b>'+tag+'</div>'+lines+
       '<div class="bf"><span>Mise <b>'+nf(b.stake)+' 🪙</b></span><span>Cote <b>'+fo(b.odds)+'</b></span><span>Gain possible <b>'+nf(b.stake*b.odds)+' 💎</b></span></div>'+
-      (b.status!=='void'?'<button class="sharebtn" data-sharebet="'+b.id+'">📤 Partager ce pari</button>':'')+'</div>'};
+      (b.status==='won'?'<button class="sharebtn win" data-sharebet="'+b.id+'">📸 Partager mon ticket gagnant</button>':b.status!=='void'?'<button class="sharebtn" data-sharebet="'+b.id+'">📤 Partager ce pari</button>':'')+'</div>'};
   return pageHero('ph-bets','🧾','Mes paris','Réglés automatiquement dès que le résultat réel du match est publié. Partagez vos plus beaux coupons !')+
    '<div class="stats"><div class="stat"><small>Paris gagnés</small><b>'+s.won+' / '+tot+'</b></div><div class="stat"><small>Réussite</small><b>'+(tot?Math.round(s.won/tot*100):0)+' %</b></div><div class="stat"><small>Diamants gagnés</small><b style="color:var(--dia)">'+nf(s.earned)+'</b></div><div class="stat"><small>Plus grosse cote gagnée</small><b>'+(s.best?fo(s.best):'–')+'</b></div></div>'+
    '<div class="toolbar"><div class="seg"><button data-bf="pending" class="'+(ui.betFilter==='pending'?'on':'')+'">En cours</button><button data-bf="done" class="'+(ui.betFilter==='done'?'on':'')+'">Terminés</button></div></div>'+
@@ -3035,6 +3092,7 @@ document.addEventListener('click',e=>{
   if(d.copy){copyText(d.copy);return}
   if(d.sharetxt!==undefined){shareLink(d.sharetxt,d.shareurl);return}
   if(d.sharebet){shareBet(d.sharebet);return}
+  if(d.sharego){shareGo();return}
   if(d.invite){openInvite();return}
   if(d.notifs){openNotifs();return}
   if(t.id==='notifOnBtn'){notifActiver();return}
