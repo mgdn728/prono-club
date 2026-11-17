@@ -174,8 +174,8 @@ async function preparer() {
     for (const [k, v] of Object.entries(s.prefs || {})) if (v === true) p[k] = true;
     prefs.set(s.joueur_id, p);
   }
-  if (paris().min % 5 === 4) { try { await autoRes(); } catch (e) { console.error("autoRes", e); } }
-  if (paris().min % 5 === 0) { try { await regler(prefs); } catch (e) { console.error("regler", e); } }
+  try { await autoRes(); } catch (e) { console.error("autoRes", e); } // résultats automatiques : chaque minute
+  if (paris().min % 2 === 0) { try { await regler(prefs); } catch (e) { console.error("regler", e); } } // paiement des paris des joueurs absents : toutes les 2 min
   if (paris().min % 5 === 2) { try { await duels(); } catch (e) { console.error("duels", e); } }
   if (paris().min === 30) { try { await rangs(prefs); } catch (e) { console.error("rangs", e); } }
   const ids = [...prefs.keys()];
