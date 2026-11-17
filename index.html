@@ -2049,14 +2049,19 @@ function daily(){
   }
   return ch;
 }
+// un pari « vainqueur du set » est réglé dès que ce set est terminé (le set suivant a commencé)
+function selDone(m,s){if(!m)return null;const st=status(m);if(st==='fini'||st==='annule')return 'end';
+  if(m.L&&s.mk==='set'&&m.lv&&m.lv.st==='in'){const n=+String(s.opt).split('_')[0],ls=m.lv.ls||[];if(n&&ls.length>n)return 'early'}return null}
 function settle(){
   let ch=false;
   for(const b of state.bets){
     if(b.status!=='pending')continue;
     const ms=b.sels.map(s=>findMatch(s.matchId));
-    if(ms.some(m=>!m||(status(m)!=='fini'&&status(m)!=='annule')))continue;
+    const dn=b.sels.map((s,i)=>selDone(ms[i],s));
+    if(dn.some(x=>!x))continue;
     let won=true,odds=1,allVoid=true;
     b.sels.forEach((s,i)=>{const m=ms[i];
+      if(dn[i]==='early'){allVoid=false;const o=getOpt(m,s.mk,s.opt);if(!(o&&o.fn(0,0,{ls:m.lv.ls})))won=false;else odds*=s.odds;return}
       if(status(m)==='annule'){s.void=true;return}
       allVoid=false;const o=getOpt(m,s.mk,s.opt);
       if(!(o&&o.fn(m.s[0],m.s[1],m.s[2])))won=false;else odds*=s.odds});
