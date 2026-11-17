@@ -53,7 +53,7 @@ async function moteur() {
   const html = await (await fetch(SITE + "index.html?t=" + Date.now())).text();
   const cut = (a: string, b: string) => { const i = html.indexOf(a), j = html.indexOf(b, i); if (i < 0 || j < 0) throw new Error("extraction " + a); return html.slice(i, j); };
   const src = cut("function pois(", "\n") + "\n" + cut("function weekId(", "\n") + "\n" + cut("const MARKETS=", "\nconst DEFI_GAIN") + "\n" +
-    cut("/* ---------- Sports et marchés", "function findMatch") + "\nreturn {FIX,build,SPORTS,weekId};";
+    cut("/* ---------- Sports et marchés", "function findMatch") + "\nreturn {FIX,build,SPORTS,weekId,liveBuild};";
   engine = new Function(src)(); engineT = Date.now();
   return engine;
 }
@@ -68,13 +68,19 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
     .filter("etat->bets", "cs", '[{"status":"pending"}]').lt("maj_le", limite).limit(500);
   if (error) { console.error("regler", error); return; }
   const built = new Set<string>();
+  const lives = new Map<string, any>();
   const match = async (mid: string) => {
+    if (mid.startsWith("L:")) {
+      if (!lives.has(mid)) { const { data } = await db.from("live_ev").select("*").eq("id", mid.slice(2)).maybeSingle(); lives.set(mid, data ? E.liveBuild(data) : null); }
+      return lives.get(mid);
+    }
     const k = mid.indexOf("_"), day = mid.slice(0, k);
     if (!built.has(day)) { built.add(day); const arr = await fixtures(day); if (Array.isArray(arr) && arr.length) E.build(day, arr); }
     return (E.FIX[day] || []).find((m: any) => m.id === mid) || null;
   };
   const opt = (m: any, mk: string, o: string) => {
-    const K = E.SPORTS[m.sp].markets(m).find((x: any) => x.key === mk);
+    const K = (m._mk || E.SPORTS[m.sp].markets(m)).find((x: any) => x.key === mk);
+    if (K && K.parse) return K.parse(m, o);
     return K ? K.opts(m).find((x: any) => x.id === o) || null : null;
   };
   for (const j of js || []) {
@@ -294,9 +300,120 @@ async function envoyer() {
   return n;
 }
 
+// ---------- Scores en direct (flux publics ESPN) ----------
+// Appelé toutes les 20 secondes avec {"live":1} : on lit les tableaux de scores ESPN
+// et on enregistre chaque match (avant, pendant, après) dans la table live_ev.
+const ESPN = "https://site.api.espn.com/apis/site/v2/sports/";
+const FEEDS: [string, string][] = [
+  ["soccer/all", "foot"],
+  ["basketball/nba", "basket"], ["basketball/wnba", "basket"], ["basketball/mens-college-basketball", "basket"], ["basketball/womens-college-basketball", "basket"],
+  ["hockey/nhl", "hockey"], ["hockey/mens-college-hockey", "hockey"], ["hockey/womens-college-hockey", "hockey"],
+  ["tennis/atp", "tennis"], ["tennis/wta", "tennis"],
+  ["football/nfl", "usf"], ["football/college-football", "usf"], ["football/cfl", "usf"], ["football/ufl", "usf"],
+  ["baseball/mlb", "base"], ["baseball/college-baseball", "base"],
+  ["volleyball/mens-college-volleyball", "volley"], ["volleyball/womens-college-volleyball", "volley"],
+  ["lacrosse/nll", "lax"], ["lacrosse/pll", "lax"], ["lacrosse/mens-college-lacrosse", "lax"],
+  ["australian-football/afl", "afl"],
+  ["field-hockey/womens-college-field-hockey", "fhk"],
+  ["water-polo/mens-college-water-polo", "wpolo"],
+  ["mma/ufc", "mma"],
+];
+const LG: Record<string, string> = {
+  "basketball/nba": "NBA", "basketball/wnba": "WNBA", "basketball/mens-college-basketball": "NCAA (basket)", "basketball/womens-college-basketball": "NCAA F. (basket)",
+  "hockey/nhl": "NHL", "hockey/mens-college-hockey": "NCAA (hockey)", "hockey/womens-college-hockey": "NCAA F. (hockey)",
+  "football/nfl": "NFL", "football/college-football": "NCAA (foot US)", "football/cfl": "CFL", "football/ufl": "UFL",
+  "baseball/mlb": "MLB", "baseball/college-baseball": "NCAA (baseball)",
+  "volleyball/mens-college-volleyball": "NCAA (volley)", "volleyball/womens-college-volleyball": "NCAA F. (volley)",
+  "lacrosse/nll": "NLL", "lacrosse/pll": "PLL", "lacrosse/mens-college-lacrosse": "NCAA (crosse)",
+  "australian-football/afl": "AFL", "field-hockey/womens-college-field-hockey": "NCAA F. (hockey sur gazon)",
+  "water-polo/mens-college-water-polo": "NCAA (water-polo)", "mma/ufc": "UFC",
+};
+const amer = (v: any) => { const n = Number(String(v ?? "").replace(/[^0-9+\-.]/g, "")); if (!n || !isFinite(n)) return null; return Math.round((n > 0 ? 1 + n / 100 : 1 + 100 / Math.abs(n)) * 100) / 100; };
+const numv = (v: any) => { const n = Number(String(v ?? "").replace(/[^0-9+\-.]/g, "")); return isFinite(n) && String(v ?? "").trim() !== "" ? n : null; };
+function cotes(c: any) {
+  const o = Array.isArray(c?.odds) ? c.odds[0] : null; if (!o) return null;
+  const ml = o.moneyline || {};
+  const h = amer(ml.home?.close?.odds ?? ml.home?.open?.odds ?? o.homeTeamOdds?.moneyLine);
+  const a = amer(ml.away?.close?.odds ?? ml.away?.open?.odds ?? o.awayTeamOdds?.moneyLine);
+  const d = amer(ml.draw?.close?.odds ?? ml.draw?.open?.odds ?? o.drawOdds?.moneyLine);
+  const tot = numv(o.overUnder ?? o.total?.over?.close?.line), spr = numv(o.spread ?? o.pointSpread?.home?.close?.line);
+  if (!h && !a && tot == null && spr == null) return null;
+  return { h, d, a, tot, spr };
+}
+function nom(x: any) { return String(x?.team?.displayName || x?.athlete?.displayName || x?.roster?.displayName || (Array.isArray(x?.roster?.athletes) ? x.roster.athletes.map((a: any) => a.displayName).join(" / ") : "") || x?.team?.name || "?").slice(0, 60); }
+function ligne(sp: string, path: string, ev: any, c: any, lg: string) {
+  const L = c.competitors || []; if (L.length !== 2) return null;
+  const H = L.find((x: any) => x.homeAway === "home" || x.order === 1) || L[0], A = L.find((x: any) => x !== H) || L[1];
+  const stt = c.status || ev.status || {}, ty = stt.type || {};
+  const st = ty.state === "in" || ty.state === "post" ? ty.state : "pre";
+  const ls = (x: any) => Array.isArray(x.linescores) ? x.linescores.map((l: any) => Number(l.value ?? l.displayValue ?? 0) || 0) : [];
+  const lh = ls(H), la = ls(A);
+  let s: number[];
+  if (sp === "tennis" || sp === "volley") {
+    let w1 = 0, w2 = 0; const n = Math.min(lh.length, la.length), done = st === "post" ? n : n - 1;
+    for (let i = 0; i < done; i++) { if (lh[i] > la[i]) w1++; else if (la[i] > lh[i]) w2++; }
+    s = [w1, w2];
+  } else s = [Number(H.score?.value ?? H.score ?? 0) || 0, Number(A.score?.value ?? A.score ?? 0) || 0];
+  const win = H.winner === true ? 1 : A.winner === true ? 2 : 0;
+  const nm = String(ev.name || ""), bo = sp === "tennis" ? (/atp/.test(path) && /(Australian Open|French Open|Roland|Wimbledon|US Open)/i.test(nm) ? 5 : 3) : sp === "volley" ? 5 : 0;
+  return {
+    id: sp + "-" + String(c.id || ev.id), sp, lp: path, lg: lg.slice(0, 80), h: nom(H), a: nom(A),
+    t: c.date || ev.date, st, per: Number(stt.period ?? 0) || 0, clk: String(stt.displayClock ?? "").slice(0, 12),
+    det: String(ty.shortDetail || ty.detail || "").slice(0, 60), s, ls: (sp === "tennis" || sp === "volley") ? lh.map((v: number, i: number) => [v, la[i] ?? 0]) : null,
+    win, bo, o: cotes(c), fin: st === "post" && /postpon|cancel|abandon|forfeit/i.test(String(ty.name || "") + " " + String(ty.detail || "")) ? 1 : 0,
+  };
+}
+async function liveMaj() {
+  const rows: any[] = [];
+  await Promise.all(FEEDS.map(async ([path, sp]) => {
+    try {
+      const r = await fetch(ESPN + path + "/scoreboard?limit=500", { headers: { "User-Agent": "Mozilla/5.0 PronoClub" } });
+      if (!r.ok) return;
+      const j = await r.json();
+      for (const ev of j.events || []) {
+        const lgName = LG[path] || String(ev.competitions?.[0]?.altGameNote || ev.league?.name || ev.season?.slug || "").split(",")[0] || "Football";
+        const comps = Array.isArray(ev.groupings) ? ev.groupings.flatMap((g: any) => g.competitions || []) : (ev.competitions || []);
+        for (const c of comps) {
+          const x = ligne(sp, path, ev, c, sp === "tennis" ? (ev.name || "Tennis") : lgName);
+          if (!x) continue;
+          const t = Date.parse(x.t || "");
+          if (!t || t > Date.now() + 6 * 3600e3 || t < Date.now() - 30 * 3600e3) continue;
+          rows.push(x);
+        }
+      }
+    } catch (_) { /* flux indisponible : on ignore */ }
+  }));
+  if (!rows.length) return 0;
+  const now = new Date().toISOString();
+  const old = new Map<string, any>();
+  for (let i = 0; i < rows.length; i += 200) {
+    const { data } = await db.from("live_ev").select("id,st,s,o,chg,det,clk").in("id", rows.slice(i, i + 200).map((r) => r.id));
+    for (const d of data || []) old.set(d.id, d);
+  }
+  const up: any[] = [];
+  for (const r of rows) {
+    const p = old.get(r.id);
+    const sc = JSON.stringify(r.s), chg = !p || JSON.stringify(p.s) !== sc;
+    const row = { ...r, o: r.o || p?.o || null, chg: chg && p && r.st === "in" ? now : (p?.chg || now), maj: now };
+    if (!p || chg || p.st !== r.st || p.clk !== r.clk || p.det !== r.det || r.st === "in" || (r.o && !p.o)) up.push(row);
+  }
+  for (let i = 0; i < up.length; i += 200) {
+    const { error } = await db.from("live_ev").upsert(up.slice(i, i + 200), { onConflict: "id" });
+    if (error) console.error("live_ev", error);
+  }
+  return up.length;
+}
+
 Deno.serve(async (req) => {
   const secret = await cfg("cron_secret");
   if (!secret || req.headers.get("x-cron") !== secret) return new Response("Accès refusé", { status: 401 });
+  let corps: any = {};
+  try { corps = await req.json(); } catch (_) { /* pas de corps */ }
+  if (corps && corps.live) {
+    let n = 0;
+    try { n = await liveMaj(); } catch (e) { console.error("live", e); }
+    return new Response(JSON.stringify({ ok: true, live: n }), { headers: { "Content-Type": "application/json" } });
+  }
   let pub = await cfg("vapid_public"), priv = await cfg("vapid_private");
   if (!pub || !priv) {
     const k = webpush.generateVAPIDKeys();

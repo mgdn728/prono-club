@@ -1387,6 +1387,13 @@ body.pf-lock{overflow:hidden}
 .bug-i{border:1px solid var(--line,#e3e0ee);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fff}.bug-i.new{border-color:#ff2d55;box-shadow:0 0 0 2px rgba(255,45,85,.12)}
 .bug-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bug-h small{color:#8a86a0;flex:1}.bug-i p{margin:6px 0 0;font-size:14px;white-space:normal}
 .bug-x{border:0;background:#e8f8ef;color:#0f8a4b;font-weight:800;border-radius:999px;padding:5px 10px;font-size:12px;cursor:pointer}
+.lv-sp{margin:4px 0 8px}.lv-sp small{opacity:.7;font-weight:700}
+.lv-lg{margin:14px 4px 6px;font-size:13px;color:var(--muted);font-weight:800;text-transform:none}
+.lv-g{display:inline-block;margin-left:6px;font-size:.72em;background:#fff3c4;color:#8a5a00;border-radius:6px;padding:0 5px;vertical-align:middle}
+.odd.lock{opacity:.55}.lv-susp{margin:6px 0 0;padding:7px 10px;border-radius:10px;background:#fff3c4;color:#8a5a00;font-weight:800;font-size:13px;text-align:center}
+.lv-note{margin:6px 2px 0;font-size:12.5px;color:var(--muted)}
+.lv-minis{display:flex;flex-direction:column;gap:6px}.lv-mini{display:flex;justify-content:space-between;gap:10px;background:#fff;border-radius:12px;padding:9px 12px;font-size:13.5px;box-shadow:0 1px 4px rgba(0,0,0,.05)}.lv-mini small{color:var(--muted);white-space:nowrap}
+.lv-src{text-align:center;font-size:12px;color:var(--muted);margin:18px 6px 8px}
 </style>
 </head>
 <body>
@@ -1604,7 +1611,14 @@ const SPORTS={
   tt:{name:'Ping-pong',ic:'🏓',col:'#14b8a6',three:false,markets:setsMarkets},
   rugby:{name:'Rugby',ic:'🏉',col:'#b45309',three:true,markets:m=>teamPointsMarkets(m,RUGBY)},
   hand:{name:'Handball',ic:'🤾',col:'#8b5cf6',three:true,markets:m=>teamPointsMarkets(m,HAND)},
-  mma:{name:'MMA',ic:'🥊',col:'#e11d48',three:false,markets:mmaMarkets}
+  mma:{name:'MMA',ic:'🥊',col:'#e11d48',three:false,markets:mmaMarkets},
+  usf:{name:'Foot US',ic:'🏈',col:'#7c3f00',three:false,markets:()=>[]},
+  base:{name:'Baseball',ic:'⚾',col:'#2563eb',three:false,markets:()=>[]},
+  volley:{name:'Volley',ic:'🏐',col:'#eab308',three:false,markets:()=>[]},
+  lax:{name:'Crosse',ic:'🥍',col:'#0d9488',three:false,markets:()=>[]},
+  afl:{name:'Foot australien',ic:'🏉',col:'#be123c',three:false,markets:()=>[]},
+  fhk:{name:'Hockey sur gazon',ic:'🏑',col:'#15803d',three:false,markets:()=>[]},
+  wpolo:{name:'Water-polo',ic:'🤽',col:'#0284c7',three:false,markets:()=>[]}
 };
 const SPORT_ORDER=['foot','tennis','basket','rugby','hockey','hand','mma','tt'];
 function marketsOf(m){if(!m._mk)m._mk=SPORTS[m.sp].markets(m);return m._mk}
@@ -1687,11 +1701,140 @@ function build(day,arr){
     return m;
   }).sort((a,b)=>a.ko-b.ko);
 }
-function findMatch(id){const d=id.split('_')[0];return(FIX[d]||[]).find(m=>m.id===id)}
+/* ---------- Paris en direct (scores ESPN, mis à jour toutes les 20 s) ---------- */
+const LV={}; // matchs en direct (id → match)
+let LIVE_OFF=0; // décalage entre l'horloge du serveur et celle du téléphone
+const lnow=()=>Date.now()+LIVE_OFF;
+const phi=x=>{const t=1/(1+0.2316419*Math.abs(x)),d=0.3989423*Math.exp(-x*x/2),p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return x>0?1-p:p};
+const LKIND={foot:'g',hockey:'g',basket:'p',usf:'p',base:'p',afl:'p',lax:'p',fhk:'p',wpolo:'p',tennis:'s',volley:'s',mma:'x'};
+// [nombre de périodes, minutes par période, total moyen, écart-type de l'écart final, pas des lignes]
+const LSTRUCT={'basketball/nba':[4,12,226,12,5],'basketball/wnba':[4,10,163,10,4],'basketball/mens-college-basketball':[2,20,145,11,4],'basketball/womens-college-basketball':[4,10,135,11,4],
+  'football/nfl':[4,15,44,13.5,3],'football/college-football':[4,15,52,15,3],'football/cfl':[4,15,50,13,3],'football/ufl':[4,15,42,13,3],
+  'baseball/mlb':[9,0,8.5,3.6,1],'baseball/college-baseball':[9,0,11,4.5,1],'australian-football/afl':[4,20,165,28,6],
+  'lacrosse/nll':[4,15,21,4,2],'lacrosse/pll':[4,12,22,4,2],'lacrosse/mens-college-lacrosse':[4,15,23,4,2],
+  'field-hockey/womens-college-field-hockey':[4,15,4.5,2,1],'water-polo/mens-college-water-polo':[4,8,22,3,2]};
+function lstruct(r){return LSTRUCT[r.lp]||(r.sp==='hockey'?[3,20,6]:r.sp==='foot'?[2,45,2.6]:[4,12,150,12,4])}
+function lelapsed(r){
+  if(r.st==='pre')return 0;if(r.st==='post')return 1;
+  const det=String(r.det||''),per=+r.per||0;
+  if(r.sp==='foot'){if(/HT|Half|Mi-temps/i.test(det))return .5;if(per>2)return .995;const mn=parseInt(String(r.clk||det),10);return Math.min(.995,Math.max(0,(isNaN(mn)?(per>1?60:20):mn)/95))}
+  const S=lstruct(r),n=S[0],L=S[1];
+  if(/Half|HT/i.test(det)&&!/1st|2nd/i.test(det))return .5;
+  if(/End of/i.test(det))return Math.min(.995,per/n);
+  if(!L){const bot=/Bot|Mid|End/i.test(det)?.5:0;return Math.min(.995,Math.max(0,(Math.max(1,per)-1+bot+.25)/n))}
+  if(per>n)return .995;
+  const c=String(r.clk||'').split(':'),rem=c.length>1?(+c[0]||0)+(+c[1]||0)/60:L;
+  return Math.min(.995,Math.max(0,((Math.max(1,per)-1)*L+(L-Math.min(L,rem)))/(n*L)));
+}
+const fmtL=x=>String(x).replace('.',',');
+const sgn=x=>(x>0?'+':'')+fmtL(x);
+// ---- options (le libellé et la règle se déduisent de l'identifiant : le pari se règle même si le score a changé)
+function lparse(m,mk,id){
+  const H=m.home,A=m.away,num=s=>parseFloat(s);
+  switch(mk){
+    case '1x2':return id==='1'?{id,label:H,fn:(h,a)=>h>a}:id==='N'?{id,label:'Match nul',fn:(h,a)=>h==a}:id==='2'?{id,label:A,fn:(h,a)=>h<a}:null;
+    case 'dc':return id==='1N'?{id,label:H+' ou nul',fn:(h,a)=>h>=a}:id==='12'?{id,label:H+' ou '+A,fn:(h,a)=>h!=a}:id==='N2'?{id,label:'Nul ou '+A,fn:(h,a)=>h<=a}:null;
+    case 'win':return id==='1'?{id,label:H,fn:(h,a,w)=>w&&w.win?w.win===1:h>a}:id==='2'?{id,label:A,fn:(h,a,w)=>w&&w.win?w.win===2:a>h}:null;
+    case 'ou':case 'tp':{const L=num(id.slice(1));if(isNaN(L))return null;const u=m.sp==='foot'||m.sp==='hockey'?' buts':' pts';
+      return id[0]==='p'?{id,label:'Plus de '+fmtL(L)+u,fn:(h,a)=>h+a>L}:id[0]==='m'?{id,label:'Moins de '+fmtL(L)+u,fn:(h,a)=>h+a<L}:null}
+    case 'btts':return id==='oui'?{id,label:'Oui',fn:(h,a)=>h>0&&a>0}:id==='non'?{id,label:'Non',fn:(h,a)=>!(h>0&&a>0)}:null;
+    case 'eh':case 'ea':{const k=+id.slice(1),T=mk==='eh'?H:A,side=mk==='eh'?0:1;if(isNaN(k))return null;
+      return id[0]==='o'?{id,label:'Oui',fn:(h,a)=>[h,a][side]>k}:id[0]==='n'?{id,label:'Non',fn:(h,a)=>[h,a][side]<=k}:null}
+    case 'cs':{const p=id.split('-').map(Number);if(p.length!==2||p.some(isNaN))return null;return{id,label:p[0]+' - '+p[1],fn:(h,a)=>h==p[0]&&a==p[1]}}
+    case 'hcp':{const X=num(id.slice(1));if(isNaN(X))return null;return id[0]==='h'?{id,label:H+' '+sgn(X),fn:(h,a)=>h-a+X>0}:id[0]==='a'?{id,label:A+' '+sgn(-X),fn:(h,a)=>h-a+X<0}:null}
+    case 'set':{const p=id.split('_').map(Number);if(p.length!==2||p.some(isNaN))return null;
+      return{id,label:'Set '+p[0]+' : '+(p[1]===1?H:A),fn:(h,a,w)=>{const z=w&&w.ls&&w.ls[p[0]-1];return !!z&&(p[1]===1?z[0]>z[1]:z[1]>z[0])}}}
+    case 'ns':{const n=+id.slice(1);if(!n)return null;return{id,label:n+' sets',fn:(h,a)=>h+a===n}}
+  }
+  return null;
+}
+const LMK={'1x2':'Résultat du match','dc':'Double chance','win':'Vainqueur','ou':'Nombre total de buts','tp':'Total de points','btts':'Les deux équipes marquent','cs':'Score exact','hcp':'Handicap','set':'Vainqueur du set en cours','ns':'Nombre de sets'};
+function lmarkets(m){
+  const k=LKIND[m.sp]||'x',r=m.lv,c=(r.s||[0,0]),h=c[0],a=c[1],L=[];
+  const mk=(key,opts,title)=>L.push({key,title:title||LMK[key],live:1,opts:()=>opts.map(id=>lparse(m,key,id)).filter(Boolean),parse:(mm,id)=>lparse(mm,key,id)});
+  if(k==='g'){
+    if(m.sp==='foot'){mk('1x2',['1','N','2']);}else mk('win',['1','2'],'Vainqueur (prolongations incluses)');
+    if(m.sp==='foot')mk('dc',['1N','12','N2']);
+    const ls=[];for(let i=0;i<5;i++){const l=h+a+i+.5;ls.push('p'+l,'m'+l)}mk('ou',ls);
+    if(m.sp==='foot'){mk('btts',['oui','non']);mk('eh',['o'+h,'n'+h],m.home+' marque encore');mk('ea',['o'+a,'n'+a],m.away+' marque encore');
+      const cs=[];for(let i=0;i<4;i++)for(let j=0;j<4;j++)cs.push((h+i)+'-'+(a+j));mk('cs',cs)}
+  }else if(k==='p'){
+    const P=lpts(m);mk('win',['1','2'],'Vainqueur'+(m.sp==='base'?'':' (prolongations incluses)'));
+    const x=Math.round(-P.pm)+(P.pm>0?-.5:.5);mk('hcp',['h'+x,'a'+x],'Handicap');
+    const st=lstruct(r)[4]||4,pt=Math.round(P.pt)+.5,ls=[];for(const l of [pt-st,pt,pt+st])if(l>h+a)ls.push('p'+l,'m'+l);mk('tp',ls);
+  }else if(k==='s'){
+    mk('win',['1','2'],'Vainqueur du match');
+    const cur=(r.ls||[]).length;mk('set',r.st==='in'&&cur?[cur+'_1',cur+'_2']:[],'Vainqueur du set '+(cur||1));
+    const n=Math.ceil((r.bo||3)/2),ns=[];for(let t=n;t<=2*n-1;t++)ns.push('n'+t);mk('ns',ns);
+  }
+  return L;
+}
+// ---- modèles de probabilité
+function lgoals(m){
+  if(m._gd)return m._gd;const r=m.lv,o=r.o||{},c=r.s||[0,0],e=lelapsed(r),rem=(1-e)*(m.sp==='foot'?1.3:1.12);let lam;
+  if(m.sp==='hockey')lam=(o.h&&o.a)?fitHockey([o.h,4,o.a],o.tot||6):[3.1,2.8];
+  else lam=(o.h&&o.d&&o.a)?fitGoals([o.h,o.d,o.a]):(o.h&&o.a)?fitGoals([o.h,3.4,o.a]):[1.45,1.15];
+  const d=[];for(let i=0;i<=10;i++)for(let j=0;j<=10;j++){const p=pois(i,lam[0]*rem)*pois(j,lam[1]*rem);if(p>1e-7)d.push([c[0]+i,c[1]+j,p])}
+  return m._gd=d;
+}
+function lpts(m){
+  if(m._pp)return m._pp;const r=m.lv,o=r.o||{},S=lstruct(r),c=r.s||[0,0],e=lelapsed(r),rem=Math.max(.002,1-e),sd=S[3]||12,T=o.tot||S[2]||150;
+  let mu=o.spr!=null?-o.spr:(o.h&&o.a)?sd*invPhi(Math.min(.98,Math.max(.02,(1/o.h)/(1/o.h+1/o.a)))):(m.sp==='basket'?2.5:1.5);
+  const P={mr:mu*rem,sr:sd*Math.sqrt(rem)+.35,tr:T*rem,st:sd*1.15*Math.sqrt(rem)+.35,d:c[0]-c[1],t:c[0]+c[1]};
+  P.pm=P.d+P.mr;P.pt=P.t+P.tr;return m._pp=P;
+}
+function lsets(m){
+  if(m._sd)return m._sd;const r=m.lv,ls=r.ls||[],n=Math.ceil((r.bo||3)/2),c=r.s||[0,0];
+  let gd=0;for(let i=0;i<ls.length-(r.st==='in'?1:0);i++)gd+=ls[i][0]-ls[i][1];
+  const q=Math.min(.78,Math.max(.22,.5+.06*(c[0]-c[1])+.012*gd)),cur=r.st==='in'&&ls.length?ls[ls.length-1]:null;
+  let cp=q;if(cur){const d=cur[0]-cur[1],mx=Math.max(cur[0],cur[1]),k=m.sp==='volley'?.08*(1+mx/25):.35*(1+mx/6);cp=1/(1+Math.exp(-(d*k+(q-.5)*3)));cp=Math.min(.985,Math.max(.015,cp))}
+  const out={};const rec=(A,B,p,first)=>{if(A>=n||B>=n){out[A+'-'+B]=(out[A+'-'+B]||0)+p;return}const w=first&&cur?cp:q;rec(A+1,B,p*w,false);rec(A,B+1,p*(1-w),false)};
+  rec(c[0],c[1],1,true);return m._sd={out,cp,cur:ls.length};
+}
+function lprob(m,mk,id){
+  const k=LKIND[m.sp]||'x',o=lparse(m,mk,id);if(!o||k==='x')return null;
+  if(k==='g'){let p=0;for(const x of lgoals(m))if(o.fn(x[0],x[1]))p+=x[2];
+    if(mk==='win'){let t=0;for(const x of lgoals(m))if(x[0]===x[1])t+=x[2];p+=t/2}return p}
+  if(k==='p'){const P=lpts(m),num=parseFloat(id.slice(1));
+    if(mk==='win')return id==='1'?phi((P.d+P.mr)/P.sr):1-phi((P.d+P.mr)/P.sr);
+    if(mk==='hcp'){const z=phi((P.d+P.mr+num)/P.sr);return id[0]==='h'?z:1-z}
+    if(mk==='tp'){const z=phi((P.t+P.tr-num)/P.st);return id[0]==='p'?z:1-z}return null}
+  if(k==='s'){const D=lsets(m);
+    if(mk==='set'){const p=id.split('_').map(Number);if(p[0]!==D.cur)return null;return p[1]===1?D.cp:1-D.cp}
+    let p=0;for(const key in D.out){const[A,B]=key.split('-').map(Number);if(mk==='win'?(id==='1'?A>B:B>A):(A+B===+id.slice(1)))p+=D.out[key]}return p}
+  return null;
+}
+// le match peut-il être parié maintenant ? (score frais, pas juste après un but, pas la toute fin)
+function liveOpen(m){
+  const r=m.lv;if(!r||LKIND[m.sp]==='x'||r.fin)return false;
+  if(r.st==='pre')return m.ko>lnow();
+  if(r.st!=='in')return false;
+  if(lnow()-r.maj>75e3)return false;
+  if(lnow()-r.chg<90e3)return false;
+  return lelapsed(r)<.985;
+}
+function liveSusp(m){const r=m.lv;return r&&r.st==='in'&&(lnow()-r.chg<90e3||lnow()-r.maj>75e3)}
+function liveOdds(m,mk,id){
+  if(!liveOpen(m))return null;
+  const key=mk+'|'+id;if(key in m._o)return m._o[key];
+  const p=lprob(m,mk,id);
+  const v=p==null||p<.02||p>.95?null:Math.min(100,Math.max(1.02,Math.floor(100/(p*1.07))/100));
+  return m._o[key]=v;
+}
+function liveBuild(r){
+  const sp=SPORTS[r.sp]?r.sp:'foot';
+  const m={id:'L:'+r.id,L:1,lv:r,day:'live',sp,comp:r.lg||SPORTS[sp].name,flag:SPORTS[sp].ic,home:r.h,away:r.a,ko:+r.t||Date.parse(r.t)||0,o:null,bo:r.bo||3,s:null,x:null,_o:{}};
+  if(r.fin)m.x='Match annulé ou reporté';
+  else if(r.st==='post'){const c=r.s||[0,0];m.s=[c[0],c[1],{ls:r.ls||null,win:r.win||0}]}
+  m._mk=lmarkets(m);
+  return m;
+}
+function findMatch(id){if(id&&id.startsWith('L:'))return LV[id]||null;const d=id.split('_')[0];return(FIX[d]||[]).find(m=>m.id===id)}
 function mkTitle(mk,m){return typeof mk.title==='function'?mk.title(m):mk.title}
 function marketOf(m,mk){return marketsOf(m).find(k=>k.key===mk)||null}
-function getOpt(m,mk,opt){const K=marketOf(m,mk);if(!K)return null;return K.opts(m).find(o=>o.id===opt)||null}
+function getOpt(m,mk,opt){const K=marketOf(m,mk);if(!K)return null;if(K.parse)return K.parse(m,opt);return K.opts(m).find(o=>o.id===opt)||null}
 function oddsOf(m,mk,opt){
+  if(m.L)return liveOdds(m,mk,opt);
   if(mk==='1x2'){const i={'1':0,'N':1,'2':2}[opt];return m.o[i]}
   if(mk==='win'){return m.o[opt==='1'?0:1]}
   if(mk==='but'){const p=(m.bt||[]).find(x=>butId(x[0])===opt);return p?p[2]:null}
@@ -1913,7 +2056,7 @@ function toggleSel(id,mk,opt){
   renderSlip();renderView();
 }
 function slipCalc(){
-  const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?(s.bo||oddsOf(m,s.mk,s.opt)):1,open:m&&status(m)==='avenir'}}).filter(s=>s.m);
+  const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?(s.bo||oddsOf(m,s.mk,s.opt)):1,open:m&&(m.L?liveOpen(m):status(m)==='avenir')}}).filter(s=>s.m);
   const single=(ui.mode==='simple'&&sels.length===1)||(ui.mode==='combi'&&sels.length>=2);
   const b25On=ui.boost25&&single&&(state.inv.boost25||0)>0, boostOn=!b25On&&ui.boost&&single&&state.inv.boost>0, shieldOn=ui.shield&&single&&state.inv.shield>0, bm=b25On?1.25:boostOn?1.1:1;
   let total=0,gain=0,err='',combiOdds=1;
@@ -1927,7 +2070,8 @@ function slipCalc(){
     if(sels.length<2)err='Un combiné demande au moins 2 sélections.';
     else if(new Set(ids).size!==ids.length)err='Un combiné ne peut pas contenir 2 paris sur le même match.';
   }
-  if(!err&&sels.some(s=>!s.open))err='Un des matchs a commencé : retirez-le du coupon.';
+  if(!err&&sels.some(s=>s.m.L&&s.m.lv.st!=='post'&&(!s.open||s.odds==null)))err='⏸ Paris en direct suspendus quelques instants, réessaie dans quelques secondes.';
+  if(!err&&sels.some(s=>!s.open||s.odds==null))err='Un des matchs a commencé ou ce pari n\'est plus disponible : retirez-le du coupon.';
   if(!err&&total>state.coins)err='Pas assez de pièces (il vous reste '+nf(state.coins)+').';
   if(!err&&sels.some(s=>s.bo)&&(ui.mode==='simple'?sels.some(s=>s.bo&&Math.floor(+ui.stakes[selKey(s)]||0)>10000):total>10000))err='Cote boostée : mise maximum 10 000 pièces.';
   if(!err&&sels.some(s=>s.bo)&&state.boostDay===today())err='Tu as déjà joué la cote boostée aujourd\'hui.';
@@ -1936,7 +2080,7 @@ function slipCalc(){
 }
 function placeBets(){
   const c=slipCalc();if(c.err||!c.sels.length)return;
-  const snap=s=>({matchId:s.matchId,mk:s.mk,opt:s.opt,odds:s.odds,sp:s.m.sp,bo:s.bo?1:undefined,match:s.m.home+' – '+s.m.away,market:mkTitle(marketOf(s.m,s.mk),s.m),pick:getOpt(s.m,s.mk,s.opt).label,comp:s.m.flag+' '+s.m.comp,ko:s.m.ko});
+  const snap=s=>({matchId:s.matchId,mk:s.mk,opt:s.opt,odds:s.odds,sp:s.m.sp,bo:s.bo?1:undefined,match:s.m.home+' – '+s.m.away,market:mkTitle(marketOf(s.m,s.mk),s.m),pick:getOpt(s.m,s.mk,s.opt).label,comp:s.m.flag+' '+s.m.comp,ko:s.m.ko,live:s.m.L?(s.m.lv.s||[0,0]).join('-')+' · '+liveClock(s.m.lv):undefined});
   const ex=evVal('dia'),PC=ui.pay==='c',base={placedAt:Date.now(),status:'pending',boost:c.b25On?1.25:c.boostOn,shield:c.shieldOn,evx:ex>1&&!PC?ex:undefined,pay:PC?'c':undefined};
   if(c.sels.some(s=>s.bo))state.boostDay=today();
   if(ui.mode==='simple'){
@@ -2545,7 +2689,7 @@ function renderHeader(){
   const sp=$('#streakPill');if(sp){const n=session&&state.streak?state.streak.n:0;sp.style.display=n?'':'none';sp.innerHTML='🔥 <b>'+n+'</b>'}
   const n=state.bets.filter(b=>b.status==='pending').length;
   document.querySelectorAll('.bnav button[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===ui.tab));
-  const nl=liveMatches().filter(m=>status(m)==='live'&&Date.now()<m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3).length,bl=document.getElementById('bnLive');if(bl){bl.textContent=nl||'';bl.style.display=nl?'':'none'}
+  const nl=Object.values(LV).filter(m=>m.lv.st==='in').length||liveMatches().filter(m=>status(m)==='live'&&Date.now()<m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3).length,bl=document.getElementById('bnLive');if(bl){bl.textContent=nl||'';bl.style.display=nl?'':'none'}
   document.querySelectorAll('#nav button[data-tab="live"]').forEach(b=>b.textContent=nl?'🔴 Live ('+nl+')':'🔴 Live');
   const bb=document.getElementById('bnBets');if(bb){bb.textContent=n||'';bb.style.display=n?'':'none'}
   document.querySelectorAll('#nav button').forEach(b=>{
@@ -2953,7 +3097,67 @@ function liveMatches(){
   for(const d of [addDays(t,-1),t,addDays(t,1)])all=all.concat(FIX[d]||[]);
   return all;
 }
+/* ---------- Direct : chargement des scores ESPN ---------- */
+let liveBusy=false,liveLast=0,liveErr=false;
+const liveNeed=()=>{const n=new Set();for(const b of state.bets)if(b.status==='pending')for(const x of b.sels)if(String(x.matchId).startsWith('L:'))n.add(x.matchId);for(const x of ui.slip)if(String(x.matchId).startsWith('L:'))n.add(x.matchId);return n};
+async function liveLoad(){
+  if(liveBusy)return;liveBusy=true;
+  try{const r=await rpc('live_liste',{});if(r&&r.now)LIVE_OFF=r.now-Date.now();
+    const seen=new Set();for(const row of (r&&r.ev)||[]){const m=liveBuild(row);LV[m.id]=m;seen.add(m.id)}
+    const need=liveNeed();for(const id in LV)if(!seen.has(id)&&!need.has(id))delete LV[id];
+    const miss=[...need].filter(id=>!seen.has(id)).map(id=>id.slice(2));
+    if(miss.length){const rr=await rpc('live_res',{p_ids:miss.slice(0,100)});for(const row of rr||[]){const m=liveBuild(row);LV[m.id]=m}}
+    liveErr=false}
+  catch(e){liveErr=isMissingFn(e)?'off':true}
+  liveLast=Date.now();liveBusy=false;
+  if(settle())save();
+  const focused=document.activeElement&&document.activeElement.matches('input,textarea');
+  renderHeader();if(!focused){if(ui.tab==='live')renderView();if(ui.slip.some(x=>String(x.matchId).startsWith('L:')))renderSlip()}
+}
+setInterval(()=>{if(document.visibilityState!=='visible')return;const fast=ui.tab==='live'||liveNeed().size>0;if(Date.now()-liveLast>=(fast?15000:60000))liveLoad()},3000);
+const LCLK=[[/Halftime|HT$/i,'Mi-temps'],[/End of (\d)\w* Quarter/i,'Fin QT $1'],[/End of (\d)\w* Period/i,'Fin P$1'],[/End of (\d)\w* Half/i,'Fin MT $1'],[/(\d)\w* Quarter/i,'QT $1'],[/(\d)\w* Period/i,'P$1'],[/(\d)\w* Half/i,'MT $1'],[/(\d)\w* Set/i,'Set $1'],[/OT/,'Prol.'],[/Top (\d+)\w*/i,'Haut $1e'],[/Bot (\d+)\w*/i,'Bas $1e'],[/Mid (\d+)\w*/i,'Mi-$1e'],[/End (\d+)\w*/i,'Fin $1e'],[/Final/i,'Terminé'],[/Delayed/i,'Retardé']];
+function liveClock(r){if(r.sp==='foot'){if(/HT|Half/i.test(r.det||''))return 'Mi-temps';return r.clk&&r.clk!=="0'"?r.clk:(r.det||'')}let t=String(r.det||'');for(const[a,b]of LCLK)t=t.replace(a,b);return t}
+function liveScore(m,i){const r=m.lv,c=r.s||[0,0],cur=(r.sp==='tennis'||r.sp==='volley')&&r.st==='in'&&r.ls&&r.ls.length?r.ls[r.ls.length-1]:null;
+  return '<b class="sc'+(c[i]>c[1-i]?' win':'')+'">'+c[i]+(cur?'<small class="lv-g">'+cur[i]+'</small>':'')+'</b>'}
+function liveBtn(m,mk,o,short){const v=oddsOf(m,mk,o.id),on=inSlip(m.id,mk,o.id);
+  if(v==null)return short?'<button class="odd lock" disabled><span>'+esc(short)+'</span><b>🔒</b></button>':'';
+  return '<button class="odd'+(on?' on':'')+'" data-sel="'+m.id+'|'+mk+'|'+o.id+'"><span>'+esc(short||o.label)+'</span><b>'+fo(v)+'</b></button>'}
+function liveCard(m){
+  const r=m.lv,open=liveOpen(m),susp=liveSusp(m),mks=m._mk,first=mks[0];
+  const st=r.st==='in'?'<span class="st live">● '+esc(liveClock(r)||'En direct')+'</span>':r.st==='pre'?'<span class="st">Dans '+Math.max(1,Math.round((m.ko-lnow())/60000))+' min</span>':'<span class="st done">'+(r.fin?'Annulé':'Terminé')+'</span>';
+  const pend=state.bets.filter(b=>b.status==='pending'&&b.sels.some(x=>x.matchId===m.id)).length;
+  let h='<article class="mc lvm'+(ui.open===m.id?' open':'')+'" style="--sc:'+SPORTS[m.sp].col+'"><div class="mc-h"><span class="mc-w">'+st+'</span><span class="mc-c">'+SPORTS[m.sp].ic+' '+esc(m.comp)+'</span>'+(pend?'<span class="mc-b">Pari en cours</span>':'')+'</div>'+
+    '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+'<i>'+esc(m.home)+'</i>'+(r.st==='pre'?'':liveScore(m,0))+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+'</i>'+(r.st==='pre'?'':liveScore(m,1))+'</span></button>';
+  if(r.st==='post')return h+'</article>';
+  if(!first)return h+'<p class="lv-note">Score en direct uniquement (pas de paris sur ce sport)</p></article>';
+  const three=first.key==='1x2',ops=first.opts(m);
+  h+='<div class="mc-o'+(three?'':' two')+'">'+ops.map(o=>liveBtn(m,first.key,o,three?o.id:(o.id==='1'?'1':'2'))).join('')+'</div>';
+  if(susp)h+='<div class="lv-susp">⏸ Paris suspendus quelques secondes (action en cours)</div>';
+  const nb=mks.slice(1).reduce((n,k)=>n+k.opts(m).filter(o=>oddsOf(m,k.key,o.id)!=null).length,0);
+  if(open&&nb)h+='<button class="mc-m" data-open="'+m.id+'">'+(ui.open===m.id?'Masquer les paris ▲':'+'+nb+' paris en direct ▼')+'</button>';
+  if(open&&ui.open===m.id)h+='<div class="markets">'+mks.slice(1).map(k=>{const btns=k.opts(m).map(o=>liveBtn(m,k.key,o)).join('');return btns?'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.key==='cs'?' cs':'')+'">'+btns+'</div></div>':''}).join('')+'</div>';
+  return h+'</article>';
+}
 function renderLive(){
+  const all=Object.values(LV),inn=all.filter(m=>m.lv.st==='in'),soon=all.filter(m=>m.lv.st==='pre'&&m.ko>lnow()-5*60e3).sort((a,b)=>a.ko-b.ko),fin=all.filter(m=>m.lv.st==='post').sort((a,b)=>b.lv.maj-a.lv.maj);
+  const ORD=['foot','tennis','basket','hockey','usf','base','volley','afl','lax','rugby','hand','fhk','wpolo','mma'],rk=k=>{const i=ORD.indexOf(k);return i<0?99:i};
+  const sps=[...new Set(inn.map(m=>m.sp))].sort((a,b)=>rk(a)-rk(b));if(ui.lsp&&ui.lsp!=='all'&&!sps.includes(ui.lsp))ui.lsp='all';
+  const sel=ui.lsp||'all',list=inn.filter(m=>sel==='all'||m.sp===sel).sort((a,b)=>rk(a.sp)-rk(b.sp)||String(a.comp).localeCompare(b.comp)||a.ko-b.ko);
+  const chips='<div class="sports lv-sp"><button class="'+(sel==='all'?'on':'')+'" style="--sc:#e0182d" data-lsp="all">Tous <small>'+inn.length+'</small></button>'+sps.map(k=>'<button class="'+(sel===k?'on':'')+'" style="--sc:'+SPORTS[k].col+'" data-lsp="'+k+'">'+SPORTS[k].ic+' '+SPORTS[k].name+' <small>'+inn.filter(m=>m.sp===k).length+'</small></button>').join('')+'</div>';
+  let lastLg='',body='';for(const m of list){const lg=SPORTS[m.sp].ic+' '+m.comp;if(lg!==lastLg){body+='<h4 class="lv-lg">'+esc(lg)+'</h4>';lastLg=lg}body+=liveCard(m)}
+  const other=liveMatches().filter(m=>status(m)==='live'&&Date.now()<m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3);
+  const done=liveMatches().filter(m=>status(m)==='fini'&&Date.now()-m.ko<20*3600e3).sort((a,b)=>b.ko-a.ko).slice(0,15);
+  const mini=m=>'<div class="lv-mini"><span>'+SPORTS[m.sp].ic+' '+esc(m.home)+' – '+esc(m.away)+'</span><small>'+(m.s?esc(scoreTxt(m)):'en cours')+'</small></div>';
+  const warn=liveErr==='off'?'<div class="empty">Le direct sera disponible très bientôt.</div>':liveErr&&!all.length?'<div class="empty">Impossible de charger le direct pour le moment.</div>':'';
+  return pageHero('ph-live','📡','Live','Paris en direct sur tous les sports : les cotes bougent avec le score. Scores en direct fournis par ESPN, mis à jour toutes les 20 secondes.')+warn+
+    '<h3 class="day">🔴 En direct'+(inn.length?' <small class="cnt">'+inn.length+'</small>':'')+'</h3>'+(inn.length?chips+body:'<div class="empty small">'+(liveLast?'Aucun match en direct pour le moment.':'Chargement du direct…')+'</div>')+
+    (soon.length?'<h3 class="day">⏱️ Ça commence bientôt <small class="cnt">'+soon.length+'</small></h3>'+soon.slice(0,20).map(liveCard).join(''):'')+
+    (other.length?'<h3 class="day">Autres matchs du jour en cours</h3><div class="lv-minis">'+other.map(mini).join('')+'</div>':'')+
+    (fin.length?'<h3 class="day">✅ Terminés</h3>'+fin.slice(0,20).map(liveCard).join(''):'')+
+    (done.length?'<h3 class="day">Résultats récents</h3><div class="lv-minis">'+done.map(mini).join('')+'</div>':'')+
+    '<p class="lv-src">Scores en direct : ESPN. Les paris en direct sont suspendus quelques secondes après chaque but ou point important.</p>';
+}
+function renderLiveOld(){
   const all=liveMatches();
   const lim=m=>m.ko+(m.sp==='foot'?150:m.sp==='basket'?170:200)*60e3;
   const live=all.filter(m=>status(m)==='live'&&Date.now()<lim(m)).sort((a,b)=>a.ko-b.ko);
@@ -3032,6 +3236,7 @@ function renderRules(){
   '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙</b>. Les pièces non jouées ne se gardent pas : elles repartent à '+nf(DAILY)+' à minuit.</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
+  '<li><b>Paris en direct</b> : dans l\'onglet Live, tu peux parier pendant les matchs (foot, tennis, basket, hockey, foot US, baseball, volley…). Les cotes changent avec le score et le temps de jeu, et les paris sont suspendus quelques secondes après chaque but. <b>Les scores en direct sont fournis par ESPN.</b></li>'+
   '<li>Dans le coupon, tu peux choisir d\'être payé en <b>pièces 🪙</b> au lieu des diamants : elles s\'ajoutent à tes pièces du jour (mais ne comptent pas pour le classement).</li>'+
   '<li>Les diamants ne se parient pas : ils s\'échangent dans la <b>Boutique</b> contre des bonus (pièces en plus, boost de cote, assurance) ou des récompenses (titres, thèmes).</li>'+
   '<li><b>Simple</b> : un pari par sélection. <b>Combiné</b> : plusieurs matchs dans un seul pari, les cotes se multiplient, mais tout doit être gagnant.</li>'+
@@ -3867,6 +4072,7 @@ document.addEventListener('click',e=>{
   if(d.bf){ui.betFilter=d.bf;renderView();return}
   if(d.rm){ui.slip=ui.slip.filter(s=>selKey(s)!==d.rm);if(ui.slip.length<2&&ui.mode==='combi')ui.mode='simple';renderSlip();renderView();return}
   if(d.mode){ui.mode=d.mode;renderSlip();return}
+  if(d.lsp){ui.lsp=d.lsp;renderView();return}
   if(d.pay){ui.pay=d.pay==='c'?'c':'d';lsSet('pc_pay',ui.pay);renderSlip();return}
   if(d.qs){const v=d.v==='max'?state.coins:+d.v;if(d.qs==='__combi')ui.combi=v;else ui.stakes[d.qs]=v;renderSlip();return}
   if(t.id==='place'){placeBets();return}
