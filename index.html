@@ -665,6 +665,43 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .nx-fire{background:linear-gradient(90deg,#ff1f3d,#ff7a1a,#ffb000);-webkit-background-clip:text;background-clip:text;color:transparent}
 .nx-rainbow{background:linear-gradient(90deg,#ff1f3d,#ff7a1a,#ffc21a,#18b85c,#1f7bff,#8a3dff,#ff1f3d);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 3s linear infinite}
 @keyframes rb{to{background-position:200% center}}
+.item{position:relative}
+.item.limited{box-shadow:0 0 0 2px #ffd23f,var(--sh)!important}
+.lim-b{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#111827,#7a2cf5);color:#ffd23f;font-size:10.5px;font-weight:900;letter-spacing:1px;border-radius:999px;padding:4px 9px;animation:pkblink 1.8s infinite}
+.lim-t{display:block;font-size:12px;font-weight:700;opacity:.92;margin-top:2px}
+.item button.fxprev{background:transparent;border:1px dashed var(--line);font-size:13px;padding:7px}
+.winfx{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
+.winfx i{position:absolute;top:-8%;font-style:normal;line-height:1;animation:wfall 2.4s cubic-bezier(.3,.6,.5,1) both}
+.winfx i.cf{width:10px;height:16px;border-radius:2px}
+@keyframes wfall{0%{transform:translateY(0) rotate(0);opacity:0}8%{opacity:1}85%{opacity:1}100%{transform:translateY(112vh) rotate(var(--r));opacity:0}}
+.winfx b{position:absolute;inset:0;animation:wglow 1.6s ease-out both}
+.fx-fire-glow{background:radial-gradient(ellipse at 50% 110%,rgba(255,90,0,.55),transparent 60%)}
+.fx-gold-glow{background:radial-gradient(ellipse at 50% 0%,rgba(255,210,63,.5),transparent 60%)}
+@keyframes wglow{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+.fr-rgb,.fr-pulse,.fr-comet,.fr-flame,.fr-galaxy,.fr-diamond,.fr-love{background:transparent!important;isolation:isolate;overflow:visible;padding:3.5px}
+.fr-rgb::before,.fr-comet::before,.fr-flame::before,.fr-galaxy::before,.fr-diamond::before{content:"";position:absolute;inset:0;border-radius:50%;z-index:-1;animation:frspin 2.4s linear infinite}
+@keyframes frspin{to{transform:rotate(360deg)}}
+.fr-rgb::before{background:conic-gradient(#ff1f3d,#ff9f1a,#ffe14d,#3dff8f,#1fb6ff,#7a2cf5,#ff2d9a,#ff1f3d)}
+.fr-pulse{background:conic-gradient(#00e5ff,#ff2d9a,#00e5ff)!important;animation:frpulse 1.4s ease-in-out infinite}
+@keyframes frpulse{0%,100%{box-shadow:0 0 4px #00e5ff,0 0 0 0 rgba(255,45,154,.6)}50%{box-shadow:0 0 14px #ff2d9a,0 0 0 4px rgba(0,229,255,.25)}}
+.fr-comet::before{background:conic-gradient(from 0deg,transparent 0 55%,rgba(255,255,255,.2) 70%,#9fe8ff 88%,#fff 96%,transparent 100%),#1b2540;animation-duration:1.6s}
+.fr-flame::before{background:conic-gradient(#ff1f3d,#ffb000,#ff4d00,#ffe14d,#ff1f3d);animation-duration:1.8s;filter:blur(.4px)}
+.fr-flame{animation:frflick .5s ease-in-out infinite alternate}
+@keyframes frflick{from{box-shadow:0 0 6px rgba(255,90,0,.6)}to{box-shadow:0 0 14px rgba(255,170,0,.9)}}
+.fr-flame::after{content:"🔥";position:absolute;bottom:-7px;right:-7px;font-size:12px;line-height:1}
+.fr-galaxy::before{background:conic-gradient(#1b0b4f,#7a2cf5,#00c2ff,#ff2d9a,#1b0b4f);animation-duration:3.5s}
+.fr-galaxy::after{content:"✨";position:absolute;top:-8px;right:-6px;font-size:12px;line-height:1;animation:pkblink 1.2s infinite}
+.fr-diamond::before{background:conic-gradient(#e8fbff,#7fe7ff,#ffffff,#b8f3ff,#4fc3ff,#ffffff,#e8fbff);animation-duration:3s}
+.fr-diamond{animation:frdia 1.6s ease-in-out infinite}
+@keyframes frdia{50%{box-shadow:0 0 14px rgba(127,231,255,.95)}}
+.fr-diamond::after{content:"💎";position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:12px;line-height:1}
+.fr-love{background:conic-gradient(#ff2d9a,#ff7ab8,#ff2d55,#ff2d9a)!important;animation:frlove 1s ease-in-out infinite}
+@keyframes frlove{0%,100%{box-shadow:0 0 0 0 rgba(255,45,154,.7)}15%{box-shadow:0 0 0 5px rgba(255,45,154,.35)}30%{box-shadow:0 0 0 1px rgba(255,45,154,.6)}45%{box-shadow:0 0 0 4px rgba(255,45,154,.3)}}
+.fr-love::after{content:"💖";position:absolute;bottom:-7px;right:-7px;font-size:12px;line-height:1}
+.nx-galaxy{background:linear-gradient(90deg,#7a2cf5,#00c2ff,#ff2d9a,#7a2cf5);background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 4s linear infinite}
+.nx-ice{background:linear-gradient(90deg,#4fc3ff,#e8fbff,#1f7bff,#e8fbff,#4fc3ff);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 3s linear infinite}
+.nx-lava{background:linear-gradient(90deg,#b30000,#ff4d00,#ffb000,#ff4d00,#b30000);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 2.5s linear infinite}
+
 .cm.me .pn{color:#fff}
 .nx-admin{background:linear-gradient(90deg,#ff1f3d,#ffcf33,#fff6c9,#ffcf33,#ff1f3d);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;animation:rb 2.4s linear infinite;filter:drop-shadow(0 0 4px rgba(255,60,40,.45))}
 .fr-admin{background:conic-gradient(from 0deg,#c8102e,#ffcf33,#111,#c8102e,#ffcf33,#111,#c8102e);animation:glow 1.6s ease-in-out infinite;box-shadow:0 0 10px rgba(255,80,40,.6)}
@@ -1295,6 +1332,25 @@ const SHOP=[
  {id:'th_gold',sec:'Thèmes',ic:'🟡',name:'Thème Or',desc:'Change la couleur du site.',cost:10000,kind:'theme',cls:'theme-gold'},
  {id:'th_purple',sec:'Thèmes',ic:'🟣',name:'Thème Violet',desc:'Change la couleur du site.',cost:10000,kind:'theme',cls:'theme-purple'},
  {id:'th_red',sec:'Thèmes',ic:'🔴',name:'Thème Rouge',desc:'Change la couleur du site.',cost:10000,kind:'theme',cls:'theme-red'},
+ {id:'fr_rgb',sec:'Avatars animés',ic:'🌈',name:'Avatar RGB',desc:'Un anneau arc-en-ciel qui tourne sans arrêt autour de votre avatar.',cost:15000,kind:'frame',cls:'fr-rgb'},
+ {id:'fr_pulse',sec:'Avatars animés',ic:'💠',name:'Avatar Néon',desc:'Un néon bleu et rose qui pulse comme en boîte de nuit.',cost:20000,kind:'frame',cls:'fr-pulse'},
+ {id:'fr_comet',sec:'Avatars animés',ic:'☄️',name:'Avatar Comète',desc:'Une comète lumineuse tourne autour de votre avatar.',cost:30000,kind:'frame',cls:'fr-comet'},
+ {id:'fr_flame',sec:'Avatars animés',ic:'🔥',name:'Avatar Brasier',desc:'Des flammes vivantes qui tournent et scintillent.',cost:40000,kind:'frame',cls:'fr-flame'},
+ {id:'fr_galaxy',sec:'Avatars animés',ic:'🌌',name:'Avatar Galaxie',desc:'Une galaxie qui tourne, avec une étoile qui brille.',cost:60000,kind:'frame',cls:'fr-galaxy'},
+ {id:'fx_confetti',sec:'Effets de victoire',ic:'🎊',name:'Confettis',desc:'Une pluie de confettis à chaque pari ou partie gagnée.',cost:3000,kind:'fx',cls:'fx-confetti'},
+ {id:'fx_money',sec:'Effets de victoire',ic:'💸',name:'Pluie de billets',desc:'Les billets tombent du ciel quand vous gagnez.',cost:8000,kind:'fx',cls:'fx-money'},
+ {id:'fx_fire',sec:'Effets de victoire',ic:'🔥',name:'En feu',desc:'Votre écran s\'enflamme à chaque victoire.',cost:10000,kind:'fx',cls:'fx-fire'},
+ {id:'fx_diamond',sec:'Effets de victoire',ic:'💎',name:'Pluie de diamants',desc:'Des diamants partout quand vous gagnez.',cost:15000,kind:'fx',cls:'fx-diamond'},
+ {id:'fx_trophy',sec:'Effets de victoire',ic:'🏆',name:'Trophées',desc:'Une avalanche de trophées pour fêter vos victoires.',cost:25000,kind:'fx',cls:'fx-trophy'},
+ {id:'lx_galaxy',sec:'⏳ Édition limitée',ic:'🌌',name:'Pseudo Galaxie',desc:'Un pseudo violet et bleu qui scintille. Disponible une seule semaine.',cost:30000,kind:'name',cls:'nx-galaxy',limited:true},
+ {id:'lx_ice',sec:'⏳ Édition limitée',ic:'❄️',name:'Pseudo Givré',desc:'Un pseudo blanc et bleu qui brille comme la glace.',cost:20000,kind:'name',cls:'nx-ice',limited:true},
+ {id:'lx_lava',sec:'⏳ Édition limitée',ic:'🌋',name:'Pseudo Lave',desc:'Un pseudo rouge et orange qui coule comme de la lave.',cost:25000,kind:'name',cls:'nx-lava',limited:true},
+ {id:'lf_diamond',sec:'⏳ Édition limitée',ic:'💎',name:'Avatar Diamant',desc:'Un cadre de diamant animé qui étincelle.',cost:45000,kind:'frame',cls:'fr-diamond',limited:true},
+ {id:'lf_love',sec:'⏳ Édition limitée',ic:'💖',name:'Avatar Cœur',desc:'Un cadre rose qui bat comme un cœur.',cost:20000,kind:'frame',cls:'fr-love',limited:true},
+ {id:'lt_goat',sec:'⏳ Édition limitée',ic:'🐐',name:'Titre « GOAT »',desc:'Le plus grand de tous les temps, rien que ça.',cost:40000,kind:'title',label:'GOAT 🐐',limited:true},
+ {id:'lt_ballon',sec:'⏳ Édition limitée',ic:'⚽',name:'Titre « Ballon d\'or »',desc:'Le titre des plus grands pronostiqueurs.',cost:60000,kind:'title',label:'Ballon d\'or',limited:true},
+ {id:'lt_lucky',sec:'⏳ Édition limitée',ic:'🍀',name:'Titre « Chanceux »',desc:'Pour ceux à qui tout réussit.',cost:15000,kind:'title',label:'Chanceux 🍀',limited:true},
+ {id:'lfx_gold',sec:'⏳ Édition limitée',ic:'👑',name:'Pluie d\'or',desc:'Couronnes et médailles d\'or à chaque victoire.',cost:35000,kind:'fx',cls:'fx-gold',limited:true},
  {id:'nx_admin',sec:'Exclusif',ic:'🛡️',name:'Pseudo Administrateur',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'name',cls:'nx-admin',hidden:true},
  {id:'fr_admin',sec:'Exclusif',ic:'🛡️',name:'Cadre Administrateur',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'frame',cls:'fr-admin',hidden:true},
  {id:'t_admin',sec:'Exclusif',ic:'🛡️',name:'Titre « Administrateur »',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'title',label:'Administrateur',hidden:true}
@@ -1629,7 +1685,7 @@ function settle(){
       b.odds=Math.round(odds*100)/100;b.status='won';b.payout=Math.round(b.stake*b.odds);state.diamonds+=b.payout;
       state.stats.won++;state.stats.earned+=b.payout;state.stats.best=Math.max(state.stats.best,b.odds);
       if(state.week)state.week.earned+=b.payout;
-      toast('🎉 Pari gagné ! +'+nf(b.payout)+' 💎');
+      toast('🎉 Pari gagné ! +'+nf(b.payout)+' 💎');setTimeout(()=>winFx(),300);
       if(session){if(!winOffer)setTimeout(offerShare,2500);winOffer=b.id}
     }else{
       b.status='lost';b.payout=0;state.stats.lost++;
@@ -1702,7 +1758,20 @@ function placeBets(){
 }
 
 /* ---------- Joueurs : décorations ---------- */
-const NAMEFX=['nx-gold','nx-neon','nx-fire','nx-rainbow','nx-admin'],FRAMES=['fr-fire','fr-ice','fr-gold','fr-crown','fr-admin'];
+const NAMEFX=['nx-gold','nx-neon','nx-fire','nx-rainbow','nx-admin','nx-galaxy','nx-ice','nx-lava'],FRAMES=['fr-fire','fr-ice','fr-gold','fr-crown','fr-admin','fr-rgb','fr-pulse','fr-comet','fr-flame','fr-galaxy','fr-diamond','fr-love'];
+/* Objets limités : 3 objets différents chaque semaine */
+function limNow(){const w=weekId();let h=0;for(const ch of w)h=(h*31+ch.charCodeAt(0))>>>0;const pool=SHOP.filter(i=>i.limited).map(i=>i.id);
+  for(let i=pool.length-1;i>0;i--){h=(h*1103515245+12345)>>>0;const j=h%(i+1);[pool[i],pool[j]]=[pool[j],pool[i]]}return pool.slice(0,3)}
+function limLeft(){const d=new Date(),n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+((8-(d.getDay()||7))%7||7));const ms=n-d,j=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return j?j+' j '+h+' h':h?h+' h '+m+' min':m+' min'}
+/* Effets de victoire */
+function winFx(force){const k=force||state.winFx;if(!k)return;
+  const E={'fx-money':['💸','💵','💶'],'fx-fire':['🔥','🔥','💥'],'fx-diamond':['💎','💎','✨'],'fx-trophy':['🏆','🥇','⭐'],'fx-gold':['👑','🥇','🪙','✨']}[k];
+  const L=document.createElement('div');L.className='winfx';let h='';
+  for(let i=0;i<(k==='fx-confetti'?70:34);i++){const x=Math.random()*100,d=Math.random()*.9,t=1.8+Math.random()*1.4,r=Math.round(Math.random()*720-360);
+    h+=k==='fx-confetti'?'<i class="cf" style="left:'+x+'%;background:'+['#ffd23f','#ff2d55','#3dff8f','#4fc3ff','#b06cff','#ff9f1a'][i%6]+';animation-delay:'+d+'s;animation-duration:'+t+'s;--r:'+r+'deg"></i>'
+     :'<i style="left:'+x+'%;font-size:'+(22+Math.random()*22)+'px;animation-delay:'+d+'s;animation-duration:'+t+'s;--r:'+r+'deg">'+E[i%E.length]+'</i>'}
+  if(k==='fx-fire'||k==='fx-gold')h+='<b class="'+k+'-glow"></b>';
+  L.innerHTML=h;document.body.appendChild(L);setTimeout(()=>L.remove(),4200)}
 function myDeco(){return{t:state.title||undefined,c:state.nameFx||undefined,f:state.frame||undefined}}
 function pav(p,d){d=d||{};return FRAMES.includes(d.f)?'<span class="frm '+d.f+'">'+avatar(p)+'</span>':avatar(p)}
 function pname(p,d,extra){d=d||{};return '<span class="pn'+(NAMEFX.includes(d.c)?' '+d.c:'')+'">'+esc(p)+'</span>'+(extra||'')+(d.t?' <span class="ptitle'+(d.t==='Administrateur'?' adm':'')+'">'+(d.t==='Administrateur'?'🛡️ ':'')+esc(d.t)+'</span>':'')}
@@ -2113,7 +2182,7 @@ function bjSettle(res,why){
   else if(res==='push')state.coins+=c.bet;
   else b.l=(b.l||0)+1;
   b.bet=Math.min(Math.max(c.bet/(c.dbl?2:1),BJ_MIN),BJ_MAX);
-  bjFx=res;bjSnd(res);try{if(navigator.vibrate)navigator.vibrate(res==='lose'?[60,40,60]:res==='push'?20:[30,30,30,30,120])}catch(e){}
+  bjFx=res;bjSnd(res);if(res==='win'||res==='bj')winFx();try{if(navigator.vibrate)navigator.vibrate(res==='lose'?[60,40,60]:res==='push'?20:[30,30,30,30,120])}catch(e){}
   save();bjBusy=false;bjRender();
 }
 function bjDealer(){
@@ -2162,7 +2231,7 @@ function gStart(g,bet,win,extra){state.coins-=bet;state.gpend={g,bet,win,extra:e
 function gFinish(quiet){const p=state.gpend;if(!p)return null;state.gpend=null;
   if(p.win>0){state.coins+=p.win;const S=gSt(p.g);if(p.win>p.bet)S.w++;S.best=Math.max(S.best||0,p.win-p.bet)}
   save();gCoins();
-  if(!quiet){const k=p.win>p.bet?'win':p.win===p.bet?'push':'lose';gFx={g:p.g,k,bet:p.bet,win:p.win};bjSnd(k);try{if(navigator.vibrate)navigator.vibrate(k==='lose'?[60,40,60]:k==='push'?20:[30,30,30,30,120])}catch(e){}}
+  if(!quiet){const k=p.win>p.bet?'win':p.win===p.bet?'push':'lose';gFx={g:p.g,k,bet:p.bet,win:p.win};if(k==='win')winFx();bjSnd(k);try{if(navigator.vibrate)navigator.vibrate(k==='lose'?[60,40,60]:k==='push'?20:[30,30,30,30,120])}catch(e){}}
   return p}
 setInterval(()=>{if(state&&state.gpend&&!gBusy)gFinish(true)},4000);
 function gFxHtml(g){const f=gFx&&gFx.g===g?gFx:null;if(!f)return '';gFx=null;
@@ -2375,14 +2444,14 @@ function renderBets(){
    '<div class="toolbar"><div class="seg"><button data-bf="pending" class="'+(ui.betFilter==='pending'?'on':'')+'">En cours</button><button data-bf="done" class="'+(ui.betFilter==='done'?'on':'')+'">Terminés</button></div></div>'+
    (list.length?list.map(card).join(''):'<div class="empty">'+(ui.betFilter==='pending'?'Aucun pari en cours. Choisissez une cote dans l\'onglet Matchs !':'Aucun pari terminé pour l\'instant.')+'</div>');
 }
-const EQUIP={title:'title',theme:'theme',name:'nameFx',frame:'frame'};
+const EQUIP={title:'title',theme:'theme',name:'nameFx',frame:'frame',fx:'winFx'};
 const eqVal=i=>i.kind==='title'?i.label:i.cls;
 function renderShop(){
-  const VIS=SHOP.filter(i=>!i.hidden||state.owned.includes(i.id));
+  const LIM=limNow(),VIS=SHOP.filter(i=>(!i.hidden&&(!i.limited||LIM.includes(i.id)))||state.owned.includes(i.id)).sort((a,b)=>(b.limited?1:0)-(a.limited?1:0));
   const secs=[...new Set(VIS.map(i=>i.sec))];
-  const SECCOL={'Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)','Exclusif':'linear-gradient(135deg,#111,#c8102e 55%,#ffcf33)'};
+  const SECCOL={'Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)','Exclusif':'linear-gradient(135deg,#111,#c8102e 55%,#ffcf33)','Avatars animés':'linear-gradient(135deg,#00c2ff,#7a2cf5,#ff2d9a)','Effets de victoire':'linear-gradient(135deg,#ffb800,#ff2d55)','⏳ Édition limitée':'linear-gradient(135deg,#111827,#7a2cf5 60%,#ffd23f)'};
   const me=session?session.pseudo:'Vous';
-  const icon=i=>i.kind==='name'?'<div class="ic prev"><span class="pn '+i.cls+'">'+esc(me)+'</span></div>':i.kind==='frame'?'<div class="ic prev">'+pav(me,{f:i.cls})+'</div>':'<div class="ic">'+i.ic+'</div>';
+  const icon=i=>i.kind==='fx'?'<div class="ic">'+i.ic+'</div>':i.kind==='name'?'<div class="ic prev"><span class="pn '+i.cls+'">'+esc(me)+'</span></div>':i.kind==='frame'?'<div class="ic prev">'+pav(me,{f:i.cls})+'</div>':'<div class="ic">'+i.ic+'</div>';
   const item=i=>{
     let btn,own='';
     if(EQUIP[i.kind]){
@@ -2393,12 +2462,13 @@ function renderShop(){
       if(i.kind==='inv')own='<span class="own">'+(state.inv[i.id]?'En stock : '+state.inv[i.id]:'')+'</span>';
       btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
     }
-    return '<div class="item" style="--ig:'+(SECCOL[i.sec]||'var(--grad-main)')+'">'+icon(i)+'<h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' 💎</div>'+own+btn+'</div>'};
+    if(i.limited&&!LIM.includes(i.id)&&!state.owned.includes(i.id))btn='<button disabled>Plus en vente</button>';
+    return '<div class="item'+(i.limited?' limited':'')+'" style="--ig:'+(SECCOL[i.sec]||'var(--grad-main)')+'">'+(i.limited?'<span class="lim-b">LIMITÉ</span>':'')+icon(i)+'<h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' 💎</div>'+own+(i.kind==='fx'?'<button class="fxprev" data-fxprev="'+i.cls+'">▶ Voir l\'effet</button>':'')+btn+'</div>'};
   const prof=session?'<div class="prof">'+pav(session.pseudo,myDeco())+'<div><div class="prof-n">'+pname(session.pseudo,myDeco())+'</div><small>Comme les autres joueurs vous voient dans le chat et les classements</small></div></div>':'';
   return pageHero('ph-shop','🎁','Boutique','Échangez vos diamants contre des bonus et des récompenses à montrer à tout le monde.')+
     '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div>'+prof+
     (STRIPE_DON?'<div class="don"><div class="don-ic">❤️</div><div class="don-t"><b>Soutenir PronoClub</b><span>Le site est gratuit et le restera. Si vous l\'aimez, vous pouvez aider à le faire grandir avec le montant de votre choix. Un don ne donne ni pièces ni diamants.</span></div><a class="pbtn" href="'+STRIPE_DON+'" target="_blank" rel="noopener">Je soutiens ❤️</a></div>':'')+
-    secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+'</div><div class="shop">'+VIS.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
+    secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+(s==='⏳ Édition limitée'?' <span class="lim-t">Plus que '+limLeft()+' · nouveaux objets chaque lundi</span>':'')+'</div><div class="shop">'+VIS.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
 }
 function renderRules(){
   return '<div class="rules"><h3>Comment ça marche ?</h3><ul>'+
@@ -2662,7 +2732,7 @@ function pkSet(v){
   if(!old||old.main!==v.main||old.phase!==v.phase||old.tour!==v.tour)pk.raise=null;
   if(old&&old.main===v.main&&(old.mise_adv!==v.mise_adv||old.pot!==v.pot))bjSnd('chip');
   if(v.tapis.some(c=>!pk.seen.has(c))||(!old||old.main!==v.main))bjSnd('card');
-  if(v.res&&(!old||!old.res))bjSnd(v.res.g==='moi'?'win':v.res.g==='adv'?'lose':'push');
+  if(v.res&&(!old||!old.res)){bjSnd(v.res.g==='moi'?'win':v.res.g==='adv'?'lose':'push');if(v.res.g==='moi')winFx()}
   if(v.statut==='finie'&&!pk.ended){pk.ended=true;clearInterval(pk.timer);pk.timer=null;pkClaim(true)}
   pkRender()}
 function pkRender(){
@@ -3093,6 +3163,7 @@ document.addEventListener('click',e=>{
   if(d.sharetxt!==undefined){shareLink(d.sharetxt,d.shareurl);return}
   if(d.sharebet){shareBet(d.sharebet);return}
   if(d.sharego){shareGo();return}
+  if(d.fxprev){winFx(d.fxprev);return}
   if(d.invite){openInvite();return}
   if(d.notifs){openNotifs();return}
   if(t.id==='notifOnBtn'){notifActiver();return}
@@ -3132,11 +3203,11 @@ document.addEventListener('click',e=>{
   if(t.id==='closeSlip'){$('#aside').classList.remove('open');return}
   if(t.id==='fab'||t.id==='bnSlip'){$('#aside').classList.add('open');return}
   if(d.buy){
-    const i=SHOP.find(x=>x.id===d.buy);if(!i||i.hidden||state.diamonds<i.cost)return;
+    const i=SHOP.find(x=>x.id===d.buy);if(!i||i.hidden||state.diamonds<i.cost||(i.limited&&!limNow().includes(i.id))||(EQUIP[i.kind]&&state.owned.includes(i.id)))return;
     state.diamonds-=i.cost;state.spent=(state.spent||0)+i.cost;
     if(i.kind==='coins'){state.coins+=i.val;toast('🪙 +'+nf(i.val)+' pièces ajoutées')}
     else if(i.kind==='inv'){state.inv[i.id]=(state.inv[i.id]||0)+1;toast(i.ic+' '+i.name+' : disponible dans votre coupon')}
-    else{state.owned.push(i.id);state[EQUIP[i.kind]]=eqVal(i);toast(i.ic+' '+i.name+' débloqué !')}
+    else{state.owned.push(i.id);state[EQUIP[i.kind]]=eqVal(i);toast(i.ic+' '+i.name+' débloqué !');if(i.kind==='fx')winFx(i.cls)}
     save();renderAll();return;
   }
   if(d.equip){
