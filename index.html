@@ -1959,13 +1959,14 @@ async function loadBoard(){
 /* --- Matchs : fichiers fixtures/AAAA-MM-JJ.json publiés avec le site --- */
 async function loadFixtures(){
   const days=new Set([addDays(today(),-1),today(),addDays(today(),1)]);
-  for(const b of state.bets)if(b.status==='pending')for(const s of b.sels)days.add(s.matchId.split('_')[0]);
+  for(const b of state.bets)if(b.status==='pending')for(const s of b.sels)if(!String(s.matchId).startsWith('L:'))days.add(s.matchId.split('_')[0]);
   for(const d of state.defis||[])if(d.status==='pending')days.add(d.matchId.split('_')[0]);
   let changed=false;const v=Math.floor(Date.now()/60000);
+  let AUTO={};try{AUTO=await rpc('fix_res_liste',{p_days:[...days].slice(0,10)})||{}}catch(e){}
   await Promise.all([...days].map(async d=>{
     try{const r=await fetch('fixtures/'+d+'.json?v='+v,{cache:'no-store'});
       if(!r.ok)return;const arr=await r.json();
-      if(Array.isArray(arr)){build(d,arr);changed=true}}catch(e){}
+      if(Array.isArray(arr)){for(const x of arr)if(!Array.isArray(x.s)&&!x.x&&AUTO[d+'_'+x.id])x.s=AUTO[d+'_'+x.id];build(d,arr);changed=true}}catch(e){}
   }));
   lastSync=Date.now();
   tick(changed);

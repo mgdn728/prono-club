@@ -32,6 +32,14 @@ async function fixtures(day: string) {
   if (fixCache.has(day)) return fixCache.get(day)!;
   let r: any[] = [];
   try { const res = await fetch(SITE + "fixtures/" + day + ".json?t=" + Date.now()); if (res.ok) r = await res.json(); } catch (_) { /* fichier absent */ }
+  // résultats trouvés automatiquement (scores ESPN) pour les matchs pas encore complétés à la main
+  try {
+    if (Array.isArray(r) && r.length) {
+      const { data } = await db.from("fix_res").select("fid,s").like("fid", day + "_%");
+      const M = new Map((data || []).map((x: any) => [x.fid, x.s]));
+      for (const x of r) if (!Array.isArray(x.s) && !x.x && M.has(day + "_" + x.id)) x.s = M.get(day + "_" + x.id);
+    }
+  } catch (_) { /* table absente */ }
   fixCache.set(day, r);
   return r;
 }
@@ -166,6 +174,7 @@ async function preparer() {
     for (const [k, v] of Object.entries(s.prefs || {})) if (v === true) p[k] = true;
     prefs.set(s.joueur_id, p);
   }
+  if (paris().min % 5 === 4) { try { await autoRes(); } catch (e) { console.error("autoRes", e); } }
   if (paris().min % 5 === 0) { try { await regler(prefs); } catch (e) { console.error("regler", e); } }
   if (paris().min % 5 === 2) { try { await duels(); } catch (e) { console.error("duels", e); } }
   if (paris().min === 30) { try { await rangs(prefs); } catch (e) { console.error("rangs", e); } }
@@ -359,7 +368,8 @@ function ligne(sp: string, path: string, ev: any, c: any, lg: string) {
   return {
     id: sp + "-" + String(c.id || ev.id), sp, lp: path, lg: lg.slice(0, 80), h: nom(H), a: nom(A),
     t: c.date || ev.date, st, per: Number(stt.period ?? 0) || 0, clk: String(stt.displayClock ?? "").slice(0, 12),
-    det: String(ty.shortDetail || ty.detail || "").slice(0, 60), s, ls: (sp === "tennis" || sp === "volley") ? lh.map((v: number, i: number) => [v, la[i] ?? 0]) : null,
+    det: String(ty.shortDetail || ty.detail || "").slice(0, 60), s, ls: lh.length ? lh.map((v: number, i: number) => [v, la[i] ?? 0]) : null,
+    buts: sp === "foot" && Array.isArray(c.details) ? c.details.filter((d: any) => d.scoringPlay).map((d: any) => [String(d.athletesInvolved?.[0]?.displayName || ""), String(d.team?.id || "") === String(H.team?.id || H.id) ? 1 : 2, d.ownGoal ? 1 : 0]) : null,
     win, bo, o: cotes(c), fin: st === "post" && /postpon|cancel|abandon|forfeit/i.test(String(ty.name || "") + " " + String(ty.detail || "")) ? 1 : 0,
   };
 }
@@ -402,6 +412,93 @@ async function liveMaj() {
     if (error) console.error("live_ev", error);
   }
   return up.length;
+}
+
+// ---------- Résultats automatiques des matchs d'avant-match ----------
+// On retrouve chaque match du fichier du jour dans les scores ESPN (même sport, même heure, noms proches).
+const PAYS: Record<string, string> = {
+  "allemagne": "germany", "angleterre": "england", "espagne": "spain", "italie": "italy", "pays bas": "netherlands", "belgique": "belgium", "suisse": "switzerland",
+  "autriche": "austria", "pologne": "poland", "suede": "sweden", "norvege": "norway", "danemark": "denmark", "finlande": "finland", "irlande": "republic of ireland",
+  "irlande du nord": "northern ireland", "ecosse": "scotland", "pays de galles": "wales", "grece": "greece", "turquie": "turkiye", "croatie": "croatia", "serbie": "serbia",
+  "hongrie": "hungary", "roumanie": "romania", "bulgarie": "bulgaria", "russie": "russia", "georgie": "georgia", "armenie": "armenia", "bielorussie": "belarus",
+  "albanie": "albania", "macedoine du nord": "north macedonia", "montenegro": "montenegro", "bosnie herzegovine": "bosnia herzegovina", "slovenie": "slovenia",
+  "slovaquie": "slovakia", "tchequie": "czechia", "republique tcheque": "czechia", "lituanie": "lithuania", "lettonie": "latvia", "estonie": "estonia", "islande": "iceland",
+  "chypre": "cyprus", "malte": "malta", "israel": "israel", "moldavie": "moldova", "saint marin": "san marino", "bresil": "brazil", "argentine": "argentina",
+  "colombie": "colombia", "chili": "chile", "perou": "peru", "equateur": "ecuador", "bolivie": "bolivia", "mexique": "mexico", "etats unis": "united states",
+  "japon": "japan", "coree du sud": "south korea", "chine": "china", "australie": "australia", "maroc": "morocco", "algerie": "algeria", "tunisie": "tunisia",
+  "egypte": "egypt", "libye": "libya", "senegal": "senegal", "cote d ivoire": "ivory coast", "cameroun": "cameroon", "afrique du sud": "south africa",
+  "rd congo": "congo dr", "gambie": "gambia", "guinee": "guinea", "mauritanie": "mauritania", "tanzanie": "tanzania", "ouganda": "uganda", "ethiopie": "ethiopia",
+  "zambie": "zambia", "namibie": "namibia", "comores": "comoros", "benin": "benin", "cap vert": "cape verde", "soudan": "sudan", "soudan du sud": "south sudan",
+  "guinee equatoriale": "equatorial guinea", "guinee bissau": "guinea bissau", "somalie": "somalia", "arabie saoudite": "saudi arabia", "irak": "iraq",
+  "jordanie": "jordan", "emirats arabes unis": "united arab emirates", "inde": "india", "nouvelle zelande": "new zealand", "syrie": "syria", "liban": "lebanon",
+  "koweit": "kuwait", "ouzbekistan": "uzbekistan", "kirghizistan": "kyrgyz republic", "bahrein": "bahrain", "yemen": "yemen", "palestine": "palestine",
+  "oh louvain": "oud heverlee leuven", "louvain": "leuven", "paris sg": "paris saint germain", "psg": "paris saint germain", "inter milan": "internazionale", "om": "marseille", "ol": "lyon", "barca": "barcelona",
+};
+const STOP = new Set(["fc", "cf", "sc", "ac", "as", "afc", "cd", "club", "de", "the", "us", "sv", "fk", "bk", "if", "ff", "w", "women", "f", "fem", "feminines", "de", "la", "le", "ud", "rc", "ca", "cs", "real"]);
+function nrm(x: string) {
+  let t = String(x || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+  if (PAYS[t]) t = PAYS[t];
+  return t;
+}
+function simil(a: string, b: string) {
+  const x = nrm(a), y = nrm(b);
+  if (!x || !y) return 0;
+  if (x === y) return 1;
+  if ((x.length >= 4 && y.includes(x)) || (y.length >= 4 && x.includes(y))) return 0.9;
+  const A = new Set(x.split(" ").filter((w) => w.length > 1 && !STOP.has(w))), B = new Set(y.split(" ").filter((w) => w.length > 1 && !STOP.has(w)));
+  if (!A.size || !B.size) return 0;
+  let n = 0; for (const w of A) if (B.has(w) || [...B].some((z) => z.length >= 5 && w.length >= 5 && (z.startsWith(w) || w.startsWith(z)))) n++;
+  return n / Math.max(A.size, B.size);
+}
+const nomFin = (x: string) => nrm(x).split(" ").filter((w) => w.length > 1).pop() || "";
+async function autoRes() {
+  const now = paris(), days = [addDays(now.day, -1), now.day];
+  for (const day of days) {
+    const arr = await fixtures(day);
+    const cand = (arr || []).filter((r: any) => !Array.isArray(r.s) && !r.x && ["foot", "basket", "hockey", "tennis"].includes(r.sp || "foot") && Date.parse(r.t) < Date.now() - 100 * 60e3);
+    if (!cand.length) continue;
+    const ts = cand.map((r: any) => Date.parse(r.t));
+    const { data: evs } = await db.from("live_ev").select("id,sp,h,a,t,st,s,ls,det,buts,fin").eq("st", "post").eq("fin", 0)
+      .gte("t", new Date(Math.min(...ts) - 50 * 60e3).toISOString()).lte("t", new Date(Math.max(...ts) + 50 * 60e3).toISOString());
+    const up: any[] = [];
+    for (const r of cand) {
+      const sp = r.sp || "foot", tr = Date.parse(r.t);
+      let best: any = null, bs = 0, second = 0;
+      for (const e of evs || []) {
+        if (e.sp !== sp || Math.abs(Date.parse(e.t) - tr) > 50 * 60e3) continue;
+        const d = [simil(r.h, e.h), simil(r.a, e.a)], v = [simil(r.h, e.a), simil(r.a, e.h)];
+        for (const [p, inv] of [[d, false], [v, true]] as [number[], boolean][]) {
+          const ok = (p[0] >= 0.5 && p[1] >= 0.5) || (Math.max(...p) >= 0.85 && Math.min(...p) >= 0.34);
+          const sc = p[0] + p[1];
+          if (ok && sc > bs) { second = bs; bs = sc; best = { e, inv }; } else if (ok && sc > second) second = sc;
+        }
+      }
+      if (!best || bs - second < 0.3) continue;
+      const e = best.e, inv = best.inv, det = String(e.det || "");
+      let h = Number(e.s?.[0]), a = Number(e.s?.[1]);
+      if (!isFinite(h) || !isFinite(a)) continue;
+      if (sp === "foot" && /AET|Pen|ET\b|extra/i.test(det)) continue; // prolongations : on laisse faire à la main
+      if (sp === "hockey") {
+        if (Array.isArray(e.ls) && e.ls.length >= 3) { h = e.ls.slice(0, 3).reduce((t: number, x: number[]) => t + (Number(x[0]) || 0), 0); a = e.ls.slice(0, 3).reduce((t: number, x: number[]) => t + (Number(x[1]) || 0), 0); }
+        else if (/OT|SO/i.test(det)) continue;
+      }
+      let res: any[] = inv ? [a, h] : [h, a];
+      if (sp === "foot" && Array.isArray(r.bt) && r.bt.length) {
+        const buts = Array.isArray(e.buts) ? e.buts : [];
+        if (buts.length !== h + a) continue; // buteurs incomplets : on attend
+        const L: string[] = [];
+        for (const g of buts) {
+          if (g[2]) continue;
+          const side = inv ? (g[1] === 1 ? 2 : 1) : g[1], fin = nomFin(g[0]);
+          const p = r.bt.find((x: any) => x[1] === side && fin && (nomFin(x[0]) === fin || nrm(g[0]).includes(nrm(x[0])) || nrm(x[0]).includes(fin)));
+          if (p) L.push(p[0]);
+        }
+        res = [res[0], res[1], L];
+      }
+      up.push({ fid: day + "_" + r.id, s: res, src: e.id, maj: new Date().toISOString() });
+    }
+    if (up.length) { const { error } = await db.from("fix_res").upsert(up, { onConflict: "fid" }); if (error) console.error("fix_res", error); }
+  }
 }
 
 Deno.serve(async (req) => {
