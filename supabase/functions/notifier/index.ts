@@ -32,12 +32,15 @@ async function fixtures(day: string) {
   if (fixCache.has(day)) return fixCache.get(day)!;
   let r: any[] = [];
   try { const res = await fetch(SITE + "fixtures/" + day + ".json?t=" + Date.now()); if (res.ok) r = await res.json(); } catch (_) { /* fichier absent */ }
+  if (!Array.isArray(r) || !r.length) { // pas de fichier : programme automatique
+    try { const { data } = await db.from("fix_auto").select("data").eq("day", day).maybeSingle(); if (data && Array.isArray(data.data)) r = data.data; } catch (_) { /* table absente */ }
+  }
   // résultats trouvés automatiquement (scores ESPN) pour les matchs pas encore complétés à la main
   try {
     if (Array.isArray(r) && r.length) {
       const { data } = await db.from("fix_res").select("fid,s").like("fid", day + "_%");
       const M = new Map((data || []).map((x: any) => [x.fid, x.s]));
-      for (const x of r) if (!Array.isArray(x.s) && !x.x && M.has(day + "_" + x.id)) x.s = M.get(day + "_" + x.id);
+      for (const x of r) if (!Array.isArray(x.s) && !x.x && M.has(day + "_" + x.id)) { const v = M.get(day + "_" + x.id); if (Array.isArray(v)) x.s = v; else if (v && v.x) x.x = v.x; }
     }
   } catch (_) { /* table absente */ }
   fixCache.set(day, r);
@@ -174,6 +177,7 @@ async function preparer() {
     for (const [k, v] of Object.entries(s.prefs || {})) if (v === true) p[k] = true;
     prefs.set(s.joueur_id, p);
   }
+  if (paris().min % 5 === 4) { try { await progAuto(); } catch (e) { console.error("progAuto", e); } } // programme + résultats automatiques : toutes les 5 min
   try { await autoRes(); } catch (e) { console.error("autoRes", e); } // résultats automatiques : chaque minute
   if (paris().min % 2 === 0) { try { await regler(prefs); } catch (e) { console.error("regler", e); } } // paiement des paris des joueurs absents : toutes les 2 min
   if (paris().min % 5 === 2) { try { await duels(); } catch (e) { console.error("duels", e); } }
@@ -455,6 +459,12 @@ async function autoRes() {
   const now = paris(), days = [addDays(now.day, -1), now.day];
   for (const day of days) {
     const arr = await fixtures(day);
+    if ((arr || []).some((r: any) => r.e)) continue; // programme automatique : résultats gérés par progAuto
+    const vieux = (arr || []).filter((r: any) => !Array.isArray(r.s) && !r.x && Date.parse(r.t) < Date.now() - 12 * 3600e3);
+    if (vieux.length) { // plus personne pour remplir ce résultat : mise remboursée
+      const { error } = await db.from("fix_res").upsert(vieux.map((r: any) => ({ fid: day + "_" + r.id, s: { x: "Résultat indisponible : mise remboursée" }, src: "auto", maj: new Date().toISOString() })), { onConflict: "fid", ignoreDuplicates: true });
+      if (error) console.error("fix_res x", error); else fixCache.delete(day);
+    }
     const cand = (arr || []).filter((r: any) => !Array.isArray(r.s) && !r.x && ["foot", "basket", "hockey", "tennis"].includes(r.sp || "foot") && Date.parse(r.t) < Date.now() - 100 * 60e3);
     if (!cand.length) continue;
     const ts = cand.map((r: any) => Date.parse(r.t));
@@ -499,6 +509,119 @@ async function autoRes() {
     }
     if (up.length) { const { error } = await db.from("fix_res").upsert(up, { onConflict: "fid" }); if (error) console.error("fix_res", error); }
   }
+}
+
+// ---------- Programme des matchs automatique (sans fichier du jour) ----------
+// Toutes les 5 minutes : on lit les calendriers ESPN des grands championnats pour aujourd'hui,
+// demain et après-demain, avec les cotes des bookmakers, et on remplit la table fix_auto.
+// Les résultats des matchs déjà au programme sont ajoutés au même moment.
+const PRE: [string, string, string, string][] = [
+  ["soccer/uefa.champions", "foot", "Ligue des champions", "🇪🇺"], ["soccer/fra.1", "foot", "Ligue 1", "🇫🇷"], ["soccer/eng.1", "foot", "Premier League", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"],
+  ["soccer/esp.1", "foot", "Liga", "🇪🇸"], ["soccer/ita.1", "foot", "Serie A", "🇮🇹"], ["soccer/ger.1", "foot", "Bundesliga", "🇩🇪"],
+  ["soccer/uefa.nations", "foot", "Ligue des nations", "🇪🇺"], ["soccer/fifa.worldq.uefa", "foot", "Qualif. Coupe du monde", "🌍"],
+  ["soccer/uefa.europa", "foot", "Ligue Europa", "🇪🇺"], ["soccer/uefa.europa.conf", "foot", "Ligue Conférence", "🇪🇺"],
+  ["soccer/fra.coupe_de_france", "foot", "Coupe de France", "🇫🇷"], ["soccer/fifa.friendly", "foot", "Match amical", "🌍"],
+  ["soccer/fra.2", "foot", "Ligue 2", "🇫🇷"], ["soccer/por.1", "foot", "Liga Portugal", "🇵🇹"], ["soccer/ned.1", "foot", "Eredivisie", "🇳🇱"],
+  ["soccer/bel.1", "foot", "Pro League", "🇧🇪"], ["soccer/esp.copa_del_rey", "foot", "Coupe du Roi", "🇪🇸"], ["soccer/ita.coppa_italia", "foot", "Coupe d'Italie", "🇮🇹"],
+  ["soccer/ger.dfb_pokal", "foot", "Coupe d'Allemagne", "🇩🇪"], ["soccer/eng.fa", "foot", "FA Cup", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"], ["soccer/eng.league_cup", "foot", "Carabao Cup", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"],
+  ["soccer/eng.2", "foot", "Championship", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"], ["soccer/tur.1", "foot", "Süper Lig", "🇹🇷"], ["soccer/sco.1", "foot", "Premiership (Écosse)", "🏴󠁧󠁢󠁳󠁣󠁴󠁿"],
+  ["soccer/sau.1", "foot", "Saudi Pro League", "🇸🇦"], ["soccer/usa.1", "foot", "MLS", "🇺🇸"], ["soccer/bra.1", "foot", "Brasileirão", "🇧🇷"],
+  ["soccer/arg.1", "foot", "Liga Argentine", "🇦🇷"], ["soccer/mex.1", "foot", "Liga MX", "🇲🇽"], ["soccer/uefa.wchampions", "foot", "Ligue des champions F.", "🇪🇺"],
+  ["basketball/nba", "basket", "NBA", "🇺🇸"], ["hockey/nhl", "hockey", "NHL", "🇺🇸"], ["tennis/atp", "tennis", "ATP", "🎾"], ["tennis/wta", "tennis", "WTA", "🎾"],
+];
+const CAP: Record<string, number> = { foot: 25, basket: 10, hockey: 8, tennis: 12 };
+const cote = (p: number) => Math.min(60, Math.max(1.02, Math.floor(100 / (p * 1.06)) / 100));
+function preCotes(sp: string, c: any, H: any, A: any) {
+  if (sp === "tennis") {
+    const rh = Number(H.curatedRank?.current) || 400, ra = Number(A.curatedRank?.current) || 400;
+    if (rh >= 400 && ra >= 400) return null;
+    const p = Math.min(0.93, Math.max(0.07, 1 / (1 + Math.pow(rh / ra, 0.75))));
+    return { o: [cote(p), cote(1 - p)] };
+  }
+  const k = cotes(c); if (!k || !k.h || !k.a) return null;
+  if (sp === "foot") { if (!k.d) return null; return { o: [k.h, k.d, k.a], tl: k.tot ?? undefined }; }
+  if (sp === "hockey") { // cote ESPN avec prolongation → cotes en temps réglementaire (nul possible)
+    const ph = 1 / k.h, pa = 1 / k.a, t = ph + pa, D = 0.22;
+    return { o: [cote(ph / t * (1 - D)), cote(D), cote(pa / t * (1 - D))], tl: k.tot ?? 6 };
+  }
+  return { o: [k.h, k.a], tl: k.tot ?? undefined };
+}
+function preRes(sp: string, x: any) {
+  if (!x || x.st !== "post") return null;
+  if (x.fin) return { x: "Match reporté ou annulé : mise remboursée" };
+  const det = String(x.det || "");
+  let h = Number(x.s?.[0]), a = Number(x.s?.[1]);
+  if (!isFinite(h) || !isFinite(a)) return null;
+  if (sp === "foot" && /AET|Pen|ET\b|extra/i.test(det)) {
+    if (!Array.isArray(x.ls) || x.ls.length < 2) return null;
+    h = Number(x.ls[0][0]) + Number(x.ls[1][0]); a = Number(x.ls[0][1]) + Number(x.ls[1][1]);
+  }
+  if (sp === "hockey") {
+    if (Array.isArray(x.ls) && x.ls.length >= 3) { h = x.ls.slice(0, 3).reduce((t: number, v: number[]) => t + (Number(v[0]) || 0), 0); a = x.ls.slice(0, 3).reduce((t: number, v: number[]) => t + (Number(v[1]) || 0), 0); }
+    else if (/OT|SO/i.test(det)) return null;
+  }
+  if (sp === "tennis" && h === a) return null;
+  return { s: [h, a] };
+}
+async function progAuto() {
+  const now = paris(), days = [now.day, addDays(now.day, 1), addDays(now.day, 2)], prev = addDays(now.day, -1);
+  const ymd = (d: string) => d.replace(/-/g, "");
+  const dates = [prev, ...days].map(ymd);
+  const { data: rows } = await db.from("fix_auto").select("day,data").in("day", [prev, ...days]);
+  const DB = new Map<string, any[]>((rows || []).map((r: any) => [r.day, Array.isArray(r.data) ? r.data : []]));
+  const cand: any[] = [];
+  await Promise.all(PRE.flatMap(([path, sp, cn, fl], pi) => dates.map(async (dt) => {
+    try {
+      const r = await fetch(ESPN + path + "/scoreboard?limit=300&dates=" + dt, { headers: { "User-Agent": "Mozilla/5.0 PronoClub" } });
+      if (!r.ok) return;
+      const j = await r.json();
+      for (const ev of j.events || []) {
+        const comps = Array.isArray(ev.groupings) ? ev.groupings.flatMap((g: any) => g.competitions || []) : (ev.competitions || []);
+        for (const c of comps) {
+          const L = c.competitors || []; if (L.length !== 2) continue;
+          const H = L.find((x: any) => x.homeAway === "home" || x.order === 1) || L[0], A = L.find((x: any) => x !== H) || L[1];
+          const x = ligne(sp, path, ev, c, cn); if (!x) continue;
+          if (sp === "tennis" && (/ \/ /.test(x.h) || /ITF|Challenger/i.test(String(ev.name || "")))) continue; // simples des grands tournois seulement
+          const t = Date.parse(x.t || ""); if (!t) continue;
+          const day = paris(new Date(t)).day;
+          cand.push({ pi, sp, day, t, x, c, H, A, cn: sp === "tennis" ? String(ev.name || cn).replace(/^Nitto /, "").slice(0, 40) : cn, fl });
+        }
+      }
+    } catch (_) { /* flux indisponible */ }
+  })));
+  const seen = new Set<string>();
+  const ch = new Set<string>();
+  cand.sort((p, q) => p.pi - q.pi || p.t - q.t);
+  for (const k of cand) {
+    const id = k.sp[0] + String(k.c.id || k.x.id).replace(/\D/g, "");
+    if (seen.has(k.day + id)) continue; seen.add(k.day + id);
+    if (!DB.has(k.day)) DB.set(k.day, []);
+    const arr = DB.get(k.day)!, old = arr.find((m: any) => m.id === id);
+    if (old) {
+      if (!Array.isArray(old.s) && !old.x) {
+        const R = preRes(k.sp, k.x);
+        if (R) { Object.assign(old, R); ch.add(k.day); continue; }
+        if (k.x.st === "pre" && k.t > Date.now() + 5 * 60e3) { // cotes et horaire mis à jour avant le match
+          const C = preCotes(k.sp, k.c, k.H, k.A);
+          const t = new Date(k.t).toISOString();
+          if ((C && JSON.stringify(C.o) !== JSON.stringify(old.o)) || old.t !== t) { if (C) { old.o = C.o; if (C.tl != null) old.tl = C.tl; } old.t = t; ch.add(k.day); }
+        }
+      }
+      continue;
+    }
+    if (!days.includes(k.day) || k.x.st !== "pre" || k.t < Date.now() + 10 * 60e3) continue;
+    if (arr.filter((m: any) => m.sp === k.sp).length >= (CAP[k.sp] || 8)) continue;
+    const C = preCotes(k.sp, k.c, k.H, k.A); if (!C) continue;
+    const m: any = { id, sp: k.sp, c: k.cn, f: k.fl, h: k.x.h, a: k.x.a, t: new Date(k.t).toISOString(), o: C.o, e: k.x.id };
+    if (C.tl != null) m.tl = C.tl;
+    if (k.sp === "tennis") m.bo = k.x.bo || 3;
+    arr.push(m); ch.add(k.day);
+  }
+  // matchs jamais terminés (ESPN muet) : remboursés après 12 h
+  for (const [day, arr] of DB) for (const m of arr) if (!Array.isArray(m.s) && !m.x && Date.parse(m.t) < Date.now() - 12 * 3600e3) { m.x = "Résultat indisponible : mise remboursée"; ch.add(day); }
+  const up = [...ch].map((day) => ({ day, data: DB.get(day)!.sort((p: any, q: any) => Date.parse(p.t) - Date.parse(q.t)), maj: new Date().toISOString() }));
+  if (up.length) { const { error } = await db.from("fix_auto").upsert(up, { onConflict: "day" }); if (error) console.error("fix_auto", error); }
+  for (const d of ch) fixCache.delete(d);
 }
 
 Deno.serve(async (req) => {

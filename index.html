@@ -2013,11 +2013,12 @@ async function loadFixtures(){
   for(const b of state.bets)if(b.status==='pending')for(const s of b.sels)if(!String(s.matchId).startsWith('L:'))days.add(s.matchId.split('_')[0]);
   for(const d of state.defis||[])if(d.status==='pending')days.add(d.matchId.split('_')[0]);
   let changed=false;const v=Math.floor(Date.now()/60000);
-  let AUTO={};try{AUTO=await rpc('fix_res_liste',{p_days:[...days].slice(0,10)})||{}}catch(e){}
+  const DL=[...days].slice(0,10);let AUTO={},PROG={};
+  await Promise.all([rpc('fix_res_liste',{p_days:DL}).then(r=>{AUTO=r||{}}).catch(()=>{}),rpc('fix_auto_liste',{p_days:DL}).then(r=>{PROG=r||{}}).catch(()=>{})]);
   await Promise.all([...days].map(async d=>{
-    try{const r=await fetch('fixtures/'+d+'.json?v='+v,{cache:'no-store'});
-      if(!r.ok)return;const arr=await r.json();
-      if(Array.isArray(arr)){for(const x of arr)if(!Array.isArray(x.s)&&!x.x&&AUTO[d+'_'+x.id])x.s=AUTO[d+'_'+x.id];build(d,arr);changed=true}}catch(e){}
+    try{let arr=null;try{const r=await fetch('fixtures/'+d+'.json?v='+v,{cache:'no-store'});if(r.ok)arr=await r.json()}catch(e){}
+      if(!Array.isArray(arr)||!arr.length)arr=Array.isArray(PROG[d])?PROG[d]:null; // pas de fichier : programme automatique (ESPN)
+      if(Array.isArray(arr)){for(const x of arr){const a=AUTO[d+'_'+x.id];if(!Array.isArray(x.s)&&!x.x&&a){if(Array.isArray(a))x.s=a;else if(a.x)x.x=a.x}}build(d,arr);changed=true}}catch(e){}
   }));
   lastSync=Date.now();
   tick(changed);
