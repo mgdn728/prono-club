@@ -1622,7 +1622,7 @@ async function afterLogin(){
 }
 async function claimBonus(){
   if(!session||!synced)return;
-  try{const r=await rpc('bonus_recuperer',{p_token:session.token});if(!r)return;ui.filleuls=r.filleuls||0;checkParrain();
+  try{const r=await rpc('bonus_recuperer',{p_token:session.token});if(!r)return;const f0=ui.filleuls;ui.filleuls=r.filleuls||0;checkParrain();if(f0!==ui.filleuls&&(ui.tab==='matchs'||ui.tab==='invite'))renderView();
     if(r.bonus>0){state.coins+=r.bonus;save();renderAll();
       celebrate('🎁','Bonus de parrainage','<b>+'+nf(r.bonus)+' pièces</b> ajoutées à vos pièces du jour. Merci de faire grandir le club !')}}catch(e){}
 }
