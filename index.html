@@ -1320,7 +1320,7 @@ body.pf-lock{overflow:hidden}
 .chip{width:54px;height:54px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;background:var(--cc);border:5px dashed rgba(255,255,255,.9);box-shadow:0 0 0 3px var(--cc),0 4px 0 3px rgba(0,0,0,.28),0 9px 12px rgba(0,0,0,.25);cursor:pointer;transition:transform .12s}
 .chip span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:900 12.5px/1 sans-serif;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
 .chip:active{transform:translateY(3px) scale(.94)}.chip:disabled{opacity:.3}
-.chip.c50{--cc:#1f7bff}.chip.c100{--cc:#16181d}.chip.c250{--cc:#12a150}.chip.c500{--cc:#8a3dff}.chip.c1000{--cc:#d4a017}.chip.c5000{--cc:#e0182d}
+.chip.c50{--cc:#1f7bff}.chip.c100{--cc:#16181d}.chip.c250{--cc:#12a150}.chip.c500{--cc:#8a3dff}.chip.c1000{--cc:#d4a017}.chip.c5000{--cc:#e0182d}.chip.c10000{--cc:#0aa5b8}.chip.c50000{--cc:#ff7a00}.chip.c100000{--cc:#111;color:#ffd84d}
 .bj-seg{margin-bottom:10px}.bj-seg button{flex:1}
 .chip.sel{transform:translateY(-6px) scale(1.08);box-shadow:0 0 0 3px var(--cc),0 0 0 6px #ffd43b,0 10px 14px rgba(0,0,0,.28)}
 .bj-me{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.bj-me div{background:linear-gradient(135deg,#0e7c45,#12a150);color:#fff;border-radius:16px;padding:12px;text-align:center}.bj-me small{display:block;font-size:11.5px;opacity:.9}.bj-me b{font-size:22px}
@@ -1887,7 +1887,7 @@ function slipCalc(){
   }
   if(!err&&sels.some(s=>!s.open))err='Un des matchs a commencé : retirez-le du coupon.';
   if(!err&&total>state.coins)err='Pas assez de pièces (il vous reste '+nf(state.coins)+').';
-  if(!err&&sels.some(s=>s.bo)&&(ui.mode==='simple'?sels.some(s=>s.bo&&Math.floor(+ui.stakes[selKey(s)]||0)>500):total>500))err='Cote boostée : mise maximum 500 pièces.';
+  if(!err&&sels.some(s=>s.bo)&&(ui.mode==='simple'?sels.some(s=>s.bo&&Math.floor(+ui.stakes[selKey(s)]||0)>10000):total>10000))err='Cote boostée : mise maximum 10 000 pièces.';
   if(!err&&sels.some(s=>s.bo)&&state.boostDay===today())err='Tu as déjà joué la cote boostée aujourd\'hui.';
   if(!err&&sels.length&&(ui.mode==='simple'?sels.some(s=>!(Math.floor(+ui.stakes[selKey(s)]||0)>0)):!(total>0)))err='Indiquez une mise pour chaque pari.';
   return{sels,single,boostOn,shieldOn,total,gain,err,combiOdds};
@@ -2160,7 +2160,7 @@ function boostMatch(){const vis=visibleMatches().filter(m=>status(m)==='avenir'&
   const fav=m.o[0]<=m.o[2]?'1':'2',base=oddsOf(m,'1x2',fav);return{m,opt:fav,base,odds:Math.round(base*1.3*100)/100}}
 function boostCard(){const B=boostMatch();if(!B)return '';const m=B.m,lbl=B.opt==='1'?m.home:m.away,on=ui.slip.some(s=>s.matchId===m.id&&s.bo);
   return '<div class="bo-card"><div class="bo-h"><b>🚀 Cote boostée du jour</b><span>'+m.flag+' '+esc(m.comp)+' · '+hhmm(m.ko)+'</span></div><div class="bo-m"><b>'+esc(m.home)+' – '+esc(m.away)+'</b><span>'+esc(lbl)+' gagne</span></div>'+
-    '<button class="bo-b'+(on?' on':'')+'" data-boostbet="1"><s>'+fo(B.base)+'</s><b>'+fo(B.odds)+'</b><small>'+(on?'Dans le coupon ✓':'Mise max 500')+'</small></button></div>'}
+    '<button class="bo-b'+(on?' on':'')+'" data-boostbet="1"><s>'+fo(B.base)+'</s><b>'+fo(B.odds)+'</b><small>'+(on?'Dans le coupon ✓':'Mise max 10 000')+'</small></button></div>'}
 function addBoost(){const B=boostMatch();if(!B)return;const i=ui.slip.findIndex(s=>s.matchId===B.m.id&&s.mk==='1x2');if(i>=0)ui.slip.splice(i,1);
   if(!ui.slip.some(s=>s.bo)){const s={matchId:B.m.id,mk:'1x2',opt:B.opt,bo:B.odds};ui.slip.push(s);ui.stakes[selKey(s)]=100}else{ui.slip=ui.slip.filter(s=>!s.bo)}
   renderSlip();renderView();if(ui.slip.some(s=>s.bo))$('#aside')&&$('#aside').classList.add('open')}
@@ -2247,9 +2247,9 @@ function lvBadgesHtml(lv,g){const B=(g||[]).map(id=>BADGES.find(b=>b.id===id)).f
   return '<div class="pf-sec pf-lb">'+(lv?'<div class="pf-lvc">⭐ Niveau <b>'+lv+'</b></div>':'')+(B.length?'<div class="pf-bd">'+B.map(b=>'<span title="'+esc(b.n+' : '+b.d)+'">'+b.ic+'</span>').join('')+'</div><small>'+B.length+' badge'+(B.length>1?'s':'')+'</small>':'')+'</div>'}
 
 /* ---------- Coffre du jour ---------- */
-const CHEST=[{w:20,k:'coins',v:200,ic:'🪙',t:'200 pièces'},{w:15,k:'coins',v:300,ic:'🪙',t:'300 pièces'},{w:10,k:'coins',v:500,ic:'💰',t:'500 pièces'},
+const CHEST=[{w:20,k:'coins',v:4000,ic:'🪙',t:'4 000 pièces'},{w:15,k:'coins',v:6000,ic:'🪙',t:'6 000 pièces'},{w:10,k:'coins',v:10000,ic:'💰',t:'10 000 pièces'},
   {w:15,k:'dia',v:200,ic:'💎',t:'200 diamants'},{w:10,k:'dia',v:500,ic:'💎',t:'500 diamants'},{w:12,k:'inv',v:'boost',ic:'🚀',t:'1 Boost de cote +10 %'},
-  {w:8,k:'inv',v:'shield',ic:'🛡️',t:'1 Assurance'},{w:6,k:'coins',v:1000,ic:'💰',t:'1 000 pièces'},{w:3,k:'dia',v:1500,ic:'💎',t:'1 500 diamants'},{w:1,k:'coins',v:5000,ic:'👑',t:'JACKPOT : 5 000 pièces',jp:true}];
+  {w:8,k:'inv',v:'shield',ic:'🛡️',t:'1 Assurance'},{w:6,k:'coins',v:20000,ic:'💰',t:'20 000 pièces'},{w:3,k:'dia',v:1500,ic:'💎',t:'1 500 diamants'},{w:1,k:'coins',v:100000,ic:'👑',t:'JACKPOT : 100 000 pièces',jp:true}];
 const chestReady=()=>!!session&&(!state.chest||state.chest.day!==today());
 function chestDraw(){const T=CHEST.reduce((a,x)=>a+x.w,0);let r=bjRand(T);for(const x of CHEST){if(r<x.w)return x;r-=x.w}return CHEST[0]}
 function chestHtml(){return '<button class="chest" id="chest" data-chestgo="1" aria-label="Ouvrir le coffre"><span class="ch-rays"></span><span class="ch-lid"><i></i></span><span class="ch-body"><i></i><b></b></span></button>'}
@@ -2586,7 +2586,7 @@ function guestBanner(){
   return '<div class="guest"><div><b>🎉 Jouez gratuitement</b><span>'+nf(DAILY)+' pièces par jour'+(par?' + <b>'+PARRAIN_BONUS+' offertes</b> par '+esc(par):'')+'. Compte créé en 10 secondes.</span></div><button data-auth="signup">Créer mon compte</button></div>';
 }
 /* ---------- Blackjack (pièces uniquement) ---------- */
-const BJ_MIN=50,BJ_MAX=5000,BJ_CHIPS=[50,100,250,500,1000,5000];
+const BJ_MIN=50,BJ_MAX=100000,BJ_CHIPS=[100,1000,5000,10000,50000,100000];
 let bjBusy=false,bjSeen=new Set(),bjReveal=false,bjCid=0,bjFx='',bjAC=null;
 function bjS(){const t=today();let b=state.bj;if(!b||b.day!==t)b=state.bj={day:t,n:0,bet:(b&&b.bet)||100,cur:b?b.cur:null,w:0,l:0};return b}
 function bjBet(){const b=bjS();return Math.max(BJ_MIN,Math.min(b.bet||100,BJ_MAX,Math.floor(state.coins/50)*50))}
@@ -2638,7 +2638,7 @@ function renderBJ(){
     ctl='<div class="bj-ctl acts"><button class="bj-a hit" data-bj="hit"'+(off?' disabled':'')+'><i>＋</i>Tirer</button><button class="bj-a stand" data-bj="stand"'+(off?' disabled':'')+'><i>✋</i>Rester</button><button class="bj-a dbl" data-bj="double"'+(off||c.p.length!==2||state.coins<c.bet?' disabled':'')+'><i>×2</i>Doubler</button></div>'}
   else{const bet=bjBet(),ok=state.coins>=BJ_MIN;
     ctl='<div class="bj-ctl"><div class="bj-mise"><small>Votre mise</small><b>'+nf(bet)+'</b><small>pièces</small></div><div class="bj-chips">'+BJ_CHIPS.map(v=>'<button class="chip c'+v+(v===bet?' sel':'')+'" data-bjchip="'+v+'"'+(state.coins<v?' disabled':'')+'><span>'+(v>=1000?(v/1000)+'K':v)+'</span></button>').join('')+'</div>'+
-    '<div class="bj-row"><button class="bj-mini" data-bjset="less">− 50</button><button class="bj-mini" data-bjset="more">+ 50</button><button class="bj-mini" data-bjset="half">½</button><button class="bj-mini" data-bjset="dbl">×2</button><button class="bj-mini" data-bjset="'+BJ_MAX+'">Max</button></div>'+
+    '<div class="bj-row"><button class="bj-mini" data-bjset="less">− 500</button><button class="bj-mini" data-bjset="more">+ 500</button><button class="bj-mini" data-bjset="half">½</button><button class="bj-mini" data-bjset="dbl">×2</button><button class="bj-mini" data-bjset="'+BJ_MAX+'">Max</button></div>'+
     '<button class="bj-deal" data-bj="deal"'+(ok?'':' disabled')+'>'+(c?'Rejouer':'Distribuer')+' · '+nf(bet)+' 🪙</button>'+(ok?'':'<p class="bj-note">Pas assez de pièces : revenez demain pour '+nf(DAILY)+' pièces.</p>')+'</div>'}
   if(bjFull)return {stage:table,ctl};
   return '<div class="bj-wrap"><div class="bj-top"><div class="bj-h"><b>🃏 Blackjack</b><small>Mise de '+BJ_MIN+' à '+nf(BJ_MAX)+' pièces · gagné = mise × 2</small></div><button class="bj-snd" data-bjsnd="1" title="Son">'+(bjSndOn()?'🔊':'🔇')+'</button></div>'+
@@ -3709,7 +3709,7 @@ document.addEventListener('click',e=>{
   if(d.gplay){const g=d.gplay;if(g==='rl')rlSpin();else if(g==='sl')slSpin();else if(g==='pl')plDrop();return}
   if(d.bjchip){const b=bjS();if(gBusy||(gGame()==='bj'&&b.cur&&b.cur.st!=='done'))return;b.bet=+d.bjchip;b.bet=bjBet();bjSnd('chip');gRefresh();return}
   if(d.bjview){ui.bjView=d.bjview;if(d.bjview==='board'){ui.bjBoard=null;loadBjBoard()}renderView();return}
-  if(d.bjset){const b=bjS();if(gBusy||(gGame()==='bj'&&b.cur&&b.cur.st!=='done'))return;b.bet=d.bjset==='less'?Math.max(BJ_MIN,b.bet-50):d.bjset==='more'?Math.min(BJ_MAX,b.bet+50):d.bjset==='half'?Math.max(BJ_MIN,Math.round(b.bet/2/50)*50):d.bjset==='dbl'?Math.min(BJ_MAX,b.bet*2):+d.bjset;b.bet=bjBet();bjSnd('chip');gRefresh();return}
+  if(d.bjset){const b=bjS();if(gBusy||(gGame()==='bj'&&b.cur&&b.cur.st!=='done'))return;b.bet=d.bjset==='less'?Math.max(BJ_MIN,b.bet-500):d.bjset==='more'?Math.min(BJ_MAX,b.bet+500):d.bjset==='half'?Math.max(BJ_MIN,Math.round(b.bet/2/50)*50):d.bjset==='dbl'?Math.min(BJ_MAX,b.bet*2):+d.bjset;b.bet=bjBet();bjSnd('chip');gRefresh();return}
   if(d.copy){copyText(d.copy);return}
   if(d.sharetxt!==undefined){shareLink(d.sharetxt,d.shareurl);return}
   if(d.sharebet){shareBet(d.sharebet);return}
