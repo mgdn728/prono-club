@@ -199,6 +199,12 @@ aside{position:sticky;top:120px;align-self:start}
 .auth .menu{display:grid;gap:8px;margin-top:8px}
 .auth .menu button{background:var(--card2);border:1px solid var(--line);padding:11px;border-radius:10px;font-weight:700}
 .board{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.wprize{margin:0 0 12px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#fff6d6,#ffe7b0);border:1px solid #f5d27a;color:#3a2600}
+.wprize>b{display:block;font-size:15px;margin-bottom:8px}.wprize small{display:block;font-size:12px;opacity:.8;margin-top:8px}
+.wp-row{display:flex;gap:6px;flex-wrap:wrap}.wp-row span{flex:1;min-width:92px;text-align:center;background:#fff;border-radius:12px;padding:7px 4px;font-weight:800;font-size:14px;box-shadow:0 2px 6px rgba(120,80,0,.12)}
+.wp-last{margin-top:8px;font-size:13px}.wp-last b{cursor:pointer;text-decoration:underline dotted}
+.brow .val .prize{display:block;font-style:normal;font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;margin-bottom:3px;text-align:center;white-space:nowrap;background:#fff2c2;color:#7a5200}
+.brow .val .prize.p2{background:#eef1f6;color:#4a5466}.brow .val .prize.p3{background:#fbe3d2;color:#7a3f12}
 .brow{display:grid;grid-template-columns:44px 1fr auto auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
 .brow:first-child{border-top:0}
 .brow .rk{font-weight:800;color:var(--muted);text-align:center}
@@ -1468,8 +1474,21 @@ function logout(msg){
   try{if(mp.open)closeMp();if(profOpen)closeProfil();if(pk.open)pkClose();clearInterval(pk.watch);pk.watch=null;pk.sent=null;pk.invId=null}catch(e){}
   renderAll();openAuth(msg);
 }
+function weekPrizeBox(){
+  const P=ui.podium,m=['🥇','🥈','🥉'];
+  return '<div class="wprize"><b>🎁 Récompenses de fin de semaine</b><div class="wp-row">'+WEEK_PRIZE.map((v,i)=>'<span class="p'+(i+1)+'">'+m[i]+' '+nf(v)+' 🪙</span>').join('')+'</div><small>Versées automatiquement chaque lundi aux 3 premiers de la semaine.</small>'+
+    (Array.isArray(P)&&P.length?'<div class="wp-last">Semaine dernière : '+P.map(x=>m[x.rang-1]+' <b data-prof="'+esc(x.pseudo)+'" role="button">'+esc(x.pseudo)+'</b>').join(' · ')+'</div>':'')+'</div>'}
+async function loadPodium(){try{ui.podium=await rpc('podium_semaine',{})}catch(e){ui.podium=null}if(ui.tab==='chat'&&ui.social==='board'&&ui.boardMode==='week')renderView()}
+let weekClaiming=false;
+async function claimWeek(){
+  if(!session||!synced||weekClaiming)return;weekClaiming=true;
+  try{const r=await rpc('recompenses_recevoir',{p_token:session.token});
+    if(Array.isArray(r)&&r.length){const tot=r.reduce((a,x)=>a+(x.montant||0),0);state.coins+=tot;save();clearTimeout(saveTimer);pushRemote();renderAll();
+      celebrate('🏆','Récompense de la semaine',r.map(x=>'Vous avez fini <b>'+(x.rang===1?'1er':x.rang+'e')+'</b> du classement de la semaine : <b>+'+nf(x.montant)+' pièces</b> !').join('<br>'))}}
+  catch(e){}
+  weekClaiming=false}
 async function loadBoard(){
-  const mode=ui.boardMode;
+  const mode=ui.boardMode;if(mode==='week'&&ui.podium===undefined){ui.podium=null;loadPodium()}
   try{ui.boards[mode]=await rpc('classement',{p_semaine:mode==='week'})}
   catch(e){try{const r=await rpc('classement',{});ui.boards.all=r;ui.boards.week='old'}catch(e2){ui.boards[mode]='err'}}
   if(ui.tab==='chat'&&ui.social==='board')renderView();
@@ -2485,7 +2504,7 @@ async function claimGifts(){
     if(Array.isArray(r)&&r.length){const tot=r.reduce((a,x)=>a+(x.montant||0),0);state.coins+=tot;save();clearTimeout(saveTimer);pushRemote();renderAll();
       celebrate('🎁','Vous avez reçu des pièces',r.map(x=>'<b>'+esc(x.de)+'</b> vous a envoyé <b>'+nf(x.montant)+' pièces</b>').join('<br>')+'<br><br>Elles sont ajoutées à vos pièces du jour.')}}
   catch(e){}
-  giftClaiming=false}
+  giftClaiming=false;claimWeek()}
 async function amiAction(kind,pseudo,btn){
   if(!session){if(mp.open)closeMp();if(profOpen)closeProfil();ui.authMode='signup';openAuth('Créez un compte pour ajouter des amis.');return}
   if(kind==='del'){const ami=ui.amiEtat==='amis'||(ui.amis||[]).some(a=>a.pseudo.toLowerCase()===pseudo.toLowerCase()&&a.statut==='amis');
@@ -2571,20 +2590,22 @@ document.addEventListener('submit',async e=>{
 });
 
 function boardSeg(){return '<div class="seg mini"><button data-bmode="week" class="'+(ui.boardMode==='week'?'on':'')+'">📅 Cette semaine</button><button data-bmode="all" class="'+(ui.boardMode==='all'?'on':'')+'">⭐ Depuis le début</button></div>'}
-function boardRows(b,mode,emptyMsg){
+const WEEK_PRIZE=[10000,5000,3000];
+function boardRows(b,mode,emptyMsg,prizes){
   if(b==null)return '<div class="empty">Chargement du classement…</div>';
   if(b==='err')return '<div class="empty">Impossible de charger le classement pour le moment.</div>';
   const key=mode==='week'?'hebdo':'diamants';
   const rows=b.slice().sort((x,y)=>(y[key]||0)-(x[key]||0)||(y.diamants||0)-(x.diamants||0));
   if(!rows.length)return '<div class="empty">'+(emptyMsg||'Personne au classement pour l\'instant.')+'</div>';
   return '<div class="board">'+rows.map((r,i)=>{const me=session&&r.pseudo.toLowerCase()===session.pseudo.toLowerCase();
-    return '<div class="brow r'+(i+1)+(me?' me':'')+'" data-prof="'+esc(r.pseudo)+'" role="button" tabindex="0" title="Voir le profil"><span class="rk">'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</span><span class="who">'+pav(r.pseudo,r.deco)+'<span class="wn"><span class="nm">'+pname(r.pseudo,r.deco,me?' <small>(vous)</small>':'')+'</span><small>'+r.gagnes+' paris gagnés</small></span></span><span class="val"><b>'+nf(r[key]||0)+' 💎</b><small>'+(mode==='week'?'cette semaine':'au total')+'</small></span></div>'}).join('')+'</div>';
+    return '<div class="brow r'+(i+1)+(me?' me':'')+'" data-prof="'+esc(r.pseudo)+'" role="button" tabindex="0" title="Voir le profil"><span class="rk">'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</span><span class="who">'+pav(r.pseudo,r.deco)+'<span class="wn"><span class="nm">'+pname(r.pseudo,r.deco,me?' <small>(vous)</small>':'')+'</span><small>'+r.gagnes+' paris gagnés</small></span></span><span class="val">'+(prizes&&i<3?'<em class="prize p'+(i+1)+'">+'+nf(WEEK_PRIZE[i])+' 🪙</em>':'')+'<b>'+nf(r[key]||0)+' 💎</b><small>'+(mode==='week'?'cette semaine':'au total')+'</small></span></div>'}).join('')+'</div>';
 }
 function renderBoard(){
   let mode=ui.boardMode,b=ui.boards[mode];
   if(mode==='week'&&b==='old'){mode='all';b=ui.boards.all}
   return pageHero('ph-board','🏆','Classement','Le classement de la semaine repart à zéro chaque lundi : tout le monde a sa chance !')+boardSeg()+
-    boardRows(b,mode,mode==='week'?'Personne n\'a encore gagné de diamants cette semaine. À vous de jouer !':'');
+    (mode==='week'?weekPrizeBox():'')+
+    boardRows(b,mode,mode==='week'?'Personne n\'a encore gagné de diamants cette semaine. À vous de jouer !':'',mode==='week');
 }
 const LG_ERR={nom_invalide:'Le nom doit faire entre 2 et 30 caractères.',trop_de_ligues:'10 ligues maximum par joueur.',code_inconnu:'Aucune ligue avec ce code.',ligue_pleine:'Cette ligue est complète (50 joueurs).',pas_membre:'Vous ne faites pas partie de cette ligue.',session:'Session expirée, reconnectez-vous.'};
 const isMissingFn=e=>!LG_ERR[e.code]&&/function|PGRST2|schema cache/i.test(e.message||'');
