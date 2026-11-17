@@ -16,10 +16,10 @@ create index if not exists cadeaux_de_idx on public.cadeaux_pieces (de_id, cree_
 alter table public.cadeaux_pieces enable row level security;
 revoke all on public.cadeaux_pieces from anon, authenticated;
 
--- Envoyer des pièces (10 minimum, 5 000 maximum envoyées par jour)
+-- Envoyer des pièces (10 minimum, sans limite par jour)
 create or replace function public.pieces_envoyer(p_token uuid, p_pseudo text, p_montant integer)
 returns json language plpgsql security definer set search_path = public as $$
-declare m public.joueurs; o public.joueurs; auj text; solde integer; deja integer; plafond constant integer := 5000;
+declare m public.joueurs; o public.joueurs; auj text; solde integer; deja integer; plafond constant integer := 2000000000;
 begin
   m := public.ami_moi(p_token); o := public.ami_autre(p_pseudo);
   if m.id = o.id then raise exception 'soi_meme'; end if;

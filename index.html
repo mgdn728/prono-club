@@ -3331,10 +3331,10 @@ function openGift(p){
   if(!session){ui.authMode='login';openAuth();return}
   const c=state.coins,q=[100,250,500,1000].filter(v=>v<=c);
   popup('<div class="pop-ic big">🪙</div><h3>Envoyer des pièces à '+esc(p)+'</h3><p>Vous avez <b>'+nf(c)+' pièces</b> aujourd\'hui. Les pièces envoyées sont retirées de votre compte.</p>'+
-    '<div class="gift-q">'+q.map(v=>'<button data-giftq="'+v+'">'+nf(v)+'</button>').join('')+(c>=10?'<button data-giftq="'+Math.min(c,5000)+'">Max</button>':'')+'</div>'+
-    '<input id="giftN" class="gift-in" type="number" inputmode="numeric" min="10" step="10" max="'+Math.min(c,5000)+'" placeholder="Nombre de pièces">'+
+    '<div class="gift-q">'+q.map(v=>'<button data-giftq="'+v+'">'+nf(v)+'</button>').join('')+(c>=10?'<button data-giftq="'+c+'">Max</button>':'')+'</div>'+
+    '<input id="giftN" class="gift-in" type="number" inputmode="numeric" min="10" step="10" max="'+c+'" placeholder="Nombre de pièces">'+
     '<div class="gift-err" id="giftErr"></div><div class="pop-btns"><button class="pbtn" id="giftSend" data-to="'+esc(p)+'"'+(c<10?' disabled':'')+'>Envoyer</button><button class="pbtn ghost2" data-popclose="1">Annuler</button></div>'+
-    '<p style="font-size:12px;margin-top:10px;color:var(--muted)">10 pièces minimum · 5 000 pièces maximum par jour</p>')}
+    '<p style="font-size:12px;margin-top:10px;color:var(--muted)">10 pièces minimum</p>')}
 async function sendGift(btn){
   if(giftBusy)return;const p=btn.dataset.to,inp=$('#giftN'),er=$('#giftErr'),n=Math.floor(+(inp&&inp.value)||0);
   if(n<10){er.textContent='Choisissez au moins 10 pièces.';return}
