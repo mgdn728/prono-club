@@ -1462,6 +1462,10 @@ const MARKETS=[
  {key:'oe',title:'Nombre de buts pair ou impair',opts:()=>[{id:'p',label:'Pair (0, 2, 4…)',fn:(h,a)=>(h+a)%2==0},{id:'i',label:'Impair (1, 3, 5…)',fn:(h,a)=>(h+a)%2==1}]},
  {key:'cs',title:'Score exact',cs:true,opts:()=>{const o=[];for(let i=0;i<=3;i++)for(let j=0;j<=3;j++)o.push({id:i+'-'+j,label:i+' - '+j,fn:(h,a)=>h==i&&a==j});o.push({id:'autre',label:'Autre',fn:(h,a)=>h>3||a>3});return o}}
 ];
+/* Buteurs : liste « bt » du fichier du jour [nom, 1 ou 2 (équipe), cote]. Résultat : 3e élément de « s » = liste des buteurs (sans les c.s.c.) */
+const butId=n=>'b_'+String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+const BUT_MK={key:'but',title:'Buteur (marque au moins 1 but)',opts:m=>(m.bt||[]).map(p=>({id:butId(p[0]),label:p[0]+' · '+(p[1]===2?m.away:m.home),fn:(h,a,w)=>Array.isArray(w)&&w.some(x=>butId(x)===butId(p[0]))}))};
+const footMarkets=m=>m.bt&&m.bt.length?[MARKETS[0],BUT_MK,...MARKETS.slice(1)]:MARKETS;
 
 const DEFI_GAIN=300,PARRAIN_BONUS=500;
 const STRIPE_DON='https://buy.stripe.com/cNi7sKeCH6Kf56N5NI3ZK01'; // lien de paiement Stripe (montant libre) pour le bouton « Soutenir PronoClub »
@@ -1588,7 +1592,7 @@ function scoreTxt(m){
   return m.s[0]+'-'+m.s[1];
 }
 const SPORTS={
-  foot:{name:'Football',ic:'⚽',col:'#16a34a',three:true,markets:()=>MARKETS},
+  foot:{name:'Football',ic:'⚽',col:'#16a34a',three:true,markets:footMarkets},
   tennis:{name:'Tennis',ic:'🎾',col:'#9bb10a',three:false,markets:setsMarkets},
   basket:{name:'Basket',ic:'🏀',col:'#f0640f',three:false,markets:basketMarkets},
   hockey:{name:'Hockey',ic:'🏒',col:'#0ea5e9',three:true,markets:()=>HOCKEY_MARKETS},
@@ -1663,7 +1667,8 @@ function build(day,arr){
   FIX[day]=arr.map(r=>{
     const sp=SPORTS[r.sp]?r.sp:'foot';
     const prev=old.find(m=>m.id===day+'_'+r.id);
-    const m={id:day+'_'+r.id,day,sp,comp:r.c||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:r.h,away:r.a,ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
+    const m={id:day+'_'+r.id,day,sp,comp:r.c||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:r.h,away:r.a,ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,bt:Array.isArray(r.bt)?r.bt:null,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
+    if(m.bt&&m.s&&!Array.isArray(m.s[2]))m.s=null; // buteurs pas encore connus : le match n'est pas réglé
     const same=prev&&prev.o.join()===r.o.join()&&prev.tl===r.tl&&prev.bo===m.bo;
     if(same){m.dist=prev.dist;m.hl=prev.hl}
     else if(sp==='foot'||sp==='hockey'){
@@ -1684,6 +1689,7 @@ function getOpt(m,mk,opt){const K=marketOf(m,mk);if(!K)return null;return K.opts
 function oddsOf(m,mk,opt){
   if(mk==='1x2'){const i={'1':0,'N':1,'2':2}[opt];return m.o[i]}
   if(mk==='win'){return m.o[opt==='1'?0:1]}
+  if(mk==='but'){const p=(m.bt||[]).find(x=>butId(x[0])===opt);return p?p[2]:null}
   const key=mk+'|'+opt;if(key in m._o)return m._o[key];
   const o=getOpt(m,mk,opt);if(!o)return null;
   let p=0;for(const x of m.dist)if(o.fn(x[0],x[1],x[3]))p+=x[2];
