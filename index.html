@@ -1370,6 +1370,17 @@ body.pf-lock{overflow:hidden}
 .adm-sug button{border:1px solid var(--line,#e3e0ee);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;color:#111;cursor:pointer}
 .adm-sug small{color:#8a86a0;font-weight:600}
 .adm-ok,.adm-ko{font-size:14px;margin:8px 0 0;text-align:left}.adm-ok{color:#0f8a4b}.adm-ko{color:#d92d4a}
+.paych{margin:8px 0 10px}.paych>span{display:block;font-size:13px;font-weight:800;margin-bottom:6px}.paych .seg{display:flex}.paych .seg button{flex:1}.paych small{display:block;font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.35}
+.nx-myst{background:linear-gradient(90deg,#7a2cf5,#00e0b0,#ff3dd4,#7a2cf5);background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;animation:rb 3s linear infinite;filter:drop-shadow(0 0 5px rgba(122,44,245,.55))}
+.fr-myst{background:conic-gradient(from 0deg,#7a2cf5,#00e0b0,#ff3dd4,#111,#7a2cf5);animation:spinfr 2.2s linear infinite;box-shadow:0 0 12px rgba(122,44,245,.7)}
+.fr-myst::after{content:"🔮";position:absolute;bottom:-6px;right:-6px;font-size:12px;line-height:1}
+@keyframes spinfr{to{filter:hue-rotate(360deg)}}
+.myst{position:relative;min-height:190px;display:flex;align-items:center;justify-content:center}
+.myst-box{font-size:110px;animation:mshake .25s ease-in-out infinite;transition:transform .35s,opacity .35s}
+.myst-box.open{animation:none;transform:scale(2.2);opacity:0}
+.myst-res{position:absolute;inset:0;opacity:0;transform:scale(.6);transition:all .45s cubic-bezier(.2,1.6,.4,1)}.myst-res.on{opacity:1;transform:none}
+@keyframes mshake{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.vipc{margin-left:3px}
 </style>
 </head>
 <body>
@@ -1456,6 +1467,11 @@ const STRIPE_DON='https://buy.stripe.com/cNi7sKeCH6Kf56N5NI3ZK01'; // lien de pa
 const SHOP=[
  {id:'c250',sec:'Bonus',ic:'🪙',name:'+5 000 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:2000,kind:'coins',val:5000},
  {id:'c1000',sec:'Bonus',ic:'💰',name:'+20 000 pièces',desc:'Doublez votre budget du jour.',cost:7000,kind:'coins',val:20000},
+ {id:'mystery',sec:'Avantages',ic:'🎁',name:'Boîte mystère',desc:'Des pièces, des diamants ou un objet de la boutique… et 3 objets introuvables ailleurs !',cost:10000,kind:'mystery'},
+ {id:'vip',sec:'Avantages',ic:'👑',name:'Pass VIP 7 jours',desc:'+10 000 pièces chaque jour pendant 7 jours, en plus de tes 20 000. Une couronne 👑 à côté de ton pseudo.',cost:40000,kind:'vip'},
+ {id:'boost25',sec:'Avantages',ic:'⚡',name:'Super boost +25 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,25.',cost:4000,kind:'inv'},
+ {id:'spin',sec:'Avantages',ic:'🎡',name:'Tour de roue en plus',desc:'Un tour de roue de la fortune en plus, quand tu veux.',cost:3000,kind:'inv'},
+ {id:'chestx',sec:'Avantages',ic:'🧰',name:'Coffre en plus',desc:'Ouvre un 2e coffre du jour (jackpot de 100 000 pièces possible).',cost:5000,kind:'inv'},
  {id:'boost',sec:'Bonus',ic:'🚀',name:'Boost de cote +10 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,10.',cost:3000,kind:'inv'},
  {id:'shield',sec:'Bonus',ic:'🛡️',name:'Assurance',desc:'Si le pari assuré est perdu, la mise vous est rendue en diamants.',cost:4500,kind:'inv'},
  {id:'nx_gold',sec:'Pseudo en couleur',ic:'✨',name:'Pseudo doré',desc:'Votre pseudo brille en or dans le chat et les classements.',cost:25000,kind:'name',cls:'nx-gold'},
@@ -1493,6 +1509,9 @@ const SHOP=[
  {id:'lt_ballon',sec:'⏳ Édition limitée',ic:'⚽',name:'Titre « Ballon d\'or »',desc:'Le titre des plus grands pronostiqueurs.',cost:300000,kind:'title',label:'Ballon d\'or',limited:true},
  {id:'lt_lucky',sec:'⏳ Édition limitée',ic:'🍀',name:'Titre « Chanceux »',desc:'Pour ceux à qui tout réussit.',cost:75000,kind:'title',label:'Chanceux 🍀',limited:true},
  {id:'lfx_gold',sec:'⏳ Édition limitée',ic:'👑',name:'Pluie d\'or',desc:'Couronnes et médailles d\'or à chaque victoire.',cost:175000,kind:'fx',cls:'fx-gold',limited:true},
+ {id:'nx_myst',sec:'Exclusif',ic:'🔮',name:'Pseudo Mystère',desc:'Uniquement dans la boîte mystère.',cost:0,kind:'name',cls:'nx-myst',hidden:true,myst:true},
+ {id:'fr_myst',sec:'Exclusif',ic:'🔮',name:'Cadre Mystère',desc:'Uniquement dans la boîte mystère.',cost:0,kind:'frame',cls:'fr-myst',hidden:true,myst:true},
+ {id:'t_myst',sec:'Exclusif',ic:'🔮',name:'Titre « Mystère »',desc:'Uniquement dans la boîte mystère.',cost:0,kind:'title',label:'Mystère',hidden:true,myst:true},
  {id:'fr_amb',sec:'Exclusif',ic:'🤝',name:'Cadre Ambassadeur',desc:'Réservé à ceux qui ont invité 3 amis. Impossible à acheter.',cost:0,kind:'frame',cls:'fr-amb',hidden:true},
  {id:'t_amb',sec:'Exclusif',ic:'🤝',name:'Titre « Ambassadeur »',desc:'Réservé à ceux qui ont invité 10 amis.',cost:0,kind:'title',label:'Ambassadeur',hidden:true},
  {id:'fr_loyal',sec:'Exclusif',ic:'📅',name:'Cadre Fidèle',desc:'Réservé à ceux qui complètent le calendrier de 7 jours.',cost:0,kind:'frame',cls:'fr-loyal',hidden:true},
@@ -1686,6 +1705,7 @@ const LS_SESSION='pronoclub_session';
 let session=null,writing=false,pending=false,saveTimer=null,synced=false;
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+ui.pay=lsGet('pc_pay')==='c'?'c':'d';
 try{session=JSON.parse(lsGet(LS_SESSION)||'null')}catch(e){}
 (function(){try{const q=new URLSearchParams(location.search),p=q.get('p'),l=q.get('l');
   if(p&&/^[A-Za-z0-9_.-]{3,20}$/.test(p)&&!(session&&session.pseudo.toLowerCase()===p.toLowerCase()))lsSet('pc_parrain',p);
@@ -1813,6 +1833,7 @@ function daily(){
     if(!session)toast('☀️ Nouvelle journée : vous avez '+nf(DAILY)+' pièces !');
     ch=true;
   }
+  if((!session||synced)&&vipDaily())ch=true;
   if(session&&synced&&state.streak.last!==today()){
     const s=state.streak;s.n=s.last===addDays(today(),-1)?s.n+1:1;s.last=today();
     const bonus=streakBonus(s.n);state.coins+=bonus;ch=true;
@@ -1831,8 +1852,15 @@ function settle(){
       if(status(m)==='annule'){s.void=true;return}
       allVoid=false;const o=getOpt(m,s.mk,s.opt);
       if(!(o&&o.fn(m.s[0],m.s[1],m.s[2])))won=false;else odds*=s.odds});
-    if(b.boost)odds*=1.1;
-    if(allVoid){b.status='void';b.payout=b.stake;state.diamonds+=b.stake;toast('↩️ Match annulé : mise rendue ('+nf(b.stake)+' 💎)')}
+    if(b.boost)odds*=b.boost===true?1.1:Math.min(1.25,+b.boost||1);
+    const PC=b.pay==='c';
+    if(allVoid){b.status='void';b.payout=b.stake;if(PC)state.coins+=b.stake;else state.diamonds+=b.stake;toast('↩️ Match annulé : mise rendue ('+nf(b.stake)+' '+bcur(b)+')')}
+    else if(won&&PC){
+      b.odds=Math.round(odds*100)/100;b.status='won';b.payout=Math.round(b.stake*b.odds);state.coins+=b.payout;
+      state.stats.won++;state.stats.best=Math.max(state.stats.best,b.odds);
+      toast('🎉 Pari gagné ! +'+nf(b.payout)+' 🪙');setTimeout(()=>winFx(),300);
+      if(session){if(!winOffer)setTimeout(offerShare,2500);winOffer=b.id}
+    }
     else if(won){
       b.odds=Math.round(odds*100)/100;b.status='won';b.payout=Math.round(b.stake*b.odds*(b.evx>1&&b.evx<=2?b.evx:1));state.diamonds+=b.payout;
       if(!state.month||state.month.id!==monthId())state.month={id:monthId(),earned:0};state.month.earned+=b.payout;
@@ -1842,7 +1870,7 @@ function settle(){
       if(session){if(!winOffer)setTimeout(offerShare,2500);winOffer=b.id}
     }else{
       b.status='lost';b.payout=0;state.stats.lost++;
-      if(b.shield){b.refund=b.stake;state.diamonds+=b.stake;toast('🛡️ Pari perdu, mais assuré : +'+nf(b.stake)+' 💎')}
+      if(b.shield){b.refund=b.stake;if(PC)state.coins+=b.stake;else state.diamonds+=b.stake;toast('🛡️ Pari perdu, mais assuré : +'+nf(b.stake)+' '+bcur(b))}
     }
     b.settledAt=Date.now();ch=true;
   }
@@ -1858,6 +1886,8 @@ function settle(){
 }
 
 /* ---------- Coupon ---------- */
+const bcur=b=>b&&b.pay==='c'?'🪙':'💎';
+function payCur(){return ui.pay==='c'?'🪙':'💎'}
 const selKey=s=>s.matchId+'|'+s.mk+'|'+s.opt;
 function inSlip(id,mk,opt){return ui.slip.some(s=>s.matchId===id&&s.mk===mk&&s.opt===opt)}
 function toggleSel(id,mk,opt){
@@ -1873,13 +1903,13 @@ function toggleSel(id,mk,opt){
 function slipCalc(){
   const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?(s.bo||oddsOf(m,s.mk,s.opt)):1,open:m&&status(m)==='avenir'}}).filter(s=>s.m);
   const single=(ui.mode==='simple'&&sels.length===1)||(ui.mode==='combi'&&sels.length>=2);
-  const boostOn=ui.boost&&single&&state.inv.boost>0, shieldOn=ui.shield&&single&&state.inv.shield>0;
+  const b25On=ui.boost25&&single&&(state.inv.boost25||0)>0, boostOn=!b25On&&ui.boost&&single&&state.inv.boost>0, shieldOn=ui.shield&&single&&state.inv.shield>0, bm=b25On?1.25:boostOn?1.1:1;
   let total=0,gain=0,err='',combiOdds=1;
   if(ui.mode==='simple'){
-    for(const s of sels){const st=Math.max(0,Math.floor(+ui.stakes[selKey(s)]||0));total+=st;gain+=st*s.odds*(boostOn?1.1:1)}
+    for(const s of sels){const st=Math.max(0,Math.floor(+ui.stakes[selKey(s)]||0));total+=st;gain+=st*s.odds*bm}
   }else{
     for(const s of sels)combiOdds*=s.odds;
-    combiOdds=Math.round(combiOdds*(boostOn?1.1:1)*100)/100;
+    combiOdds=Math.round(combiOdds*bm*100)/100;
     total=Math.max(0,Math.floor(+ui.combi||0));gain=total*combiOdds;
     const ids=sels.map(s=>s.matchId);
     if(sels.length<2)err='Un combiné demande au moins 2 sélections.';
@@ -1890,31 +1920,52 @@ function slipCalc(){
   if(!err&&sels.some(s=>s.bo)&&(ui.mode==='simple'?sels.some(s=>s.bo&&Math.floor(+ui.stakes[selKey(s)]||0)>10000):total>10000))err='Cote boostée : mise maximum 10 000 pièces.';
   if(!err&&sels.some(s=>s.bo)&&state.boostDay===today())err='Tu as déjà joué la cote boostée aujourd\'hui.';
   if(!err&&sels.length&&(ui.mode==='simple'?sels.some(s=>!(Math.floor(+ui.stakes[selKey(s)]||0)>0)):!(total>0)))err='Indiquez une mise pour chaque pari.';
-  return{sels,single,boostOn,shieldOn,total,gain,err,combiOdds};
+  return{sels,single,boostOn,b25On,bm,shieldOn,total,gain,err,combiOdds};
 }
 function placeBets(){
   const c=slipCalc();if(c.err||!c.sels.length)return;
   const snap=s=>({matchId:s.matchId,mk:s.mk,opt:s.opt,odds:s.odds,sp:s.m.sp,bo:s.bo?1:undefined,match:s.m.home+' – '+s.m.away,market:mkTitle(marketOf(s.m,s.mk),s.m),pick:getOpt(s.m,s.mk,s.opt).label,comp:s.m.flag+' '+s.m.comp,ko:s.m.ko});
-  const ex=evVal('dia'),base={placedAt:Date.now(),status:'pending',boost:c.boostOn,shield:c.shieldOn,evx:ex>1?ex:undefined};
+  const ex=evVal('dia'),PC=ui.pay==='c',base={placedAt:Date.now(),status:'pending',boost:c.b25On?1.25:c.boostOn,shield:c.shieldOn,evx:ex>1&&!PC?ex:undefined,pay:PC?'c':undefined};
   if(c.sels.some(s=>s.bo))state.boostDay=today();
   if(ui.mode==='simple'){
-    for(const s of c.sels){const st=Math.floor(+ui.stakes[selKey(s)]);state.bets.push({...base,id:uid(),type:'Simple',sels:[snap(s)],stake:st,odds:Math.round(s.odds*(c.boostOn?1.1:1)*100)/100})}
+    for(const s of c.sels){const st=Math.floor(+ui.stakes[selKey(s)]);state.bets.push({...base,id:uid(),type:'Simple',sels:[snap(s)],stake:st,odds:Math.round(s.odds*c.bm*100)/100})}
   }else{
     state.bets.push({...base,id:uid(),type:'Combiné ('+c.sels.length+')',sels:c.sels.map(snap),stake:Math.floor(+ui.combi),odds:c.combiOdds});
   }
   state.coins-=c.total;
   if(c.boostOn)state.inv.boost--;
+  if(c.b25On)state.inv.boost25--;
   if(c.shieldOn)state.inv.shield--;
-  ui.slip=[];ui.boost=false;ui.shield=false;
+  ui.slip=[];ui.boost=false;ui.boost25=false;ui.shield=false;
   save();
   $('#aside').classList.remove('open');
   renderAll();
   const last=state.bets[state.bets.length-1];
-  popup('<div class="pop-ic big">✅</div><h3>Pari validé !</h3><p><b>'+nf(c.total)+' pièces</b> misées · gain possible <b style="color:#1f7bff">'+nf(c.gain)+' 💎</b></p><div class="pop-btns"><button class="pbtn" data-sharebet="'+last.id+'">📤 Partager mon coupon</button><button class="pbtn ghost2" data-popclose="1">Continuer</button></div>'+(notifSupport()&&!notifOn()?'<button class="later" data-notifs="1">🔔 Me prévenir quand le résultat tombe</button>':''));
+  popup('<div class="pop-ic big">✅</div><h3>Pari validé !</h3><p><b>'+nf(c.total)+' pièces</b> misées · gain possible <b style="color:#1f7bff">'+nf(c.gain)+' '+payCur()+'</b></p><div class="pop-btns"><button class="pbtn" data-sharebet="'+last.id+'">📤 Partager mon coupon</button><button class="pbtn ghost2" data-popclose="1">Continuer</button></div>'+(notifSupport()&&!notifOn()?'<button class="later" data-notifs="1">🔔 Me prévenir quand le résultat tombe</button>':''));
 }
 
 /* ---------- Joueurs : décorations ---------- */
-const NAMEFX=['nx-gold','nx-neon','nx-fire','nx-rainbow','nx-admin','nx-galaxy','nx-ice','nx-lava'],FRAMES=['fr-fire','fr-ice','fr-gold','fr-crown','fr-admin','fr-rgb','fr-pulse','fr-comet','fr-flame','fr-galaxy','fr-diamond','fr-love','fr-amb','fr-loyal'];
+const NAMEFX=['nx-myst','nx-gold','nx-neon','nx-fire','nx-rainbow','nx-admin','nx-galaxy','nx-ice','nx-lava'],FRAMES=['fr-myst','fr-fire','fr-ice','fr-gold','fr-crown','fr-admin','fr-rgb','fr-pulse','fr-comet','fr-flame','fr-galaxy','fr-diamond','fr-love','fr-amb','fr-loyal'];
+/* Pass VIP et boîte mystère */
+const VIP_BONUS=10000;
+function vipOn(){return !!(state.vip&&state.vip.until&&state.vip.until>=today())}
+function frDay(d){const x=new Date(d+'T12:00:00');return x.getDate()+' '+MOIS[x.getMonth()]}
+function buyVip(){const st=vipOn()?addDays(state.vip.until,1):today();state.vip={until:addDays(st,6),last:(state.vip&&state.vip.last)||null};
+  if(state.vip.last!==today()){state.vip.last=today();state.coins+=VIP_BONUS}
+  celebrate('👑','Pass VIP activé !','Tu reçois <b>+'+nf(VIP_BONUS)+' pièces</b> chaque jour jusqu\'au <b>'+frDay(state.vip.until)+'</b>, en plus de tes '+nf(DAILY)+' pièces. Celles d\'aujourd\'hui sont déjà ajoutées !')}
+function vipDaily(){if(!vipOn()||state.vip.last===today())return false;state.vip.last=today();state.coins+=VIP_BONUS;setTimeout(()=>toast('👑 VIP : +'+nf(VIP_BONUS)+' pièces aujourd\'hui'),1500);return true}
+function openMystery(){
+  const owned=id=>state.owned.includes(id);
+  const cos=SHOP.filter(x=>EQUIP[x.kind]&&x.cost>0&&!x.hidden&&!x.limited&&!owned(x.id)),my=SHOP.filter(x=>x.myst&&!owned(x.id));
+  const T=[[34,'c'],[24,'d'],[26,'o'],[16,'m']];let r=bjRand(100),k='c';for(const[w,t]of T){if(r<w){k=t;break}r-=w}
+  if(k==='o'&&!cos.length)k=my.length?'m':'d';if(k==='m'&&!my.length)k=cos.length?'o':'d';
+  let ic,t,sub;
+  if(k==='c'){const v=[30000,50000,100000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.coins+=v;ic='🪙';t='+'+nf(v)+' pièces';sub='Ajoutées à tes pièces du jour'}
+  else if(k==='d'){const v=[4000,8000,25000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.diamonds+=v;ic='💎';t='+'+nf(v)+' diamants';sub='Ajoutés à tes diamants'}
+  else{const L=k==='o'?cos:my,x=L[bjRand(L.length)];state.owned.push(x.id);state[EQUIP[x.kind]]=eqVal(x);ic=x.ic;t=x.name;sub=k==='m'?'🔮 Objet ultra rare, introuvable dans la boutique !':'Valeur '+nf(x.cost)+' 💎 · déjà activé'}
+  save();
+  popup('<div class="myst"><div class="myst-box" id="mystBox">🎁</div><div class="myst-res" id="mystRes"><div class="pop-ic big">'+ic+'</div><h3>'+t+'</h3><p>'+sub+'</p></div></div><div class="pop-btns"><button class="pbtn" data-popclose="1">Super !</button></div>');
+  bjSnd('chip');setTimeout(()=>{const B=$('#mystBox'),R=$('#mystRes');if(B)B.classList.add('open');if(R)R.classList.add('on');bjSnd(k==='m'?'bj':'win');winFx(k==='m'?'fx-gold':'fx-confetti')},1100)}
 /* Objets limités : 3 objets différents chaque semaine */
 function limNow(){const w=weekId();let h=0;for(const ch of w)h=(h*31+ch.charCodeAt(0))>>>0;const pool=SHOP.filter(i=>i.limited).map(i=>i.id);
   for(let i=pool.length-1;i>0;i--){h=(h*1103515245+12345)>>>0;const j=h%(i+1);[pool[i],pool[j]]=[pool[j],pool[i]]}return pool.slice(0,3)}
@@ -1928,9 +1979,9 @@ function winFx(force){const k=force||state.winFx;if(!k)return;
      :'<i style="left:'+x+'%;font-size:'+(22+Math.random()*22)+'px;animation-delay:'+d+'s;animation-duration:'+t+'s;--r:'+r+'deg">'+E[i%E.length]+'</i>'}
   if(k==='fx-fire'||k==='fx-gold')h+='<b class="'+k+'-glow"></b>';
   L.innerHTML=h;document.body.appendChild(L);setTimeout(()=>L.remove(),4200)}
-function myDeco(){return{t:state.title||undefined,c:state.nameFx||undefined,f:state.frame||undefined,l:state.lv||undefined}}
+function myDeco(){return{t:state.title||undefined,c:state.nameFx||undefined,f:state.frame||undefined,l:state.lv||undefined,v:vipOn()?1:undefined}}
 function pav(p,d){d=d||{};return FRAMES.includes(d.f)?'<span class="frm '+d.f+'">'+avatar(p)+'</span>':avatar(p)}
-function pname(p,d,extra){d=d||{};return '<span class="pn'+(NAMEFX.includes(d.c)?' '+d.c:'')+'">'+esc(p)+'</span>'+(extra||'')+(d.t?' <span class="ptitle'+(d.t==='Administrateur'?' adm':'')+'">'+(d.t==='Administrateur'?'🛡️ ':'')+esc(d.t)+'</span>':'')}
+function pname(p,d,extra){d=d||{};return '<span class="pn'+(NAMEFX.includes(d.c)?' '+d.c:'')+'">'+esc(p)+'</span>'+(d.v?'<span class="vipc" title="VIP">👑</span>':'')+(extra||'')+(d.t?' <span class="ptitle'+(d.t==='Administrateur'?' adm':'')+'">'+(d.t==='Administrateur'?'🛡️ ':'')+esc(d.t)+'</span>':'')}
 function compRank(m){const i=TOP.findIndex(t=>m.comp===t||m.comp.startsWith(t+' '));return i<0?99:i}
 
 /* ---------- Fenêtres (popups) ---------- */
@@ -2114,7 +2165,8 @@ function calNext(){const c=state.cal||{n:0,last:null};if(c.last===today())return
 const calReady=()=>!!session&&!calNext().done;
 const WHEEL=[{t:'100',ic:'🪙',r:{c:100},w:20,col:'#ffcf3d'},{t:'250',ic:'🪙',r:{c:250},w:18,col:'#ff9f1a'},{t:'200',ic:'💎',r:{d:200},w:16,col:'#4fc3ff'},{t:'500',ic:'🪙',r:{c:500},w:12,col:'#ff5c8a'},
   {t:'Boost',ic:'🚀',r:{inv:'boost'},w:10,col:'#7a2cf5'},{t:'500',ic:'💎',r:{d:500},w:9,col:'#1f88e5'},{t:'Assur.',ic:'🛡️',r:{inv:'shield'},w:8,col:'#12a150'},{t:'2 000',ic:'💰',r:{c:2000},w:3,col:'#e0182d',big:true}];
-function wheelLeft(){if(!session)return 0;const w=state.wheel||{};const used=w.day===today()?w.used||0:0;return Math.max(0,1+(state.shareDay===today()?1:0)-used)}
+function wheelBase(){const w=state.wheel||{};const used=w.day===today()?w.used||0:0;return Math.max(0,1+(state.shareDay===today()?1:0)-used)}
+function wheelLeft(){if(!session)return 0;return wheelBase()+((state.inv&&state.inv.spin)||0)}
 function dailyRow(){if(!session)return '';const c=chestReady(),k=calReady(),w=wheelLeft(),m=missReady();
   const it=(on,ic,t,a,s)=>'<button class="dr-b'+(on?' on':'')+'" '+a+'><span class="dr-ic">'+ic+(on?'<i></i>':'')+'</span><b>'+t+'</b><small>'+s+'</small></button>';
   return '<div class="drow"><div class="dr-h"><b>🎁 Bonus du jour</b>'+(c||k||w||m?'<span>'+[c,k,w>0,m>0].filter(Boolean).length+' à récupérer</span>':'<span>Tout est récupéré ✓</span>')+'</div><div class="dr-g">'+
@@ -2144,7 +2196,7 @@ function openWheel(){if(!session){ui.authMode='signup';openAuth('Créez un compt
       (state.shareDay===today()?'<p class="chv-sub">Plus de tours aujourd\'hui. Reviens dans '+untilMidnight()+' !</p><button class="bj-deal" data-chestclose="1">À demain !</button>':'<button class="bj-deal" data-wheelshare="1">📤 Partager pour un tour bonus</button>'))+'</div>'}
 function wheelGo(){if(wheelBusy||wheelLeft()<=0)return;wheelBusy=true;
   const T=WHEEL.reduce((a,x)=>a+x.w,0);let r=bjRand(T),i=0;for(;i<WHEEL.length;i++){if(r<WHEEL[i].w)break;r-=WHEEL[i].w}const x=WHEEL[i];
-  const w=state.wheel&&state.wheel.day===today()?state.wheel:{day:today(),used:0};w.used++;state.wheel=w;giveRw(x.r);track('wheel');if(x.big)unlockBadge('wheelbig');save();
+  const w=state.wheel&&state.wheel.day===today()?state.wheel:{day:today(),used:0};if(wheelBase()>0)w.used++;else state.inv.spin=Math.max(0,(state.inv.spin||0)-1);state.wheel=w;giveRw(x.r);track('wheel');if(x.big)unlockBadge('wheelbig');save();
   const a=360/WHEEL.length,target=((-i*a)%360+360)%360,cur=((wheelRot%360)+360)%360,from=wheelRot;wheelRot+=360*5+((target-cur+360)%360)+(bjRand(21)-10)*a/40;
   const el=$('#whW'),B=$('#whBtn');if(B){B.disabled=true;B.textContent='…'}
   if(el){el.style.transform='rotate('+from+'deg)';void el.offsetWidth;el.style.transition='transform 4.2s cubic-bezier(.12,.62,.1,1)';el.style.transform='rotate('+wheelRot+'deg)'}
@@ -2250,7 +2302,7 @@ function lvBadgesHtml(lv,g){const B=(g||[]).map(id=>BADGES.find(b=>b.id===id)).f
 const CHEST=[{w:20,k:'coins',v:4000,ic:'🪙',t:'4 000 pièces'},{w:15,k:'coins',v:6000,ic:'🪙',t:'6 000 pièces'},{w:10,k:'coins',v:10000,ic:'💰',t:'10 000 pièces'},
   {w:15,k:'dia',v:200,ic:'💎',t:'200 diamants'},{w:10,k:'dia',v:500,ic:'💎',t:'500 diamants'},{w:12,k:'inv',v:'boost',ic:'🚀',t:'1 Boost de cote +10 %'},
   {w:8,k:'inv',v:'shield',ic:'🛡️',t:'1 Assurance'},{w:6,k:'coins',v:20000,ic:'💰',t:'20 000 pièces'},{w:3,k:'dia',v:1500,ic:'💎',t:'1 500 diamants'},{w:1,k:'coins',v:100000,ic:'👑',t:'JACKPOT : 100 000 pièces',jp:true}];
-const chestReady=()=>!!session&&(!state.chest||state.chest.day!==today());
+const chestReady=()=>!!session&&(!state.chest||state.chest.day!==today()||((state.inv&&state.inv.chestx)||0)>0);
 function chestDraw(){const T=CHEST.reduce((a,x)=>a+x.w,0);let r=bjRand(T);for(const x of CHEST){if(r<x.w)return x;r-=x.w}return CHEST[0]}
 function chestHtml(){return '<button class="chest" id="chest" data-chestgo="1" aria-label="Ouvrir le coffre"><span class="ch-rays"></span><span class="ch-lid"><i></i></span><span class="ch-body"><i></i><b></b></span></button>'}
 function openChest(){
@@ -2264,6 +2316,7 @@ let chestBusy=false;
 function chestGo(){
   if(chestBusy||!chestReady())return;chestBusy=true;
   const x=chestDraw(),i=CHEST.indexOf(x);
+  if(state.chest&&state.chest.day===today())state.inv.chestx=Math.max(0,(state.inv.chestx||0)-1);
   state.chest={day:today(),i};
   const mul=evVal('chest');if(x.k==='coins')state.coins+=x.v*mul;else if(x.k==='dia')state.diamonds+=x.v*mul;else state.inv[x.v]=(state.inv[x.v]||0)+mul;
   track('chest');if(x.jp)unlockBadge('jackpot');
@@ -2401,7 +2454,7 @@ function betImage(b){
   if(b.sels.length>6){x.fillStyle='#7a8396';x.font='600 30px '+F;x.fillText('+ '+(b.sels.length-6)+' autres sélections',90,y+20);y+=50}
   const by=cy+cardH-170;x.fillStyle='#f4f5fa';rr(x,80,by,W-160,130,28);x.fill();
   const col=(lbl,val,cx,color)=>{x.textAlign='center';x.fillStyle='#7a8396';x.font='700 28px '+F;x.fillText(lbl,cx,by+50);x.fillStyle=color;x.font='900 42px '+F;x.fillText(val,cx,by+102);x.textAlign='left'};
-  col('Mise',nf(b.stake)+' 🪙',W*0.22,'#111827');col('Cote',fo(b.odds),W*0.5,'#e0182d');col(won?'Gagné':'Gain possible',nf(won?b.payout:b.stake*b.odds)+' 💎',W*0.78,'#1f6fe0');
+  col('Mise',nf(b.stake)+' 🪙',W*0.22,'#111827');col('Cote',fo(b.odds),W*0.5,'#e0182d');col(won?'Gagné':'Gain possible',nf(won?b.payout:b.stake*b.odds)+' '+bcur(b),W*0.78,'#1f6fe0');
   x.fillStyle='#fff';x.textAlign='center';x.font='800 44px '+F;x.fillText('Parie gratuitement avec moi 👇',W/2,H-150);
   x.font='700 36px '+F;x.globalAlpha=.92;x.fillText(SITE().replace(/^https?:\/\//,'').replace(/\/$/,''),W/2,H-90);x.globalAlpha=1;x.textAlign='left';
   return new Promise(r=>c.toBlob(r,'image/png'));
@@ -2425,7 +2478,7 @@ async function storyImage(b){
   x.fillStyle='#ffd23f';rr(x,-400,-110,800,200,40);x.fill();x.strokeStyle='#fff';x.lineWidth=8;rr(x,-388,-98,776,176,32);x.stroke();
   x.fillStyle='#2b1700';x.textAlign='center';x.font='900 84px '+F;x.fillText('TICKET GAGNANT',0,28);x.restore();
   x.textAlign='center';x.fillStyle='#fff';
-  x.font='900 150px '+F;x.fillText('+'+nf(b.payout)+' 💎',W/2,690);
+  x.font='900 150px '+F;x.fillText('+'+nf(b.payout)+' '+bcur(b),W/2,690);
   x.globalAlpha=.9;x.font='700 46px '+F;x.fillText(b.type+' · cote ×'+fo(b.odds)+' · mise '+nf(b.stake)+' 🪙',W/2,770);x.globalAlpha=1;
   // carte des sélections
   const sels=b.sels.slice(0,6),rowH=150,more=b.sels.length>6?60:0,cardH=50+sels.length*rowH+more,cy=850;
@@ -2456,7 +2509,7 @@ async function shareBet(id){
   const b=state.bets.find(x=>x.id===id);if(!b)return;
   closePop();
   const won=b.status==='won',blob=won?await storyImage(b):await betImage(b);if(!blob){toast('Image impossible à créer');return}
-  const url=SITE()+(session?'?p='+encodeURIComponent(session.pseudo):''),txt=(won?'Ticket gagnant sur PronoClub ✅ +'+nf(b.payout)+' 💎 ':'Mon pari sur PronoClub 🔥 ')+'Viens jouer gratuitement :';
+  const url=SITE()+(session?'?p='+encodeURIComponent(session.pseudo):''),txt=(won?'Ticket gagnant sur PronoClub ✅ +'+nf(b.payout)+' '+bcur(b)+' ':'Mon pari sur PronoClub 🔥 ')+'Viens jouer gratuitement :';
   const file=new File([blob],won?'pronoclub-ticket-gagnant.png':'pronoclub-pari.png',{type:'image/png'});
   const canFile=!!(navigator.canShare&&navigator.canShare({files:[file]}));
   shareFile={file,txt,url};
@@ -2469,7 +2522,7 @@ let shareFile=null;
 async function shareGo(){const f=shareFile;if(!f)return;try{await navigator.share({files:[f.file],text:f.txt+' '+f.url});track('share')}catch(e){if(!(e&&e.name==='AbortError'))toast('Partage impossible : enregistrez l\'image')}}
 let winOffer=null;
 function offerShare(){const b=state.bets.find(x=>x.id===winOffer);winOffer=null;if(!b)return;
-  popup('<div class="pop-ic big">🎉</div><h3>Pari gagné !</h3><p>Tu remportes <b style="color:#1f7bff">+'+nf(b.payout)+' 💎</b> avec une cote de <b>'+fo(b.odds)+'</b>.</p><p style="font-size:13px">Montre-le à tes potes en story Insta ou TikTok 👇</p><div class="pop-btns"><button class="pbtn" data-sharebet="'+b.id+'">📸 Partager mon ticket</button><button class="pbtn ghost2" data-popclose="1">Plus tard</button></div>')}
+  popup('<div class="pop-ic big">🎉</div><h3>Pari gagné !</h3><p>Tu remportes <b style="color:#1f7bff">+'+nf(b.payout)+' '+bcur(b)+'</b> avec une cote de <b>'+fo(b.odds)+'</b>.</p><p style="font-size:13px">Montre-le à tes potes en story Insta ou TikTok 👇</p><div class="pop-btns"><button class="pbtn" data-sharebet="'+b.id+'">📸 Partager mon ticket</button><button class="pbtn ghost2" data-popclose="1">Plus tard</button></div>')}
 
 /* ---------- Rendu ---------- */
 function renderHeader(){
@@ -2921,14 +2974,14 @@ function renderBets(){
   const s=state.stats,tot=s.won+s.lost;
   const list=state.bets.filter(b=>ui.betFilter==='pending'?b.status==='pending':b.status!=='pending').slice().reverse();
   const card=b=>{
-    const tag=b.status==='pending'?'<span class="tag pending">En cours</span>':b.status==='won'?'<span class="tag won">Gagné +'+nf(b.payout)+' 💎</span>':b.status==='void'?'<span class="tag pending">Annulé · mise rendue</span>':'<span class="tag lost">Perdu'+(b.refund?' · remboursé '+nf(b.refund)+' 💎':'')+'</span>';
+    const tag=b.status==='pending'?'<span class="tag pending">En cours</span>':b.status==='won'?'<span class="tag won">Gagné +'+nf(b.payout)+' '+bcur(b)+'</span>':b.status==='void'?'<span class="tag pending">Annulé · mise rendue</span>':'<span class="tag lost">Perdu'+(b.refund?' · remboursé '+nf(b.refund)+' '+bcur(b):'')+'</span>';
     const lines=b.sels.map(x=>{const m=findMatch(x.matchId);let mark='',score='';
       if(m&&status(m)==='fini'){const o=getOpt(m,x.mk,x.opt),ok=o&&o.fn(m.s[0],m.s[1],m.s[2]);mark='<span class="mark '+(ok?'ok':'ko')+'">'+(ok?'✓':'✗')+'</span>';score=' · '+scoreTxt(m)}
       else if(m&&status(m)==='annule')score=' · '+m.x;
       else if(m&&status(m)==='live')score=' · en cours';else score=' · '+hhmm(x.ko||(m&&m.ko));
       return '<div class="bl"><div><div><b>'+esc(x.pick)+'</b> <span style="color:var(--acc);font-weight:700">'+fo(x.odds)+'</span></div><div class="s">'+esc(x.market)+'</div><div class="s">'+esc(x.match)+score+'</div></div>'+mark+'</div>'}).join('');
     return '<div class="bet '+b.status+'"><div class="bh"><b>'+b.type+(b.boost?' 🚀':'')+(b.shield?' 🛡️':'')+'</b>'+tag+'</div>'+lines+
-      '<div class="bf"><span>Mise <b>'+nf(b.stake)+' 🪙</b></span><span>Cote <b>'+fo(b.odds)+'</b></span><span>Gain possible <b>'+nf(b.stake*b.odds)+' 💎</b></span></div>'+
+      '<div class="bf"><span>Mise <b>'+nf(b.stake)+' 🪙</b></span><span>Cote <b>'+fo(b.odds)+'</b></span><span>Gain possible <b>'+nf(b.stake*b.odds)+' '+bcur(b)+'</b></span></div>'+
       (b.status==='won'?'<button class="sharebtn win" data-sharebet="'+b.id+'">📸 Partager mon ticket gagnant</button>':b.status!=='void'?'<button class="sharebtn" data-sharebet="'+b.id+'">📤 Partager ce pari</button>':'')+'</div>'};
   return pageHero('ph-bets','🧾','Mes paris','Réglés automatiquement dès que le résultat réel du match est publié. Partagez vos plus beaux coupons !')+
    '<div class="stats"><div class="stat"><small>Paris gagnés</small><b>'+s.won+' / '+tot+'</b></div><div class="stat"><small>Réussite</small><b>'+(tot?Math.round(s.won/tot*100):0)+' %</b></div><div class="stat"><small>Diamants gagnés</small><b style="color:var(--dia)">'+nf(s.earned)+'</b></div><div class="stat"><small>Plus grosse cote gagnée</small><b>'+(s.best?fo(s.best):'–')+'</b></div></div>'+
@@ -2938,9 +2991,9 @@ function renderBets(){
 const EQUIP={title:'title',theme:'theme',name:'nameFx',frame:'frame',fx:'winFx'};
 const eqVal=i=>i.kind==='title'?i.label:i.cls;
 function renderShop(){
-  const LIM=limNow(),VIS=SHOP.filter(i=>(!i.hidden&&(!i.limited||LIM.includes(i.id)))||state.owned.includes(i.id)).sort((a,b)=>(b.limited?1:0)-(a.limited?1:0));
+  const LIM=limNow(),VIS=SHOP.filter(i=>(!i.hidden&&(!i.limited||LIM.includes(i.id)))||state.owned.includes(i.id)).sort((a,b)=>(b.limited?1:0)-(a.limited?1:0)||(b.sec==='Avantages'?1:0)-(a.sec==='Avantages'?1:0));
   const secs=[...new Set(VIS.map(i=>i.sec))];
-  const SECCOL={'Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)','Exclusif':'linear-gradient(135deg,#111,#c8102e 55%,#ffcf33)','Avatars animés':'linear-gradient(135deg,#00c2ff,#7a2cf5,#ff2d9a)','Effets de victoire':'linear-gradient(135deg,#ffb800,#ff2d55)','⏳ Édition limitée':'linear-gradient(135deg,#111827,#7a2cf5 60%,#ffd23f)'};
+  const SECCOL={'Avantages':'linear-gradient(135deg,#00b86b,#00a3ff)','Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)','Exclusif':'linear-gradient(135deg,#111,#c8102e 55%,#ffcf33)','Avatars animés':'linear-gradient(135deg,#00c2ff,#7a2cf5,#ff2d9a)','Effets de victoire':'linear-gradient(135deg,#ffb800,#ff2d55)','⏳ Édition limitée':'linear-gradient(135deg,#111827,#7a2cf5 60%,#ffd23f)'};
   const me=session?session.pseudo:'Vous';
   const icon=i=>i.kind==='fx'?'<div class="ic">'+i.ic+'</div>':i.kind==='name'?'<div class="ic prev"><span class="pn '+i.cls+'">'+esc(me)+'</span></div>':i.kind==='frame'?'<div class="ic prev">'+pav(me,{f:i.cls})+'</div>':'<div class="ic">'+i.ic+'</div>';
   const item=i=>{
@@ -2951,7 +3004,8 @@ function renderShop(){
       else btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
     }else{
       if(i.kind==='inv')own='<span class="own">'+(state.inv[i.id]?'En stock : '+state.inv[i.id]:'')+'</span>';
-      btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
+      if(i.kind==='vip'&&vipOn())own='<span class="own">✓ Actif jusqu\'au '+frDay(state.vip.until)+'</span>';
+      btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>'+(i.kind==='mystery'?'Ouvrir':i.kind==='vip'&&vipOn()?'Prolonger':'Échanger')+'</button>';
     }
     if(i.limited&&!LIM.includes(i.id)&&!state.owned.includes(i.id))btn='<button disabled>Plus en vente</button>';
     return '<div class="item'+(i.limited?' limited':'')+'" style="--ig:'+(SECCOL[i.sec]||'var(--grad-main)')+'">'+(i.limited?'<span class="lim-b">LIMITÉ</span>':'')+icon(i)+'<h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' 💎</div>'+own+(i.kind==='fx'?'<button class="fxprev" data-fxprev="'+i.cls+'">▶ Voir l\'effet</button>':'')+btn+'</div>'};
@@ -2966,6 +3020,7 @@ function renderRules(){
   '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙</b>. Les pièces non jouées ne se gardent pas : elles repartent à '+nf(DAILY)+' à minuit.</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
+  '<li>Dans le coupon, tu peux choisir d\'être payé en <b>pièces 🪙</b> au lieu des diamants : elles s\'ajoutent à tes pièces du jour (mais ne comptent pas pour le classement).</li>'+
   '<li>Les diamants ne se parient pas : ils s\'échangent dans la <b>Boutique</b> contre des bonus (pièces en plus, boost de cote, assurance) ou des récompenses (titres, thèmes).</li>'+
   '<li><b>Simple</b> : un pari par sélection. <b>Combiné</b> : plusieurs matchs dans un seul pari, les cotes se multiplient, mais tout doit être gagnant.</li>'+
   '<li>On ne peut plus parier sur un match une fois qu\'il a commencé. Les paris sont réglés dès que le résultat réel est publié (plusieurs mises à jour par jour). Football : temps réglementaire (90 minutes, sans prolongation ni tirs au but). Hockey : temps réglementaire (60 minutes). Basket : prolongations incluses. Tennis et ping-pong : résultat final du match. Rugby et handball : temps réglementaire. MMA : résultat officiel du combat (un match nul ou « no contest » est remboursé, comme un match annulé).</li>'+
@@ -3117,7 +3172,7 @@ async function openProfil(p){
   const serie='<div class="pf-sec"><h4>Série de connexion</h4>'+streakDots(n)+'<p class="pf-note">'+(n?(n>=7?'Série au maximum : +700 pièces de bonus chaque jour.':'Connecté '+n+' jour'+(n>1?'s':'')+' de suite.'):'Pas de série en cours.')+'</p></div>';
   const dn=Array.isArray(r.derniers)?r.derniers:null;
   const dern=dn&&dn.length?'<div class="pf-sec"><h4>Derniers paris</h4><div class="pf-bets">'+dn.map(b=>{const st=b.status,cl=st==='won'?'w':st==='lost'?'l':st==='pending'?'p':'v';
-    return '<div class="pf-bet"><b>'+esc(b.match||b.type||'Pari')+'</b><em class="'+cl+'">'+(st==='won'?'+'+nf(b.payout||0)+' 💎':st==='lost'?'Perdu':st==='pending'?'⏳ En attente':'Annulé')+'</em><small>'+[b.type&&b.type!==b.match?esc(b.type):'',b.odds?'cote '+fo(Number(b.odds)):'',b.stake?'mise '+nf(b.stake)+' 💎':'',st==='pending'&&b.stake&&b.odds?'gain possible '+nf(b.stake*b.odds)+' 💎':''].filter(Boolean).join(' · ')+'</small>'+(b.pick?'<span class="pk">Pronostic : '+esc(b.pick)+(st==='pending'&&b.ko&&+b.ko>Date.now()?' · '+new Date(+b.ko).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+' '+hhmm(+b.ko):'')+'</span>':'')+'</div>'}).join('')+'</div></div>':'';
+    return '<div class="pf-bet"><b>'+esc(b.match||b.type||'Pari')+'</b><em class="'+cl+'">'+(st==='won'?'+'+nf(b.payout||0)+' '+bcur(b):st==='lost'?'Perdu':st==='pending'?'⏳ En attente':'Annulé')+'</em><small>'+[b.type&&b.type!==b.match?esc(b.type):'',b.odds?'cote '+fo(Number(b.odds)):'',b.stake?'mise '+nf(b.stake)+' 💎':'',st==='pending'&&b.stake&&b.odds?'gain possible '+nf(b.stake*b.odds)+' 💎':''].filter(Boolean).join(' · ')+'</small>'+(b.pick?'<span class="pk">Pronostic : '+esc(b.pick)+(st==='pending'&&b.ko&&+b.ko>Date.now()?' · '+new Date(+b.ko).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+' '+hhmm(+b.ko):'')+'</span>':'')+'</div>'}).join('')+'</div></div>':'';
   ui.amiEtat=await etatP;if(seq!==profSeq)return;
   B.innerHTML=profHero(r.pseudo,deco,tags)+key+(me?pfMine():'')+lvBadgesHtml(me?lvInfo(state.xp).L:(deco&&deco.l),me?state.badges:(deco&&deco.g))+'<div id="pfAct">'+profActions()+'</div>'+bilan+forme+serie+dern+pfMenu(r.pseudo);
 }
@@ -3637,7 +3692,7 @@ function renderSlip(){
   $('#slipCount').textContent=c.sels.length?'('+c.sels.length+')':'';
   const fab=$('#fab');fab.classList.toggle('hide',!c.sels.length);
   const bn=document.getElementById('bnSlipN');if(bn){bn.textContent=c.sels.length||'';bn.style.display=c.sels.length?'':'none'}
-  fab.innerHTML='<span>🧾 Coupon · '+c.sels.length+'</span><span>Gain possible '+nf(c.gain)+' 💎</span>';
+  fab.innerHTML='<span>🧾 Coupon · '+c.sels.length+'</span><span>Gain possible '+nf(c.gain)+' '+payCur()+'</span>';
   if(!c.sels.length){
     $('#slipBody').innerHTML='<div class="empty">Votre coupon est vide.<br>Cliquez sur une cote pour l\'ajouter.<br><br>Il vous reste <b style="color:var(--coin)">'+nf(state.coins)+' 🪙</b> à parier aujourd\'hui.</div>';
     $('#slipFoot').innerHTML='';return;
@@ -3647,7 +3702,7 @@ function renderSlip(){
   if(c.sels.length>1||ui.mode==='combi')body+='<div class="seg" style="margin-bottom:10px"><button data-mode="simple" class="'+(ui.mode==='simple'?'on':'')+'" style="flex:1">Simple</button><button data-mode="combi" class="'+(ui.mode==='combi'?'on':'')+'" style="flex:1">Combiné</button></div>';
   body+=c.sels.map(s=>{const k=selKey(s),o=getOpt(s.m,s.mk,s.opt);
     return '<div class="sel"><div class="top"><div><div class="pick">'+esc(o.label)+'</div><div class="sub">'+esc(mkTitle(marketOf(s.m,s.mk),s.m))+'</div><div class="sub">'+esc(s.m.home+' – '+s.m.away)+(s.open?'':' · <span style="color:var(--bad)">commencé</span>')+'</div></div><div style="display:flex;align-items:flex-start"><span class="o">'+fo(s.odds)+'</span><button class="rm" data-rm="'+k+'" aria-label="Retirer">×</button></div></div>'+
-    (ui.mode==='simple'?'<div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="'+k+'" value="'+(ui.stakes[k]??'')+'" aria-label="Mise"><span class="g" data-g="'+k+'">→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*(c.boostOn?1.1:1))+' 💎</span></div>'+qs(k):'')+'</div>'}).join('');
+    (ui.mode==='simple'?'<div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="'+k+'" value="'+(ui.stakes[k]??'')+'" aria-label="Mise"><span class="g" data-g="'+k+'">→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*c.bm)+' '+payCur()+'</span></div>'+qs(k):'')+'</div>'}).join('');
   if(ui.mode==='combi')body+='<div class="sel"><div class="row"><span>Cote totale</span><span class="v" style="color:var(--acc)">'+fo(c.combiOdds)+'</span></div><div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="__combi" value="'+ui.combi+'" aria-label="Mise du combiné"></div>'+qs('__combi')+'</div>';
   $('#slipBody').innerHTML=body;
   $('#slipFoot').innerHTML=slipFootHtml(c);
@@ -3655,14 +3710,15 @@ function renderSlip(){
 function slipFootHtml(c){
   const ex=(id,icon,label,on,n)=>{const dis=!c.single||n<=0;return '<label class="'+(dis?'off':'')+'"><input type="checkbox" data-ex="'+id+'" '+(on&&!dis?'checked':'')+' '+(dis?'disabled':'')+'>'+icon+' '+label+' <span style="margin-left:auto;color:var(--muted)">×'+n+'</span></label>'};
   let extras='';
-  if(state.inv.boost>0||state.inv.shield>0)extras='<div class="extras">'+(state.inv.boost>0?ex('boost','🚀','Boost +10 %',ui.boost,state.inv.boost):'')+(state.inv.shield>0?ex('shield','🛡️','Assurance',ui.shield,state.inv.shield):'')+(!c.single?'<span style="font-size:12px;color:var(--muted)">Bonus utilisables sur un seul pari (1 simple ou 1 combiné).</span>':'')+'</div>';
-  return extras+'<div class="row"><span>Mise totale</span><span class="v" style="color:var(--coin)">'+nf(c.total)+' 🪙</span></div>'+
-   '<div class="row big"><span>Gain possible</span><span class="v">'+nf(c.gain)+' 💎</span></div>'+
+  if(state.inv.boost>0||state.inv.shield>0||(state.inv.boost25||0)>0)extras='<div class="extras">'+((state.inv.boost25||0)>0?ex('boost25','⚡','Super boost +25 %',ui.boost25,state.inv.boost25):'')+(state.inv.boost>0?ex('boost','🚀','Boost +10 %',ui.boost,state.inv.boost):'')+(state.inv.shield>0?ex('shield','🛡️','Assurance',ui.shield,state.inv.shield):'')+(!c.single?'<span style="font-size:12px;color:var(--muted)">Bonus utilisables sur un seul pari (1 simple ou 1 combiné).</span>':'')+'</div>';
+  const pay='<div class="paych"><span>Si je gagne, je veux :</span><div class="seg"><button data-pay="d" class="'+(ui.pay!=='c'?'on':'')+'">💎 Des diamants</button><button data-pay="c" class="'+(ui.pay==='c'?'on':'')+'">🪙 Des pièces</button></div><small>'+(ui.pay==='c'?'Les pièces gagnées s\'ajoutent à tes pièces du jour pour rejouer. Elles ne comptent pas pour le classement.':'Les diamants comptent pour le classement et servent dans la boutique.')+'</small></div>';
+  return extras+pay+'<div class="row"><span>Mise totale</span><span class="v" style="color:var(--coin)">'+nf(c.total)+' 🪙</span></div>'+
+   '<div class="row big"><span>Gain possible</span><span class="v">'+nf(c.gain)+' '+payCur()+'</span></div>'+
    '<button class="btn" id="place" '+(c.err?'disabled':'')+'>Valider le pari</button><div class="err">'+(c.err||'')+'</div>';
 }
 function refreshSlipNumbers(){
   const c=slipCalc();
-  if(ui.mode==='simple')for(const s of c.sels){const k=selKey(s),el=document.querySelector('[data-g="'+k+'"]');if(el)el.textContent='→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*(c.boostOn?1.1:1))+' 💎'}
+  if(ui.mode==='simple')for(const s of c.sels){const k=selKey(s),el=document.querySelector('[data-g="'+k+'"]');if(el)el.textContent='→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*c.bm)+' '+payCur()}
   $('#slipFoot').innerHTML=slipFootHtml(c);
   $('#fab').innerHTML='<span>🧾 Coupon · '+c.sels.length+'</span><span>Gain possible '+nf(c.gain)+' 💎</span>';
 }
@@ -3767,6 +3823,7 @@ document.addEventListener('click',e=>{
   if(d.bf){ui.betFilter=d.bf;renderView();return}
   if(d.rm){ui.slip=ui.slip.filter(s=>selKey(s)!==d.rm);if(ui.slip.length<2&&ui.mode==='combi')ui.mode='simple';renderSlip();renderView();return}
   if(d.mode){ui.mode=d.mode;renderSlip();return}
+  if(d.pay){ui.pay=d.pay==='c'?'c':'d';lsSet('pc_pay',ui.pay);renderSlip();return}
   if(d.qs){const v=d.v==='max'?state.coins:+d.v;if(d.qs==='__combi')ui.combi=v;else ui.stakes[d.qs]=v;renderSlip();return}
   if(t.id==='place'){placeBets();return}
   if(t.id==='closeSlip'){$('#aside').classList.remove('open');return}
@@ -3775,7 +3832,9 @@ document.addEventListener('click',e=>{
     const i=SHOP.find(x=>x.id===d.buy);if(!i||i.hidden||state.diamonds<i.cost||(i.limited&&!limNow().includes(i.id))||(EQUIP[i.kind]&&state.owned.includes(i.id)))return;
     state.diamonds-=i.cost;state.spent=(state.spent||0)+i.cost;
     if(i.kind==='coins'){state.coins+=i.val;toast('🪙 +'+nf(i.val)+' pièces ajoutées')}
-    else if(i.kind==='inv'){state.inv[i.id]=(state.inv[i.id]||0)+1;toast(i.ic+' '+i.name+' : disponible dans votre coupon')}
+    else if(i.kind==='inv'){state.inv[i.id]=(state.inv[i.id]||0)+1;toast(i.ic+' '+i.name+(i.id==='spin'?' : va sur la roue pour l\'utiliser':i.id==='chestx'?' : va sur le coffre pour l\'ouvrir':' : disponible dans votre coupon'))}
+    else if(i.kind==='vip'){buyVip()}
+    else if(i.kind==='mystery'){save();openMystery();renderAll();return}
     else{state.owned.push(i.id);state[EQUIP[i.kind]]=eqVal(i);toast(i.ic+' '+i.name+' débloqué !');if(i.kind==='fx')winFx(i.cls)}
     save();renderAll();return;
   }

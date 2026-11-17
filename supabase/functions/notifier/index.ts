@@ -96,11 +96,17 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
         const o = opt(m, s.mk, s.opt);
         if (!(o && o.fn(m.s[0], m.s[1], m.s[2]))) won = false; else odds *= s.odds;
       });
-      if (b.boost) odds *= 1.1;
+      if (b.boost) odds *= b.boost === true ? 1.1 : Math.min(1.25, Number(b.boost) || 1);
+      const PC = b.pay === "c";
+      const addCoins = (v: number) => { if (e.day !== now.day) { e.day = now.day; e.coins = 20000; e.d20 = 1; } e.coins = (e.coins || 0) + v; };
       const quoi = b.sels.length > 1 ? `Ton combiné de ${b.sels.length} matchs` : (b.sels[0].match || "Ton pari");
       if (allVoid) {
-        b.status = "void"; b.payout = b.stake; e.diamonds = (e.diamonds || 0) + b.stake;
-        msgs.push(`↩️ ${quoi} : match annulé, mise rendue (${b.stake} 💎)`);
+        b.status = "void"; b.payout = b.stake; if (PC) addCoins(b.stake); else e.diamonds = (e.diamonds || 0) + b.stake;
+        msgs.push(`↩️ ${quoi} : match annulé, mise rendue (${b.stake} ${PC ? "🪙" : "💎"})`);
+      } else if (won && PC) {
+        b.odds = Math.round(odds * 100) / 100; b.status = "won"; b.payout = Math.round(b.stake * b.odds);
+        addCoins(b.payout); e.stats.won++; e.stats.best = Math.max(e.stats.best || 0, b.odds);
+        msgs.push(`🎉 ${quoi} : gagné ! +${b.payout} 🪙`);
       } else if (won) {
         b.odds = Math.round(odds * 100) / 100; b.status = "won"; b.payout = Math.round(b.stake * b.odds * (Number(b.evx) > 1 && Number(b.evx) <= 2 ? Number(b.evx) : 1));
         e.diamonds = (e.diamonds || 0) + b.payout;
@@ -110,7 +116,7 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
         msgs.push(`🎉 ${quoi} : gagné ! +${b.payout} 💎`);
       } else {
         b.status = "lost"; b.payout = 0; e.stats.lost++;
-        if (b.shield) { b.refund = b.stake; e.diamonds = (e.diamonds || 0) + b.stake; }
+        if (b.shield) { b.refund = b.stake; if (PC) addCoins(b.stake); else e.diamonds = (e.diamonds || 0) + b.stake; }
         msgs.push(`❌ ${quoi} : perdu${b.shield ? " (assuré : mise rendue)" : ""}`);
       }
       b.settledAt = Date.now(); b.server = true; ch = true;
