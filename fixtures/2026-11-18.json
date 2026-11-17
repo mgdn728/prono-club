@@ -1,1 +1,589 @@
-[{"id":"crt-jse","c":"Ligue 1 Algérie","f":"🇩🇿","h":"CR Témouchent","a":"JS El Biar","t":"2026-11-18T17:45:00+01:00","o":[2.1,3.14,3.77]},{"id":"csc-esb","c":"Ligue 1 Algérie","f":"🇩🇿","h":"CS Constantine","a":"ES Ben Aknoun","t":"2026-11-18T17:45:00+01:00","o":[1.72,3.49,5.24]},{"id":"rma-int","c":"Ligue des champions F.","f":"🇪🇺","h":"Real Madrid","a":"Inter Milan","t":"2026-11-18T18:45:00+01:00","o":[1.72,3.93,4.49]},{"id":"hac-mci","c":"Ligue des champions F.","f":"🇪🇺","h":"Häcken","a":"Manchester City","t":"2026-11-18T18:45:00+01:00","o":[4.29,3.93,1.75]},{"id":"ute-sab","c":"Coupe du Roi","f":"🇪🇸","h":"Utebo","a":"Sabadell","t":"2026-11-18T19:00:00+01:00","o":[2.86,3.14,2.55]},{"id":"por-run","c":"Coupe du Roi","f":"🇪🇸","h":"Portugalete","a":"Real Unión","t":"2026-11-18T19:00:00+01:00","o":[2.86,3.14,2.55]},{"id":"bad-ten","c":"Coupe du Roi","f":"🇪🇸","h":"CD Badajoz","a":"Tenerife","t":"2026-11-18T20:00:00+01:00","o":[2.7,3.25,2.62]},{"id":"alc-mll","c":"Coupe du Roi","f":"🇪🇸","h":"Alcoyano","a":"Majorque","t":"2026-11-18T20:00:00+01:00","o":[5.24,3.93,1.63]},{"id":"caf-ham","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"Club Africain","a":"Hammam-Lif","t":"2026-11-18T20:00:00+01:00","o":[1.57,3.77,6.29]},{"id":"mon-olb","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"US Monastir","a":"Olympique Béja","t":"2026-11-18T20:00:00+01:00","o":[1.72,3.49,5.24]},{"id":"zar-ess","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"Zarzis","a":"Étoile du Sahel","t":"2026-11-18T20:00:00+01:00","o":[3.77,3.14,2.1]},{"id":"css-met","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"CS Sfaxien","a":"Métlaoui","t":"2026-11-18T20:00:00+01:00","o":[1.52,3.93,6.74]},{"id":"has-mar","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"Hammam-Sousse","a":"AS Marsa","t":"2026-11-18T20:00:00+01:00","o":[2.48,2.95,3.14]},{"id":"cab-pse","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"CA Bizertin","a":"Progrès Sakiet Eddaïer","t":"2026-11-18T20:00:00+01:00","o":[1.89,3.14,4.72]},{"id":"bgu-est","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"Ben Guerdane","a":"Espérance de Tunis","t":"2026-11-18T20:00:00+01:00","o":[3.77,3.14,2.1]},{"id":"stu-jso","c":"Ligue 1 Tunisie","f":"🇹🇳","h":"Stade Tunisien","a":"JS Omrane","t":"2026-11-18T20:00:00+01:00","o":[1.97,3.14,4.29]},{"id":"min-car","c":"Coupe du Roi","f":"🇪🇸","h":"Deportiva Minera","a":"Carthagène","t":"2026-11-18T20:30:00+01:00","o":[3.14,3.25,2.3]},{"id":"red-bar","c":"Coupe du Roi","f":"🇪🇸","h":"Reddis","a":"Barakaldo","t":"2026-11-18T20:30:00+01:00","o":[2.86,3.14,2.55]},{"id":"che-psg","c":"Ligue des champions F.","f":"🇪🇺","h":"Chelsea","a":"Paris SG","t":"2026-11-18T21:00:00+01:00","o":[1.72,3.93,4.49]},{"id":"juv-ohl","c":"Ligue des champions F.","f":"🇪🇺","h":"Juventus","a":"OH Louvain","t":"2026-11-18T21:00:00+01:00","o":[1.52,4.29,5.9]},{"id":"aat-mel","c":"Liga 1 Pérou","f":"🇵🇪","h":"Alianza Atlético","a":"Melgar","t":"2026-11-18T21:00:00+01:00","o":[2.36,3.25,3.04]},{"id":"cor-san","c":"Brasileirão","f":"🇧🇷","h":"Coritiba","a":"Santos","t":"2026-11-18T23:30:00+01:00","o":[2.36,3.25,3.04]},{"id":"phi-buf","sp":"hockey","c":"NHL","f":"🇺🇸","h":"Philadelphia Flyers","a":"Buffalo Sabres","t":"2026-11-18T01:00:00+01:00","o":[2.36,4.29,2.48]},{"id":"nyi-cbj","sp":"hockey","c":"NHL","f":"🇺🇸","h":"New York Islanders","a":"Columbus Blue Jackets","t":"2026-11-18T01:00:00+01:00","o":[2.3,4.29,2.55]},{"id":"fla-edm","sp":"hockey","c":"NHL","f":"🇺🇸","h":"Florida Panthers","a":"Edmonton Oilers","t":"2026-11-18T01:00:00+01:00","o":[2.36,4.29,2.48]},{"id":"bos-lak","sp":"hockey","c":"NHL","f":"🇺🇸","h":"Boston Bruins","a":"Los Angeles Kings","t":"2026-11-18T01:00:00+01:00","o":[2.42,4.29,2.42]},{"id":"tor-nyk","sp":"basket","c":"NBA","f":"🇺🇸","h":"Toronto Raptors","a":"New York Knicks","t":"2026-11-18T01:30:00+01:00","o":[2.36,1.57],"tl":226.5},{"id":"tbl-wsh","sp":"hockey","c":"NHL","f":"🇺🇸","h":"Tampa Bay Lightning","a":"Washington Capitals","t":"2026-11-18T01:30:00+01:00","o":[2.19,4.29,2.7]},{"id":"chi-tor","sp":"hockey","c":"NHL","f":"🇺🇸","h":"Chicago Blackhawks","a":"Maple Leafs de Toronto","t":"2026-11-18T01:30:00+01:00","o":[2.86,4.29,2.1]},{"id":"min-por","sp":"basket","c":"NBA","f":"🇺🇸","h":"Minnesota Timberwolves","a":"Portland Trail Blazers","t":"2026-11-18T02:00:00+01:00","o":[1.35,3.14],"tl":224.5},{"id":"sas-det","sp":"basket","c":"NBA","f":"🇺🇸","h":"San Antonio Spurs","a":"Detroit Pistons","t":"2026-11-18T02:00:00+01:00","o":[1.52,2.48],"tl":226.5},{"id":"min-nsh","sp":"hockey","c":"NHL","f":"🇺🇸","h":"Minnesota Wild","a":"Nashville Predators","t":"2026-11-18T02:00:00+01:00","o":[2.14,4.29,2.77]},{"id":"lac-uta","sp":"basket","c":"NBA","f":"🇺🇸","h":"Los Angeles Clippers","a":"Utah Jazz","t":"2026-11-18T04:30:00+01:00","o":[1.27,3.63],"tl":227.5},{"id":"lal-cha","sp":"basket","c":"NBA","f":"🇺🇸","h":"Los Angeles Lakers","a":"Charlotte Hornets","t":"2026-11-18T05:00:00+01:00","o":[1.35,3.14],"tl":231.5}]
+[
+ {
+  "id": "crt-jse",
+  "c": "Ligue 1 Algérie",
+  "f": "🇩🇿",
+  "h": "CR Témouchent",
+  "a": "JS El Biar",
+  "t": "2026-11-18T17:45:00+01:00",
+  "o": [
+   2.1,
+   3.14,
+   3.77
+  ]
+ },
+ {
+  "id": "csc-esb",
+  "c": "Ligue 1 Algérie",
+  "f": "🇩🇿",
+  "h": "CS Constantine",
+  "a": "ES Ben Aknoun",
+  "t": "2026-11-18T17:45:00+01:00",
+  "o": [
+   1.72,
+   3.49,
+   5.24
+  ]
+ },
+ {
+  "id": "rma-int",
+  "c": "Ligue des champions F.",
+  "f": "🇪🇺",
+  "h": "Real Madrid",
+  "a": "Inter Milan",
+  "t": "2026-11-18T18:45:00+01:00",
+  "o": [
+   1.72,
+   3.93,
+   4.49
+  ],
+  "bt": [
+   [
+    "Linda Caicedo",
+    1,
+    2.6
+   ],
+   [
+    "Lineth Beerensteyn",
+    1,
+    2.9
+   ],
+   [
+    "Caruso",
+    1,
+    3.4
+   ],
+   [
+    "Athenea del Castillo",
+    1,
+    3.6
+   ],
+   [
+    "Michela Cambiaghi",
+    2,
+    4.2
+   ],
+   [
+    "Elisa Bartoli",
+    2,
+    7.5
+   ]
+  ]
+ },
+ {
+  "id": "hac-mci",
+  "c": "Ligue des champions F.",
+  "f": "🇪🇺",
+  "h": "Häcken",
+  "a": "Manchester City",
+  "t": "2026-11-18T18:45:00+01:00",
+  "o": [
+   4.29,
+   3.93,
+   1.75
+  ],
+  "bt": [
+   [
+    "Maja Bodin",
+    1,
+    3.6
+   ],
+   [
+    "Tabby Tindell",
+    1,
+    3.9
+   ],
+   [
+    "Felicia Schröder",
+    1,
+    4.4
+   ],
+   [
+    "Khadija Shaw",
+    2,
+    1.95
+   ],
+   [
+    "Aoba Fujino",
+    2,
+    2.6
+   ],
+   [
+    "Vivianne Miedema",
+    2,
+    2.8
+   ],
+   [
+    "Lauren Hemp",
+    2,
+    3.4
+   ],
+   [
+    "Grace Clinton",
+    2,
+    3.6
+   ]
+  ]
+ },
+ {
+  "id": "ute-sab",
+  "c": "Coupe du Roi",
+  "f": "🇪🇸",
+  "h": "Utebo",
+  "a": "Sabadell",
+  "t": "2026-11-18T19:00:00+01:00",
+  "o": [
+   2.86,
+   3.14,
+   2.55
+  ]
+ },
+ {
+  "id": "por-run",
+  "c": "Coupe du Roi",
+  "f": "🇪🇸",
+  "h": "Portugalete",
+  "a": "Real Unión",
+  "t": "2026-11-18T19:00:00+01:00",
+  "o": [
+   2.86,
+   3.14,
+   2.55
+  ]
+ },
+ {
+  "id": "bad-ten",
+  "c": "Coupe du Roi",
+  "f": "🇪🇸",
+  "h": "CD Badajoz",
+  "a": "Tenerife",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   2.7,
+   3.25,
+   2.62
+  ]
+ },
+ {
+  "id": "alc-mll",
+  "c": "Coupe du Roi",
+  "f": "🇪🇸",
+  "h": "Alcoyano",
+  "a": "Majorque",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   5.24,
+   3.93,
+   1.63
+  ]
+ },
+ {
+  "id": "caf-ham",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "Club Africain",
+  "a": "Hammam-Lif",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   1.57,
+   3.77,
+   6.29
+  ]
+ },
+ {
+  "id": "mon-olb",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "US Monastir",
+  "a": "Olympique Béja",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   1.72,
+   3.49,
+   5.24
+  ]
+ },
+ {
+  "id": "zar-ess",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "Zarzis",
+  "a": "Étoile du Sahel",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   3.77,
+   3.14,
+   2.1
+  ]
+ },
+ {
+  "id": "css-met",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "CS Sfaxien",
+  "a": "Métlaoui",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   1.52,
+   3.93,
+   6.74
+  ]
+ },
+ {
+  "id": "has-mar",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "Hammam-Sousse",
+  "a": "AS Marsa",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   2.48,
+   2.95,
+   3.14
+  ]
+ },
+ {
+  "id": "cab-pse",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "CA Bizertin",
+  "a": "Progrès Sakiet Eddaïer",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   1.89,
+   3.14,
+   4.72
+  ]
+ },
+ {
+  "id": "bgu-est",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "Ben Guerdane",
+  "a": "Espérance de Tunis",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   3.77,
+   3.14,
+   2.1
+  ]
+ },
+ {
+  "id": "stu-jso",
+  "c": "Ligue 1 Tunisie",
+  "f": "🇹🇳",
+  "h": "Stade Tunisien",
+  "a": "JS Omrane",
+  "t": "2026-11-18T20:00:00+01:00",
+  "o": [
+   1.97,
+   3.14,
+   4.29
+  ]
+ },
+ {
+  "id": "min-car",
+  "c": "Coupe du Roi",
+  "f": "🇪🇸",
+  "h": "Deportiva Minera",
+  "a": "Carthagène",
+  "t": "2026-11-18T20:30:00+01:00",
+  "o": [
+   3.14,
+   3.25,
+   2.3
+  ]
+ },
+ {
+  "id": "red-bar",
+  "c": "Coupe du Roi",
+  "f": "🇪🇸",
+  "h": "Reddis",
+  "a": "Barakaldo",
+  "t": "2026-11-18T20:30:00+01:00",
+  "o": [
+   2.86,
+   3.14,
+   2.55
+  ]
+ },
+ {
+  "id": "che-psg",
+  "c": "Ligue des champions F.",
+  "f": "🇪🇺",
+  "h": "Chelsea",
+  "a": "Paris SG",
+  "t": "2026-11-18T21:00:00+01:00",
+  "o": [
+   1.72,
+   3.93,
+   4.49
+  ],
+  "bt": [
+   [
+    "Aggie Beever-Jones",
+    1,
+    2.8
+   ],
+   [
+    "Sandy Baltimore",
+    1,
+    3.0
+   ],
+   [
+    "Maika Hamano",
+    1,
+    3.2
+   ],
+   [
+    "Merveille Kanjinga",
+    2,
+    4.8
+   ],
+   [
+    "Naomie Feller",
+    2,
+    5.0
+   ],
+   [
+    "Paulina Dudek",
+    2,
+    9.0
+   ]
+  ]
+ },
+ {
+  "id": "juv-ohl",
+  "c": "Ligue des champions F.",
+  "f": "🇪🇺",
+  "h": "Juventus",
+  "a": "OH Louvain",
+  "t": "2026-11-18T21:00:00+01:00",
+  "o": [
+   1.52,
+   4.29,
+   5.9
+  ],
+  "bt": [
+   [
+    "Alba Redondo",
+    1,
+    2.3
+   ],
+   [
+    "Emma Stølen Godø",
+    1,
+    3.0
+   ],
+   [
+    "Sylla",
+    1,
+    3.3
+   ],
+   [
+    "Chiba",
+    1,
+    3.6
+   ],
+   [
+    "Jada Conijnenberg",
+    2,
+    6.5
+   ]
+  ]
+ },
+ {
+  "id": "aat-mel",
+  "c": "Liga 1 Pérou",
+  "f": "🇵🇪",
+  "h": "Alianza Atlético",
+  "a": "Melgar",
+  "t": "2026-11-18T21:00:00+01:00",
+  "o": [
+   2.36,
+   3.25,
+   3.04
+  ]
+ },
+ {
+  "id": "cor-san",
+  "c": "Brasileirão",
+  "f": "🇧🇷",
+  "h": "Coritiba",
+  "a": "Santos",
+  "t": "2026-11-18T23:30:00+01:00",
+  "o": [
+   2.36,
+   3.25,
+   3.04
+  ]
+ },
+ {
+  "id": "phi-buf",
+  "sp": "hockey",
+  "c": "NHL",
+  "f": "🇺🇸",
+  "h": "Philadelphia Flyers",
+  "a": "Buffalo Sabres",
+  "t": "2026-11-18T01:00:00+01:00",
+  "o": [
+   2.36,
+   4.29,
+   2.48
+  ]
+ },
+ {
+  "id": "nyi-cbj",
+  "sp": "hockey",
+  "c": "NHL",
+  "f": "🇺🇸",
+  "h": "New York Islanders",
+  "a": "Columbus Blue Jackets",
+  "t": "2026-11-18T01:00:00+01:00",
+  "o": [
+   2.3,
+   4.29,
+   2.55
+  ]
+ },
+ {
+  "id": "fla-edm",
+  "sp": "hockey",
+  "c": "NHL",
+  "f": "🇺🇸",
+  "h": "Florida Panthers",
+  "a": "Edmonton Oilers",
+  "t": "2026-11-18T01:00:00+01:00",
+  "o": [
+   2.36,
+   4.29,
+   2.48
+  ]
+ },
+ {
+  "id": "bos-lak",
+  "sp": "hockey",
+  "c": "NHL",
+  "f": "🇺🇸",
+  "h": "Boston Bruins",
+  "a": "Los Angeles Kings",
+  "t": "2026-11-18T01:00:00+01:00",
+  "o": [
+   2.42,
+   4.29,
+   2.42
+  ]
+ },
+ {
+  "id": "tor-nyk",
+  "sp": "basket",
+  "c": "NBA",
+  "f": "🇺🇸",
+  "h": "Toronto Raptors",
+  "a": "New York Knicks",
+  "t": "2026-11-18T01:30:00+01:00",
+  "o": [
+   2.36,
+   1.57
+  ],
+  "tl": 226.5
+ },
+ {
+  "id": "tbl-wsh",
+  "sp": "hockey",
+  "c": "NHL",
+  "f": "🇺🇸",
+  "h": "Tampa Bay Lightning",
+  "a": "Washington Capitals",
+  "t": "2026-11-18T01:30:00+01:00",
+  "o": [
+   2.19,
+   4.29,
+   2.7
+  ]
+ },
+ {
+  "id": "chi-tor",
+  "sp": "hockey",
+  "c": "NHL",
+  "f": "🇺🇸",
+  "h": "Chicago Blackhawks",
+  "a": "Maple Leafs de Toronto",
+  "t": "2026-11-18T01:30:00+01:00",
+  "o": [
+   2.86,
+   4.29,
+   2.1
+  ]
+ },
+ {
+  "id": "min-por",
+  "sp": "basket",
+  "c": "NBA",
+  "f": "🇺🇸",
+  "h": "Minnesota Timberwolves",
+  "a": "Portland Trail Blazers",
+  "t": "2026-11-18T02:00:00+01:00",
+  "o": [
+   1.35,
+   3.14
+  ],
+  "tl": 224.5
+ },
+ {
+  "id": "sas-det",
+  "sp": "basket",
+  "c": "NBA",
+  "f": "🇺🇸",
+  "h": "San Antonio Spurs",
+  "a": "Detroit Pistons",
+  "t": "2026-11-18T02:00:00+01:00",
+  "o": [
+   1.52,
+   2.48
+  ],
+  "tl": 226.5
+ },
+ {
+  "id": "min-nsh",
+  "sp": "hockey",
+  "c": "NHL",
+  "f": "🇺🇸",
+  "h": "Minnesota Wild",
+  "a": "Nashville Predators",
+  "t": "2026-11-18T02:00:00+01:00",
+  "o": [
+   2.14,
+   4.29,
+   2.77
+  ]
+ },
+ {
+  "id": "lac-uta",
+  "sp": "basket",
+  "c": "NBA",
+  "f": "🇺🇸",
+  "h": "Los Angeles Clippers",
+  "a": "Utah Jazz",
+  "t": "2026-11-18T04:30:00+01:00",
+  "o": [
+   1.27,
+   3.63
+  ],
+  "tl": 227.5
+ },
+ {
+  "id": "lal-cha",
+  "sp": "basket",
+  "c": "NBA",
+  "f": "🇺🇸",
+  "h": "Los Angeles Lakers",
+  "a": "Charlotte Hornets",
+  "t": "2026-11-18T05:00:00+01:00",
+  "o": [
+   1.35,
+   3.14
+  ],
+  "tl": 231.5
+ }
+]
