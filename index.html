@@ -2289,7 +2289,7 @@ function tournoiCard(){if(ui.tournoi===undefined){ui.tournoi=null;setTimeout(loa
   const T=ui.tournoi;if(T==='off')return '';const d=new Date(),sun=d.getDay()===0;const nx=new Date(d.getFullYear(),d.getMonth(),d.getDate()+((7-d.getDay())%7));
   const rows=Array.isArray(T)&&T.length?'<div class="to-l">'+T.slice(0,5).map((r,i)=>'<div class="to-r" data-prof="'+esc(r.pseudo)+'"><span>'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</span>'+pav(r.pseudo,r.deco)+'<b>'+esc(r.pseudo)+'</b><em>'+r.v+' victoire'+(r.v>1?'s':'')+'</em></div>').join('')+'</div>':'';
   return '<div class="to-card"><div class="to-h"><b>♠️ Tournoi poker du dimanche</b><span>'+(sun?'🔴 En cours · fin dans '+leftTxt(new Date(d.getFullYear(),d.getMonth(),d.getDate(),23,59,59)-d):'Prochain : dimanche '+nx.getDate()+' '+MOIS[nx.getMonth()])+'</span></div>'+
-    '<p>Le dimanche, chaque partie de poker gagnée contre un ami compte. Les 3 joueurs avec le plus de victoires gagnent <b>10 000</b>, <b>5 000</b> et <b>3 000 pièces</b>.</p>'+rows+
+    '<p>Le dimanche, chaque partie de poker gagnée contre un ami compte. Les 3 joueurs avec le plus de victoires gagnent <b>200 000</b>, <b>100 000</b> et <b>60 000 pièces</b>.</p>'+rows+
     '<button class="pbtn" data-game="po">♠️ Défier un ami au poker</button></div>'}
 
 /* ---- Page Progression ---- */
@@ -3545,7 +3545,7 @@ document.addEventListener('submit',async e=>{
 });
 
 function boardSeg(season){const B=(k,l)=>'<button data-bmode="'+k+'" class="'+(ui.boardMode===k?'on':'')+'">'+l+'</button>';return '<div class="seg mini">'+B('week','📅 Semaine')+(season?B('season','🗓️ Saison'):'')+B('all','⭐ Depuis le début')+'</div>'}
-const WEEK_PRIZE=[10000,5000,3000];
+const WEEK_PRIZE=[200000,100000,60000];
 function boardRows(b,mode,emptyMsg,prizes){
   if(b==null)return '<div class="empty">Chargement du classement…</div>';
   if(b==='err')return '<div class="empty">Impossible de charger le classement pour le moment.</div>';
@@ -3560,8 +3560,8 @@ function renderBoard(){
   if(mode==='week'&&b==='old'){mode='all';b=ui.boards.all}
   if(mode==='season'){const now=new Date(),end=new Date(now.getFullYear(),now.getMonth()+1,1);
     return pageHero('ph-board','🏆','Classement','Semaine, saison du mois ou depuis le début : à toi de grimper !')+boardSeg(true)+
-      '<div class="wprize"><b>🗓️ '+saisonNom()+'</b><div class="wp-row">'+[20000,10000,5000].map((v,i)=>'<span>'+['🥇','🥈','🥉'][i]+' '+nf(v)+' 🪙</span>').join('')+'</div><small>Classement des diamants gagnés ce mois-ci. Fin dans '+leftTxt(end-now)+'. Le 1er gagne aussi le titre « Champion de saison ».</small></div>'+
-      (b==='off'?'<div class="empty">Les saisons arrivent bientôt.</div>':boardRows(b,'season','Personne n\'a encore gagné de diamants ce mois-ci.',[20000,10000,5000]))}
+      '<div class="wprize"><b>🗓️ '+saisonNom()+'</b><div class="wp-row">'+[400000,200000,100000].map((v,i)=>'<span>'+['🥇','🥈','🥉'][i]+' '+nf(v)+' 🪙</span>').join('')+'</div><small>Classement des diamants gagnés ce mois-ci. Fin dans '+leftTxt(end-now)+'. Le 1er gagne aussi le titre « Champion de saison ».</small></div>'+
+      (b==='off'?'<div class="empty">Les saisons arrivent bientôt.</div>':boardRows(b,'season','Personne n\'a encore gagné de diamants ce mois-ci.',[400000,200000,100000]))}
   return pageHero('ph-board','🏆','Classement','Le classement de la semaine repart à zéro chaque lundi : tout le monde a sa chance !')+boardSeg(true)+
     (mode==='week'?weekPrizeBox():'')+
     boardRows(b,mode,mode==='week'?'Personne n\'a encore gagné de diamants cette semaine. À vous de jouer !':'',mode==='week');
