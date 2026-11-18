@@ -5,7 +5,7 @@
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const SITE = "https://mgdn728.github.io/pronoclub/";
+const SITE = "https://prono-club.fr/";
 const TOP = ["Ligue des champions", "Ligue 1", "Premier League", "Liga", "Serie A", "Bundesliga", "Ligue des nations", "Championnat des nations", "NBA", "EuroLeague", "ATP Finals", "NHL", "UFC", "Coupe de France", "Match amical"];
 
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });

@@ -1915,6 +1915,12 @@ let session=null,writing=false,pending=false,saveTimer=null,synced=false;
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
 ui.pay=lsGet('pc_pay')==='c'?'c':'d';
+// déménagement depuis l'ancienne adresse (mgdn728.github.io/pronoclub) : on garde le joueur connecté
+(function(){try{const q=new URLSearchParams(location.search),m=q.get('mig');if(!m)return;
+  const o=JSON.parse(decodeURIComponent(escape(atob(m.replace(/-/g,'+').replace(/_/g,'/')))));
+  if(o&&o.s&&o.s.pseudo&&o.s.token&&!lsGet(LS_SESSION))lsSet(LS_SESSION,JSON.stringify(o.s));
+  if(o&&o.p&&/^[A-Za-z0-9_.-]{3,20}$/.test(o.p)&&!lsGet('pc_parrain'))lsSet('pc_parrain',o.p);
+  q.delete('mig');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}catch(e){}})();
 try{session=JSON.parse(lsGet(LS_SESSION)||'null')}catch(e){}
 (function(){try{const q=new URLSearchParams(location.search),p=q.get('p'),l=q.get('l');
   if(p&&/^[A-Za-z0-9_.-]{3,20}$/.test(p)&&!(session&&session.pseudo.toLowerCase()===p.toLowerCase()))lsSet('pc_parrain',p);
