@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — PronoClub</title>
+<meta name="description" content="Contacter l'équipe PronoClub : question, idée, problème ou demande sur vos données.">
+<link rel="icon" href="icons/favicon.png">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<header><div class="in"><img src="icons/icon-192.png" alt=""><a href="./">Prono<span>Club</span></a></div></header>
+<main>
+<h1>Contact</h1>
+<p class="maj">Une question, une idée, un problème, ou une demande sur vos données personnelles ? Écrivez-nous ici.</p>
+<form id="f" class="box">
+<label for="nom">Votre nom ou pseudo</label>
+<input id="nom" maxlength="60" required>
+<label for="email">Votre email (pour pouvoir vous répondre)</label>
+<input id="email" type="email" maxlength="120" required>
+<label for="txt">Votre message</label>
+<textarea id="txt" maxlength="1500" required></textarea>
+<p style="font-size:14px;color:var(--muted)">Votre nom et votre email servent uniquement à vous répondre, et sont supprimés au plus tard au bout de 12 mois. Voir la <a href="confidentialite.html">politique de confidentialité</a>.</p>
+<button class="btn" id="go" type="submit">Envoyer</button>
+<p class="msg" id="msg"></p>
+</form>
+</main>
+<footer>
+<a href="./">Accueil</a><a href="a-propos.html">À propos</a><a href="confidentialite.html">Confidentialité</a><a href="mentions-legales.html">Mentions légales</a><a href="contact.html">Contact</a><a href="#" id="ckLink">Gérer les cookies</a>
+<p>PronoClub · jeu gratuit, sans argent réel</p>
+</footer>
+<script>
+document.getElementById('ckLink').addEventListener('click',function(e){e.preventDefault();
+  try{window.googlefc=window.googlefc||{};googlefc.callbackQueue=googlefc.callbackQueue||[];
+    if(window.googlefc.showRevocationMessage)googlefc.callbackQueue.push(googlefc.showRevocationMessage);
+    else alert("Aucun cookie publicitaire n'est utilisé pour le moment.")}catch(_){}});
+</script>
+<script>
+document.getElementById('f').addEventListener('submit',async function(e){e.preventDefault();
+  var b=document.getElementById('go'),m=document.getElementById('msg');b.disabled=true;b.textContent='Envoi…';m.textContent='';
+  try{var r=await fetch('https://akxsucplmrdrbsmhdmvj.supabase.co/rest/v1/rpc/contact_envoyer',{method:'POST',headers:{apikey:'sb_publishable_y0r-6RnFOCPZffZJSCxvQg_whwl47yx','Content-Type':'application/json'},
+      body:JSON.stringify({p_nom:document.getElementById('nom').value,p_email:document.getElementById('email').value,p_texte:document.getElementById('txt').value})});
+    if(!r.ok){var d={};try{d=await r.json()}catch(_){}throw new Error(d.message||'')}
+    document.getElementById('f').innerHTML='<h2 style="margin-top:0">Merci !</h2><p>Votre message a bien été envoyé. Nous vous répondrons par email.</p><p><a class="btn" href="./">Retour au jeu</a></p>'}
+  catch(err){var c=err.message;m.textContent=c==='trop_de_messages'?'Trop de messages en ce moment, réessayez dans une heure.':c==='email'?'Vérifiez votre adresse email.':c==='trop_court'?'Votre message est trop court.':'Envoi impossible pour le moment, réessayez plus tard.';b.disabled=false;b.textContent='Envoyer'}});
+</script>
+</body>
+</html>
