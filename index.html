@@ -2621,7 +2621,7 @@ function renderInvite(){
   const link=session?inviteUrl():'';
   return '<div class="inv">'+
    '<div class="inv-hero"><div class="inv-ava">'+pav(me,{f:'fr-amb'})+'</div><h2>Invite '+INV_GOAL+' amis,<br>gagne un cadre exclusif</h2><p>Le <b>Cadre Ambassadeur</b> ne s\'achète pas : seuls ceux qui font grandir le club l\'ont.</p></div>'+
-   '<div class="inv-card"><div class="inv-count"><b>'+Math.min(n,INV_GOAL)+'</b><span>/ '+INV_GOAL+' amis invités</span></div>'+
+   '<div class="inv-card"><div class="inv-count"><b>'+Math.min(n,INV_GOAL)+'</b><span>/ '+INV_GOAL+' amis actifs</span></div>'+
      '<div class="inv-slots">'+slots+'</div><div class="inv-bar"><i style="width:'+pct+'%"></i></div>'+
      '<p class="inv-st">'+(done?'🎉 Cadre Ambassadeur débloqué ! Il est dans ton profil.':n===INV_GOAL-1?'Plus qu\'<b>1 ami</b> pour débloquer ton cadre !':'Encore <b>'+(INV_GOAL-n)+' amis</b> pour débloquer ton cadre.')+'</p></div>'+
    (session?'<div class="inv-share"><div class="linkbox">'+esc(link)+'</div><div class="inv-btns"><button class="pbtn" data-sharetxt="'+esc('Viens parier gratuitement avec moi sur PronoClub ⚽🏀🎾 20 000 pièces par jour, et '+nf(PARRAIN_BONUS)+' pièces offertes avec mon lien !')+'" data-shareurl="'+esc(link)+'">📤 Partager mon lien</button><a class="pbtn wa" href="https://wa.me/?text='+encodeURIComponent('Viens parier gratuitement avec moi sur PronoClub ⚽ '+nf(PARRAIN_BONUS)+' pièces offertes avec mon lien : '+link)+'" target="_blank" rel="noopener">WhatsApp</a><button class="pbtn ghost2" data-copy="'+esc(link)+'">📋 Copier</button></div></div>'
