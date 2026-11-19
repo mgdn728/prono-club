@@ -385,6 +385,37 @@ function ligne(sp: string, path: string, ev: any, c: any, lg: string) {
     win, bo, o: cotes(c), fin: st === "post" && /postpon|cancel|abandon|forfeit/i.test(String(ty.name || "") + " " + String(ty.detail || "")) ? 1 : 0,
   };
 }
+// Tennis : points du jeu en cours (0, 15, 30, 40, AV) et du tie-break, avec l'accord de Sofascore.
+// Si Sofascore ne répond pas, rien ne change : on garde les scores ESPN.
+async function sofaPoints(rows: any[]) {
+  const T = rows.filter((r) => r.sp === "tennis" && r.st === "in" && Array.isArray(r.ls) && r.ls.length);
+  if (!T.length) return;
+  const r = await fetch("https://api.sofascore.com/api/v1/sport/tennis/events/live", {
+    headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Accept": "application/json", "Referer": "https://www.sofascore.com/" },
+  });
+  if (!r.ok) { console.error("sofascore", r.status); return; }
+  const j = await r.json();
+  const evs = Array.isArray(j?.events) ? j.events : [];
+  const cle = (n: string) => String(n || "").split(/\s*\/\s*/).map((p) => nomFin(p.replace(/^[A-Z]\.\s*/, ""))).filter(Boolean).sort().join("+");
+  const pt = (v: any) => { const t = String(v ?? "").trim().toUpperCase(); return t === "A" || t === "AD" ? "AV" : t; };
+  for (const x of T) {
+    const kh = cle(x.h), ka = cle(x.a);
+    if (!kh || !ka) continue;
+    for (const e of evs) {
+      const sh = cle(e.homeTeam?.name || e.homeTeam?.shortName), sa = cle(e.awayTeam?.name || e.awayTeam?.shortName);
+      const inv = sh === ka && sa === kh;
+      if (!(sh === kh && sa === ka) && !inv) continue;
+      const H = inv ? e.awayScore : e.homeScore, A = inv ? e.homeScore : e.awayScore;
+      if (!H || !A || H.point == null || A.point == null) break;
+      const cur = x.ls[x.ls.length - 1];
+      while (cur.length < 5) cur.push(cur.length < 4 ? null : 0);
+      cur[5] = pt(H.point); cur[6] = pt(A.point);
+      if (!cur[4] && (e.homeScore?.serve || e.awayScore?.serve)) cur[4] = (inv ? e.awayScore?.serve : e.homeScore?.serve) ? 1 : 2;
+      break;
+    }
+  }
+}
+
 async function liveMaj() {
   const rows: any[] = [];
   await Promise.all(FEEDS.map(async ([path, sp]) => {
@@ -406,6 +437,7 @@ async function liveMaj() {
     } catch (_) { /* flux indisponible : on ignore */ }
   }));
   if (!rows.length) return 0;
+  try { await sofaPoints(rows); } catch (e) { console.error("sofascore", e); }
   const now = new Date().toISOString();
   const old = new Map<string, any>();
   for (let i = 0; i < rows.length; i += 200) {
