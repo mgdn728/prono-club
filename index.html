@@ -38,6 +38,7 @@
 body.theme-gold{--acc:#f2b632;--acc-ink:#1a1200}
 body.theme-purple{--acc:#a983ff;--acc-ink:#12082a}
 body.theme-red{--acc:#ff5a5f;--acc-ink:#220405}
+body.theme-luxe{--acc:#d4af37;--acc-ink:#0b0b0b}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:15px}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
@@ -240,6 +241,7 @@ aside{position:sticky;top:120px;align-self:start}
 body.theme-gold{--acc:#d99a00;--acc-ink:#1a1200}
 body.theme-purple{--acc:#7b3fe4;--acc-ink:#fff}
 body.theme-red{--acc:#b30f22;--acc-ink:#fff}
+body.theme-luxe{--acc:#b8902a;--acc-ink:#0b0b0b}
 header{background:var(--head);border-bottom:0;box-shadow:0 2px 0 var(--acc)}
 header .brand,header .pill{color:#fff}
 header .brand span{color:var(--acc)}
@@ -517,6 +519,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 body.theme-gold{--grad-main:linear-gradient(120deg,#ffb000 0%,#ff7a1a 55%,#c2410c 100%);--acc:#e07a00}
 body.theme-purple{--grad-main:linear-gradient(120deg,#a855f7 0%,#6a2cf5 50%,#2b0f8a 100%);--acc:#7c3aed}
 body.theme-red{--grad-main:linear-gradient(120deg,#ff2d2d 0%,#c4001d 55%,#5c0011 100%);--acc:#d1001f}
+body.theme-luxe{--grad-main:linear-gradient(120deg,#0b0b0b 0%,#2a2210 45%,#d4af37 100%);--acc:#c9a227}
 body{background:transparent!important}
 html{background-attachment:fixed!important;background:
   radial-gradient(520px 380px at -5% -5%,rgba(255,31,61,.13),transparent 65%),
@@ -812,6 +815,25 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .fr-amb::after{content:"🤝";position:absolute;bottom:-7px;right:-8px;font-size:12px;line-height:1}
 
 .item{position:relative}
+.item.prem{box-shadow:0 0 0 2px transparent,var(--sh)!important;background-image:linear-gradient(var(--card,#fff),var(--card,#fff)),linear-gradient(135deg,#7a2cf5,#00c2ff,#ffd23f)!important;background-origin:border-box!important;background-clip:padding-box,border-box!important;border:2px solid transparent!important}
+.lim-b.prem-b{background:linear-gradient(135deg,#0b0b14,#7a2cf5 60%,#00c2ff);color:#fff;animation:none}
+.wallet.w2{background:linear-gradient(120deg,#2a1d00,#8a6200)}
+.wallet small{opacity:.7;font-weight:600}
+.fx-fireworks-glow{background:radial-gradient(ellipse at 50% 30%,rgba(255,80,200,.35),transparent 60%),radial-gradient(ellipse at 30% 60%,rgba(80,200,255,.3),transparent 55%)}
+.fx-jackpot-glow{background:radial-gradient(ellipse at 50% 50%,rgba(255,210,63,.55),transparent 65%)}
+.nx-holo{background:linear-gradient(100deg,#7af5ff,#c18cff,#ff9ad5,#fff6a8,#7af5ff,#c18cff);background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;animation:rb 2.2s linear infinite;filter:drop-shadow(0 0 4px rgba(160,140,255,.7))}
+.nx-goldx{background:linear-gradient(90deg,#8a6200,#ffd700 25%,#fff8c4 50%,#ffd700 75%,#8a6200);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;animation:rb 2.6s linear infinite;filter:drop-shadow(0 0 3px rgba(255,200,0,.6))}
+.nx-cash{background:linear-gradient(90deg,#0b6b2e,#2ecc71,#b6ffcf,#2ecc71,#0b6b2e);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;animation:rb 3s linear infinite;filter:drop-shadow(0 0 3px rgba(46,204,113,.6))}
+.fr-dragon,.fr-void,.fr-vault{background:transparent!important;isolation:isolate;overflow:visible;padding:3.5px}
+.fr-dragon::before,.fr-void::before,.fr-vault::before{content:"";position:absolute;inset:0;border-radius:50%;z-index:-1;animation:frspin 2s linear infinite}
+.fr-dragon::before{background:conic-gradient(#ff1f00,#ffd700,#ff6a00,#8a0000,#ffd700,#ff1f00)}
+.fr-dragon{animation:frflick .6s ease-in-out infinite alternate}
+.fr-dragon::after{content:"🐉";position:absolute;bottom:-8px;right:-9px;font-size:14px;line-height:1}
+.fr-void::before{background:conic-gradient(#000,#3a0ca3,#000,#7209b7,#000,#00e5ff,#000);animation-duration:1.3s}
+.fr-void{box-shadow:0 0 14px rgba(114,9,183,.9),0 0 3px #000 inset}
+.fr-void::after{content:"🕳️";position:absolute;top:-8px;right:-8px;font-size:12px;line-height:1}
+.fr-vault::before{background:conic-gradient(#6b7280,#e5e7eb,#9ca3af,#ffd700,#6b7280);animation-duration:4s}
+.fr-vault::after{content:"🔐";position:absolute;bottom:-7px;right:-8px;font-size:12px;line-height:1}
 .item.limited{box-shadow:0 0 0 2px #ffd23f,var(--sh)!important}
 .lim-b{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#111827,#7a2cf5);color:#ffd23f;font-size:10.5px;font-weight:900;letter-spacing:1px;border-radius:999px;padding:4px 9px;animation:pkblink 1.8s infinite}
 .lim-t{display:block;font-size:12px;font-weight:700;opacity:.92;margin-top:2px}
@@ -1549,58 +1571,72 @@ const butId=n=>'b_'+String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').to
 const BUT_MK={key:'but',title:'Buteur (marque au moins 1 but)',opts:m=>(m.bt||[]).map(p=>({id:butId(p[0]),label:p[0]+' · '+(p[1]===2?m.away:m.home),fn:(h,a,w)=>Array.isArray(w)&&w.some(x=>butId(x)===butId(p[0]))}))};
 const footMarkets=m=>m.bt&&m.bt.length?[MARKETS[0],BUT_MK,...MARKETS.slice(1)]:MARKETS;
 
-const DEFI_GAIN=300,PARRAIN_BONUS=500;
+const DEFI_GAIN=300,PARRAIN_BONUS=10000,PARRAIN_C=25000,PARRAIN_D=5000;
 const STRIPE_DON='https://buy.stripe.com/cNi7sKeCH6Kf56N5NI3ZK01'; // lien de paiement Stripe (montant libre) pour le bouton « Soutenir PronoClub »
 const SHOP=[
- {id:'c250',sec:'Bonus',ic:'🪙',name:'+5 000 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:2000,kind:'coins',val:5000},
- {id:'c1000',sec:'Bonus',ic:'💰',name:'+20 000 pièces',desc:'Doublez votre budget du jour.',cost:7000,kind:'coins',val:20000},
- {id:'mystery',sec:'Avantages',ic:'🎁',name:'Boîte mystère',desc:'Des pièces, des diamants ou un objet de la boutique… et 3 objets introuvables ailleurs !',cost:10000,kind:'mystery'},
- {id:'vip',sec:'Avantages',ic:'👑',name:'Pass VIP 7 jours',desc:'+10 000 pièces chaque jour pendant 7 jours, en plus de tes 20 000. Une couronne 👑 à côté de ton pseudo.',cost:40000,kind:'vip'},
- {id:'boost25',sec:'Avantages',ic:'⚡',name:'Super boost +25 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,25.',cost:4000,kind:'inv'},
- {id:'spin',sec:'Avantages',ic:'🎡',name:'Tour de roue en plus',desc:'Un tour de roue de la fortune en plus, quand tu veux.',cost:3000,kind:'inv'},
- {id:'chestx',sec:'Avantages',ic:'🧰',name:'Coffre en plus',desc:'Ouvre un 2e coffre du jour (jackpot de 100 000 pièces possible).',cost:5000,kind:'inv'},
- {id:'boost',sec:'Bonus',ic:'🚀',name:'Boost de cote +10 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,10.',cost:3000,kind:'inv'},
- {id:'shield',sec:'Bonus',ic:'🛡️',name:'Assurance',desc:'Si le pari assuré est perdu, la mise vous est rendue en diamants.',cost:4500,kind:'inv'},
- {id:'nx_gold',sec:'Pseudo en couleur',ic:'✨',name:'Pseudo doré',desc:'Votre pseudo brille en or dans le chat et les classements.',cost:25000,kind:'name',cls:'nx-gold'},
- {id:'nx_neon',sec:'Pseudo en couleur',ic:'💡',name:'Pseudo néon',desc:'Un pseudo bleu électrique qui se voit de loin.',cost:50000,kind:'name',cls:'nx-neon'},
- {id:'nx_fire',sec:'Pseudo en couleur',ic:'🔥',name:'Pseudo de feu',desc:'Un dégradé rouge, orange et jaune.',cost:125000,kind:'name',cls:'nx-fire'},
- {id:'nx_rainbow',sec:'Pseudo en couleur',ic:'🌈',name:'Pseudo arc-en-ciel',desc:'Toutes les couleurs, animées.',cost:250000,kind:'name',cls:'nx-rainbow'},
- {id:'fr_fire',sec:'Cadres d\'avatar',ic:'🟠',name:'Cadre Feu',desc:'Un cercle de flammes autour de votre avatar.',cost:60000,kind:'frame',cls:'fr-fire'},
- {id:'fr_ice',sec:'Cadres d\'avatar',ic:'🔵',name:'Cadre Glace',desc:'Un cadre bleu glacier.',cost:100000,kind:'frame',cls:'fr-ice'},
- {id:'fr_gold',sec:'Cadres d\'avatar',ic:'🟡',name:'Cadre Or',desc:'Le cadre des champions.',cost:150000,kind:'frame',cls:'fr-gold'},
- {id:'fr_crown',sec:'Cadres d\'avatar',ic:'👑',name:'Cadre Couronne',desc:'Cadre doré qui brille, avec une couronne.',cost:250000,kind:'frame',cls:'fr-crown'},
- {id:'t1',sec:'Titres',ic:'🥉',name:'Titre « Pronostiqueur »',desc:'Affiché à côté de votre pseudo dans le chat et les classements.',cost:25000,kind:'title',label:'Pronostiqueur'},
- {id:'t2',sec:'Titres',ic:'🥈',name:'Titre « Expert »',desc:'Pour ceux qui lisent le jeu.',cost:75000,kind:'title',label:'Expert'},
- {id:'t3',sec:'Titres',ic:'🥇',name:'Titre « Légende »',desc:'Le titre ultime du club.',cost:500000,kind:'title',label:'Légende'},
- {id:'t4',sec:'Titres',ic:'🎯',name:'Titre « Sniper »',desc:'Pour les pronostics qui font mouche.',cost:75000,kind:'title',label:'Sniper'},
- {id:'t5',sec:'Titres',ic:'👑',name:'Titre « Roi du combiné »',desc:'Les gros combinés, c\'est vous.',cost:250000,kind:'title',label:'Roi du combiné'},
- {id:'th_gold',sec:'Thèmes',ic:'🟡',name:'Thème Or',desc:'Change la couleur du site.',cost:50000,kind:'theme',cls:'theme-gold'},
- {id:'th_purple',sec:'Thèmes',ic:'🟣',name:'Thème Violet',desc:'Change la couleur du site.',cost:50000,kind:'theme',cls:'theme-purple'},
- {id:'th_red',sec:'Thèmes',ic:'🔴',name:'Thème Rouge',desc:'Change la couleur du site.',cost:50000,kind:'theme',cls:'theme-red'},
- {id:'fr_rgb',sec:'Avatars animés',ic:'🌈',name:'Avatar RGB',desc:'Un anneau arc-en-ciel qui tourne sans arrêt autour de votre avatar.',cost:75000,kind:'frame',cls:'fr-rgb'},
- {id:'fr_pulse',sec:'Avatars animés',ic:'💠',name:'Avatar Néon',desc:'Un néon bleu et rose qui pulse comme en boîte de nuit.',cost:100000,kind:'frame',cls:'fr-pulse'},
- {id:'fr_comet',sec:'Avatars animés',ic:'☄️',name:'Avatar Comète',desc:'Une comète lumineuse tourne autour de votre avatar.',cost:150000,kind:'frame',cls:'fr-comet'},
- {id:'fr_flame',sec:'Avatars animés',ic:'🔥',name:'Avatar Brasier',desc:'Des flammes vivantes qui tournent et scintillent.',cost:200000,kind:'frame',cls:'fr-flame'},
- {id:'fr_galaxy',sec:'Avatars animés',ic:'🌌',name:'Avatar Galaxie',desc:'Une galaxie qui tourne, avec une étoile qui brille.',cost:300000,kind:'frame',cls:'fr-galaxy'},
- {id:'fx_confetti',sec:'Effets de victoire',ic:'🎊',name:'Confettis',desc:'Une pluie de confettis à chaque pari ou partie gagnée.',cost:15000,kind:'fx',cls:'fx-confetti'},
- {id:'fx_money',sec:'Effets de victoire',ic:'💸',name:'Pluie de billets',desc:'Les billets tombent du ciel quand vous gagnez.',cost:40000,kind:'fx',cls:'fx-money'},
- {id:'fx_fire',sec:'Effets de victoire',ic:'🔥',name:'En feu',desc:'Votre écran s\'enflamme à chaque victoire.',cost:50000,kind:'fx',cls:'fx-fire'},
- {id:'fx_diamond',sec:'Effets de victoire',ic:'💎',name:'Pluie de diamants',desc:'Des diamants partout quand vous gagnez.',cost:75000,kind:'fx',cls:'fx-diamond'},
- {id:'fx_trophy',sec:'Effets de victoire',ic:'🏆',name:'Trophées',desc:'Une avalanche de trophées pour fêter vos victoires.',cost:125000,kind:'fx',cls:'fx-trophy'},
- {id:'lx_galaxy',sec:'⏳ Édition limitée',ic:'🌌',name:'Pseudo Galaxie',desc:'Un pseudo violet et bleu qui scintille. Disponible une seule semaine.',cost:150000,kind:'name',cls:'nx-galaxy',limited:true},
- {id:'lx_ice',sec:'⏳ Édition limitée',ic:'❄️',name:'Pseudo Givré',desc:'Un pseudo blanc et bleu qui brille comme la glace.',cost:100000,kind:'name',cls:'nx-ice',limited:true},
- {id:'lx_lava',sec:'⏳ Édition limitée',ic:'🌋',name:'Pseudo Lave',desc:'Un pseudo rouge et orange qui coule comme de la lave.',cost:125000,kind:'name',cls:'nx-lava',limited:true},
- {id:'lf_diamond',sec:'⏳ Édition limitée',ic:'💎',name:'Avatar Diamant',desc:'Un cadre de diamant animé qui étincelle.',cost:225000,kind:'frame',cls:'fr-diamond',limited:true},
- {id:'lf_love',sec:'⏳ Édition limitée',ic:'💖',name:'Avatar Cœur',desc:'Un cadre rose qui bat comme un cœur.',cost:100000,kind:'frame',cls:'fr-love',limited:true},
- {id:'lt_goat',sec:'⏳ Édition limitée',ic:'🐐',name:'Titre « GOAT »',desc:'Le plus grand de tous les temps, rien que ça.',cost:200000,kind:'title',label:'GOAT 🐐',limited:true},
- {id:'lt_ballon',sec:'⏳ Édition limitée',ic:'⚽',name:'Titre « Ballon d\'or »',desc:'Le titre des plus grands pronostiqueurs.',cost:300000,kind:'title',label:'Ballon d\'or',limited:true},
- {id:'lt_lucky',sec:'⏳ Édition limitée',ic:'🍀',name:'Titre « Chanceux »',desc:'Pour ceux à qui tout réussit.',cost:75000,kind:'title',label:'Chanceux 🍀',limited:true},
- {id:'lfx_gold',sec:'⏳ Édition limitée',ic:'👑',name:'Pluie d\'or',desc:'Couronnes et médailles d\'or à chaque victoire.',cost:175000,kind:'fx',cls:'fx-gold',limited:true},
+ {id:'c250',sec:'Bonus',ic:'🪙',name:'+5 000 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:3000,kind:'coins',val:5000},
+ {id:'c1000',sec:'Bonus',ic:'💰',name:'+20 000 pièces',desc:'Doublez votre budget du jour.',cost:10500,kind:'coins',val:20000},
+ {id:'mystery',sec:'Avantages',ic:'🎁',name:'Boîte mystère',desc:'Surtout des pièces ou des diamants. Très rarement un objet de la boutique, et exceptionnellement un des 3 objets introuvables ailleurs. Chances : pièces 52 % · diamants 46,5 % · objet de la boutique 1 % · objet exclusif 0,5 %.',cost:25000,kind:'mystery'},
+ {id:'vip',sec:'Avantages',ic:'👑',name:'Pass VIP 7 jours',desc:'+10 000 pièces chaque jour pendant 7 jours, en plus de tes 20 000. Une couronne 👑 à côté de ton pseudo.',cost:60000,kind:'vip'},
+ {id:'boost25',sec:'Avantages',ic:'⚡',name:'Super boost +25 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,25.',cost:6000,kind:'inv'},
+ {id:'spin',sec:'Avantages',ic:'🎡',name:'Tour de roue en plus',desc:'Un tour de roue de la fortune en plus, quand tu veux.',cost:4500,kind:'inv'},
+ {id:'chestx',sec:'Avantages',ic:'🧰',name:'Coffre en plus',desc:'Ouvre un 2e coffre du jour (jackpot de 100 000 pièces possible).',cost:7500,kind:'inv'},
+ {id:'boost',sec:'Bonus',ic:'🚀',name:'Boost de cote +10 %',desc:'À utiliser sur un pari : sa cote est multipliée par 1,10.',cost:4500,kind:'inv'},
+ {id:'shield',sec:'Bonus',ic:'🛡️',name:'Assurance',desc:'Si le pari assuré est perdu, la mise vous est rendue en diamants.',cost:7000,kind:'inv'},
+ {id:'nx_gold',sec:'Pseudo en couleur',ic:'✨',name:'Pseudo doré',desc:'Votre pseudo brille en or dans le chat et les classements.',cost:50000,kind:'name',cls:'nx-gold'},
+ {id:'nx_neon',sec:'Pseudo en couleur',ic:'💡',name:'Pseudo néon',desc:'Un pseudo bleu électrique qui se voit de loin.',cost:100000,kind:'name',cls:'nx-neon'},
+ {id:'nx_fire',sec:'Pseudo en couleur',ic:'🔥',name:'Pseudo de feu',desc:'Un dégradé rouge, orange et jaune.',cost:250000,kind:'name',cls:'nx-fire'},
+ {id:'nx_rainbow',sec:'Pseudo en couleur',ic:'🌈',name:'Pseudo arc-en-ciel',desc:'Toutes les couleurs, animées.',cost:500000,kind:'name',cls:'nx-rainbow'},
+ {id:'fr_fire',sec:'Cadres d\'avatar',ic:'🟠',name:'Cadre Feu',desc:'Un cercle de flammes autour de votre avatar.',cost:120000,kind:'frame',cls:'fr-fire'},
+ {id:'fr_ice',sec:'Cadres d\'avatar',ic:'🔵',name:'Cadre Glace',desc:'Un cadre bleu glacier.',cost:200000,kind:'frame',cls:'fr-ice'},
+ {id:'fr_gold',sec:'Cadres d\'avatar',ic:'🟡',name:'Cadre Or',desc:'Le cadre des champions.',cost:300000,kind:'frame',cls:'fr-gold'},
+ {id:'fr_crown',sec:'Cadres d\'avatar',ic:'👑',name:'Cadre Couronne',desc:'Cadre doré qui brille, avec une couronne.',cost:500000,kind:'frame',cls:'fr-crown'},
+ {id:'t1',sec:'Titres',ic:'🥉',name:'Titre « Pronostiqueur »',desc:'Affiché à côté de votre pseudo dans le chat et les classements.',cost:50000,kind:'title',label:'Pronostiqueur'},
+ {id:'t2',sec:'Titres',ic:'🥈',name:'Titre « Expert »',desc:'Pour ceux qui lisent le jeu.',cost:150000,kind:'title',label:'Expert'},
+ {id:'t3',sec:'Titres',ic:'🥇',name:'Titre « Légende »',desc:'Le titre ultime du club.',cost:1000000,kind:'title',label:'Légende'},
+ {id:'t4',sec:'Titres',ic:'🎯',name:'Titre « Sniper »',desc:'Pour les pronostics qui font mouche.',cost:150000,kind:'title',label:'Sniper'},
+ {id:'t5',sec:'Titres',ic:'👑',name:'Titre « Roi du combiné »',desc:'Les gros combinés, c\'est vous.',cost:500000,kind:'title',label:'Roi du combiné'},
+ {id:'th_gold',sec:'Thèmes',ic:'🟡',name:'Thème Or',desc:'Change la couleur du site.',cost:100000,kind:'theme',cls:'theme-gold'},
+ {id:'th_purple',sec:'Thèmes',ic:'🟣',name:'Thème Violet',desc:'Change la couleur du site.',cost:100000,kind:'theme',cls:'theme-purple'},
+ {id:'th_red',sec:'Thèmes',ic:'🔴',name:'Thème Rouge',desc:'Change la couleur du site.',cost:100000,kind:'theme',cls:'theme-red'},
+ {id:'fr_rgb',sec:'Avatars animés',ic:'🌈',name:'Avatar RGB',desc:'Un anneau arc-en-ciel qui tourne sans arrêt autour de votre avatar.',cost:150000,kind:'frame',cls:'fr-rgb'},
+ {id:'fr_pulse',sec:'Avatars animés',ic:'💠',name:'Avatar Néon',desc:'Un néon bleu et rose qui pulse comme en boîte de nuit.',cost:200000,kind:'frame',cls:'fr-pulse'},
+ {id:'fr_comet',sec:'Avatars animés',ic:'☄️',name:'Avatar Comète',desc:'Une comète lumineuse tourne autour de votre avatar.',cost:300000,kind:'frame',cls:'fr-comet'},
+ {id:'fr_flame',sec:'Avatars animés',ic:'🔥',name:'Avatar Brasier',desc:'Des flammes vivantes qui tournent et scintillent.',cost:400000,kind:'frame',cls:'fr-flame'},
+ {id:'fr_galaxy',sec:'Avatars animés',ic:'🌌',name:'Avatar Galaxie',desc:'Une galaxie qui tourne, avec une étoile qui brille.',cost:600000,kind:'frame',cls:'fr-galaxy'},
+ {id:'fx_confetti',sec:'Effets de victoire',ic:'🎊',name:'Confettis',desc:'Une pluie de confettis à chaque pari ou partie gagnée.',cost:30000,kind:'fx',cls:'fx-confetti'},
+ {id:'fx_money',sec:'Effets de victoire',ic:'💸',name:'Pluie de billets',desc:'Les billets tombent du ciel quand vous gagnez.',cost:80000,kind:'fx',cls:'fx-money'},
+ {id:'fx_fire',sec:'Effets de victoire',ic:'🔥',name:'En feu',desc:'Votre écran s\'enflamme à chaque victoire.',cost:100000,kind:'fx',cls:'fx-fire'},
+ {id:'fx_diamond',sec:'Effets de victoire',ic:'💎',name:'Pluie de diamants',desc:'Des diamants partout quand vous gagnez.',cost:150000,kind:'fx',cls:'fx-diamond'},
+ {id:'fx_trophy',sec:'Effets de victoire',ic:'🏆',name:'Trophées',desc:'Une avalanche de trophées pour fêter vos victoires.',cost:250000,kind:'fx',cls:'fx-trophy'},
+ {id:'px_holo',sec:'💠 Collection Ultra Premium',ic:'💠',name:'Pseudo Holographique',desc:'Un pseudo qui change de couleur comme un hologramme, avec un reflet qui passe.',cost:1500000,kind:'name',cls:'nx-holo',prem:true},
+ {id:'px_goldx',sec:'💠 Collection Ultra Premium',ic:'🏅',name:'Pseudo Or massif',desc:'De l\'or véritable qui brille, avec un éclat lumineux.',cost:800000,kind:'name',cls:'nx-goldx',prem:true},
+ {id:'pf_dragon',sec:'💠 Collection Ultra Premium',ic:'🐉',name:'Avatar Dragon',desc:'Un anneau de feu et d\'or qui tourne, gardé par un dragon.',cost:1200000,kind:'frame',cls:'fr-dragon',prem:true},
+ {id:'pf_void',sec:'💠 Collection Ultra Premium',ic:'🕳️',name:'Avatar Trou noir',desc:'Un tourbillon noir et violet qui aspire la lumière.',cost:2000000,kind:'frame',cls:'fr-void',prem:true},
+ {id:'pt_emp',sec:'💠 Collection Ultra Premium',ic:'🏛️',name:'Titre « Empereur »',desc:'Pour ceux qui règnent sur le club.',cost:1000000,kind:'title',label:'Empereur 🏛️',prem:true},
+ {id:'pt_untouch',sec:'💠 Collection Ultra Premium',ic:'🔱',name:'Titre « Intouchable »',desc:'Le titre le plus cher de la boutique en diamants.',cost:2500000,kind:'title',label:'Intouchable 🔱',prem:true},
+ {id:'pfx_fw',sec:'💠 Collection Ultra Premium',ic:'🎆',name:'Feu d\'artifice',desc:'Un vrai feu d\'artifice sur ton écran à chaque victoire.',cost:1000000,kind:'fx',cls:'fx-fireworks',prem:true},
+ {id:'pth_luxe',sec:'💠 Collection Ultra Premium',ic:'🖤',name:'Thème Noir & Or',desc:'Tout le site en noir et or, façon carte black.',cost:750000,kind:'theme',cls:'theme-luxe',prem:true},
+ {id:'cx_cash',sec:'🪙 Collection Pièces',ic:'💵',name:'Pseudo Billet vert',desc:'Un pseudo couleur dollar qui brille. Uniquement avec des pièces.',cost:1000000,cur:'c',kind:'name',cls:'nx-cash',prem:true},
+ {id:'cf_vault',sec:'🪙 Collection Pièces',ic:'🔐',name:'Avatar Coffre-fort',desc:'Un cadre en acier et or, avec un cadenas. Uniquement avec des pièces.',cost:1500000,cur:'c',kind:'frame',cls:'fr-vault',prem:true},
+ {id:'ct_bill',sec:'🪙 Collection Pièces',ic:'🤑',name:'Titre « Milliardaire »',desc:'Il faut réunir 2 millions de pièces le même jour.',cost:2000000,cur:'c',kind:'title',label:'Milliardaire 🤑',prem:true},
+ {id:'cfx_jack',sec:'🪙 Collection Pièces',ic:'🎰',name:'Jackpot',desc:'Une pluie de pièces et de machines à sous à chaque victoire.',cost:3000000,cur:'c',kind:'fx',cls:'fx-jackpot',prem:true},
+ {id:'ct_boss',sec:'🪙 Collection Pièces',ic:'🕴️',name:'Titre « Le Patron »',desc:'Le titre le plus rare du club : 5 millions de pièces.',cost:5000000,cur:'c',kind:'title',label:'Le Patron 🕴️',prem:true},
+ {id:'lx_galaxy',sec:'⏳ Édition limitée',ic:'🌌',name:'Pseudo Galaxie',desc:'Un pseudo violet et bleu qui scintille. Disponible une seule semaine.',cost:300000,kind:'name',cls:'nx-galaxy',limited:true},
+ {id:'lx_ice',sec:'⏳ Édition limitée',ic:'❄️',name:'Pseudo Givré',desc:'Un pseudo blanc et bleu qui brille comme la glace.',cost:200000,kind:'name',cls:'nx-ice',limited:true},
+ {id:'lx_lava',sec:'⏳ Édition limitée',ic:'🌋',name:'Pseudo Lave',desc:'Un pseudo rouge et orange qui coule comme de la lave.',cost:250000,kind:'name',cls:'nx-lava',limited:true},
+ {id:'lf_diamond',sec:'⏳ Édition limitée',ic:'💎',name:'Avatar Diamant',desc:'Un cadre de diamant animé qui étincelle.',cost:450000,kind:'frame',cls:'fr-diamond',limited:true},
+ {id:'lf_love',sec:'⏳ Édition limitée',ic:'💖',name:'Avatar Cœur',desc:'Un cadre rose qui bat comme un cœur.',cost:200000,kind:'frame',cls:'fr-love',limited:true},
+ {id:'lt_goat',sec:'⏳ Édition limitée',ic:'🐐',name:'Titre « GOAT »',desc:'Le plus grand de tous les temps, rien que ça.',cost:400000,kind:'title',label:'GOAT 🐐',limited:true},
+ {id:'lt_ballon',sec:'⏳ Édition limitée',ic:'⚽',name:'Titre « Ballon d\'or »',desc:'Le titre des plus grands pronostiqueurs.',cost:600000,kind:'title',label:'Ballon d\'or',limited:true},
+ {id:'lt_lucky',sec:'⏳ Édition limitée',ic:'🍀',name:'Titre « Chanceux »',desc:'Pour ceux à qui tout réussit.',cost:150000,kind:'title',label:'Chanceux 🍀',limited:true},
+ {id:'lfx_gold',sec:'⏳ Édition limitée',ic:'👑',name:'Pluie d\'or',desc:'Couronnes et médailles d\'or à chaque victoire.',cost:350000,kind:'fx',cls:'fx-gold',limited:true},
  {id:'nx_myst',sec:'Exclusif',ic:'🔮',name:'Pseudo Mystère',desc:'Uniquement dans la boîte mystère.',cost:0,kind:'name',cls:'nx-myst',hidden:true,myst:true},
  {id:'fr_myst',sec:'Exclusif',ic:'🔮',name:'Cadre Mystère',desc:'Uniquement dans la boîte mystère.',cost:0,kind:'frame',cls:'fr-myst',hidden:true,myst:true},
  {id:'t_myst',sec:'Exclusif',ic:'🔮',name:'Titre « Mystère »',desc:'Uniquement dans la boîte mystère.',cost:0,kind:'title',label:'Mystère',hidden:true,myst:true},
  {id:'fr_amb',sec:'Exclusif',ic:'🤝',name:'Cadre Ambassadeur',desc:'Réservé à ceux qui ont invité 3 amis. Impossible à acheter.',cost:0,kind:'frame',cls:'fr-amb',hidden:true},
  {id:'t_amb',sec:'Exclusif',ic:'🤝',name:'Titre « Ambassadeur »',desc:'Réservé à ceux qui ont invité 10 amis.',cost:0,kind:'title',label:'Ambassadeur',hidden:true},
+ {id:'t_amb3',sec:'Exclusif',ic:'🏆',name:'Titre « Légende du club »',desc:'Réservé à ceux qui ont fait venir 25 amis actifs.',cost:0,kind:'title',label:'Légende du club',hidden:true},
  {id:'fr_loyal',sec:'Exclusif',ic:'📅',name:'Cadre Fidèle',desc:'Réservé à ceux qui complètent le calendrier de 7 jours.',cost:0,kind:'frame',cls:'fr-loyal',hidden:true},
  {id:'t_saison',sec:'Exclusif',ic:'🗓️',name:'Titre « Champion de saison »',desc:'Réservé au 1er d\'une saison.',cost:0,kind:'title',label:'Champion de saison',hidden:true},
  {id:'nx_admin',sec:'Exclusif',ic:'🛡️',name:'Pseudo Administrateur',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'name',cls:'nx-admin',hidden:true},
@@ -1993,8 +2029,8 @@ async function afterLogin(){
 async function claimBonus(){
   if(!session||!synced)return;
   try{const r=await rpc('bonus_recuperer',{p_token:session.token});if(!r)return;const f0=ui.filleuls;ui.filleuls=r.filleuls||0;checkParrain();if(f0!==ui.filleuls&&(ui.tab==='matchs'||ui.tab==='invite'))renderView();
-    if(r.bonus>0){state.coins+=r.bonus;save();renderAll();
-      celebrate('🎁','Bonus de parrainage','<b>+'+nf(r.bonus)+' pièces</b> ajoutées à vos pièces du jour. Merci de faire grandir le club !')}}catch(e){}
+    if(r.bonus>0||r.dia>0){state.coins+=r.bonus||0;state.diamonds+=r.dia||0;save();renderAll();
+      celebrate('🎁','Bonus de parrainage','<b>'+[r.bonus>0?'+'+nf(r.bonus)+' pièces':'',r.dia>0?'+'+nf(r.dia)+' 💎':''].filter(Boolean).join(' et ')+'</b> pour toi. Merci de faire grandir le club !')}}catch(e){}
 }
 async function refreshFromServer(){
   if(!session)return;
@@ -2185,7 +2221,7 @@ function placeBets(){
 }
 
 /* ---------- Joueurs : décorations ---------- */
-const NAMEFX=['nx-myst','nx-gold','nx-neon','nx-fire','nx-rainbow','nx-admin','nx-galaxy','nx-ice','nx-lava'],FRAMES=['fr-myst','fr-fire','fr-ice','fr-gold','fr-crown','fr-admin','fr-rgb','fr-pulse','fr-comet','fr-flame','fr-galaxy','fr-diamond','fr-love','fr-amb','fr-loyal'];
+const NAMEFX=['nx-holo','nx-goldx','nx-cash','nx-myst','nx-gold','nx-neon','nx-fire','nx-rainbow','nx-admin','nx-galaxy','nx-ice','nx-lava'],FRAMES=['fr-dragon','fr-void','fr-vault','fr-myst','fr-fire','fr-ice','fr-gold','fr-crown','fr-admin','fr-rgb','fr-pulse','fr-comet','fr-flame','fr-galaxy','fr-diamond','fr-love','fr-amb','fr-loyal'];
 /* Pass VIP et boîte mystère */
 const VIP_BONUS=10000;
 function vipOn(){return !!(state.vip&&state.vip.until&&state.vip.until>=today())}
@@ -2196,13 +2232,15 @@ function buyVip(){const st=vipOn()?addDays(state.vip.until,1):today();state.vip=
 function vipDaily(){if(!vipOn()||state.vip.last===today())return false;state.vip.last=today();state.coins+=VIP_BONUS;setTimeout(()=>toast('👑 VIP : +'+nf(VIP_BONUS)+' pièces aujourd\'hui'),1500);return true}
 function openMystery(){
   const owned=id=>state.owned.includes(id);
-  const cos=SHOP.filter(x=>EQUIP[x.kind]&&x.cost>0&&!x.hidden&&!x.limited&&!owned(x.id)),my=SHOP.filter(x=>x.myst&&!owned(x.id));
-  const T=[[34,'c'],[24,'d'],[26,'o'],[16,'m']];let r=bjRand(100),k='c';for(const[w,t]of T){if(r<w){k=t;break}r-=w}
-  if(k==='o'&&!cos.length)k=my.length?'m':'d';if(k==='m'&&!my.length)k=cos.length?'o':'d';
+  // objets possibles : seulement les objets « classiques » de la boutique (jamais l'Ultra Premium, la Collection Pièces ni l'édition limitée)
+  const cos=SHOP.filter(x=>EQUIP[x.kind]&&x.cost>0&&!x.hidden&&!x.limited&&!x.prem&&!owned(x.id)),my=SHOP.filter(x=>x.myst&&!owned(x.id));
+  // sur 1000 : pièces 520 · diamants 465 · objet de la boutique 10 (1 %) · objet exclusif 5 (0,5 %)
+  const T=[[520,'c'],[465,'d'],[10,'o'],[5,'m']];let r=bjRand(1000),k='c';for(const[w,t]of T){if(r<w){k=t;break}r-=w}
+  if(k==='o'&&!cos.length)k='d';if(k==='m'&&!my.length)k='d';
   let ic,t,sub;
-  if(k==='c'){const v=[30000,50000,100000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.coins+=v;ic='🪙';t='+'+nf(v)+' pièces';sub='Ajoutées à tes pièces du jour'}
-  else if(k==='d'){const v=[4000,8000,25000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.diamonds+=v;ic='💎';t='+'+nf(v)+' diamants';sub='Ajoutés à tes diamants'}
-  else{const L=k==='o'?cos:my,x=L[bjRand(L.length)];state.owned.push(x.id);state[EQUIP[x.kind]]=eqVal(x);ic=x.ic;t=x.name;sub=k==='m'?'🔮 Objet ultra rare, introuvable dans la boutique !':'Valeur '+nf(x.cost)+' 💎 · déjà activé'}
+  if(k==='c'){const v=[20000,50000,150000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.coins+=v;ic='🪙';t='+'+nf(v)+' pièces';sub='Ajoutées à tes pièces du jour'}
+  else if(k==='d'){const v=[5000,12000,40000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.diamonds+=v;ic='💎';t='+'+nf(v)+' diamants';sub='Ajoutés à tes diamants'}
+  else{const L=k==='o'?cos:my,x=L[bjRand(L.length)];state.owned.push(x.id);state[EQUIP[x.kind]]=eqVal(x);ic=x.ic;t=x.name;sub=k==='m'?'🔮 Objet exclusif (0,5 % de chances), introuvable dans la boutique !':'Incroyable, 1 % de chances ! Valeur '+nf(x.cost)+' 💎 · déjà activé'}
   save();
   popup('<div class="myst"><div class="myst-box" id="mystBox">🎁</div><div class="myst-res" id="mystRes"><div class="pop-ic big">'+ic+'</div><h3>'+t+'</h3><p>'+sub+'</p></div></div><div class="pop-btns"><button class="pbtn" data-popclose="1">Super !</button></div>');
   bjSnd('chip');setTimeout(()=>{const B=$('#mystBox'),R=$('#mystRes');if(B)B.classList.add('open');if(R)R.classList.add('on');bjSnd(k==='m'?'bj':'win');winFx(k==='m'?'fx-gold':'fx-confetti')},1100)}
@@ -2212,12 +2250,12 @@ function limNow(){const w=weekId();let h=0;for(const ch of w)h=(h*31+ch.charCode
 function limLeft(){const d=new Date(),n=new Date(d.getFullYear(),d.getMonth(),d.getDate()+((8-(d.getDay()||7))%7||7));const ms=n-d,j=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return j?j+' j '+h+' h':h?h+' h '+m+' min':m+' min'}
 /* Effets de victoire */
 function winFx(force){const k=force||state.winFx;if(!k)return;
-  const E={'fx-money':['💸','💵','💶'],'fx-fire':['🔥','🔥','💥'],'fx-diamond':['💎','💎','✨'],'fx-trophy':['🏆','🥇','⭐'],'fx-gold':['👑','🥇','🪙','✨']}[k];
+  const E={'fx-money':['💸','💵','💶'],'fx-fire':['🔥','🔥','💥'],'fx-diamond':['💎','💎','✨'],'fx-trophy':['🏆','🥇','⭐'],'fx-gold':['👑','🥇','🪙','✨'],'fx-fireworks':['🎆','🎇','✨','💥'],'fx-jackpot':['🎰','🪙','💰','7️⃣']}[k];
   const L=document.createElement('div');L.className='winfx';let h='';
   for(let i=0;i<(k==='fx-confetti'?70:34);i++){const x=Math.random()*100,d=Math.random()*.9,t=1.8+Math.random()*1.4,r=Math.round(Math.random()*720-360);
     h+=k==='fx-confetti'?'<i class="cf" style="left:'+x+'%;background:'+['#ffd23f','#ff2d55','#3dff8f','#4fc3ff','#b06cff','#ff9f1a'][i%6]+';animation-delay:'+d+'s;animation-duration:'+t+'s;--r:'+r+'deg"></i>'
      :'<i style="left:'+x+'%;font-size:'+(22+Math.random()*22)+'px;animation-delay:'+d+'s;animation-duration:'+t+'s;--r:'+r+'deg">'+E[i%E.length]+'</i>'}
-  if(k==='fx-fire'||k==='fx-gold')h+='<b class="'+k+'-glow"></b>';
+  if(k==='fx-fire'||k==='fx-gold'||k==='fx-fireworks'||k==='fx-jackpot')h+='<b class="'+k+'-glow"></b>';
   L.innerHTML=h;document.body.appendChild(L);setTimeout(()=>L.remove(),4200)}
 function myDeco(){return{t:state.title||undefined,c:state.nameFx||undefined,f:state.frame||undefined,l:state.lv||undefined,v:vipOn()?1:undefined}}
 function pav(p,d){d=d||{};return FRAMES.includes(d.f)?'<span class="frm '+d.f+'">'+avatar(p)+'</span>':avatar(p)}
@@ -2249,19 +2287,21 @@ function sharePopup(ic,title,desc,text,url){
     '<button class="pbtn" data-sharetxt="'+esc(text)+'" data-shareurl="'+esc(url)+'">📤 Partager</button>'+
     '<button class="pbtn ghost2" data-copy="'+esc(url)+'">📋 Copier</button></div>');
 }
-const INV_GOAL=3,INV_GOAL2=10;
+const INV_GOAL=3,INV_GOAL2=10,INV_GOAL3=25;
 function inviteUrl(){return SITE()+'?p='+encodeURIComponent(session?session.pseudo:'')}
 function openInvite(){ui.tab='invite';closePop();renderHeader();renderView();toTop();if(session)claimBonus().then(()=>{if(ui.tab==='invite')renderView()})}
 function shareInvite(){
   if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour obtenir votre lien d\'invitation.');return}
-  sharePopup('🎁','Invite tes potes','Chaque ami qui crée son compte avec ton lien : <b>+'+PARRAIN_BONUS+' pièces pour toi et +'+PARRAIN_BONUS+' pour lui</b>.',
-    'Viens parier gratuitement avec moi sur PronoClub ⚽🏀🎾 20 000 pièces par jour, et '+PARRAIN_BONUS+' pièces offertes avec mon lien !',inviteUrl())}
+  sharePopup('🎁','Invite tes potes','Ton ami reçoit <b>'+nf(PARRAIN_BONUS)+' pièces</b> en s\'inscrivant avec ton lien. Toi, tu gagnes <b>'+nf(PARRAIN_C)+' pièces + '+nf(PARRAIN_D)+' 💎</b> dès qu\'il a placé ses 3 premiers paris.',
+    'Viens parier gratuitement avec moi sur PronoClub ⚽🏀🎾 20 000 pièces par jour, et '+nf(PARRAIN_BONUS)+' pièces offertes avec mon lien !',inviteUrl())}
 function checkParrain(){
   if(!session)return;const n=ui.filleuls||0;let ch=false;
   if(n>=INV_GOAL&&!state.owned.includes('fr_amb')){state.owned.push('fr_amb');state.frame='fr-amb';ch=true;
     setTimeout(()=>{celebrate('🤝','Cadre Ambassadeur débloqué !','Tu as invité <b>'+INV_GOAL+' amis</b> : ton cadre exclusif est activé. Personne ne peut l\'acheter, il faut le mériter !','<div style="display:flex;justify-content:center;margin:6px 0 12px">'+pav(session.pseudo,{f:'fr-amb'})+'</div>');winFx('fx-gold')},600)}
   if(n>=INV_GOAL2&&!state.owned.includes('t_amb')){state.owned.push('t_amb');state.title='Ambassadeur';ch=true;
     setTimeout(()=>celebrate('👑','Titre « Ambassadeur » débloqué !','<b>'+INV_GOAL2+' amis</b> invités : le titre « Ambassadeur » s\'affiche maintenant à côté de ton pseudo.'),1200)}
+  if(n>=INV_GOAL3&&!state.owned.includes('t_amb3')){state.owned.push('t_amb3');state.title='Légende du club';ch=true;
+    setTimeout(()=>{celebrate('🏆','Titre « Légende du club » débloqué !','<b>'+INV_GOAL3+' amis actifs</b> grâce à toi : tu es une légende. Ce titre est le plus rare de PronoClub.');winFx('fx-gold')},1800)}
   if(ch){save();renderAll()}}
 /* ---------- Fil d'activité des amis ---------- */
 async function loadFil(){
@@ -2581,13 +2621,14 @@ function renderInvite(){
    '<div class="inv-card"><div class="inv-count"><b>'+Math.min(n,INV_GOAL)+'</b><span>/ '+INV_GOAL+' amis invités</span></div>'+
      '<div class="inv-slots">'+slots+'</div><div class="inv-bar"><i style="width:'+pct+'%"></i></div>'+
      '<p class="inv-st">'+(done?'🎉 Cadre Ambassadeur débloqué ! Il est dans ton profil.':n===INV_GOAL-1?'Plus qu\'<b>1 ami</b> pour débloquer ton cadre !':'Encore <b>'+(INV_GOAL-n)+' amis</b> pour débloquer ton cadre.')+'</p></div>'+
-   (session?'<div class="inv-share"><div class="linkbox">'+esc(link)+'</div><div class="inv-btns"><button class="pbtn" data-sharetxt="'+esc('Viens parier gratuitement avec moi sur PronoClub ⚽🏀🎾 20 000 pièces par jour, et '+PARRAIN_BONUS+' pièces offertes avec mon lien !')+'" data-shareurl="'+esc(link)+'">📤 Partager mon lien</button><a class="pbtn wa" href="https://wa.me/?text='+encodeURIComponent('Viens parier gratuitement avec moi sur PronoClub ⚽ '+PARRAIN_BONUS+' pièces offertes avec mon lien : '+link)+'" target="_blank" rel="noopener">WhatsApp</a><button class="pbtn ghost2" data-copy="'+esc(link)+'">📋 Copier</button></div></div>'
+   (session?'<div class="inv-share"><div class="linkbox">'+esc(link)+'</div><div class="inv-btns"><button class="pbtn" data-sharetxt="'+esc('Viens parier gratuitement avec moi sur PronoClub ⚽🏀🎾 20 000 pièces par jour, et '+nf(PARRAIN_BONUS)+' pièces offertes avec mon lien !')+'" data-shareurl="'+esc(link)+'">📤 Partager mon lien</button><a class="pbtn wa" href="https://wa.me/?text='+encodeURIComponent('Viens parier gratuitement avec moi sur PronoClub ⚽ '+nf(PARRAIN_BONUS)+' pièces offertes avec mon lien : '+link)+'" target="_blank" rel="noopener">WhatsApp</a><button class="pbtn ghost2" data-copy="'+esc(link)+'">📋 Copier</button></div></div>'
      :'<div class="inv-share"><button class="pbtn" data-auth="signup">Créer mon compte pour inviter</button></div>')+
    '<div class="inv-rew"><h3>Tes récompenses</h3>'+
-     '<div class="inv-r'+(n>=1?' ok':'')+'"><i>🪙</i><div><b>Chaque ami inscrit</b><span>+'+PARRAIN_BONUS+' pièces pour toi et +'+PARRAIN_BONUS+' pour lui</span></div><em>'+(n>=1?'✓ '+n:'')+'</em></div>'+
+     '<div class="inv-r'+(n>=1?' ok':'')+'"><i>🪙</i><div><b>Chaque ami actif</b><span>+'+nf(PARRAIN_C)+' pièces et +'+nf(PARRAIN_D)+' 💎 pour toi dès ses 3 premiers paris · +'+nf(PARRAIN_BONUS)+' pièces pour lui dès l\'inscription</span></div><em>'+(n>=1?'✓ '+n:'')+'</em></div>'+
      '<div class="inv-r'+(n>=INV_GOAL?' ok':'')+'"><i>'+pav(me,{f:'fr-amb'})+'</i><div><b>'+INV_GOAL+' amis : Cadre Ambassadeur</b><span>Cadre animé exclusif, visible par tous</span></div><em>'+(n>=INV_GOAL?'✓':Math.min(n,INV_GOAL)+'/'+INV_GOAL)+'</em></div>'+
-     '<div class="inv-r'+(n>=INV_GOAL2?' ok':'')+'"><i>👑</i><div><b>'+INV_GOAL2+' amis : Titre « Ambassadeur »</b><span>Affiché à côté de ton pseudo</span><div class="inv-bar s"><i style="width:'+pct2+'%"></i></div></div><em>'+(n>=INV_GOAL2?'✓':n+'/'+INV_GOAL2)+'</em></div></div>'+
-   '<div class="inv-how"><h3>Comment ça marche ?</h3><ol><li>Partage ton lien à tes amis (WhatsApp, Snap, Insta…).</li><li>Ils créent leur compte gratuit en ouvrant ton lien.</li><li>Le compteur avance tout seul et tes récompenses arrivent automatiquement.</li></ol></div>'+
+     '<div class="inv-r'+(n>=INV_GOAL2?' ok':'')+'"><i>👑</i><div><b>'+INV_GOAL2+' amis : Titre « Ambassadeur »</b><span>Affiché à côté de ton pseudo</span><div class="inv-bar s"><i style="width:'+pct2+'%"></i></div></div><em>'+(n>=INV_GOAL2?'✓':n+'/'+INV_GOAL2)+'</em></div>'+
+     '<div class="inv-r'+(n>=INV_GOAL3?' ok':'')+'"><i>🏆</i><div><b>'+INV_GOAL3+' amis : Titre « Légende du club »</b><span>Le titre le plus rare du jeu</span><div class="inv-bar s"><i style="width:'+Math.min(100,n/INV_GOAL3*100)+'%"></i></div></div><em>'+(n>=INV_GOAL3?'✓':n+'/'+INV_GOAL3)+'</em></div></div>'+
+   '<div class="inv-how"><h3>Comment ça marche ?</h3><ol><li>Partage ton lien à tes amis (WhatsApp, Snap, Insta…).</li><li>Ils créent leur compte gratuit en ouvrant ton lien.</li><li>Dès qu\'un ami a placé ses <b>3 premiers paris</b>, il compte comme ami actif : le compteur avance et tes récompenses arrivent automatiquement.</li></ol></div>'+
   '</div>'}
 function shareLigue(code,nom){
   const url=SITE()+'?l='+code+(session?'&p='+encodeURIComponent(session.pseudo):'');
@@ -2876,7 +2917,7 @@ function renderMatches(){
 }
 function guestBanner(){
   if(session)return'';const par=lsGet('pc_parrain');
-  return '<div class="guest"><div><b>🎉 Jouez gratuitement</b><span>'+nf(DAILY)+' pièces par jour'+(par?' + <b>'+PARRAIN_BONUS+' offertes</b> par '+esc(par):'')+'. Compte créé en 10 secondes.</span></div><button data-auth="signup">Créer mon compte</button></div>';
+  return '<div class="guest"><div><b>🎉 Jouez gratuitement</b><span>'+nf(DAILY)+' pièces par jour'+(par?' + <b>'+nf(PARRAIN_BONUS)+' offertes</b> par '+esc(par):'')+'. Compte créé en 10 secondes.</span></div><button data-auth="signup">Créer mon compte</button></div>';
 }
 /* ---------- Blackjack (pièces uniquement) ---------- */
 const BJ_MIN=50,BJ_MAX=100000,BJ_CHIPS=[100,1000,5000,10000,50000,100000];
@@ -3296,9 +3337,9 @@ function renderBets(){
 const EQUIP={title:'title',theme:'theme',name:'nameFx',frame:'frame',fx:'winFx'};
 const eqVal=i=>i.kind==='title'?i.label:i.cls;
 function renderShop(){
-  const LIM=limNow(),VIS=SHOP.filter(i=>(!i.hidden&&(!i.limited||LIM.includes(i.id)))||state.owned.includes(i.id)).sort((a,b)=>(b.limited?1:0)-(a.limited?1:0)||(b.sec==='Avantages'?1:0)-(a.sec==='Avantages'?1:0));
+  const LIM=limNow(),VIS=SHOP.filter(i=>(!i.hidden&&(!i.limited||LIM.includes(i.id)))||state.owned.includes(i.id)).sort((a,b)=>(b.limited?1:0)-(a.limited?1:0)||(b.sec==='Avantages'?1:0)-(a.sec==='Avantages'?1:0)||(b.prem?1:0)-(a.prem?1:0));
   const secs=[...new Set(VIS.map(i=>i.sec))];
-  const SECCOL={'Avantages':'linear-gradient(135deg,#00b86b,#00a3ff)','Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)','Exclusif':'linear-gradient(135deg,#111,#c8102e 55%,#ffcf33)','Avatars animés':'linear-gradient(135deg,#00c2ff,#7a2cf5,#ff2d9a)','Effets de victoire':'linear-gradient(135deg,#ffb800,#ff2d55)','⏳ Édition limitée':'linear-gradient(135deg,#111827,#7a2cf5 60%,#ffd23f)'};
+  const SECCOL={'Avantages':'linear-gradient(135deg,#00b86b,#00a3ff)','Bonus':'linear-gradient(135deg,#ffb800,#ff7a1a)','Pseudo en couleur':'linear-gradient(135deg,#ff3d9a,#8a3dff)',"Cadres d'avatar":'linear-gradient(135deg,#1f7bff,#00c2a8)','Titres':'linear-gradient(135deg,#8a3dff,#3b1fa8)','Thèmes':'linear-gradient(135deg,#ff1f3d,#ff7a1a)','Exclusif':'linear-gradient(135deg,#111,#c8102e 55%,#ffcf33)','Avatars animés':'linear-gradient(135deg,#00c2ff,#7a2cf5,#ff2d9a)','Effets de victoire':'linear-gradient(135deg,#ffb800,#ff2d55)','💠 Collection Ultra Premium':'linear-gradient(135deg,#0b0b14,#3a1d6e 40%,#00c2ff 75%,#ffd23f)','🪙 Collection Pièces':'linear-gradient(135deg,#1a1200,#b8860b 50%,#ffe066)','⏳ Édition limitée':'linear-gradient(135deg,#111827,#7a2cf5 60%,#ffd23f)'};
   const me=session?session.pseudo:'Vous';
   const icon=i=>i.kind==='fx'?'<div class="ic">'+i.ic+'</div>':i.kind==='name'?'<div class="ic prev"><span class="pn '+i.cls+'">'+esc(me)+'</span></div>':i.kind==='frame'?'<div class="ic prev">'+pav(me,{f:i.cls})+'</div>':'<div class="ic">'+i.ic+'</div>';
   const item=i=>{
@@ -3306,17 +3347,17 @@ function renderShop(){
     if(EQUIP[i.kind]){
       const owned=state.owned.includes(i.id),active=state[EQUIP[i.kind]]===eqVal(i);
       if(owned){own='<span class="own">✓ Acheté</span>';btn='<button data-equip="'+i.id+'">'+(active?'Retirer':(i.kind==='title'?'Afficher':'Activer'))+'</button>'}
-      else btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>Échanger</button>';
+      else btn='<button class="buy" data-buy="'+i.id+'" '+((i.cur==='c'?state.coins:state.diamonds)<i.cost?'disabled':'')+'>'+(i.cur==='c'?'Acheter':'Échanger')+'</button>';
     }else{
       if(i.kind==='inv')own='<span class="own">'+(state.inv[i.id]?'En stock : '+state.inv[i.id]:'')+'</span>';
       if(i.kind==='vip'&&vipOn())own='<span class="own">✓ Actif jusqu\'au '+frDay(state.vip.until)+'</span>';
       btn='<button class="buy" data-buy="'+i.id+'" '+(state.diamonds<i.cost?'disabled':'')+'>'+(i.kind==='mystery'?'Ouvrir':i.kind==='vip'&&vipOn()?'Prolonger':'Échanger')+'</button>';
     }
     if(i.limited&&!LIM.includes(i.id)&&!state.owned.includes(i.id))btn='<button disabled>Plus en vente</button>';
-    return '<div class="item'+(i.limited?' limited':'')+'" style="--ig:'+(SECCOL[i.sec]||'var(--grad-main)')+'">'+(i.limited?'<span class="lim-b">LIMITÉ</span>':'')+icon(i)+'<h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' 💎</div>'+own+(i.kind==='fx'?'<button class="fxprev" data-fxprev="'+i.cls+'">▶ Voir l\'effet</button>':'')+btn+'</div>'};
+    return '<div class="item'+(i.limited?' limited':'')+(i.prem?' prem':'')+'" style="--ig:'+(SECCOL[i.sec]||'var(--grad-main)')+'">'+(i.limited?'<span class="lim-b">LIMITÉ</span>':i.prem?'<span class="lim-b prem-b">'+(i.cur==='c'?'PIÈCES':'PREMIUM')+'</span>':'')+icon(i)+'<h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' '+(i.cur==='c'?'🪙':'💎')+'</div>'+own+(i.kind==='fx'?'<button class="fxprev" data-fxprev="'+i.cls+'">▶ Voir l\'effet</button>':'')+btn+'</div>'};
   const prof=session?'<div class="prof">'+pav(session.pseudo,myDeco())+'<div><div class="prof-n">'+pname(session.pseudo,myDeco())+'</div><small>Comme les autres joueurs vous voient dans le chat et les classements</small></div></div>':'';
   return pageHero('ph-shop','🎁','Boutique','Échangez vos diamants contre des bonus et des récompenses à montrer à tout le monde.')+
-    '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div>'+prof+
+    '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div><div class="wallet w2"><span>Vos pièces du jour <small>(pour la Collection Pièces)</small></span><b>'+nf(state.coins)+' 🪙</b></div>'+prof+
     (STRIPE_DON?'<div class="don"><div class="don-ic">❤️</div><div class="don-t"><b>Soutenir PronoClub</b><span>Le site est gratuit et le restera. Si vous l\'aimez, vous pouvez aider à le faire grandir avec le montant de votre choix. Un don ne donne ni pièces ni diamants.</span></div><a class="pbtn" href="'+STRIPE_DON+'" target="_blank" rel="noopener">Je soutiens ❤️</a></div>':'')+
     secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+(s==='⏳ Édition limitée'?' <span class="lim-t">Plus que '+limLeft()+' · nouveaux objets chaque lundi</span>':'')+'</div><div class="shop">'+VIS.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
 }
@@ -3334,7 +3375,7 @@ function renderRules(){
   '<h3>Les bonus</h3><ul>'+
   '<li><b>Série de connexion 🔥</b> : chaque jour de suite où vous ouvrez l\'appli, des pièces en plus (+100 le 1er jour, +200 le 2e… jusqu\'à +700). Un jour raté et la série repart à zéro.</li>'+
   '<li><b>Défi du jour 🎯</b> : un pronostic gratuit par jour sur la grosse affiche. Bonne réponse = <b>+'+DEFI_GAIN+' 💎</b>.</li>'+
-  '<li><b>Parrainage 🎁</b> : invitez vos amis avec votre lien. Pour chaque ami inscrit, <b>+'+PARRAIN_BONUS+' pièces</b> pour vous et pour lui (20 amis maximum).</li>'+
+  '<li><b>Parrainage 🎁</b> : invitez vos amis avec votre lien. Votre ami reçoit <b>'+nf(PARRAIN_BONUS)+' pièces</b> à l\'inscription, et vous gagnez <b>'+nf(PARRAIN_C)+' pièces + '+nf(PARRAIN_D)+' 💎</b> dès qu\'il a placé ses 3 premiers paris (50 amis maximum).</li>'+
   '<li><b>Ligues 👥</b> : créez une ligue, partagez le code et affrontez vos amis dans votre propre classement. Le classement de la semaine repart à zéro chaque lundi.</li></ul>'+
   '<h3>Notifications 🔔</h3><ul><li>Touchez la tuile <b>🔔 Notifications</b> (ou votre avatar en haut) pour être prévenu même appli fermée : résultat de vos paris, défi du jour, série en danger, amis et ligues. Vous choisissez ce que vous recevez.</li><li>Sur iPhone, il faut d\'abord installer l\'appli sur l\'écran d\'accueil.</li></ul>'+
   '<h3>Installer l\'appli sur son téléphone</h3><ul>'+
@@ -3996,7 +4037,7 @@ function openAuth(msg){
   }else{
     const par=lsGet('pc_parrain');
     $('#authBox').innerHTML=brand+'<p class="lead">Paris sportifs gratuits sur les vrais matchs.<br>20 000 pièces offertes chaque jour !</p>'+
-    (par&&m==='signup'?'<div class="parr">🎁 Invité par <b>'+esc(par)+'</b> : +'+PARRAIN_BONUS+' pièces offertes à l\'inscription</div>':'')+
+    (par&&m==='signup'?'<div class="parr">🎁 Invité par <b>'+esc(par)+'</b> : +'+nf(PARRAIN_BONUS)+' pièces offertes à l\'inscription</div>':'')+
     '<div class="seg"><button data-auth="login" class="'+(m==='login'?'on':'')+'">Se connecter</button><button data-auth="signup" class="'+(m==='signup'?'on':'')+'">Créer un compte</button></div>'+
     '<form id="authForm" autocomplete="on"><label for="fPseudo">Pseudo</label><input id="fPseudo" name="username" autocomplete="username" maxlength="20" required>'+
     (m==='signup'?'<div class="hint">3 à 20 caractères : lettres, chiffres, _ . -</div>':'')+
@@ -4171,8 +4212,8 @@ document.addEventListener('click',e=>{
   if(t.id==='closeSlip'){$('#aside').classList.remove('open');return}
   if(t.id==='fab'||t.id==='bnSlip'){$('#aside').classList.add('open');return}
   if(d.buy){
-    const i=SHOP.find(x=>x.id===d.buy);if(!i||i.hidden||state.diamonds<i.cost||(i.limited&&!limNow().includes(i.id))||(EQUIP[i.kind]&&state.owned.includes(i.id)))return;
-    state.diamonds-=i.cost;state.spent=(state.spent||0)+i.cost;
+    const i=SHOP.find(x=>x.id===d.buy);if(!i||i.hidden||(i.cur==='c'?state.coins:state.diamonds)<i.cost||(i.limited&&!limNow().includes(i.id))||(EQUIP[i.kind]&&state.owned.includes(i.id)))return;
+    if(i.cur==='c')state.coins-=i.cost;else{state.diamonds-=i.cost;state.spent=(state.spent||0)+i.cost}
     if(i.kind==='coins'){state.coins+=i.val;toast('🪙 +'+nf(i.val)+' pièces ajoutées')}
     else if(i.kind==='inv'){state.inv[i.id]=(state.inv[i.id]||0)+1;toast(i.ic+' '+i.name+(i.id==='spin'?' : va sur la roue pour l\'utiliser':i.id==='chestx'?' : va sur le coffre pour l\'ouvrir':' : disponible dans votre coupon'))}
     else if(i.kind==='vip'){buyVip()}
@@ -4212,7 +4253,7 @@ setInterval(()=>tick(false),20000);
 setInterval(loadFixtures,3*60*1000);
 if(session)refreshFromServer();
 else if(!lsGet('pc_welcome')){lsSet('pc_welcome','1');const par=lsGet('pc_parrain');
-  popup('<div class="pop-ic big">⚽</div><h3>Bienvenue sur PronoClub</h3><p>Pariez <b>gratuitement</b> sur les vrais matchs : foot, basket, tennis, rugby… <b>'+nf(DAILY)+' pièces offertes chaque jour</b>, des diamants à gagner et des défis entre amis.'+(par?'<br><br>🎁 <b>'+esc(par)+'</b> vous offre <b>'+PARRAIN_BONUS+' pièces</b> à l\'inscription !':'')+'</p><div class="pop-btns"><button class="pbtn" data-auth="signup">Créer mon compte</button><button class="pbtn ghost2" data-popclose="1">Visiter d\'abord</button></div>')}
+  popup('<div class="pop-ic big">⚽</div><h3>Bienvenue sur PronoClub</h3><p>Pariez <b>gratuitement</b> sur les vrais matchs : foot, basket, tennis, hockey… <b>'+nf(DAILY)+' pièces offertes chaque jour</b>, des diamants à gagner et des défis entre amis.'+(par?'<br><br>🎁 <b>'+esc(par)+'</b> vous offre <b>'+nf(PARRAIN_BONUS)+' pièces</b> à l\'inscription !':'')+'</p><div class="pop-btns"><button class="pbtn" data-auth="signup">Créer mon compte</button><button class="pbtn ghost2" data-popclose="1">Visiter d\'abord</button></div>')}
 chatSoon();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){loadFixtures();refreshFromServer()}});
 </script>
