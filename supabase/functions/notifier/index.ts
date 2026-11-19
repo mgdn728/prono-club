@@ -544,13 +544,14 @@ function preCotes(sp: string, c: any, H: any, A: any) {
   }
   return { o: [k.h, k.a], tl: k.tot ?? undefined };
 }
-function preRes(sp: string, x: any) {
+function preRes(sp: string, x: any, bt?: any[]) {
   if (!x || x.st !== "post") return null;
   if (x.fin) return { x: "Match reporté ou annulé : mise remboursée" };
   const det = String(x.det || "");
   let h = Number(x.s?.[0]), a = Number(x.s?.[1]);
   if (!isFinite(h) || !isFinite(a)) return null;
   if (sp === "foot" && /AET|Pen|ET\b|extra/i.test(det)) {
+    if (Array.isArray(bt) && bt.length) return null; // buteurs du temps réglementaire impossibles à séparer : remboursé au bout de 12 h
     if (!Array.isArray(x.ls) || x.ls.length < 2) return null;
     h = Number(x.ls[0][0]) + Number(x.ls[1][0]); a = Number(x.ls[0][1]) + Number(x.ls[1][1]);
   }
@@ -559,8 +560,62 @@ function preRes(sp: string, x: any) {
     else if (/OT|SO/i.test(det)) return null;
   }
   if (sp === "tennis" && h === a) return null;
+  if (sp === "foot" && Array.isArray(bt) && bt.length) { // paris buteurs : il faut la liste des buteurs
+    const buts = Array.isArray(x.buts) ? x.buts : [];
+    if (buts.length !== h + a) return null;
+    const L: string[] = [];
+    for (const g of buts) { if (g[2]) continue; const p = bt.find((b: any) => b[1] === g[1] && nrm(b[0]) === nrm(g[0])) || bt.find((b: any) => b[1] === g[1] && nomFin(b[0]) && nomFin(b[0]) === nomFin(g[0])); if (p) L.push(p[0]); }
+    return { s: [h, a, L] };
+  }
   return { s: [h, a] };
 }
+// Paris buteurs : cotes réelles des bookmakers (via ESPN) quand elles existent, sinon estimées à partir des titulaires officiels
+function frac(v: any) { const t = String(v || "").trim().toLowerCase(); if (/^ev/.test(t)) return 2; const m = t.match(/^(\d+)\/(\d+)$/); if (m) return 1 + Number(m[1]) / Number(m[2]); const d = Number(t); return isFinite(d) && d > 1 ? d : 0; }
+function buteurs(j: any, m: any) {
+  const R = Array.isArray(j?.rosters) ? j.rosters : [];
+  const sideOfTeam = new Map<string, number>();
+  for (const T of R) sideOfTeam.set(String(T.team?.id || ""), T.homeAway === "away" ? 2 : 1);
+  for (const c of j?.header?.competitions?.[0]?.competitors || []) sideOfTeam.set(String(c.id || c.team?.id || ""), c.homeAway === "away" ? 2 : 1);
+  const sideOf = new Map<string, number>();
+  const put = (n: any, sd: number | undefined) => { const k = nrm(String(n || "")); if (k && sd) sideOf.set(k, sd); };
+  for (const T of R) { const sd = T.homeAway === "away" ? 2 : 1; for (const x of T.roster || []) put(x.athlete?.displayName, sd); }
+  for (const T of j?.leaders || []) { const sd = sideOfTeam.get(String(T.team?.id || "")); for (const c of T.leaders || []) for (const x of c.leaders || []) put(x.athlete?.displayName, sd); }
+  for (const T of j?.boxscore?.players || []) { const sd = sideOfTeam.get(String(T.team?.id || "")); for (const st of T.statistics || []) for (const x of st.athletes || []) put(x.athlete?.displayName, sd); }
+  // 1) cotes « buteur à tout moment » d'un bookmaker
+  let mk: any[] = [];
+  for (const o of j?.odds || []) { const L = o?.bettingOdds?.playerOdds?.preMatchAnyTimeGoalScorer; if (Array.isArray(L) && L.length > mk.length) mk = L; }
+  if (mk.length && sideOf.size) {
+    const by: Record<number, any[]> = { 1: [], 2: [] };
+    for (const e of mk) {
+      const n = String(e.player || "").trim(), c = frac(e.value), sd = sideOf.get(nrm(n)) || 0;
+      if (n && c > 1 && sd) by[sd].push([n, sd, Math.min(30, Math.round(c * 100) / 100)]);
+    }
+    if (by[1].length >= 3 && by[2].length >= 3) return [...by[1].sort((p, q) => p[2] - q[2]).slice(0, 6), ...by[2].sort((p, q) => p[2] - q[2]).slice(0, 6)];
+  }
+  // 2) sinon : titulaires officiels, cotes estimées selon le poste et la force des équipes
+  if (R.length !== 2) return null;
+  const o = Array.isArray(m.o) ? m.o.map(Number) : [];
+  const ph = o[0] ? 1 / o[0] : 0.4, pa = o[2] ? 1 / o[2] : 0.3;
+  const tot = Math.max(2, Math.min(3.6, (Number(m.tl) || 2.5) + 0.2));
+  const share = Math.max(0.2, Math.min(0.8, 0.5 + (ph - pa) * 0.6));
+  const poids = (pos: string) => { const p = pos.toUpperCase(); if (/^G/.test(p)) return 0; if (/F|S|W|CF|ST/.test(p) && !/D|B/.test(p)) return 1; if (/AM/.test(p)) return 0.55; if (/M/.test(p)) return 0.28; return 0.07; };
+  const out: any[] = [];
+  for (const T of R) {
+    const side = T.homeAway === "away" ? 2 : 1;
+    const tit = (T.roster || []).filter((x: any) => x.starter);
+    if (tit.length < 11) return null; // compositions pas encore publiées
+    const L = tit.map((x: any) => ({ n: String(x.athlete?.displayName || "").trim(), w: poids(String(x.position?.abbreviation || x.position?.name || "")) })).filter((x: any) => x.n && x.w > 0);
+    const sw = L.reduce((t: number, x: any) => t + x.w, 0) || 1;
+    const lam = tot * (side === 1 ? share : 1 - share) * 0.88;
+    L.sort((p: any, q: any) => q.w - p.w);
+    for (const x of L.slice(0, 6)) {
+      const p = 1 - Math.exp(-lam * x.w / sw);
+      out.push([x.n, side, Math.min(25, Math.max(1.4, Math.floor(100 / (p * 1.08)) / 100))]);
+    }
+  }
+  return out.length >= 6 ? out : null;
+}
+
 async function progAuto() {
   const now = paris(), days = [now.day, addDays(now.day, 1), addDays(now.day, 2)], prev = addDays(now.day, -1);
   const ymd = (d: string) => d.replace(/-/g, "");
@@ -582,7 +637,7 @@ async function progAuto() {
           if (sp === "tennis" && (/ \/ /.test(x.h) || /ITF|Challenger/i.test(String(ev.name || "")))) continue; // simples des grands tournois seulement
           const t = Date.parse(x.t || ""); if (!t) continue;
           const day = paris(new Date(t)).day;
-          cand.push({ pi, sp, day, t, x, c, H, A, cn: sp === "tennis" ? String(ev.name || cn).replace(/^Nitto /, "").slice(0, 40) : cn, fl });
+          cand.push({ pi, sp, path, day, t, x, c, H, A, cn: sp === "tennis" ? String(ev.name || cn).replace(/^Nitto /, "").slice(0, 40) : cn, fl });
         }
       }
     } catch (_) { /* flux indisponible */ }
@@ -596,8 +651,9 @@ async function progAuto() {
     if (!DB.has(k.day)) DB.set(k.day, []);
     const arr = DB.get(k.day)!, old = arr.find((m: any) => m.id === id);
     if (old) {
+      if (!old.lp) { old.lp = k.path; old.big = k.pi < 10 ? 1 : 0; ch.add(k.day); }
       if (!Array.isArray(old.s) && !old.x) {
-        const R = preRes(k.sp, k.x);
+        const R = preRes(k.sp, k.x, old.bt);
         if (R) { Object.assign(old, R); ch.add(k.day); continue; }
         if (k.x.st === "pre" && k.t > Date.now() + 5 * 60e3) { // cotes et horaire mis à jour avant le match
           const C = preCotes(k.sp, k.c, k.H, k.A);
@@ -610,10 +666,25 @@ async function progAuto() {
     if (!days.includes(k.day) || k.x.st !== "pre" || k.t < Date.now() + 10 * 60e3) continue;
     if (arr.filter((m: any) => m.sp === k.sp).length >= (CAP[k.sp] || 8)) continue;
     const C = preCotes(k.sp, k.c, k.H, k.A); if (!C) continue;
-    const m: any = { id, sp: k.sp, c: k.cn, f: k.fl, h: k.x.h, a: k.x.a, t: new Date(k.t).toISOString(), o: C.o, e: k.x.id };
+    const m: any = { id, sp: k.sp, c: k.cn, f: k.fl, h: k.x.h, a: k.x.a, t: new Date(k.t).toISOString(), o: C.o, e: k.x.id, lp: k.path, big: k.pi < 10 ? 1 : 0 };
     if (C.tl != null) m.tl = C.tl;
     if (k.sp === "tennis") m.bo = k.x.bo || 3;
     arr.push(m); ch.add(k.day);
+  }
+  // compositions officielles (~1 h avant les gros matchs de foot) : paris buteurs automatiques
+  for (const [day, arr] of DB) for (const m of arr) {
+    if (m.sp !== "foot" || !m.big || !m.lp || m.bt || m.s || m.x) continue;
+    const dt = Date.parse(m.t) - Date.now();
+    if (dt > 24 * 3600e3 || dt < 2 * 60e3) continue;
+    if (m.btTry && Date.now() - m.btTry < (dt > 90 * 60e3 ? 30 : 9) * 60e3) continue;
+    m.btTry = Date.now(); ch.add(day);
+    try {
+      const ev = String(m.e || "").split("-").pop();
+      const r = await fetch(ESPN + m.lp + "/summary?event=" + ev, { headers: { "User-Agent": "Mozilla/5.0 PronoClub" } });
+      if (!r.ok) continue;
+      const bt = buteurs(await r.json(), m);
+      if (bt) { m.bt = bt; delete m.btTry; }
+    } catch (_) { /* compositions pas encore publiées */ }
   }
   // matchs jamais terminés (ESPN muet) : remboursés après 12 h
   for (const [day, arr] of DB) for (const m of arr) if (!Array.isArray(m.s) && !m.x && Date.parse(m.t) < Date.now() - 12 * 3600e3) { m.x = "Résultat indisponible : mise remboursée"; ch.add(day); }
