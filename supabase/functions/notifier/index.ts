@@ -390,29 +390,35 @@ function ligne(sp: string, path: string, ev: any, c: any, lg: string) {
 async function sofaPoints(rows: any[]) {
   const T = rows.filter((r) => r.sp === "tennis" && r.st === "in" && Array.isArray(r.ls) && r.ls.length);
   if (!T.length) return;
-  const r = await fetch("https://api.sofascore.com/api/v1/sport/tennis/events/live", {
+  const diag = (v: string) => { for (const x of T) { const c = x.ls[x.ls.length - 1]; while (c.length < 7) c.push(c.length < 4 ? null : c.length === 4 ? 0 : null); c[7] = v; } };
+  let r: Response;
+  try { r = await fetch("https://api.sofascore.com/api/v1/sport/tennis/events/live", {
     headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Accept": "application/json", "Referer": "https://www.sofascore.com/" },
-  });
-  if (!r.ok) { console.error("sofascore", r.status); return; }
-  const j = await r.json();
+  }); } catch (e) { console.log("sofascore erreur réseau", String(e)); diag("NET"); return; }
+  if (!r.ok) { console.log("sofascore statut", r.status); diag("E" + r.status); return; }
+  let j: any; try { j = await r.json(); } catch (_) { console.log("sofascore réponse illisible"); diag("JSON"); return; }
   const evs = Array.isArray(j?.events) ? j.events : [];
+  console.log("sofascore ok", evs.length, "matchs");
   const cle = (n: string) => String(n || "").split(/\s*\/\s*/).map((p) => nomFin(p.replace(/^[A-Z]\.\s*/, ""))).filter(Boolean).sort().join("+");
   const pt = (v: any) => { const t = String(v ?? "").trim().toUpperCase(); return t === "A" || t === "AD" ? "AV" : t; };
   for (const x of T) {
     const kh = cle(x.h), ka = cle(x.a);
     if (!kh || !ka) continue;
+    let vu = false;
     for (const e of evs) {
       const sh = cle(e.homeTeam?.name || e.homeTeam?.shortName), sa = cle(e.awayTeam?.name || e.awayTeam?.shortName);
       const inv = sh === ka && sa === kh;
       if (!(sh === kh && sa === ka) && !inv) continue;
+      vu = true;
       const H = inv ? e.awayScore : e.homeScore, A = inv ? e.homeScore : e.awayScore;
-      if (!H || !A || H.point == null || A.point == null) break;
+      if (!H || !A || H.point == null || A.point == null) { const c = x.ls[x.ls.length - 1]; while (c.length < 7) c.push(c.length < 4 ? null : c.length === 4 ? 0 : null); c[7] = "NP:" + Object.keys(H || {}).join(","); break; }
       const cur = x.ls[x.ls.length - 1];
       while (cur.length < 5) cur.push(cur.length < 4 ? null : 0);
       cur[5] = pt(H.point); cur[6] = pt(A.point);
       if (!cur[4] && (e.homeScore?.serve || e.awayScore?.serve)) cur[4] = (inv ? e.awayScore?.serve : e.homeScore?.serve) ? 1 : 2;
       break;
     }
+    if (!vu) { const c = x.ls[x.ls.length - 1]; while (c.length < 7) c.push(c.length < 4 ? null : c.length === 4 ? 0 : null); c[7] = "NM:" + evs.length + ":" + evs.slice(0, 3).map((e: any) => cle(e.homeTeam?.name) + "-" + cle(e.awayTeam?.name)).join("|").slice(0, 80); }
   }
 }
 
