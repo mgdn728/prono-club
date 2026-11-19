@@ -387,15 +387,17 @@ function ligne(sp: string, path: string, ev: any, c: any, lg: string) {
 }
 // Tennis : points du jeu en cours (0, 15, 30, 40, AV) et du tie-break, avec l'accord de Sofascore.
 // Si Sofascore ne répond pas, rien ne change : on garde les scores ESPN.
+let sofaBloque = 0; // après un refus de Sofascore, on attend 15 min avant de réessayer
 async function sofaPoints(rows: any[]) {
   const T = rows.filter((r) => r.sp === "tennis" && r.st === "in" && Array.isArray(r.ls) && r.ls.length);
   if (!T.length) return;
+  if (Date.now() - sofaBloque < 15 * 60e3) return;
   const diag = (v: string) => { for (const x of T) { const c = x.ls[x.ls.length - 1]; while (c.length < 7) c.push(c.length < 4 ? null : c.length === 4 ? 0 : null); c[7] = v; } };
   let r: Response;
   try { r = await fetch("https://api.sofascore.com/api/v1/sport/tennis/events/live", {
     headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Accept": "application/json", "Referer": "https://www.sofascore.com/" },
   }); } catch (e) { console.log("sofascore erreur réseau", String(e)); diag("NET"); return; }
-  if (!r.ok) { console.log("sofascore statut", r.status); diag("E" + r.status); return; }
+  if (!r.ok) { console.log("sofascore statut", r.status); diag("E" + r.status); if (r.status === 403 || r.status === 429) sofaBloque = Date.now(); return; }
   let j: any; try { j = await r.json(); } catch (_) { console.log("sofascore réponse illisible"); diag("JSON"); return; }
   const evs = Array.isArray(j?.events) ? j.events : [];
   console.log("sofascore ok", evs.length, "matchs");
