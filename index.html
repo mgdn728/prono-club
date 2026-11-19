@@ -1574,7 +1574,7 @@ const footMarkets=m=>m.bt&&m.bt.length?[MARKETS[0],BUT_MK,...MARKETS.slice(1)]:M
 const DEFI_GAIN=300,PARRAIN_BONUS=10000,PARRAIN_C=25000,PARRAIN_D=5000;
 const STRIPE_DON='https://buy.stripe.com/cNi7sKeCH6Kf56N5NI3ZK01'; // lien de paiement Stripe (montant libre) pour le bouton « Soutenir PronoClub »
 const SHOP=[
- {id:'c250',sec:'Bonus',ic:'🪙',name:'+5 000 pièces',desc:'Ajoutées tout de suite à vos pièces du jour.',cost:3000,kind:'coins',val:5000},
+ {id:'c250',sec:'Bonus',ic:'🪙',name:'+5 000 pièces',desc:'Ajoutées tout de suite à vos pièces.',cost:3000,kind:'coins',val:5000},
  {id:'c1000',sec:'Bonus',ic:'💰',name:'+20 000 pièces',desc:'Doublez votre budget du jour.',cost:10500,kind:'coins',val:20000},
  {id:'mystery',sec:'Avantages',ic:'🎁',name:'Boîte mystère',desc:'Surtout des pièces ou des diamants. Très rarement un objet de la boutique, et exceptionnellement un des 3 objets introuvables ailleurs. Chances : pièces 52 % · diamants 46,5 % · objet de la boutique 1 % · objet exclusif 0,5 %.',cost:25000,kind:'mystery'},
  {id:'vip',sec:'Avantages',ic:'👑',name:'Pass VIP 7 jours',desc:'+10 000 pièces chaque jour pendant 7 jours, en plus de tes 20 000. Une couronne 👑 à côté de ton pseudo.',cost:60000,kind:'vip'},
@@ -1617,11 +1617,11 @@ const SHOP=[
  {id:'pt_untouch',sec:'💠 Collection Ultra Premium',ic:'🔱',name:'Titre « Intouchable »',desc:'Le titre le plus cher de la boutique en diamants.',cost:2500000,kind:'title',label:'Intouchable 🔱',prem:true},
  {id:'pfx_fw',sec:'💠 Collection Ultra Premium',ic:'🎆',name:'Feu d\'artifice',desc:'Un vrai feu d\'artifice sur ton écran à chaque victoire.',cost:1000000,kind:'fx',cls:'fx-fireworks',prem:true},
  {id:'pth_luxe',sec:'💠 Collection Ultra Premium',ic:'🖤',name:'Thème Noir & Or',desc:'Tout le site en noir et or, façon carte black.',cost:750000,kind:'theme',cls:'theme-luxe',prem:true},
- {id:'cx_cash',sec:'🪙 Collection Pièces',ic:'💵',name:'Pseudo Billet vert',desc:'Un pseudo couleur dollar qui brille. Uniquement avec des pièces.',cost:1000000,cur:'c',kind:'name',cls:'nx-cash',prem:true},
- {id:'cf_vault',sec:'🪙 Collection Pièces',ic:'🔐',name:'Avatar Coffre-fort',desc:'Un cadre en acier et or, avec un cadenas. Uniquement avec des pièces.',cost:1500000,cur:'c',kind:'frame',cls:'fr-vault',prem:true},
- {id:'ct_bill',sec:'🪙 Collection Pièces',ic:'🤑',name:'Titre « Milliardaire »',desc:'Il faut réunir 2 millions de pièces le même jour.',cost:2000000,cur:'c',kind:'title',label:'Milliardaire 🤑',prem:true},
- {id:'cfx_jack',sec:'🪙 Collection Pièces',ic:'🎰',name:'Jackpot',desc:'Une pluie de pièces et de machines à sous à chaque victoire.',cost:3000000,cur:'c',kind:'fx',cls:'fx-jackpot',prem:true},
- {id:'ct_boss',sec:'🪙 Collection Pièces',ic:'🕴️',name:'Titre « Le Patron »',desc:'Le titre le plus rare du club : 5 millions de pièces.',cost:5000000,cur:'c',kind:'title',label:'Le Patron 🕴️',prem:true},
+ {id:'cx_cash',sec:'🪙 Collection Pièces',ic:'💵',name:'Pseudo Billet vert',desc:'Un pseudo couleur dollar qui brille. Uniquement avec des pièces.',cost:5000000,cur:'c',kind:'name',cls:'nx-cash',prem:true},
+ {id:'cf_vault',sec:'🪙 Collection Pièces',ic:'🔐',name:'Avatar Coffre-fort',desc:'Un cadre en acier et or, avec un cadenas. Uniquement avec des pièces.',cost:7500000,cur:'c',kind:'frame',cls:'fr-vault',prem:true},
+ {id:'ct_bill',sec:'🪙 Collection Pièces',ic:'🤑',name:'Titre « Milliardaire »',desc:'Pour ceux qui ont économisé une vraie fortune.',cost:10000000,cur:'c',kind:'title',label:'Milliardaire 🤑',prem:true},
+ {id:'cfx_jack',sec:'🪙 Collection Pièces',ic:'🎰',name:'Jackpot',desc:'Une pluie de pièces et de machines à sous à chaque victoire.',cost:15000000,cur:'c',kind:'fx',cls:'fx-jackpot',prem:true},
+ {id:'ct_boss',sec:'🪙 Collection Pièces',ic:'🕴️',name:'Titre « Le Patron »',desc:'Le titre le plus rare du club : 25 millions de pièces.',cost:25000000,cur:'c',kind:'title',label:'Le Patron 🕴️',prem:true},
  {id:'lx_galaxy',sec:'⏳ Édition limitée',ic:'🌌',name:'Pseudo Galaxie',desc:'Un pseudo violet et bleu qui scintille. Disponible une seule semaine.',cost:300000,kind:'name',cls:'nx-galaxy',limited:true},
  {id:'lx_ice',sec:'⏳ Édition limitée',ic:'❄️',name:'Pseudo Givré',desc:'Un pseudo blanc et bleu qui brille comme la glace.',cost:200000,kind:'name',cls:'nx-ice',limited:true},
  {id:'lx_lava',sec:'⏳ Édition limitée',ic:'🌋',name:'Pseudo Lave',desc:'Un pseudo rouge et orange qui coule comme de la lave.',cost:250000,kind:'name',cls:'nx-lava',limited:true},
@@ -2098,9 +2098,12 @@ function daily(){
   if(!state.defis)state.defis=[];
   if(!state.d20&&(!session||synced)){state.d20=1;if(state.updated&&state.day===today())state.coins+=DAILY-1000;ch=true}
   if(state.day!==today()){
-    state.day=today();state.coins=DAILY;
+    // les pièces se gardent : +20 000 par nouveau jour (7 jours rattrapés au maximum)
+    let nd=1;try{nd=Math.round((new Date(today()+'T12:00:00')-new Date(state.day+'T12:00:00'))/864e5)}catch(e){}
+    nd=Math.max(1,Math.min(7,nd||1));const add=DAILY*nd;
+    state.day=today();state.coins=(Number(state.coins)||0)+add;
     if(state.bets.length>300)state.bets=state.bets.slice(-300);
-    if(!session)toast('☀️ Nouvelle journée : vous avez '+nf(DAILY)+' pièces !');
+    toast('☀️ +'+nf(add)+' pièces'+(nd>1?' ('+nd+' jours)':'')+' ! Tu as maintenant '+nf(state.coins)+' pièces');
     ch=true;
   }
   if((!session||synced)&&vipDaily())ch=true;
@@ -2238,7 +2241,7 @@ function openMystery(){
   const T=[[520,'c'],[465,'d'],[10,'o'],[5,'m']];let r=bjRand(1000),k='c';for(const[w,t]of T){if(r<w){k=t;break}r-=w}
   if(k==='o'&&!cos.length)k='d';if(k==='m'&&!my.length)k='d';
   let ic,t,sub;
-  if(k==='c'){const v=[20000,50000,150000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.coins+=v;ic='🪙';t='+'+nf(v)+' pièces';sub='Ajoutées à tes pièces du jour'}
+  if(k==='c'){const v=[20000,50000,150000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.coins+=v;ic='🪙';t='+'+nf(v)+' pièces';sub='Ajoutées à tes pièces'}
   else if(k==='d'){const v=[5000,12000,40000][bjRand(10)<6?0:bjRand(10)<8?1:2];state.diamonds+=v;ic='💎';t='+'+nf(v)+' diamants';sub='Ajoutés à tes diamants'}
   else{const L=k==='o'?cos:my,x=L[bjRand(L.length)];state.owned.push(x.id);state[EQUIP[x.kind]]=eqVal(x);ic=x.ic;t=x.name;sub=k==='m'?'🔮 Objet exclusif (0,5 % de chances), introuvable dans la boutique !':'Incroyable, 1 % de chances ! Valeur '+nf(x.cost)+' 💎 · déjà activé'}
   save();
@@ -2604,7 +2607,7 @@ function chestGo(){
   const C=$('#chest'),B=$('#chestBtn');if(B){B.disabled=true;B.textContent='…'}
   if(C)C.classList.add('shake');bjSnd('chip');for(let k=0;k<6;k++)setTimeout(()=>bjSnd('tick'),k*150);
   setTimeout(()=>{if(C){C.classList.remove('shake');C.classList.add('open')}bjSnd(x.jp?'bj':'win');winFx(x.jp?'fx-gold':'fx-confetti');
-    const R=$('#chestRes');if(R)R.innerHTML='<div class="chv-rew'+(x.jp?' jp':'')+'"><i>'+x.ic+'</i><b>'+x.t+(evVal('chest')>1?' ×2 ⚡':'')+'</b><span>'+(x.k==='coins'?'Ajoutées à tes pièces du jour':x.k==='dia'?'Ajoutés à tes diamants':'Disponible dans ton coupon')+'</span></div>';
+    const R=$('#chestRes');if(R)R.innerHTML='<div class="chv-rew'+(x.jp?' jp':'')+'"><i>'+x.ic+'</i><b>'+x.t+(evVal('chest')>1?' ×2 ⚡':'')+'</b><span>'+(x.k==='coins'?'Ajoutées à tes pièces':x.k==='dia'?'Ajoutés à tes diamants':'Disponible dans ton coupon')+'</span></div>';
     if(B){B.disabled=false;B.textContent='Super !';B.removeAttribute('data-chestgo');B.setAttribute('data-chestclose','1')}
     chestBusy=false;renderAll()},1000)}
 function closeChest(){if(chestBusy)return;$('#chestView').classList.remove('open');renderAll()}
@@ -3076,7 +3079,7 @@ function renderGames(){
   return '<div class="gm-wrap"><div class="gm-title"><b>🎮 Mini-jeux</b><span>🪙 '+nf(state.coins)+' pièces</span></div><div class="gm-list">'+
     GAMES.map(x=>'<button class="gm-c g-'+x.id+'" data-game="'+x.id+'"><i>'+x.ic+'</i><span><b>'+x.n+'</b><small>'+x.s+'</small></span><em>Jouer ›</em></button>').join('')+'</div>'+
     tournoiCard()+'<button class="gm-board" data-bjview="board">🏆 Classement du blackjack</button>'+
-    '<p class="bj-rules">Les jeux se jouent avec vos pièces du jour (mise de '+BJ_MIN+' à '+nf(BJ_MAX)+'). Jeux gratuits, sans argent réel.</p></div>'}
+    '<p class="bj-rules">Les jeux se jouent avec vos pièces (mise de '+BJ_MIN+' à '+nf(BJ_MAX)+'). Jeux gratuits, sans argent réel.</p></div>'}
 
 /* Jeu en plein écran */
 function gmOpen(g){if(gBusy)return;ui.game=g;lsSet('pc_game',g);ui.bjView='play';ui.gmOpen=true;$('#gmView').classList.add('open');ovLock();ovPush('gm');bjSnd('chip');gmRender()}
@@ -3357,17 +3360,17 @@ function renderShop(){
     return '<div class="item'+(i.limited?' limited':'')+(i.prem?' prem':'')+'" style="--ig:'+(SECCOL[i.sec]||'var(--grad-main)')+'">'+(i.limited?'<span class="lim-b">LIMITÉ</span>':i.prem?'<span class="lim-b prem-b">'+(i.cur==='c'?'PIÈCES':'PREMIUM')+'</span>':'')+icon(i)+'<h3>'+i.name+'</h3><p>'+i.desc+'</p><div class="cost">'+nf(i.cost)+' '+(i.cur==='c'?'🪙':'💎')+'</div>'+own+(i.kind==='fx'?'<button class="fxprev" data-fxprev="'+i.cls+'">▶ Voir l\'effet</button>':'')+btn+'</div>'};
   const prof=session?'<div class="prof">'+pav(session.pseudo,myDeco())+'<div><div class="prof-n">'+pname(session.pseudo,myDeco())+'</div><small>Comme les autres joueurs vous voient dans le chat et les classements</small></div></div>':'';
   return pageHero('ph-shop','🎁','Boutique','Échangez vos diamants contre des bonus et des récompenses à montrer à tout le monde.')+
-    '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div><div class="wallet w2"><span>Vos pièces du jour <small>(pour la Collection Pièces)</small></span><b>'+nf(state.coins)+' 🪙</b></div>'+prof+
+    '<div class="wallet"><span>Vos diamants</span><b>'+nf(state.diamonds)+' 💎</b></div><div class="wallet w2"><span>Vos pièces <small>(pour la Collection Pièces)</small></span><b>'+nf(state.coins)+' 🪙</b></div>'+prof+
     (STRIPE_DON?'<div class="don"><div class="don-ic">❤️</div><div class="don-t"><b>Soutenir PronoClub</b><span>Le site est gratuit et le restera. Si vous l\'aimez, vous pouvez aider à le faire grandir avec le montant de votre choix. Un don ne donne ni pièces ni diamants.</span></div><a class="pbtn" href="'+STRIPE_DON+'" target="_blank" rel="noopener">Je soutiens ❤️</a></div>':'')+
     secs.map(s=>'<div class="sec" style="--ig:'+(SECCOL[s]||'var(--grad-main)')+'">'+s+(s==='⏳ Édition limitée'?' <span class="lim-t">Plus que '+limLeft()+' · nouveaux objets chaque lundi</span>':'')+'</div><div class="shop">'+VIS.filter(i=>i.sec===s).map(item).join('')+'</div>').join('');
 }
 function renderRules(){
   return '<div class="rules"><a class="guide-cta" href="guides.html">📚 <b>Nouveau : les guides</b> · cotes, types de paris, paris en direct, conseils <em>›</em></a><h3>Comment ça marche ?</h3><ul>'+
-  '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙</b>. Les pièces non jouées ne se gardent pas : elles repartent à '+nf(DAILY)+' à minuit.</li>'+
+  '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙 en plus</b>. Les pièces se gardent d\'un jour à l\'autre : vous pouvez les économiser (si vous ne venez pas pendant plusieurs jours, jusqu\'à 7 jours sont rattrapés).</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
   '<li><b>Paris en direct</b> : dans l\'onglet Live, tu peux parier pendant les matchs (foot, tennis, basket, hockey, foot US, baseball, volley…). Les cotes changent avec le score et le temps de jeu, et les paris sont suspendus quelques secondes après chaque but. <b>Les scores en direct sont fournis par ESPN.</b></li>'+
-  '<li>Dans le coupon, tu peux choisir d\'être payé en <b>pièces 🪙</b> au lieu des diamants : elles s\'ajoutent à tes pièces du jour (mais ne comptent pas pour le classement).</li>'+
+  '<li>Dans le coupon, tu peux choisir d\'être payé en <b>pièces 🪙</b> au lieu des diamants : elles s\'ajoutent à tes pièces (mais ne comptent pas pour le classement).</li>'+
   '<li>Les diamants ne se parient pas : ils s\'échangent dans la <b>Boutique</b> contre des bonus (pièces en plus, boost de cote, assurance) ou des récompenses (titres, thèmes).</li>'+
   '<li><b>Simple</b> : un pari par sélection. <b>Combiné</b> : plusieurs matchs dans un seul pari, les cotes se multiplient, mais tout doit être gagnant.</li>'+
   '<li>On ne peut plus parier sur un match une fois qu\'il a commencé. Les paris sont réglés dès que le résultat réel est publié (plusieurs mises à jour par jour). Football : temps réglementaire (90 minutes, sans prolongation ni tirs au but). Hockey : temps réglementaire (60 minutes). Basket : prolongations incluses. Tennis et ping-pong : résultat final du match. Rugby et handball : temps réglementaire. MMA : résultat officiel du combat (un match nul ou « no contest » est remboursé, comme un match annulé).</li>'+
@@ -3825,7 +3828,7 @@ async function claimGifts(){
   try{const r=await rpc('pieces_recevoir',{p_token:session.token});
     if(Array.isArray(r)&&r.length){const tc=r.filter(x=>!x.dia).reduce((a,x)=>a+(x.montant||0),0),td=r.filter(x=>x.dia).reduce((a,x)=>a+(x.montant||0),0);
       state.coins+=tc;state.diamonds+=td;save();clearTimeout(saveTimer);pushRemote();renderAll();
-      celebrate(td&&!tc?'💎':'🎁',td&&!tc?'Vous avez reçu des diamants':tc&&!td?'Vous avez reçu des pièces':'Vous avez reçu un cadeau',r.map(x=>'<b>'+esc(x.de)+'</b> vous a envoyé <b>'+nf(x.montant)+(x.dia?' diamants 💎':' pièces 🪙')+'</b>').join('<br>')+(tc?'<br><br>Les pièces sont ajoutées à vos pièces du jour.':''))}}
+      celebrate(td&&!tc?'💎':'🎁',td&&!tc?'Vous avez reçu des diamants':tc&&!td?'Vous avez reçu des pièces':'Vous avez reçu un cadeau',r.map(x=>'<b>'+esc(x.de)+'</b> vous a envoyé <b>'+nf(x.montant)+(x.dia?' diamants 💎':' pièces 🪙')+'</b>').join('<br>')+(tc?'<br><br>Les pièces sont ajoutées à vos pièces.':''))}}
   catch(e){}
   giftClaiming=false;claimWeek()}
 async function amiAction(kind,pseudo,btn){
@@ -4090,7 +4093,7 @@ function slipFootHtml(c){
   const ex=(id,icon,label,on,n)=>{const dis=!c.single||n<=0;return '<label class="'+(dis?'off':'')+'"><input type="checkbox" data-ex="'+id+'" '+(on&&!dis?'checked':'')+' '+(dis?'disabled':'')+'>'+icon+' '+label+' <span style="margin-left:auto;color:var(--muted)">×'+n+'</span></label>'};
   let extras='';
   if(state.inv.boost>0||state.inv.shield>0||(state.inv.boost25||0)>0)extras='<div class="extras">'+((state.inv.boost25||0)>0?ex('boost25','⚡','Super boost +25 %',ui.boost25,state.inv.boost25):'')+(state.inv.boost>0?ex('boost','🚀','Boost +10 %',ui.boost,state.inv.boost):'')+(state.inv.shield>0?ex('shield','🛡️','Assurance',ui.shield,state.inv.shield):'')+(!c.single?'<span style="font-size:12px;color:var(--muted)">Bonus utilisables sur un seul pari (1 simple ou 1 combiné).</span>':'')+'</div>';
-  const pay='<div class="paych"><span>Si je gagne, je veux :</span><div class="seg"><button data-pay="d" class="'+(ui.pay!=='c'?'on':'')+'">💎 Des diamants</button><button data-pay="c" class="'+(ui.pay==='c'?'on':'')+'">🪙 Des pièces</button></div><small>'+(ui.pay==='c'?'Les pièces gagnées s\'ajoutent à tes pièces du jour pour rejouer. Elles ne comptent pas pour le classement.':'Les diamants comptent pour le classement et servent dans la boutique.')+'</small></div>';
+  const pay='<div class="paych"><span>Si je gagne, je veux :</span><div class="seg"><button data-pay="d" class="'+(ui.pay!=='c'?'on':'')+'">💎 Des diamants</button><button data-pay="c" class="'+(ui.pay==='c'?'on':'')+'">🪙 Des pièces</button></div><small>'+(ui.pay==='c'?'Les pièces gagnées s\'ajoutent à tes pièces pour rejouer. Elles ne comptent pas pour le classement.':'Les diamants comptent pour le classement et servent dans la boutique.')+'</small></div>';
   return extras+pay+'<div class="row"><span>Mise totale</span><span class="v" style="color:var(--coin)">'+nf(c.total)+' 🪙</span></div>'+
    '<div class="row big"><span>Gain possible</span><span class="v">'+nf(c.gain)+' '+payCur()+'</span></div>'+
    '<button class="btn" id="place" '+(c.err?'disabled':'')+'>Valider le pari</button><div class="err">'+(c.err||'')+'</div>';

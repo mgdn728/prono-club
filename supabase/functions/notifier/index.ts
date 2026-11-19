@@ -115,7 +115,13 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
       });
       if (b.boost) odds *= b.boost === true ? 1.1 : Math.min(1.25, Number(b.boost) || 1);
       const PC = b.pay === "c";
-      const addCoins = (v: number) => { if (e.day !== now.day) { e.day = now.day; e.coins = 20000; e.d20 = 1; } e.coins = (e.coins || 0) + v; };
+      const addCoins = (v: number) => {
+        if (e.day !== now.day) { // nouveau jour : +20 000 pièces par jour (7 jours rattrapés au maximum), on garde les pièces
+          const nd = e.day ? Math.max(1, Math.min(7, Math.round((Date.parse(now.day + "T12:00:00Z") - Date.parse(e.day + "T12:00:00Z")) / 864e5) || 1)) : 1;
+          e.coins = (Number(e.coins) || 0) + 20000 * nd; e.day = now.day; e.d20 = 1;
+        }
+        e.coins = (Number(e.coins) || 0) + v;
+      };
       const quoi = b.sels.length > 1 ? `Ton combiné de ${b.sels.length} matchs` : (b.sels[0].match || "Ton pari");
       if (allVoid) {
         b.status = "void"; b.payout = b.stake; if (PC) addCoins(b.stake); else e.diamonds = (e.diamonds || 0) + b.stake;
@@ -231,15 +237,7 @@ async function preparer() {
       if (await marquer(j.id, "coffre:" + now.day)) await ajouter(j.id, "defi", "🧰 Ton coffre du jour t'attend !", "Pièces, diamants, boost… ou le jackpot de 5 000 pièces. Ouvre-le vite !", "?");
     }
   }
-  // 2 ter. Pièces pas jouées (entre 20 h et 22 h)
-  if (now.hour >= 20 && now.hour < 22) {
-    for (const j of js || []) {
-      if (!prefs.get(j.id)!.serie) continue;
-      const e = j.etat || {};
-      if (e.day !== now.day || (e.coins || 0) < 5000) continue;
-      if (await marquer(j.id, "pieces:" + now.day)) await ajouter(j.id, "serie", `🪙 Il te reste ${Math.round(e.coins)} pièces !`, "Elles repartent à 20 000 à minuit : joue-les avant qu'il soit trop tard ⏳", "?");
-    }
-  }
+  // 2 ter. (supprimé : les pièces se gardent maintenant d'un jour à l'autre)
 
   // 3. Série en danger (à partir de 19 h)
   if (now.hour >= 19) {
