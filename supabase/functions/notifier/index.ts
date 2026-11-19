@@ -370,7 +370,17 @@ function ligne(sp: string, path: string, ev: any, c: any, lg: string) {
   return {
     id: sp + "-" + String(c.id || ev.id), sp, lp: path, lg: lg.slice(0, 80), h: nom(H), a: nom(A),
     t: c.date || ev.date, st, per: Number(stt.period ?? 0) || 0, clk: String(stt.displayClock ?? "").slice(0, 12),
-    det: String(ty.shortDetail || ty.detail || "").slice(0, 60), s, ls: lh.length ? lh.map((v: number, i: number) => [v, la[i] ?? 0]) : null,
+    det: String(ty.shortDetail || ty.detail || "").slice(0, 60), s, ls: lh.length ? lh.map((v: number, i: number) => {
+      const e: any[] = [v, la[i] ?? 0];
+      if (sp === "tennis") { // points du tie-break et serveur (balle) sur le set en cours
+        const th = H.linescores?.[i]?.tiebreak, ta = A.linescores?.[i]?.tiebreak;
+        const last = i === lh.length - 1 && st === "in";
+        const srv = last ? (H.possession === true ? 1 : A.possession === true ? 2 : 0) : 0;
+        if (th != null || ta != null || srv) e.push(th != null ? Number(th) : null, ta != null ? Number(ta) : null);
+        if (srv) e.push(srv);
+      }
+      return e;
+    }) : null,
     buts: sp === "foot" && Array.isArray(c.details) ? c.details.filter((d: any) => d.scoringPlay).map((d: any) => [String(d.athletesInvolved?.[0]?.displayName || ""), String(d.team?.id || "") === String(H.team?.id || H.id) ? 1 : 2, d.ownGoal ? 1 : 0]) : null,
     win, bo, o: cotes(c), fin: st === "post" && /postpon|cancel|abandon|forfeit/i.test(String(ty.name || "") + " " + String(ty.detail || "")) ? 1 : 0,
   };

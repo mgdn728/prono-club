@@ -1444,6 +1444,9 @@ body.pf-lock{overflow:hidden}
 .bug-x{border:0;background:#e8f8ef;color:#0f8a4b;font-weight:800;border-radius:999px;padding:5px 10px;font-size:12px;cursor:pointer}
 .lv-sp{margin:4px 0 8px}.lv-sp small{opacity:.7;font-weight:700}
 .lv-lg{margin:14px 4px 6px;font-size:13px;color:var(--muted);font-weight:800;text-transform:none}
+.lv-tb{display:inline-block;margin-left:4px;font-size:.66em;background:#e0f2ff;color:#0b5394;border-radius:6px;padding:0 5px;vertical-align:middle}
+.lv-srv{display:inline-block;flex:none;margin:0 -2px 0 -4px;font-size:.85em;animation:srvb 1.6s ease-in-out infinite}
+@keyframes srvb{50%{transform:translateY(-2px)}}
 .lv-g{display:inline-block;margin-left:6px;font-size:.72em;background:#fff3c4;color:#8a5a00;border-radius:6px;padding:0 5px;vertical-align:middle}
 .odd.lock{opacity:.55}.lv-susp{margin:6px 0 0;padding:7px 10px;border-radius:10px;background:#fff3c4;color:#8a5a00;font-weight:800;font-size:13px;text-align:center}
 .lv-note{margin:6px 2px 0;font-size:12.5px;color:var(--muted)}
@@ -3268,7 +3271,9 @@ setInterval(()=>{const e=document.getElementById('lvUpd');if(e&&liveLast)e.textC
 const LCLK=[[/Halftime|HT$/i,'Mi-temps'],[/End of (\d)\w* Quarter/i,'Fin QT $1'],[/End of (\d)\w* Period/i,'Fin P$1'],[/End of (\d)\w* Half/i,'Fin MT $1'],[/(\d)\w* Quarter/i,'QT $1'],[/(\d)\w* Period/i,'P$1'],[/(\d)\w* Half/i,'MT $1'],[/(\d)\w* Set/i,'Set $1'],[/OT/,'Prol.'],[/Top (\d+)\w*/i,'Haut $1e'],[/Bot (\d+)\w*/i,'Bas $1e'],[/Mid (\d+)\w*/i,'Mi-$1e'],[/End (\d+)\w*/i,'Fin $1e'],[/Final/i,'Terminé'],[/Delayed/i,'Retardé']];
 function liveClock(r){if(r.sp==='foot'){if(/HT|Half/i.test(r.det||''))return 'Mi-temps';return r.clk&&r.clk!=="0'"?r.clk:(r.det||'')}let t=String(r.det||'');for(const[a,b]of LCLK)t=t.replace(a,b);return t}
 function liveScore(m,i){const r=m.lv,c=r.s||[0,0],cur=(r.sp==='tennis'||r.sp==='volley')&&r.st==='in'&&r.ls&&r.ls.length?r.ls[r.ls.length-1]:null;
-  return '<b class="sc'+(c[i]>c[1-i]?' win':'')+'">'+c[i]+(cur?'<small class="lv-g">'+cur[i]+'</small>':'')+'</b>'}
+  const tb=cur&&r.sp==='tennis'&&cur[2+i]!=null&&cur[0]>=6&&cur[1]>=6?cur[2+i]:null; // points du tie-break en cours
+  return '<b class="sc'+(c[i]>c[1-i]?' win':'')+'">'+c[i]+(cur?'<small class="lv-g">'+cur[i]+'</small>':'')+(tb!=null?'<small class="lv-tb" title="Points du tie-break">'+tb+'</small>':'')+'</b>'}
+function liveSrv(m,i){const r=m.lv;if(r.sp!=='tennis'||r.st!=='in'||!r.ls||!r.ls.length)return '';const e=r.ls[r.ls.length-1];return e&&e[4]===i+1?'<span class="lv-srv" title="Au service">🎾</span>':''}
 const LPREV={};
 function liveBtn(m,mk,o,short){const v=oddsOf(m,mk,o.id),on=inSlip(m.id,mk,o.id),k=m.id+'|'+mk+'|'+o.id;
   if(v==null)return short?'<button class="odd lock" disabled><span>'+esc(short)+'</span><b>🔒</b></button>':'';
@@ -3280,7 +3285,7 @@ function liveCard(m){
   const st=r.st==='in'?'<span class="st live">● '+esc(liveClock(r)||'En direct')+'</span>':r.st==='pre'?'<span class="st">Dans '+Math.max(1,Math.round((m.ko-lnow())/60000))+' min</span>':'<span class="st done">'+(r.fin?'Annulé':'Terminé')+'</span>';
   const pend=state.bets.filter(b=>b.status==='pending'&&b.sels.some(x=>x.matchId===m.id)).length;
   let h='<article class="mc lvm'+(ui.open===m.id?' open':'')+'" style="--sc:'+SPORTS[m.sp].col+'"><div class="mc-h"><span class="mc-w">'+st+'</span><span class="mc-c">'+SPORTS[m.sp].ic+' '+esc(m.comp)+'</span>'+(pend?'<span class="mc-b">Pari en cours</span>':'')+'</div>'+
-    '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+'<i>'+esc(m.home)+'</i>'+(r.st==='pre'?'':liveScore(m,0))+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+'</i>'+(r.st==='pre'?'':liveScore(m,1))+'</span></button>';
+    '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+liveSrv(m,0)+'<i>'+esc(m.home)+'</i>'+(r.st==='pre'?'':liveScore(m,0))+'</span><span>'+avatar(m.away)+liveSrv(m,1)+'<i>'+esc(m.away)+'</i>'+(r.st==='pre'?'':liveScore(m,1))+'</span></button>';
   if(r.st==='post')return h+'</article>';
   if(!first)return h+'<p class="lv-note">Score en direct uniquement (pas de paris sur ce sport)</p></article>';
   const three=first.key==='1x2',ops=first.opts(m);
