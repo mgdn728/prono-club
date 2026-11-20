@@ -1416,6 +1416,47 @@ body.pf-lock{overflow:hidden}
 .st-bi em{font-style:normal;font-size:10px;font-weight:800;opacity:.75;margin-bottom:2px}
 .st-bi small{font-size:9px;opacity:.6;margin-top:3px}
 .st-n{font-size:12px;opacity:.65;margin-top:12px}
+.gr-card{position:relative;overflow:hidden;display:block;width:100%;text-align:left;border:0;cursor:pointer;color:#fff;border-radius:22px;padding:16px 16px 14px;margin:0 0 14px;background:radial-gradient(120% 90% at 100% 0%,#ffcf3f 0%,rgba(255,207,63,0) 45%),linear-gradient(135deg,#1b0b3a 0%,#4a148c 45%,#c2185b 100%);box-shadow:0 14px 34px rgba(106,27,154,.35),inset 0 0 0 1px rgba(255,255,255,.12)}
+.gr-shine{position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.18) 45%,transparent 60%);transform:translateX(-100%);animation:grShine 3.6s ease-in-out infinite;pointer-events:none}
+@keyframes grShine{60%,100%{transform:translateX(100%)}}
+.gr-top{display:flex;justify-content:space-between;align-items:center}
+.gr-tag{font-size:12px;font-weight:900;letter-spacing:.08em;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:5px 10px}
+.gr-live{font-size:11px;font-weight:900;background:#ff2d55;border-radius:999px;padding:4px 9px;animation:grPulse 1.4s ease-in-out infinite}
+@keyframes grPulse{50%{opacity:.6}}
+.gr-pot{display:flex;align-items:baseline;gap:6px;margin:10px 0 2px;flex-wrap:wrap}
+.gr-pot small{width:100%;font-size:12px;font-weight:800;opacity:.75;text-transform:uppercase;letter-spacing:.1em}
+.gr-pot b{font-size:40px;line-height:1;font-weight:900;letter-spacing:-1px;background:linear-gradient(180deg,#fff7c2,#ffd23f 55%,#ff9f1c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 8px rgba(255,190,0,.45))}
+.gr-pot i{font-style:normal;font-size:28px}
+.gr-pot.big b{font-size:44px}
+.gr-sub{margin:6px 0 8px;font-size:14px;opacity:.95}
+.gr-stat{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;font-weight:700;opacity:.9;margin-bottom:10px}
+.gr-dots{display:flex;gap:5px}.gr-dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3)}
+.gr-dots i.y{background:#22c55e}.gr-dots i.n{background:#ef4444}.gr-dots i.d{background:#a78bfa}
+.gr-btn{display:block;text-align:center;font-weight:900;font-size:16px;color:#1b0b3a;background:linear-gradient(90deg,#ffe066,#ffb703);border-radius:14px;padding:12px;box-shadow:0 8px 20px rgba(255,183,3,.35)}
+.gr-btn.ok{background:rgba(255,255,255,.92)}
+.gr-mini{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;cursor:pointer;border-radius:16px;padding:11px 14px;margin:0 0 12px;color:#fff;background:linear-gradient(135deg,#2a1150,#7b1fa2);font-size:13.5px}
+.gr-mini em{margin-left:auto;font-style:normal;font-size:20px}
+.gr-sheet{text-align:left;margin:-6px -6px 0}
+.gr-hd{background:linear-gradient(135deg,#1b0b3a,#4a148c 55%,#c2185b);color:#fff;border-radius:18px;padding:14px;margin-bottom:10px}
+.gr-hd p{font-size:13px;margin:8px 0 0;line-height:1.45;color:#fff!important;opacity:.95}
+.gr-hd p b{color:#ffe066!important}
+.gr-cd2{font-weight:900}
+.gr-rows{max-height:46vh;overflow:auto;display:grid;gap:8px;padding:2px}
+.gr-row{background:var(--card2,#f4f6fa);border-radius:14px;padding:10px}
+.gr-mh{display:flex;align-items:center;gap:6px;font-size:11.5px;opacity:.8}
+.gr-mh span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gr-sc{font-size:12px}.gr-m{font-style:normal}
+.gr-tm{display:flex;align-items:center;gap:6px;font-size:14.5px;margin:4px 0 8px}
+.gr-tm b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gr-tm b:last-child{text-align:right}.gr-tm i{opacity:.5;font-style:normal}
+.gr-os{display:grid;grid-template-columns:1fr .7fr 1fr;gap:6px}
+.gr-o{border:2px solid transparent;background:var(--card,#fff);color:inherit;border-radius:12px;padding:8px 4px;font-weight:800;font-size:12.5px;cursor:pointer;min-width:0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.gr-o span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gr-o small{display:block;font-size:11px;opacity:.65;margin-top:2px}
+.gr-o.on{border-color:#7b1fa2;background:linear-gradient(135deg,rgba(123,31,162,.14),rgba(194,24,91,.14))}
+.gr-o.good{border-color:#16a34a;background:rgba(22,163,74,.14)}
+.gr-o.bad{border-color:#dc2626;background:rgba(220,38,38,.12)}
+.gr-o:disabled{cursor:default}
+.gr-ft{margin-top:10px}.gr-ft .pbtn{width:100%}.gr-err{color:#dc2626;font-size:13px;margin-top:6px;text-align:center}
 .cashbtn em{font-style:normal;font-weight:900}
 .cashbtn.up{animation:cashUp 1.2s ease}.cashbtn.dn{animation:cashDn 1.2s ease}
 @keyframes cashUp{0%,60%{background:linear-gradient(90deg,#16a34a,#22c55e);transform:scale(1.03)}}
@@ -2091,6 +2132,7 @@ try{session=JSON.parse(lsGet(LS_SESSION)||'null')}catch(e){}
   if(p&&/^[A-Za-z0-9_.-]{3,20}$/.test(p)&&!(session&&session.pseudo.toLowerCase()===p.toLowerCase()))lsSet('pc_parrain',p);
   if(l&&/^[A-Za-z0-9]{6}$/.test(l))lsSet('pc_ligue',l.toUpperCase());
   if(q.has('paris'))ui.tab='paris';
+  if(q.has('grille')){ui.tab='matchs';ui.grOpen=1}
   if(q.has('chat')){ui.tab='chat';ui.social='chat'}
   if(q.has('amis')){ui.tab='chat';ui.social='amis';const ap=q.get('amis');if(ap)ui.mpStart=ap}
   if(q.has('ligues')){ui.tab='chat';ui.social='ligues'}
@@ -2133,7 +2175,7 @@ async function startSession(res){
   afterLogin();
 }
 async function afterLogin(){
-  await claimBonus();claimGifts();pkPoll();
+  await claimBonus();claimGifts();pkPoll();grLoad();
   const lc=lsGet('pc_ligue');
   if(lc&&session){try{const r=await rpc('ligue_rejoindre',{p_token:session.token,p_code:lc});lsSet('pc_ligue',null);ui.ligues=null;
     popup('<div class="pop-ic big">👥</div><h3>Bienvenue dans la ligue</h3><p>Vous avez rejoint <b>'+esc(r.nom)+'</b>. Retrouvez son classement dans l\'onglet Social.</p><div class="pop-btns"><button class="pbtn" data-tab="chat" data-social="ligues" data-ligue="'+esc(r.code)+'">Voir la ligue</button></div>')}
@@ -2143,7 +2185,7 @@ async function claimBonus(){
   if(!session||!synced)return;
   try{const r=await rpc('bonus_recuperer',{p_token:session.token});if(!r)return;const f0=ui.filleuls;ui.filleuls=r.filleuls||0;checkParrain();if(f0!==ui.filleuls&&(ui.tab==='matchs'||ui.tab==='invite'))renderView();
     if(r.bonus>0||r.dia>0){state.coins+=r.bonus||0;state.diamonds+=r.dia||0;save();renderAll();
-      celebrate('🎁','Bonus de parrainage','<b>'+[r.bonus>0?'+'+nf(r.bonus)+' pièces':'',r.dia>0?'+'+nf(r.dia)+' 💎':''].filter(Boolean).join(' et ')+'</b> pour toi. Merci de faire grandir le club !')}}catch(e){}
+      celebrate('🎁',r.dia>0&&!(r.bonus>0)?'Récompense reçue !':'Bonus reçu !','<b>'+[r.bonus>0?'+'+nf(r.bonus)+' pièces':'',r.dia>0?'+'+nf(r.dia)+' 💎':''].filter(Boolean).join(' et ')+'</b> pour toi (parrainage ou Grille du jour). Bravo !')}}catch(e){}
 }
 async function refreshFromServer(){
   if(!session)return;
@@ -2482,6 +2524,68 @@ function events(){
   return L}
 const evVal=k=>events().reduce((m,e)=>Math.max(m,Number(e[k])||1),1);
 function leftTxt(ms){ms=Math.max(0,ms);const j=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return j?j+' j '+h+' h':h?h+' h '+m+' min':m+' min'}
+
+/* ---------- La Grille du jour (cagnotte) ---------- */
+let GR=null,grBusy=false,grLast=0,grShown={};
+const fmtKo=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+async function grLoad(){if(grBusy)return;grBusy=true;
+  try{GR=await rpc('grille_get',{p_token:session?session.token:null});grLast=Date.now();
+    const a=GR&&GR.auj,h=GR&&GR.hier;
+    if(session&&((a&&a.statut==='finie'&&a.moi&&a.moi.gain>0)||(h&&h.statut==='finie'&&h.moi&&h.moi.gain>0)))claimBonus();
+    if(ui.grOpen&&a){ui.grOpen=0;openGrille()}}
+  catch(e){if(isMissingFn(e))GR={off:1}}
+  grBusy=false;if(ui.tab==='matchs'&&!document.querySelector('.gr-sheet'))renderView();else grSheetRefresh()}
+setInterval(()=>{if(document.visibilityState==='visible'&&(ui.tab==='matchs'||document.querySelector('.gr-sheet'))&&Date.now()-grLast>60000)grLoad()},5000);
+const grN=g=>(g&&g.matchs||[]).length;
+function grRes(g,i){if(g.res&&g.res[i]!==undefined)return g.res[i];const x=g.matchs[i],m=findMatch(g.day+'_'+x.id);if(!m)return undefined;if(m.x)return null;if(m.s){const h=+m.s[0],a=+m.s[1];return h>a?'1':h<a?'2':'N'}return undefined}
+function grScore(g){if(!g||!g.moi)return null;let ok=0,done=0;g.matchs.forEach((x,i)=>{const r=grRes(g,i);if(r===undefined)return;done++;if(r===null||g.moi.choix[i]===r)ok++});return{ok,done,n:grN(g)}}
+function grCount(t){const s=Math.max(0,Math.floor((t-Date.now())/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?h+' h '+String(m).padStart(2,'0')+' min':m+' min '+String(s%60).padStart(2,'0')+' s'}
+function grilleBanner(){
+  if(!GR||GR.off)return '';const g=GR.auj,h=GR.hier;
+  if(!g){if(!h||h.statut!=='finie')return '';const G=h.gagnants||{};
+    return '<button class="gr-mini" data-grille="hier">🎰 <span><b>Grille d\'hier</b> · '+(G.w7?G.w7+' grille'+(G.w7>1?'s':'')+' parfaite'+(G.w7>1?'s':'')+' : '+nf(G.part7)+' 💎 chacun':'personne n\'a trouvé : la cagnotte grimpe !')+(h.moi?' · toi : '+h.moi.bons+'/'+G.n:'')+'</span><em>›</em></button>'}
+  const n=grN(g),open=g.statut==='ouverte'&&Date.now()<g.limite,sc=grScore(g);
+  let sub,btn,stat='';
+  if(open){sub='Trouve les <b>'+n+' résultats</b> et remporte la cagnotte · gratuit';
+    stat='<span class="gr-cd" data-grcd="'+g.limite+'">⏱️ Ferme dans '+grCount(g.limite)+'</span><span>👥 '+nf(g.joueurs)+' joueur'+(g.joueurs>1?'s':'')+'</span>';
+    btn=g.moi?'<span class="gr-btn ok">✅ Ma grille est validée · Modifier</span>':'<span class="gr-btn">🎯 Remplir ma grille</span>'}
+  else if(g.statut!=='finie'){sub=g.moi?(sc.done?'Ta grille : <b>'+sc.ok+' bon'+(sc.ok>1?'s':'')+' sur '+sc.done+' terminé'+(sc.done>1?'s':'')+'</b> ('+n+' matchs)':'Ta grille est validée · <b>les matchs n\'ont pas encore commencé ou sont en cours</b>'):'Grille fermée · '+nf(g.joueurs)+' joueurs en lice';
+    stat='<span class="gr-dots">'+g.matchs.map((x,i)=>{const r=grRes(g,i);return '<i class="'+(r===undefined?'w':!g.moi?'d':r===null||g.moi.choix[i]===r?'y':'n')+'"></i>'}).join('')+'</span>';btn='<span class="gr-btn">👀 Suivre la grille</span>'}
+  else{const G=g.gagnants||{};sub=G.w7?'<b>'+G.w7+' grille'+(G.w7>1?'s':'')+' parfaite'+(G.w7>1?'s':'')+'</b> : '+nf(G.part7)+' 💎 chacun !':'Personne n\'a trouvé : <b>la cagnotte grimpe demain</b> !';
+    if(g.moi)stat='<span>Toi : <b>'+g.moi.bons+'/'+n+'</b>'+(g.moi.gain?' · +'+nf(g.moi.gain)+' 💎':'')+'</span>';btn='<span class="gr-btn">📋 Voir les résultats</span>'}
+  return '<button class="gr-card" data-grille="auj"><div class="gr-shine"></div><div class="gr-top"><span class="gr-tag">🎰 LA GRILLE DU JOUR</span>'+(open?'<span class="gr-live">EN JEU</span>':'')+'</div>'+
+    '<div class="gr-pot"><small>Cagnotte</small><b data-grpot="'+g.cagnotte+'">'+nf(g.cagnotte)+'</b><i>💎</i></div><p class="gr-sub">'+sub+'</p><div class="gr-stat">'+stat+'</div>'+btn+'</button>'}
+function grPotAnim(){document.querySelectorAll('[data-grpot]').forEach(el=>{const v=+el.dataset.grpot,k='p'+v;if(grShown[k])return;grShown[k]=1;const t0=performance.now(),a=Math.round(v*.82);
+  const f=n=>{const x=Math.min(1,(n-t0)/1600),e=1-Math.pow(1-x,3);el.textContent=nf(Math.round(a+(v-a)*e));if(x<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
+setInterval(()=>{document.querySelectorAll('[data-grcd]').forEach(e=>{const t=+e.dataset.grcd;e.textContent=Date.now()<t?'⏱️ Ferme dans '+grCount(t):'⏱️ Grille fermée'})},1000);
+function grSheet(which){
+  const g=which==='hier'?GR.hier:GR.auj;if(!g)return '';
+  const n=grN(g),open=which!=='hier'&&g.statut==='ouverte'&&Date.now()<g.limite,ch=open?(ui.gr&&ui.gr.length===n?ui.gr:(g.moi?g.moi.choix.split(''):Array(n).fill(''))):(g.moi?g.moi.choix.split(''):[]);
+  if(open)ui.gr=ch;
+  const tot=i=>g.stats&&g.stats[i]?g.stats[i][0]+g.stats[i][1]+g.stats[i][2]:0;
+  const rows=g.matchs.map((x,i)=>{const H=frn(x.h)||x.h,A=frn(x.a)||x.a,r=open?undefined:grRes(g,i),me=ch[i]||'',T=tot(i),m=findMatch(g.day+'_'+x.id);
+    const sc=m&&m.s?'<b class="gr-sc">'+m.s[0]+' - '+m.s[1]+'</b>':m&&m.x?'<b class="gr-sc">annulé</b>':'';
+    const opt=(k,lb)=>{const pc=T?Math.round(g.stats[i]['1N2'.indexOf(k)]/T*100):null;const cls=(me===k?' on':'')+(r!==undefined&&r!==null&&r===k?' good':'')+(r!==undefined&&r!==null&&me===k&&r!==k?' bad':'');
+      return '<button class="gr-o'+cls+'"'+(open?' data-grset="'+i+':'+k+'"':' disabled')+'><span>'+lb+'</span>'+(pc!=null?'<small>'+pc+' %</small>':'')+'</button>'};
+    const mark=r===undefined?(open?'':'<em class="gr-m w">⏳</em>'):(!g.moi?'':r===null||me===r?'<em class="gr-m y">✅</em>':'<em class="gr-m n">❌</em>');
+    return '<div class="gr-row"><div class="gr-mh"><span>'+(x.f||'')+' '+esc(frc(x.c)||x.c||'')+' · '+fmtKo(Date.parse(x.t))+'</span>'+sc+mark+'</div><div class="gr-tm"><b>'+esc(H)+'</b><i>–</i><b>'+esc(A)+'</b></div><div class="gr-os">'+opt('1','1 · '+esc(H))+opt('N','Nul')+opt('2','2 · '+esc(A))+'</div></div>'}).join('');
+  const G=g.gagnants||{},sc=grScore(g);
+  let head='<div class="gr-hd"><span class="gr-tag">🎰 '+(which==='hier'?'GRILLE D\'HIER':'LA GRILLE DU JOUR')+'</span><div class="gr-pot big"><small>Cagnotte</small><b>'+nf(g.cagnotte)+'</b><i>💎</i></div>';
+  if(open)head+='<p>Choisis <b>1</b> (victoire à domicile), <b>N</b> (nul) ou <b>2</b> pour chaque match. Tout juste : <b>tu partages la cagnotte</b>. Une seule erreur : <b>150 000 💎</b> à partager. Modifiable jusqu\'au premier coup d\'envoi.</p><p class="gr-cd2" data-grcd="'+g.limite+'">⏱️ Ferme dans '+grCount(g.limite)+'</p>';
+  else if(g.statut==='finie')head+='<p>'+(G.w7?'<b>'+G.w7+' grille'+(G.w7>1?'s':'')+' parfaite'+(G.w7>1?'s':'')+'</b> : '+nf(G.part7)+' 💎 chacun.':'<b>Personne</b> n\'a trouvé les '+n+' résultats : la cagnotte grimpe de 250 000 💎 !')+(G.w6?' '+G.w6+' joueur'+(G.w6>1?'s':'')+' à '+(n-1)+'/'+n+' : '+nf(G.part6)+' 💎 chacun.':'')+(g.moi?'<br>Toi : <b>'+g.moi.bons+'/'+n+'</b>'+(g.moi.gain?' · <b>+'+nf(g.moi.gain)+' 💎</b>':''):'')+'</p>';
+  else head+='<p>La grille est fermée. '+(g.moi&&sc.done?'Ta grille : <b>'+sc.ok+' bon'+(sc.ok>1?'s':'')+' sur '+sc.done+' terminé'+(sc.done>1?'s':'')+'</b>. ':'')+'Les pourcentages montrent ce qu\'ont choisi les '+nf(g.joueurs)+' joueurs.</p>';
+  head+='</div>';
+  const filled=open?ch.filter(Boolean).length:0;
+  const foot=open?'<div class="gr-ft"><button class="pbtn" id="grGo"'+(filled<n?' disabled':'')+'>'+(filled<n?'Encore '+(n-filled)+' match'+(n-filled>1?'s':'')+' à choisir':g.moi?'💾 Enregistrer ma grille':'🎯 Valider ma grille')+'</button><div class="gr-err" id="grErr"></div></div>':'';
+  return '<div class="gr-sheet" data-which="'+which+'">'+head+'<div class="gr-rows">'+rows+'</div>'+foot+'<button class="pbtn ghost2" data-popclose="1" style="margin-top:8px">Fermer</button></div>'}
+function openGrille(which){which=which||'auj';if(!GR||!GR[which])return;ui.grWhich=which;popup(grSheet(which));grLoad()}
+function grSheetRefresh(){const el=document.querySelector('.gr-sheet');if(!el||!GR)return;const w=el.dataset.which,sc=el.querySelector('.gr-rows'),y=sc?sc.scrollTop:0;el.outerHTML=grSheet(w);const n=document.querySelector('.gr-rows');if(n)n.scrollTop=y}
+async function grGo(btn){
+  if(!session){closePop();ui.authMode='signup';openAuth();toast('Crée ton compte gratuit pour valider ta grille');return}
+  const ch=(ui.gr||[]).join('');btn.disabled=true;btn.textContent='Envoi…';
+  try{await rpc('grille_jouer',{p_token:session.token,p_choix:ch});const first=!(GR.auj&&GR.auj.moi);if(GR.auj)GR.auj.moi={choix:ch,bons:null,gain:0};if(first&&GR.auj)GR.auj.joueurs++;closePop();
+    celebrate('🎰','Grille validée !','Tes '+ch.length+' pronos sont enregistrés. Rendez-vous après les matchs pour savoir si tu remportes <b>'+nf(GR.auj.cagnotte)+' 💎</b> ! Tu peux encore la modifier jusqu\'au premier coup d\'envoi.');renderView()}
+  catch(e){const er=document.getElementById('grErr');if(er)er.textContent=e.code==='grille_fermee'?'Trop tard, la grille est fermée.':e.code==='session'?'Session expirée, reconnecte-toi.':'Envoi impossible, réessaie.';btn.disabled=false;btn.textContent='🎯 Valider ma grille'}}
 function eventBanner(){const L=events();if(!L.length)return '';
   return L.map(e=>'<div class="ev-ban"><span class="ev-ic">'+(e.ic||'🎉')+'</span><span class="ev-t"><b>'+esc(e.nom)+'</b><span>'+esc(e.desc||'')+' · encore '+leftTxt(e.fin-Date.now())+'</span></span></div>').join('')}
 
@@ -3035,7 +3139,8 @@ function renderMatches(){
   }
   const favs=Array.isArray(state.favs)&&state.favs.length?vis.filter(m=>(isFav(m.home)||isFav(m.away))&&status(m)!=='annule'&&!(m.s&&Date.now()>m.ko+3*3600e3)).sort((a,b)=>a.ko-b.ko).slice(0,6):[];
   const favH=favs.length?'<h3 class="day fav-h">❤️ Mes équipes</h3>'+favs.map(matchCard).join(''):'';
-  return installBanner()+guestBanner()+eventBanner()+dailyRow()+dashHtml()+boostCard()+invBanner()+defiCard()+favH+tabs+
+  setTimeout(grPotAnim,30);
+  return installBanner()+guestBanner()+grilleBanner()+eventBanner()+dailyRow()+dashHtml()+boostCard()+invBanner()+defiCard()+favH+tabs+
    (ui.comp==='all'&&ui.sport==='foot'?featured(vis):'')+
    comp+body+
    '<p class="reset-note" style="margin-top:14px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>';
@@ -3496,6 +3601,7 @@ function renderRules(){
   '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙 en plus</b>. Les pièces se gardent d\'un jour à l\'autre : vous pouvez les économiser (si vous ne venez pas pendant plusieurs jours, jusqu\'à 7 jours sont rattrapés).</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
+  '<li><b>🎰 La Grille du jour</b> : chaque matin, 5 à 7 gros matchs à pronostiquer gratuitement (1, N ou 2). Grille parfaite : la cagnotte est partagée entre les gagnants. Personne ? Elle grimpe de 250 000 💎 le lendemain. Une seule erreur : 150 000 💎 à partager (20 000 💎 maximum chacun). Modifiable jusqu\'au premier coup d\'envoi. Un match annulé compte comme juste pour tout le monde.</li>'+
   '<li><b>Cash out</b> : dans « Mes paris », le bouton 💸 <b>Encaisser</b> te permet d\'arrêter un pari en cours et de récupérer tout de suite un montant qui dépend des cotes du moment (avant le match, ou en direct quand les paris sont ouverts).</li>'+
   '<li><b>Combiné même match</b> 🧩 : ajoute plusieurs paris d\'un même match au coupon et choisis « Combiné ». La cote tient compte du lien entre les paris (par exemple une victoire et beaucoup de buts). Pas disponible en direct.</li>'+
   '<li><b>Mes équipes</b> ❤️ : ouvre un match et touche « Suivre » pour retrouver les matchs de tes équipes en haut du programme et être prévenu 1 h avant.</li>'+
@@ -4295,6 +4401,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('#admGo')){admGo(e.target.closest('#admGo'));return}
   if(e.target.closest('#bugGo')){bugGo(e.target.closest('#bugGo'));return}
   if(e.target.closest('#delGo')){delGo(e.target.closest('#delGo'));return}
+  if(e.target.closest('#grGo')){grGo(e.target.closest('#grGo'));return}
   const bd=e.target.closest('[data-bugdel]');if(bd){bugDel(bd.dataset.bugdel,bd);return}
   const aa=e.target.closest('[data-admadd]');if(aa){admAdd(aa.dataset.admadd);return}
   const at=e.target.closest('[data-admt]');if(at){ui.admT=at.dataset.admt;document.querySelectorAll('[data-admt]').forEach(x=>x.classList.toggle('on',x===at));const n=$('#giftN');if(n)n.placeholder='Nombre de '+(ui.admT==='d'?'diamants':'pièces');return}
@@ -4376,6 +4483,8 @@ document.addEventListener('click',e=>{
   if(d.cash){openCash(d.cash);return}
   if(d.cashgo){doCash(d.cashgo);return}
   if(d.fav){toggleFav(d.fav);return}
+  if(d.grille){openGrille(d.grille);return}
+  if(d.grset){const[i,k]=d.grset.split(':');ui.gr=ui.gr||[];ui.gr[+i]=ui.gr[+i]===k?'':k;grSheetRefresh();return}
   if(d.rm){ui.slip=ui.slip.filter(s=>selKey(s)!==d.rm);if(ui.slip.length<2&&ui.mode==='combi')ui.mode='simple';renderSlip();renderView();return}
   if(d.mode){ui.mode=d.mode;renderSlip();return}
   if(d.lsp){ui.lsp=d.lsp;renderView();return}
@@ -4424,6 +4533,7 @@ tick(true);
 loadFixtures();loadEvents();
 setInterval(()=>tick(false),20000);
 setInterval(loadFixtures,3*60*1000);
+setTimeout(grLoad,1500);
 if(session)refreshFromServer();
 else if(!lsGet('pc_welcome')){lsSet('pc_welcome','1');const par=lsGet('pc_parrain');
   popup('<div class="pop-ic big">⚽</div><h3>Bienvenue sur PronoClub</h3><p>Pariez <b>gratuitement</b> sur les vrais matchs : foot, basket, tennis, hockey… <b>'+nf(DAILY)+' pièces offertes chaque jour</b>, des diamants à gagner et des défis entre amis.'+(par?'<br><br>🎁 <b>'+esc(par)+'</b> vous offre <b>'+nf(PARRAIN_BONUS)+' pièces</b> à l\'inscription !':'')+'</p><div class="pop-btns"><button class="pbtn" data-auth="signup">Créer mon compte</button><button class="pbtn ghost2" data-popclose="1">Visiter d\'abord</button></div>')}

@@ -269,6 +269,9 @@ async function preparer() {
     }
   }
 
+  // 2 quinquies. La Grille du jour : création le matin, règlement quand tout est fini (toutes les 5 minutes)
+  if (now.min % 5 === 3) { try { await grilleMaj(); } catch (e) { console.error("grille", e); } }
+
   // 3. Série en danger (à partir de 19 h)
   if (now.hour >= 19) {
     const hier = addDays(now.day, -1);
@@ -736,6 +739,44 @@ function statsMatch(j: any) {
   const f = [forme(hid), forme(aid)], r = [rang(hid), rang(aid)];
   if (!f[0] && !f[1] && !r[0] && !r[1] && !(h[0] + h[1] + h[2])) return null;
   return { f, r, h };
+}
+
+// ---------- La Grille du jour (cagnotte) ----------
+const TOPC = ["Ligue des champions", "Ligue 1", "Premier League", "Liga", "Serie A", "Bundesliga", "Ligue des nations", "Qualif. Coupe du monde", "Ligue Europa", "Coupe de France", "Top 14", "Six Nations", "Champions Cup", "Ligue Conférence", "NHL"];
+const res1N2 = (r: any) => { if (r.x) return null; if (!Array.isArray(r.s)) return undefined; const h = Number(r.s[0]), a = Number(r.s[1]); return h > a ? "1" : h < a ? "2" : "N"; };
+async function grilleMaj() {
+  const now = paris();
+  // 1) règlement des grilles terminées (aujourd'hui et les 3 jours d'avant)
+  const { data: G } = await db.from("grille").select("day,matchs,statut").neq("statut", "finie").gte("day", addDays(now.day, -3));
+  for (const g of G || []) {
+    const arr = await fixtures(g.day);
+    if (!Array.isArray(arr)) continue;
+    const res: any[] = [];
+    let ok = true;
+    for (const m of g.matchs || []) {
+      const r = arr.find((x: any) => x.id === m.id);
+      const v = r ? res1N2(r) : (Date.now() - Date.parse(m.t) > 24 * 3600e3 ? null : undefined); // match disparu : annulé au bout de 24 h
+      if (v === undefined) { ok = false; break; }
+      res.push(v);
+    }
+    if (ok) { const { error } = await db.rpc("grille_regler", { p_day: g.day, p_res: res }); if (error) console.error("grille_regler", error); }
+  }
+  // 2) création de la grille du jour, à partir de 7 h
+  if (now.hour < 7) return;
+  const { data: deja } = await db.from("grille").select("day").eq("day", now.day).maybeSingle();
+  if (deja) return;
+  const arr = await fixtures(now.day);
+  if (!Array.isArray(arr)) return;
+  const rang = (c: string) => { const i = TOPC.indexOf(c); return i < 0 ? 99 : i; };
+  const cand = arr.filter((r: any) => ["foot", "hockey", "rugby"].includes(r.sp || "foot") && Array.isArray(r.o) && r.o.length === 3 && !r.s && !r.x
+    && Date.parse(r.t) > Date.now() + 90 * 60e3 && r.o.every((v: any) => Number(v) > 1));
+  if (cand.length < 5) return;
+  cand.sort((p: any, q: any) => (p.big ? 0 : 1) - (q.big ? 0 : 1) || rang(p.c) - rang(q.c) || ((p.sp || "foot") === "foot" ? 0 : 1) - ((q.sp || "foot") === "foot" ? 0 : 1) || Date.parse(p.t) - Date.parse(q.t));
+  const pick = cand.slice(0, 7).sort((p: any, q: any) => Date.parse(p.t) - Date.parse(q.t));
+  const matchs = pick.map((r: any) => ({ id: r.id, sp: r.sp || "foot", h: r.h, a: r.a, c: r.c || "", f: r.f || "", t: r.t, o: r.o }));
+  const limite = new Date(Math.min(...pick.map((r: any) => Date.parse(r.t)))).toISOString();
+  const { error } = await db.rpc("grille_creer", { p_day: now.day, p_matchs: matchs, p_limite: limite });
+  if (error) console.error("grille_creer", error);
 }
 
 async function progAuto() {
