@@ -193,16 +193,17 @@ function quick(o){const c=C();
     if(t>=90){done=true;while(ei<S.ev.length){const e=S.ev[ei++];if(e.t==='g'){ov.querySelector('#mvS').textContent=e.sc[0]+' - '+e.sc[1];say(e.m,'<b>⚽ '+esc(e.p)+'</b>','goal '+(e.s===1?'h':'a'))}}setTimeout(()=>finish(ov,o,S),600);return}
     requestAnimationFrame(frame)};
   requestAnimationFrame(frame)}
-function finish(ov,o,S,mult,info){const c=C(),res=S.sh>S.sa?'V':S.sh<S.sa?'D':'N';
-  const gain=Math.round((res==='V'?1500+(10-c.div)*500:res==='N'?500:200)*(mult||1)),pts=res==='V'?3:res==='N'?1:0;
+function finish(ov,o,S,mult,info){const c=C(),pen=info&&info.pens&&S.sh===S.sa?info.pens:null,pw=pen?pen[0]>pen[1]:false;
+  const res=pen?(pw?'V':'N'):S.sh>S.sa?'V':S.sh<S.sa?'D':'N';
+  const gain=Math.round((res==='V'?1500+(10-c.div)*500:res==='N'?500:200)*(mult||1)),pts=pen?(pw?2:1):res==='V'?3:res==='N'?1:0;
   state.coins+=gain;c.pts+=pts;if(res==='V')c.w=(c.w||0)+1;else if(res==='N')c.d=(c.d||0)+1;else c.l=(c.l||0)+1;
-  c.hist=(c.hist||[]).concat({r:res,s:S.sh+'-'+S.sa,o:o.n,t:Date.now()}).slice(-20);
+  c.hist=(c.hist||[]).concat({r:res,s:S.sh+'-'+S.sa+(pen?' ('+pen[0]+'-'+pen[1]+' tab)':''),o:o.n,t:Date.now()}).slice(-20);
   let promo='';
   if(c.pts>=30){if(c.div>1){c.div--;c.pts=0;const b=20000*(11-c.div);state.coins+=b;promo='<div class="mv-promo">🎉 PROMOTION en <b>'+DIVN[c.div]+'</b> ! +'+nf(b)+' 🪙</div>'}
     else{c.pts=0;c.tr=(c.tr||0)+1;state.diamonds+=50000;promo='<div class="mv-promo">🏆 TROPHÉE de la Ligue des Légendes ! +50 000 💎</div>'}}
   csave();renderHeader();
-  const box=document.createElement('div');box.className='mv-end '+res;
-  box.innerHTML='<div class="mv-res">'+(res==='V'?'VICTOIRE':res==='N'?'MATCH NUL':'DÉFAITE')+'</div><div class="mv-fs">'+S.sh+' - '+S.sa+'</div>'+(info&&info.scorers&&info.scorers.length?'<div class="mv-scr">'+info.scorers.map(x=>'<span class="t'+x.t+'">⚽ '+esc(x.n==='csc'?'csc':x.n.split(' ').slice(-1)[0])+' '+x.m+'\'</span>').join('')+'</div>':'')+(info&&info.live&&!info.abandon?'<div class="mv-st">Tirs '+info.shots[0]+' - '+info.shots[1]+' · Possession '+info.poss+' %</div>':'')+'<p>+'+nf(gain)+' 🪙'+(mult>1?' <small>(+25 % bonus 🎮)</small>':'')+' · +'+pts+' pt'+(pts>1?'s':'')+'</p>'+promo+
+  const box=document.createElement('div');box.className='mv-end '+(pen&&!pw?'D':res);
+  box.innerHTML='<div class="mv-res">'+(pen?(pw?'VICTOIRE':'DÉFAITE')+'<small class="mv-tab">aux tirs au but</small>':res==='V'?'VICTOIRE':res==='N'?'MATCH NUL':'DÉFAITE')+'</div><div class="mv-fs">'+S.sh+' - '+S.sa+'</div>'+(pen?'<div class="mv-pen">Tirs au but : <b>'+pen[0]+' - '+pen[1]+'</b></div>':'')+(info&&info.scorers&&info.scorers.length?'<div class="mv-scr">'+info.scorers.map(x=>'<span class="t'+x.t+'">⚽ '+esc(x.n==='csc'?'csc':x.n.split(' ').slice(-1)[0])+' '+x.m+'\'</span>').join('')+'</div>':'')+(info&&info.live&&!info.abandon?'<div class="mv-st">Tirs '+info.shots[0]+' - '+info.shots[1]+' · Possession '+info.poss+' %</div>':'')+'<p>+'+nf(gain)+' 🪙'+(mult>1?' <small>(+25 % bonus 🎮)</small>':'')+' · +'+pts+' pt'+(pts>1?'s':'')+'</p>'+promo+
     '<div class="cl-bar big"><i style="width:'+Math.min(100,c.pts/30*100)+'%"></i></div><small>'+c.pts+' / 30 pts · '+DIVN[c.div]+'</small><div class="mv-btns"><button class="cl-go" data-mvend="again">'+(energy()>0?'▶ Rejouer ('+C().en+' ⚡)':'Plus d\'énergie')+'</button><button class="cl-go alt" data-mvend="close">Retour au club</button></div>';
   ov.appendChild(box);if(res==='V'){winFx(promo?'fx-fireworks':null)}
   box.addEventListener('click',e=>{const b=e.target.closest('[data-mvend]');if(!b)return;ov.remove();renderView();if(b.dataset.mvend==='again'&&energy()>0)choose()})}
@@ -321,7 +322,7 @@ window.clubBanner=function(){if(!session)return '';const c=C();
 .cl-mode b{display:block;font-size:16px;font-weight:900}.cl-mode small{font-size:12.5px;opacity:.8}.cl-mode em{font-style:normal;font-weight:900;color:#16a34a}
 .cl-mode.main{background:linear-gradient(135deg,#065f46,#16a34a);color:#fff;box-shadow:0 10px 24px rgba(22,163,74,.35)}.cl-mode.main small{opacity:.95}.cl-mode.main em{color:#fde047}
 .mv-scr{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 6px;max-width:340px}.mv-scr span{font-size:12px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(74,222,128,.18)}.mv-scr span.t1{background:rgba(248,113,113,.18)}
-.mv-st{font-size:12.5px;opacity:.8;margin-bottom:4px}.cm-ov .mv-end{z-index:10}
+.mv-st{font-size:12.5px;opacity:.8;margin-bottom:4px}.mv-tab{display:block;font-size:15px;opacity:.85;letter-spacing:0}.mv-pen{font-size:16px;margin:-4px 0 6px}.mv-pen b{color:#facc15}.cm-ov .mv-end{z-index:10}
 .cl-opp{display:flex;align-items:center;gap:10px;border:0;border-radius:16px;padding:10px 12px;background:var(--card2,#f4f6fa);color:inherit;cursor:pointer;text-align:left}
 .cl-opp i,.cl-br i{font-style:normal;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex:none}
 .cl-opp span{flex:1;min-width:0}.cl-opp b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cl-opp small{font-size:11.5px;opacity:.7}
