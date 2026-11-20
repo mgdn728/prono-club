@@ -21,7 +21,7 @@ function start(cfg){
   const live=cfg.mode==='live',T=[cfg.home,cfg.away];
   const P=[];
   T.forEach((tm,t)=>tm.pl.forEach((q,i)=>{const h=hash((q.n||'')+i+t);
-    P.push({t,i,role:ROLE[i],gk:i===0,n:q.n||'?',sn:(q.n||'?').split(' ').slice(-1)[0],num:[1,2,4,5,3,8,6,10,7,9,11][i],r:cl(q.r||60,35,99),
+    P.push({t,i,role:ROLE[i],gk:i===0,n:q.n||'?',sn:q.sn||(q.n||'?').split(' ').slice(-1)[0],num:[1,2,4,5,3,8,6,10,7,9,11][i],r:cl(q.r||60,35,99),
       x:0,y:0,vx:0,vy:0,dir:t===0?-Math.PI/2:Math.PI/2,ph:0,cd:0,stun:0,slide:0,kick:0,dive:0,diveS:0,dc:0,mv:[0,0],
       skin:SKIN[h%SKIN.length],hair:HAIR[(h>>3)%HAIR.length],bald:(h>>6)%9===0})}));
   P.forEach(p=>{p.spd=(5.5+(p.r-60)*.045)*(p.gk?.92:1)});

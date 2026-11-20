@@ -3601,7 +3601,7 @@ function renderRules(){
   '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙 en plus</b>. Les pièces se gardent d\'un jour à l\'autre : vous pouvez les économiser (si vous ne venez pas pendant plusieurs jours, jusqu\'à 7 jours sont rattrapés).</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
-  '<li><b>⚽ Mon Club</b> : crée ton club (onglet Jeux ou carte de l\'accueil), ouvre des packs de joueurs, entraîne-les et affronte les clubs des autres joueurs dans des matchs animés que tu peux jouer toi-même (téléphone sur le côté, joystick + Passe / Lob / Tir / Tacle, +25 % de pièces). Victoire 3 pts, nul 1 pt ; en cas d\'égalité à 90\' en match joué ou regardé : tirs au but (gagnés 2 pts, perdus 1 pt) : 30 pts pour monter de division, jusqu\'à la Ligue des Légendes. 5 matchs d\'énergie, +1 toutes les 20 min. Un pack gratuit chaque jour.</li>'+
+  '<li><b>⚽ Mon Club</b> : crée ton club (onglet Jeux ou carte de l\'accueil), ouvre des packs de joueurs, entraîne-les et affronte les clubs des autres joueurs dans des matchs animés que tu peux jouer toi-même (téléphone sur le côté, joystick + Passe / Lob / Tir / Tacle, +25 % de pièces). Victoire 3 pts, nul 1 pt ; en cas d\'égalité à 90\' en match joué ou regardé : tirs au but (gagnés 2 pts, perdus 1 pt) : 30 pts pour monter de division, jusqu\'à la Ligue des Légendes. 5 matchs d\'énergie, +1 toutes les 20 min. Un pack gratuit chaque jour. Dans la <b>Boutique</b> du club : de l\'énergie et des joueurs à acheter avec tes pièces (plus le joueur est fort, plus il est cher).</li>'+
   '<li><b>🎰 La Grille du jour</b> : chaque matin, 5 à 7 gros matchs à pronostiquer gratuitement (1, N ou 2). Grille parfaite : la cagnotte est partagée entre les gagnants. Personne ? Elle grimpe de 250 000 💎 le lendemain. Une seule erreur : 150 000 💎 à partager (20 000 💎 maximum chacun). Modifiable jusqu\'au premier coup d\'envoi. Un match annulé compte comme juste pour tout le monde.</li>'+
   '<li><b>Cash out</b> : dans « Mes paris », le bouton 💸 <b>Encaisser</b> te permet d\'arrêter un pari en cours et de récupérer tout de suite un montant qui dépend des cotes du moment (avant le match, ou en direct quand les paris sont ouverts).</li>'+
   '<li><b>Combiné même match</b> 🧩 : ajoute plusieurs paris d\'un même match au coupon et choisis « Combiné ». La cote tient compte du lien entre les paris (par exemple une victoire et beaucoup de buts). Pas disponible en direct.</li>'+
@@ -4541,6 +4541,6 @@ else if(!lsGet('pc_welcome')){lsSet('pc_welcome','1');const par=lsGet('pc_parrai
 chatSoon();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){loadFixtures();refreshFromServer()}});
 </script>
-<script src="club.js?v=3"></script><script src="club-match.js?v=2"></script>
+<script src="club.js?v=4"></script><script src="club-match.js?v=3"></script>
 </body>
 </html>

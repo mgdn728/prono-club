@@ -22,7 +22,307 @@ const CRESTS=['🦁','🐺','🦅','🐉','⚡','🔥','👑','🦈','🐯','�
 const COLS=[['#e5126b','#111827'],['#1d4ed8','#ffffff'],['#16a34a','#facc15'],['#111827','#f59e0b'],['#7c3aed','#22d3ee'],['#dc2626','#ffffff'],['#0f766e','#f97316'],['#f8fafc','#1e3a8a']];
 const BOTN=['FC Lumière','Olympique Tonnerre','AS Comète','Racing Éclair','US Phénix','Sporting Mistral','Stade Aurore','Real Orage','AC Volcan','Dynamo Boréal','Inter Galaxie','Atlético Tempête','SC Horizon','FC Météore','Union Zénith','Athletic Cyclone'];
 const uid=()=>Date.now().toString(36)+R(1e6).toString(36);
-const mk=(k,p)=>{const r=RAR[k],[ln,f]=pick(NOMS);return{id:uid(),n:pick(PRE)+' '+ln,f,p,k,r:r.min+R(r.max-r.min+1),t:0}};
+const DB=`Kylian Mbappé|A|🇫🇷|92
+Erling Haaland|A|🇳🇴|91
+Lamine Yamal|A|🇪🇸|91
+Ousmane Dembélé|A|🇫🇷|90
+Harry Kane|A|🏴󠁧󠁢󠁥󠁮󠁧󠁿|90
+Mohamed Salah|A|🇪🇬|89
+Vinícius Júnior|A|🇧🇷|89
+Raphinha|A|🇧🇷|89
+Lionel Messi|A|🇦🇷|89
+Jude Bellingham|M|🏴󠁧󠁢󠁥󠁮󠁧󠁿|89
+Vitinha|M|🇵🇹|89
+Rodri|M|🇪🇸|89
+Pedri|M|🇪🇸|89
+Thibaut Courtois|G|🇧🇪|89
+Gianluigi Donnarumma|G|🇮🇹|89
+Virgil van Dijk|D|🇳🇱|89
+Achraf Hakimi|D|🇲🇦|89
+Alisson Becker|G|🇧🇷|88
+Jan Oblak|G|🇸🇮|87
+Mike Maignan|G|🇫🇷|87
+Emiliano Martínez|G|🇦🇷|86
+David Raya|G|🇪🇸|86
+Gregor Kobel|G|🇨🇭|86
+Marc-André ter Stegen|G|🇩🇪|85
+Diogo Costa|G|🇵🇹|85
+Ederson|G|🇧🇷|85
+Yann Sommer|G|🇨🇭|84
+Unai Simón|G|🇪🇸|84
+Joan García|G|🇪🇸|84
+Lucas Chevalier|G|🇫🇷|83
+Brice Samba|G|🇫🇷|82
+André Onana|G|🇨🇲|82
+Bart Verbruggen|G|🇳🇱|81
+William Saliba|D|🇫🇷|88
+Rúben Dias|D|🇵🇹|87
+Nuno Mendes|D|🇵🇹|87
+Alessandro Bastoni|D|🇮🇹|87
+Gabriel Magalhães|D|🇧🇷|87
+Antonio Rüdiger|D|🇩🇪|86
+Marquinhos|D|🇧🇷|86
+Jules Koundé|D|🇫🇷|86
+Trent Alexander-Arnold|D|🏴󠁧󠁢󠁥󠁮󠁧󠁿|86
+Joško Gvardiol|D|🇭🇷|86
+Theo Hernández|D|🇫🇷|85
+Federico Dimarco|D|🇮🇹|85
+Pau Cubarsí|D|🇪🇸|85
+Willian Pacho|D|🇪🇨|85
+Alejandro Grimaldo|D|🇪🇸|85
+Alphonso Davies|D|🇨🇦|84
+Dayot Upamecano|D|🇫🇷|84
+Ibrahima Konaté|D|🇫🇷|84
+Kim Min-jae|D|🇰🇷|84
+Jeremie Frimpong|D|🇳🇱|84
+Éder Militão|D|🇧🇷|84
+João Cancelo|D|🇵🇹|83
+Dean Huijsen|D|🇪🇸|83
+Micky van de Ven|D|🇳🇱|83
+Ronald Araújo|D|🇺🇾|83
+Kyle Walker|D|🏴󠁧󠁢󠁥󠁮󠁧󠁿|82
+Lucas Hernández|D|🇫🇷|82
+Benjamin Pavard|D|🇫🇷|82
+Federico Valverde|M|🇺🇾|88
+Declan Rice|M|🏴󠁧󠁢󠁥󠁮󠁧󠁿|88
+Jamal Musiala|M|🇩🇪|88
+Florian Wirtz|M|🇩🇪|88
+Joshua Kimmich|M|🇩🇪|87
+Bruno Fernandes|M|🇵🇹|87
+Alexis Mac Allister|M|🇦🇷|87
+João Neves|M|🇵🇹|87
+Cole Palmer|M|🏴󠁧󠁢󠁥󠁮󠁧󠁿|87
+Kevin De Bruyne|M|🇧🇪|86
+Martin Ødegaard|M|🇳🇴|86
+Nicolò Barella|M|🇮🇹|86
+Frenkie de Jong|M|🇳🇱|86
+Moisés Caicedo|M|🇪🇨|86
+Bernardo Silva|M|🇵🇹|86
+Aurélien Tchouaméni|M|🇫🇷|85
+Hakan Çalhanoğlu|M|🇹🇷|85
+Enzo Fernández|M|🇦🇷|85
+Fabián Ruiz|M|🇪🇸|85
+Martín Zubimendi|M|🇪🇸|85
+Ryan Gravenberch|M|🇳🇱|85
+Scott McTominay|M|🏴󠁧󠁢󠁳󠁣󠁴󠁿|85
+Luka Modrić|M|🇭🇷|84
+Dani Olmo|M|🇪🇸|84
+Rayan Cherki|M|🇫🇷|84
+Eduardo Camavinga|M|🇫🇷|83
+Warren Zaïre-Emery|M|🇫🇷|83
+Gavi|M|🇪🇸|83
+Adrien Rabiot|M|🇫🇷|83
+Manu Koné|M|🇫🇷|83
+N'Golo Kanté|M|🇫🇷|82
+Michael Olise|A|🇫🇷|88
+Bukayo Saka|A|🏴󠁧󠁢󠁥󠁮󠁧󠁿|88
+Lautaro Martínez|A|🇦🇷|88
+Khvicha Kvaratskhelia|A|🇬🇪|88
+Robert Lewandowski|A|🇵🇱|87
+Julián Álvarez|A|🇦🇷|87
+Alexander Isak|A|🇸🇪|87
+Désiré Doué|A|🇫🇷|86
+Victor Osimhen|A|🇳🇬|86
+Phil Foden|A|🏴󠁧󠁢󠁥󠁮󠁧󠁿|86
+Viktor Gyökeres|A|🇸🇪|86
+Luis Díaz|A|🇨🇴|86
+Antoine Griezmann|A|🇫🇷|85
+Rafael Leão|A|🇵🇹|85
+Marcus Thuram|A|🇫🇷|85
+Cristiano Ronaldo|A|🇵🇹|85
+Nico Williams|A|🇪🇸|85
+Rodrygo|A|🇧🇷|85
+Son Heung-min|A|🇰🇷|84
+Bradley Barcola|A|🇫🇷|84
+Leroy Sané|A|🇩🇪|84
+Hugo Ekitiké|A|🇫🇷|84
+Bryan Mbeumo|A|🇨🇲|84
+Kenan Yıldız|A|🇹🇷|84
+Ollie Watkins|A|🏴󠁧󠁢󠁥󠁮󠁧󠁿|83
+Mikel Oyarzabal|A|🇪🇸|83
+Jonathan David|A|🇨🇦|83
+Gabriel Martinelli|A|🇧🇷|83
+Dušan Vlahović|A|🇷🇸|83
+Kingsley Coman|A|🇫🇷|82
+Darwin Núñez|A|🇺🇾|82
+Christopher Nkunku|A|🇫🇷|82
+Mateo Retegui|A|🇮🇹|82
+Randal Kolo Muani|A|🇫🇷|81
+Marcin Bułka|G|🇵🇱|79
+Kepa Arrizabalaga|G|🇪🇸|79
+Alban Lafont|G|🇫🇷|78
+Anthony Lopes|G|🇵🇹|77
+Hugo Lloris|G|🇫🇷|77
+Keylor Navas|G|🇨🇷|77
+Guillaume Restes|G|🇫🇷|76
+Benjamin Lecomte|G|🇫🇷|75
+Yehvann Diouf|G|🇫🇷|75
+Steve Mandanda|G|🇫🇷|74
+Robin Risser|G|🇫🇷|74
+Malo Gusto|D|🇫🇷|79
+Ferland Mendy|D|🇫🇷|79
+Leny Yoro|D|🇫🇷|79
+Castello Lukeba|D|🇫🇷|79
+Jonathan Clauss|D|🇫🇷|78
+Bafodé Diakité|D|🇫🇷|78
+Kévin Danso|D|🇦🇹|78
+Wesley Fofana|D|🇫🇷|78
+Loïc Badé|D|🇫🇷|78
+Lucas Digne|D|🇫🇷|77
+Nicolás Tagliafico|D|🇦🇷|77
+Clément Lenglet|D|🇫🇷|77
+Lucas Beraldo|D|🇧🇷|77
+Moussa Niakhaté|D|🇸🇳|77
+Axel Disasi|D|🇫🇷|77
+Thilo Kehrer|D|🇩🇪|76
+Presnel Kimpembe|D|🇫🇷|75
+Lilian Brassier|D|🇫🇷|74
+Mamadou Sarr|D|🇫🇷|74
+Samuel Umtiti|D|🇫🇷|70
+Pierre-Emile Højbjerg|M|🇩🇰|79
+Mattéo Guendouzi|M|🇫🇷|79
+Youssouf Fofana|M|🇫🇷|79
+Boubacar Kamara|M|🇫🇷|79
+Khéphren Thuram|M|🇫🇷|79
+Teun Koopmeiners|M|🇳🇱|79
+Lucas Paquetá|M|🇧🇷|79
+Granit Xhaka|M|🇨🇭|79
+Thiago Almada|M|🇦🇷|78
+Corentin Tolisso|M|🇫🇷|77
+Ismaël Bennacer|M|🇩🇿|77
+Sofyan Amrabat|M|🇲🇦|77
+Lovro Majer|M|🇭🇷|76
+Azzedine Ounahi|M|🇲🇦|76
+Jordan Veretout|M|🇫🇷|75
+Téji Savanier|M|🇫🇷|74
+Morgan Sanson|M|🇫🇷|72
+Dimitri Payet|M|🇫🇷|72
+Amine Gouiri|A|🇩🇿|79
+Georges Mikautadze|A|🇬🇪|78
+Florian Thauvin|A|🇫🇷|77
+Folarin Balogun|A|🇺🇸|77
+Arnaud Kalimuendo|A|🇫🇷|77
+Alexandre Lacazette|A|🇫🇷|76
+Eli Junior Kroupi|A|🇫🇷|76
+Esteban Lepaul|A|🇫🇷|75
+Moussa Dembélé|A|🇫🇷|75
+Olivier Giroud|A|🇫🇷|75
+Ansu Fati|A|🇪🇸|75
+Wissam Ben Yedder|A|🇫🇷|74
+Elye Wahi|A|🇫🇷|74
+Gaëtan Laborde|A|🇫🇷|74
+Ludovic Blas|A|🇫🇷|74
+Ludovic Ajorque|A|🇫🇷|73
+Romain Faivre|A|🇫🇷|72
+Rémy Cabella|A|🇫🇷|72
+Bamba Dieng|A|🇸🇳|72
+Mohamed Bayo|A|🇬🇳|71
+Andy Delort|A|🇫🇷|70
+Mbaye Niang|A|🇸🇳|70
+Paul Bernardoni|G|🇫🇷|67
+Yahia Fofana|G|🇫🇷|67
+Arthur Desmas|G|🇫🇷|66
+Gautier Larsonneur|G|🇫🇷|66
+Donovan Léon|G|🇬🇫|65
+Mathieu Gorgelin|G|🇫🇷|64
+Anthony Mandrea|G|🇩🇿|64
+Duje Ćaleta-Car|D|🇭🇷|69
+Abdou Diallo|D|🇸🇳|68
+Léo Dubois|D|🇫🇷|68
+Ruben Aguilar|D|🇫🇷|67
+Fodé Ballo-Touré|D|🇸🇳|66
+Bradley Locko|D|🇫🇷|66
+Jean-Charles Castelletto|D|🇨🇲|66
+Gideon Mensah|D|🇬🇭|66
+Christopher Jullien|D|🇫🇷|64
+Faitout Maouassa|D|🇫🇷|64
+Massadio Haïdara|D|🇲🇱|64
+Kévin Malcuit|D|🇫🇷|63
+Jordan Amavi|D|🇫🇷|63
+Andy Pelmard|D|🇫🇷|63
+Jérémy Morel|D|🇫🇷|60
+Mapou Yanga-Mbiwa|D|🇫🇷|60
+Valentin Rongier|M|🇫🇷|69
+Maxence Caqueret|M|🇫🇷|69
+Seko Fofana|M|🇨🇮|69
+Pierre Lees-Melou|M|🇫🇷|68
+Lucas Tousart|M|🇫🇷|68
+Andy Diouf|M|🇫🇷|68
+Benjamin André|M|🇫🇷|67
+Mahdi Camara|M|🇫🇷|67
+Joris Chotard|M|🇫🇷|66
+Jordan Ferri|M|🇫🇷|65
+Jean-Eudes Aholou|M|🇨🇮|64
+Yann Gboho|M|🇨🇮|64
+Ibrahima Sissoko|M|🇫🇷|63
+Moses Simon|A|🇳🇬|69
+Mostafa Mohamed|A|🇪🇬|68
+Habib Diallo|A|🇸🇳|67
+Thijs Dallinga|A|🇳🇱|67
+Frank Magri|A|🇨🇲|66
+Josh Maja|A|🇳🇬|66
+Steve Mounié|A|🇧🇯|65
+Florian Sotoca|A|🇫🇷|64
+Mama Baldé|A|🇬🇼|64
+Ibrahima Niane|A|🇸🇳|63
+Gaël Kakuta|A|🇨🇩|63
+Ignatius Ganago|A|🇨🇲|63
+Valère Germain|A|🇫🇷|62
+Grégory Coupet|G|🇫🇷|58
+Benoît Costil|G|🇫🇷|58
+Mickaël Landreau|G|🇫🇷|57
+Cédric Carrasso|G|🇫🇷|56
+Rudy Riou|G|🇫🇷|55
+Rémy Vercoutre|G|🇫🇷|54
+Patrice Evra|D|🇫🇷|59
+Laurent Koscielny|D|🇫🇷|59
+Jérémy Mathieu|D|🇫🇷|58
+Bacary Sagna|D|🇫🇷|58
+Gaël Clichy|D|🇫🇷|57
+Adil Rami|D|🇫🇷|57
+Christophe Jallet|D|🇫🇷|56
+Sébastien Squillaci|D|🇫🇷|55
+Rod Fanni|D|🇫🇷|54
+Benoît Trémoulinas|D|🇫🇷|54
+Jérémy Pied|D|🇫🇷|53
+Yohan Benalouane|D|🇹🇳|52
+Yoann Gourcuff|M|🇫🇷|59
+Mathieu Valbuena|M|🇫🇷|58
+Lassana Diarra|M|🇫🇷|58
+Étienne Capoue|M|🇫🇷|57
+Jérémy Toulalan|M|🇫🇷|57
+Rio Mavuba|M|🇫🇷|56
+Maxime Gonalons|M|🇫🇷|56
+Clément Grenier|M|🇫🇷|55
+Romain Alessandrini|M|🇫🇷|54
+Florent Balmont|M|🇫🇷|53
+Benoît Cheyrou|M|🇫🇷|52
+Younousse Sankharé|M|🇸🇳|52
+Morgan Amalfitano|M|🇫🇷|51
+Bafétimbi Gomis|A|🇫🇷|59
+André-Pierre Gignac|A|🇫🇷|59
+Djibril Cissé|A|🇫🇷|58
+Mamadou Niang|A|🇸🇳|57
+Kevin Gameiro|A|🇫🇷|57
+Loïc Rémy|A|🇫🇷|56
+Guillaume Hoarau|A|🇫🇷|56
+Jimmy Briand|A|🇫🇷|55
+Mevlüt Erdinç|A|🇹🇷|54
+Nolan Roux|A|🇫🇷|52
+Claudio Beauvue|A|🇫🇷|51
+Yoann Touzghar|A|🇫🇷|50`.split("\n").map(l=>{const a=l.split("|");return{n:a[0],p:a[1],f:a[2],b:+a[3]}});
+const band=r=>r>=89?'i':r>=80?'l':r>=70?'o':r>=60?'a':'b';
+function price(r){const v=50e6*Math.exp((r-92)*.3);if(r>=92)return 50000000;return Math.max(1000,v>=1e6?Math.round(v/1e5)*1e5:v>=1e4?Math.round(v/1e3)*1e3:Math.round(v/100)*100)}
+const SHORT={'Vinícius Júnior':'Vinícius','Kim Min-jae':'Kim','Son Heung-min':'Son','Alisson Becker':'Alisson','Gabriel Magalhães':'Gabriel','Randal Kolo Muani':'Kolo Muani','Eli Junior Kroupi':'Kroupi'};
+function shortN(n){n=String(n||'');if(SHORT[n])return SHORT[n];const w=n.split(' ');if(w.length>3&&w[w.length-3]==='van')return w.slice(-3).join(' ');if(w.length>2&&/^(van|de|ter|De|da|di|le|La)$/.test(w[w.length-2]))return w.slice(w.length-2).join(' ');return w[w.length-1]}
+function owned(){return new Set(C()?C().sq.map(x=>x.n):[])}
+function realPick(k,p,ex,strict){const ok=x=>band(x.b)===k;let L=DB.filter(x=>ok(x)&&x.p===p&&!ex.has(x.n));
+  if(!L.length&&strict)L=DB.filter(x=>ok(x)&&x.p===p);if(!L.length)L=DB.filter(x=>ok(x)&&!ex.has(x.n));if(!L.length)L=DB.filter(ok);const x=pick(L);ex.add(x.n);return x}
+const mk=(k,p,ex)=>{const x=realPick(k,p,ex||owned());return{id:uid(),n:x.n,f:x.f,p:x.p,k:band(x.b),r:x.b,t:0,real:1}};
+function migrate(){const c=C();if(!c||c.mig2)return;const used=new Set(c.sq.filter(p=>p.real).map(p=>p.n));
+  for(const p of c.sq){if(p.real)continue;const x=realPick(p.k,p.p,used,true);p.n=x.n;p.f=x.f;p.r=Math.min(RAR[p.k].cap,Math.max(RAR[p.k].min,x.b)+(p.t||0));p.real=1}
+  c.mig2=1;csave()}
+function botNames(note){const used=new Set();return['A','A','A','M','M','M','D','D','D','D','G'].map(p=>{let L=DB.filter(x=>x.p===p&&Math.abs(x.b-note)<=6&&!used.has(x.n));if(!L.length)L=DB.filter(x=>x.p===p&&!used.has(x.n));const x=pick(L);used.add(x.n);return x.n})}
 const C=()=>state.club;
 const today=()=>new Date(Date.now()+60e3*(-new Date().getTimezoneOffset())).toISOString().slice(0,10);
 function rollK(odds){let x=Math.random()*100;for(const k of Object.keys(odds)){x-=odds[k];if(x<0)return k}return Object.keys(odds)[0]}
@@ -42,12 +342,12 @@ function pub(){const c=C(),n=notes(),L=lineup();
   c.pub={n:c.n,e:c.e,c1:c.c1,c2:c.c2,note:n.note,att:n.att,mid:n.mid,def:n.def,gk:n.gk,div:c.div,pts:c.pts,tr:c.tr||0,w:c.w||0,
     noms:L.filter(x=>x.pos==='A'&&x.pl).map(x=>x.pl.n).concat(L.filter(x=>x.pos==='M'&&x.pl).map(x=>x.pl.n)).slice(0,6)}}
 function csave(){pub();save()}
-function energy(){const c=C(),now=Date.now();if(c.en>=5){c.enT=now;return 5}
+function energy(){const c=C(),now=Date.now();if(c.en>=5){c.enT=now;return c.en}
   const gain=Math.floor((now-(c.enT||now))/(20*60e3));if(gain>0){c.en=Math.min(5,c.en+gain);c.enT=c.en>=5?now:(c.enT+gain*20*60e3)}return c.en}
 function nextEn(){const c=C();return c.en>=5?0:Math.max(0,20*60e3-(Date.now()-c.enT))}
 function income(){const c=C(),h=Math.min(8,(Date.now()-(c.inT||Date.now()))/3600e3);return Math.floor(h*800*c.st)}
 function create(name,e,ci){
-  const sq=[];SLOTS.forEach(p=>sq.push(mk('b',p)));['D','M','A','G'].forEach(p=>sq.push(mk('b',p)));
+  const sq=[],ex=new Set();SLOTS.forEach(p=>sq.push(mk('b',p,ex)));['D','M','A','G'].forEach(p=>sq.push(mk('b',p,ex)));
   sq.forEach(x=>{x.r=Math.max(46,Math.min(56,x.r))});
   state.club={v:1,n:name,e,c1:COLS[ci][0],c2:COLS[ci][1],sq,xi:[],div:10,pts:0,w:0,d:0,l:0,tr:0,en:5,enT:Date.now(),st:1,inT:Date.now(),free:null,hist:[]};
   autoXI();csave()}
@@ -58,7 +358,7 @@ function head(){const c=C(),n=notes();const pct=Math.min(100,c.pts/30*100);
     '<div class="cl-bar"><i style="width:'+pct+'%"></i></div><small>'+c.pts+' / 30 pts '+(c.div>1?'pour monter en '+DIVN[c.div-1]:'pour soulever le trophée')+'</small></div><div class="cl-note"><b>'+n.note+'</b><small>NOTE</small></div></div>'}
 const SK=['#f1c9a5','#e0ac80','#c68955','#a0693e','#7a4a28','#5a3519'],HR=['#1f1a17','#3b2416','#6b4423','#a0703a','#d8b25a','#111'];
 function hsh(s){let h=7;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)}
-function avatar(p){const c=C()||{c1:'#16a34a',c2:'#ffffff'},h=hsh(p.id+p.n),sk=SK[h%6],hr=HR[(h>>3)%6],st=(h>>6)%5,gk=p.p==='G',j=gk?'#facc15':c.c1,j2=gk?'#111827':c.c2;
+function avatar(p){const c=C()||{c1:'#16a34a',c2:'#ffffff'},h=hsh(p.real?p.n:p.id+p.n),sk=SK[h%6],hr=HR[(h>>3)%6],st=(h>>6)%5,gk=p.p==='G',j=gk?'#facc15':c.c1,j2=gk?'#111827':c.c2;
   const hair=[ '<path d="M18.5 23 C18 9 42 9 41.5 23 C39 15.5 21 15.5 18.5 23Z" fill="'+hr+'"/>',
     '<ellipse cx="30" cy="15" rx="14" ry="9.5" fill="'+hr+'"/>','',
     '<path d="M17.5 29 C14 7 46 7 42.5 29 L41 19 C36 14 24 14 19 19Z" fill="'+hr+'"/>',
@@ -68,13 +368,13 @@ function avatar(p){const c=C()||{c1:'#16a34a',c2:'#ffffff'},h=hsh(p.id+p.n),sk=S
     '<rect x="25" y="31" width="10" height="9" rx="3" fill="'+sk+'"/><ellipse cx="18.5" cy="25" rx="2" ry="3" fill="'+sk+'"/><ellipse cx="41.5" cy="25" rx="2" ry="3" fill="'+sk+'"/><ellipse cx="30" cy="24" rx="11" ry="12.5" fill="'+sk+'"/>'+hair+beard+
     '<circle cx="26" cy="24.5" r="1.4" fill="#1f2937"/><circle cx="34" cy="24.5" r="1.4" fill="#1f2937"/><path d="M24 21 L28 20.6 M32 20.6 L36 21" stroke="'+hr+'" stroke-width="1.1" stroke-linecap="round"/><path d="M26.8 30.5 Q30 32.6 33.2 30.5" stroke="#7c2d12" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>'}
 function card(p,opts){opts=opts||{};const r=RAR[p.k];
-  return '<div class="cl-card k-'+p.k+(opts.sm?' sm':'')+'"'+(opts.attr||'')+'><div class="cc-top"><b>'+p.r+'</b><span>'+p.p+'</span><i>'+p.f+'</i></div><div class="cc-face">'+avatar(p)+'</div><div class="cc-n">'+esc(p.n.split(' ').slice(-1)[0])+'</div><div class="cc-k">'+r.n+'</div></div>'}
+  return '<div class="cl-card k-'+p.k+(opts.sm?' sm':'')+'"'+(opts.attr||'')+'><div class="cc-top"><b>'+p.r+'</b><span>'+p.p+'</span><i>'+p.f+'</i></div><div class="cc-face">'+avatar(p)+'</div><div class="cc-n">'+esc(shortN(p.n))+'</div><div class="cc-k">'+r.n+'</div></div>'}
 function renderClub(){
   if(!session)return '<div class="cl-wrap"><div class="cl-intro"><div class="cl-big">⚽</div><h2>Mon Club</h2><p>Crée ton propre club, ouvre des packs de joueurs, entraîne ton équipe et affronte les clubs des autres joueurs pour monter jusqu\'à la Ligue des Légendes.</p><button class="cl-go" data-auth="signup">Créer mon compte pour jouer</button></div></div>';
   if(!C())return renderCreate();
-  energy();const v=ui.cv||'home';
-  const tabs='<div class="cl-tabs">'+[['home','🏟️','Club'],['team','👕','Équipe'],['packs','🎁','Packs'],['board','🏆','Classement']].map(t=>'<button class="'+(v===t[0]?'on':'')+'" data-cv="'+t[0]+'">'+t[1]+'<span>'+t[2]+'</span>'+(t[0]==='packs'&&C().free!==today()?'<em></em>':'')+'</button>').join('')+'</div>';
-  return '<div class="cl-wrap">'+head()+tabs+(v==='team'?vTeam():v==='packs'?vPacks():v==='board'?vBoard():vHome())+'</div>'}
+  migrate();energy();const v=ui.cv||'home';
+  const tabs='<div class="cl-tabs">'+[['home','🏟️','Club'],['team','👕','Équipe'],['packs','🎁','Packs'],['shop','🛒','Boutique'],['board','🏆','Classement']].map(t=>'<button class="'+(v===t[0]?'on':'')+'" data-cv="'+t[0]+'">'+t[1]+'<span>'+t[2]+'</span>'+(t[0]==='packs'&&C().free!==today()?'<em></em>':'')+'</button>').join('')+'</div>';
+  return '<div class="cl-wrap">'+head()+tabs+(v==='team'?vTeam():v==='packs'?vPacks():v==='shop'?vShop():v==='board'?vBoard():vHome())+'</div>'}
 function renderCreate(){const ci=ui.clCol||0,e=ui.clE||'🦁';
   return '<div class="cl-wrap"><div class="cl-intro"><div class="cl-big">⚽</div><h2>Crée ton club</h2><p>Tu commences en Division 10 avec 15 jeunes joueurs. À toi de les entraîner, d\'ouvrir des packs et de battre les autres clubs pour grimper jusqu\'à la <b>Ligue des Légendes</b>.</p>'+
     '<input id="clName" maxlength="22" placeholder="Nom du club (ex. FC Épône)" value="'+esc(ui.clNm||'')+'">'+
@@ -83,8 +383,8 @@ function renderCreate(){const ci=ui.clCol||0,e=ui.clE||'🦁';
     '<button class="cl-go" data-clcreate="1">🚀 Fonder mon club</button></div></div>'}
 function vHome(){const c=C(),en=energy(),inc=income(),up=25000*c.st*c.st,ne=nextEn();
   const last=(c.hist||[]).slice(-5).reverse();
-  return '<button class="cl-play" data-clplay="1"'+(en<1?' disabled':'')+'><b>▶ JOUER UN MATCH</b><span>'+(en>0?'⚡ '+en+'/5 énergie':'⚡ Prochaine énergie dans '+Math.ceil(ne/60e3)+' min')+'</span></button>'+
-    (en<5?'<p class="cl-en">⚡ +1 énergie toutes les 20 min'+(en<1?' · <button class="cl-link" data-clrefill="1">Recharger (2 000 💎)</button>':'')+'</p>':'')+
+  return '<button class="cl-play" data-clplay="1"><b>▶ JOUER UN MATCH</b><span>'+(en>0?'⚡ '+en+(en>5?'':'/5')+' énergie':'⚡ Prochaine énergie dans '+Math.ceil(ne/60e3)+' min')+'</span></button>'+
+    (en<5?'<p class="cl-en">⚡ +1 énergie toutes les 20 min'+' · <button class="cl-link" data-cv="shop">🛒 Acheter de l\'énergie</button>'+'</p>':'')+
     '<div class="cl-grid"><div class="cl-tile"><i>🏟️</i><b>Stade niv. '+c.st+'</b><span>'+nf(800*c.st)+' 🪙 / heure (8 h max)</span><button class="cl-sbtn" data-clcollect="1"'+(inc<1?' disabled':'')+'>Récupérer '+nf(inc)+' 🪙</button>'+(c.st<10?'<button class="cl-sbtn alt" data-clstade="1">Agrandir · '+nf(up)+' 🪙</button>':'<small>Niveau maximum</small>')+'</div>'+
     '<div class="cl-tile"><i>📊</i><b>Saison</b><span>'+(c.w||0)+' V · '+(c.d||0)+' N · '+(c.l||0)+' D</span>'+(last.length?'<div class="cl-form">'+last.map(h=>'<i class="fm fm-'+h.r+'">'+h.r+'</i>').join('')+'</div>':'<small>Joue ton premier match !</small>')+'</div></div>'+
     '<div class="cl-help"><b>Comment progresser ?</b><ul><li>🏆 Victoire = 3 pts, nul = 1 pt. <b>30 pts</b> pour monter de division.</li><li>🎁 Un <b>pack gratuit</b> chaque jour, et des packs à acheter avec tes pièces ou tes diamants.</li><li>💪 Entraîne tes joueurs dans <b>Équipe</b> pour augmenter leur note.</li><li>🏟️ Ton stade te rapporte des pièces même quand tu ne joues pas.</li></ul></div>'}
@@ -102,6 +402,26 @@ function vPacks(){const c=C();
     return '<div class="cl-pack pk-'+p.id+'"><div class="pk-ic">'+p.ic+'</div><b>'+p.n+'</b><span>'+p.desc+'</span><small>'+Object.entries(p.odds).map(([k,v])=>RAR[k].n+' '+String(v).replace('.',',')+' %').join(' · ')+'</small>'+
       '<button class="cl-sbtn" data-clpack="'+p.id+'"'+(ok?'':' disabled')+'>'+(free?(ok?'Ouvrir gratuitement':'Revient demain'):'Ouvrir · '+nf(p.cost)+' '+(p.cur==='c'?'🪙':'💎'))+'</button></div>'}).join('')+'</div>'+
     '<p class="cl-hint">Effectif limité à 40 joueurs : vends les joueurs en trop dans <b>Équipe</b>.</p>'}
+const ENP=[{q:1,c:2500},{q:3,c:6000},{q:5,c:9000},{q:10,d:3500}];
+function vShop(){const en=energy();
+  return '<div class="cl-shead"><b>⚡ Énergie</b><span>Tu as <b>'+en+' ⚡</b> · maximum 20</span></div><div class="cl-shopen">'+ENP.map((x,i)=>'<button class="cl-eb" data-clbuyen="'+i+'"><b>+'+x.q+' ⚡</b><span>'+(x.c?nf(x.c)+' 🪙':nf(x.d)+' 💎')+'</span></button>').join('')+'</div>'+
+    '<div class="cl-shead"><b>🧑 Joueurs</b><span>Achète n\'importe quel joueur, à n\'importe quel poste</span></div>'+
+    '<input id="clQ" class="cl-q" placeholder="🔎 Chercher un joueur (ex : Mbappé)" value="'+esc(ui.clQ||'')+'" autocomplete="off">'+
+    '<div class="cl-chips">'+[['all','Tous'],['G','Gardiens'],['D','Défenseurs'],['M','Milieux'],['A','Attaquants']].map(x=>'<button class="'+((ui.clPos||'all')===x[0]?'on':'')+'" data-clpos="'+x[0]+'">'+x[1]+'</button>').join('')+'</div>'+
+    '<div id="clShopL">'+shopList()+'</div>'}
+function shopList(){const q=(ui.clQ||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''),pos=ui.clPos||'all',own=owned(),lim=ui.clLim||30;
+  const L=DB.map((x,i)=>({x,i})).filter(o=>(pos==='all'||o.x.p===pos)&&(!q||o.x.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q))).sort((a,b)=>b.x.b-a.x.b);
+  if(!L.length)return '<p class="cl-hint">Aucun joueur trouvé.</p>';
+  return '<div class="cl-slist">'+L.slice(0,lim).map(({x,i})=>{const k=band(x.b),pr=price(x.b),has=own.has(x.n),ok=state.coins>=pr;
+    return '<div class="cl-sp">'+card({id:'db',n:x.n,f:x.f,p:x.p,k,r:x.b,real:1},{sm:1})+'<div class="cl-spi"><b>'+esc(x.n)+'</b><small>'+x.f+' '+POSN[x.p]+' · '+RAR[k].n+' · note '+x.b+'</small>'+
+      '<button class="cl-sbtn'+(has?' alt':'')+'" data-clbuy="'+i+'"'+(has?' disabled':'')+'>'+(has?'✓ Dans ton effectif':'🪙 '+nf(pr))+'</button>'+(!has&&!ok?'<em>Il te manque '+nf(pr-state.coins)+' 🪙</em>':'')+'</div></div>'}).join('')+'</div>'+
+    (L.length>lim?'<button class="cl-sbtn alt cl-more" data-clmore="1">Voir plus de joueurs ('+(L.length-lim)+')</button>':'')}
+function buyP(i){const c=C(),x=DB[i];if(!x)return;const pr=price(x.b),k=band(x.b);
+  if(owned().has(x.n)){toast('Déjà dans ton effectif');return}if(c.sq.length>=40){toast('Effectif plein (40) : vends des joueurs dans Équipe');return}
+  if(state.coins<pr){toast('Pas assez de pièces : il te manque '+nf(pr-state.coins)+' 🪙');return}
+  state.coins-=pr;const p={id:uid(),n:x.n,f:x.f,p:x.p,k,r:x.b,t:0,real:1};c.sq.push(p);csave();renderHeader();closePop();
+  celebrate(k==='i'?'🌟':k==='l'?'💜':'✍️',esc(x.n)+' signe au '+esc(c.n)+' !','Note <b>'+x.b+'</b> · '+POSN[x.p]+'. Fais-le entrer dans ton équipe depuis l\'onglet <b>Équipe</b>.');if(k==='i'||k==='l')winFx(k==='i'?'fx-fireworks':'fx-gold');renderView()}
+document.addEventListener('input',e=>{if(e.target.id==='clQ'){ui.clQ=e.target.value;ui.clLim=30;const L=document.getElementById('clShopL');if(L)L.innerHTML=shopList()}});
 function vBoard(){
   if(!ui.clBoard){loadBoard();return '<p class="cl-hint">Chargement du classement…</p>'}
   if(ui.clBoard==='off')return '<p class="cl-hint">Le classement des clubs n\'est pas encore activé.</p>';
@@ -114,7 +434,7 @@ function openPack(id){const c=C(),p=PACKS.find(x=>x.id===id);if(!p)return;
   if(p.cur==='free'){if(c.free===today())return;c.free=today()}
   else if(p.cur==='c'){if(state.coins<p.cost)return;state.coins-=p.cost}
   else{if(state.diamonds<p.cost)return;state.diamonds-=p.cost;state.spent=(state.spent||0)+p.cost}
-  const got=[];for(let i=0;i<p.nb;i++){let k=rollK(p.odds);if(p.id==='legende'&&i===0&&k!=='i')k='l';got.push(mk(k,rollPos()))}
+  const got=[],ex=owned();for(let i=0;i<p.nb;i++){let k=rollK(p.odds);if(p.id==='legende'&&i===0&&k!=='i')k='l';got.push(mk(k,rollPos(),ex))}
   got.sort((a,b)=>'bao li'.indexOf(a.k)-'bao li'.indexOf(b.k));
   c.sq.push(...got);const over=c.sq.length-40;
   if(over>0){const L=c.sq.filter(x=>!c.xi.includes(x.id)&&!got.includes(x)).sort((a,b)=>a.r-b.r).slice(0,over);let v=0;for(const x of L){v+=RAR[x.k].sell;c.sq.splice(c.sq.indexOf(x),1)}state.coins+=v;if(v)toast('Effectif plein : '+L.length+' joueur(s) vendu(s) automatiquement (+'+nf(v)+' 🪙)')}
@@ -131,8 +451,8 @@ function packShow(got,p){const ov=document.createElement('div');ov.className='cl
 
 /* ---------- adversaires ---------- */
 function bot(note,used){const n=Math.max(45,Math.min(95,note+R(9)-4)),v=()=>Math.max(40,Math.min(99,n+R(7)-3)),ci=R(COLS.length);let nm=pick(BOTN),k=0;while(used&&used.has(nm)&&k++<20)nm=pick(BOTN);used&&used.add(nm);
-  return{bot:1,pseudo:'IA',n:nm,e:pick(CRESTS),c1:COLS[ci][0],c2:COLS[ci][1],note:n,att:v(),mid:v(),def:v(),gk:v(),div:C().div,noms:[0,1,2,3,4,5].map(()=>pick(PRE).slice(0,1)+'. '+pick(NOMS)[0])}}
-async function choose(){const c=C();if(energy()<1){toast('Plus d\'énergie : reviens dans quelques minutes ⚡');return}
+  return{bot:1,pseudo:'IA',n:nm,e:pick(CRESTS),c1:COLS[ci][0],c2:COLS[ci][1],note:n,att:v(),mid:v(),def:v(),gk:v(),div:C().div,noms:botNames(n)}}
+async function choose(){const c=C();if(energy()<1){popup('<div class="pop-ic big">⚡</div><h3>Plus d\'énergie</h3><p>Tu récupères <b>+1 ⚡ toutes les 20 min</b>. Tu peux aussi en acheter tout de suite dans la boutique du club.</p><div class="pop-btns"><button class="pbtn" data-cv="shop">🛒 Acheter de l\'énergie</button><button class="pbtn ghost2" data-popclose="1">Plus tard</button></div>');return}
   const me=notes().note;let L=[];
   try{L=(await rpc('club_adversaires',{p_token:session.token,p_note:me}))||[]}catch(e){}
   L=L.filter(x=>x&&x.n&&x.note).slice(0,3);const used=new Set(L.map(x=>x.n));while(L.length<3)L.push(bot(me,used));
@@ -162,11 +482,11 @@ function play(i){const o=ui.clOpp&&ui.clOpp[i];if(!o)return;ui.clOi=i;closePop()
 function cdist(a,b){const f=h=>{h=String(h||'#000').replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');const n=parseInt(h,16)||0;return[n>>16,n>>8&255,n&255]};const x=f(a),y=f(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2])}
 function go(mode){const o=ui.clOpp&&ui.clOpp[ui.clOi];if(!o)return;closePop();const c=C();energy();if(c.en<1){toast('Plus d\'énergie : reviens dans quelques minutes ⚡');return}c.en--;if(c.en===4)c.enT=Date.now();csave();
   if(mode==='fast'||!window.ClMatch){quick(o);return}
-  const home={n:c.n,e:c.e,c1:c.c1,c2:c.c2,pl:lineup().map(x=>({n:x.pl?x.pl.n:'Remplaçant',r:x.pl?eff(c,x.pl,x.i)+2:40}))};
+  const home={n:c.n,e:c.e,c1:c.c1,c2:c.c2,pl:lineup().map(x=>({n:x.pl?x.pl.n:'Remplaçant',sn:x.pl?shortN(x.pl.n):'?',r:x.pl?eff(c,x.pl,x.i)+2:40}))};
   let a1=o.c1,a2=o.c2;if(cdist(a1,c.c1)<110){if(cdist(a2,c.c1)>=110){a1=o.c2;a2=o.c1}else{a1=cdist('#f8fafc',c.c1)>150?'#f8fafc':'#111827';a2=c.c1}}
   const nm=(o.noms||[]).slice(),RL=['gk','def','def','def','def','mid','mid','mid','att','att','att'],ord=[9,8,10,6,5,7,1,2,3,4,0];const names=new Array(11);
-  ord.forEach((k,j)=>{names[k]=nm[j]||(pick(PRE)+' '+pick(NOMS)[0])});
-  const away={n:o.n,e:o.e,c1:a1,c2:a2,pl:RL.map((k,j)=>({n:names[j],r:Math.max(40,Math.min(99,(o[k]||o.note||60)+R(5)-2))}))};
+  const fb=botNames(o.note||60).filter(x=>!nm.includes(x));ord.forEach((k,j)=>{names[k]=nm[j]||fb[j]||'Joueur'});
+  const away={n:o.n,e:o.e,c1:a1,c2:a2,pl:RL.map((k,j)=>({n:names[j],sn:shortN(names[j]),r:Math.max(40,Math.min(99,(o[k]||o.note||60)+R(5)-2))}))};
   window.ClMatch.start({mode,home,away,onEnd:(ov,res)=>finish(ov,o,{sh:res.sh,sa:res.sa},mode==='live'&&!res.abandon?1.25:1,res)})}
 function quick(o){const c=C();
   const n=notes(),H={att:n.att+2,mid:n.mid+2,def:n.def+2,gk:n.gk+2},S=simulate(H,o,Date.now()%1e9);csave();
@@ -210,10 +530,12 @@ function finish(ov,o,S,mult,info){const c=C(),pen=info&&info.pens&&S.sh===S.sa?i
 
 /* ---------- actions ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-cv],[data-cle],[data-clc],[data-clcreate],[data-clplay],[data-clopp],[data-clslot],[data-clsub],[data-clauto],[data-cltrain],[data-clsell],[data-clpack],[data-clcollect],[data-clstade],[data-clrefill],[data-clopen],[data-clmode]');if(!t)return;
+  const t=e.target.closest('[data-cv],[data-cle],[data-clc],[data-clcreate],[data-clplay],[data-clopp],[data-clslot],[data-clsub],[data-clauto],[data-cltrain],[data-clsell],[data-clpack],[data-clcollect],[data-clstade],[data-clrefill],[data-clopen],[data-clmode],[data-clbuy],[data-clbuyen],[data-clbuyok],[data-clpos],[data-clmore]');if(!t)return;
   const d=t.dataset,c=C();
   if(d.clopen){ui.tab='club';ui.cv='home';closePop();renderHeader();renderView();window.scrollTo(0,0);return}
-  if(d.cv){ui.cv=d.cv;ui.clSel=null;if(d.cv==='board')ui.clBoard=null;renderView();return}
+  if(d.cv){const inPop=!!t.closest('#popModal');if(inPop)closePop();ui.tab='club';ui.cv=d.cv;ui.clSel=null;if(d.cv==='board')ui.clBoard=null;renderView();if(inPop)window.scrollTo(0,0);return}
+  if(d.clpos){ui.clPos=d.clpos;ui.clLim=30;renderView();return}
+  if(d.clmore){ui.clLim=(ui.clLim||30)+30;const L=document.getElementById('clShopL');if(L)L.innerHTML=shopList();return}
   if(d.cle){ui.clNm=($('#clName')||{}).value||'';ui.clE=d.cle;renderView();return}
   if(d.clc){ui.clNm=($('#clName')||{}).value||'';ui.clCol=+d.clc;renderView();return}
   if(d.clcreate){const n=(($('#clName')||{}).value||'').trim().replace(/\s+/g,' ');if(n.length<3){toast('Donne un nom à ton club (3 lettres minimum)');return}
@@ -221,6 +543,13 @@ document.addEventListener('click',e=>{
   if(!c)return;
   if(d.clplay){choose();return}
   if(d.clmode){go(d.clmode);return}
+  if(d.clbuyen!=null&&t.matches('[data-clbuyen]')){const x=ENP[+d.clbuyen];if(!x)return;const en=energy();if(en>=20){toast('Énergie au maximum (20)');return}
+    if(x.c){if(state.coins<x.c){toast('Pas assez de pièces');return}state.coins-=x.c}else{if(state.diamonds<x.d){toast('Pas assez de diamants');return}state.diamonds-=x.d;state.spent=(state.spent||0)+x.d}
+    c.en=Math.min(20,en+x.q);if(c.en>=5)c.enT=Date.now();csave();renderHeader();toast('⚡ +'+x.q+' énergie ('+c.en+' ⚡)');renderView();return}
+  if(d.clbuy!=null&&t.matches('[data-clbuy]')){const x=DB[+d.clbuy];if(!x)return;const pr=price(x.b);
+    if(pr>=1e6&&state.coins>=pr&&!owned().has(x.n)){popup('<div class="pop-ic big">✍️</div><h3>Recruter '+esc(x.n)+' ?</h3><p>Note <b>'+x.b+'</b> · '+POSN[x.p]+'<br>Prix : <b>'+nf(pr)+' 🪙</b></p><div class="pop-btns"><button class="pbtn" data-clbuyok="'+d.clbuy+'">Confirmer l\'achat</button><button class="pbtn ghost2" data-popclose="1">Annuler</button></div>');return}
+    buyP(+d.clbuy);return}
+  if(d.clbuyok!=null&&t.matches('[data-clbuyok]')){buyP(+d.clbuyok);return}
   if(d.clopp!=null&&d.clopp!==undefined&&t.matches('[data-clopp]')){play(+d.clopp);return}
   if(d.clslot){const i=+d.clslot;ui.clSel=ui.clSel===i?null:i;renderView();return}
   if(d.clsub&&ui.clSel!=null){const i=ui.clSel,id=d.clsub;const j=c.xi.indexOf(id);if(j>=0)c.xi[j]=c.xi[i];c.xi[i]=id;ui.clSel=null;csave();renderView();return}
@@ -264,9 +593,17 @@ window.clubBanner=function(){if(!session)return '';const c=C();
 .cl-bar{height:8px;border-radius:8px;background:rgba(255,255,255,.25);margin:6px 0 3px;overflow:hidden}.cl-bar i{display:block;height:100%;background:linear-gradient(90deg,#facc15,#4ade80);border-radius:8px}
 .cl-bar.big{height:12px;margin:12px 0 4px}
 .cl-note{text-align:center;background:rgba(0,0,0,.25);border-radius:14px;padding:6px 10px}.cl-note b{display:block;font-size:26px;font-weight:900;line-height:1}.cl-note small{font-size:9px;font-weight:800;opacity:.8}
-.cl-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.cl-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
+.cl-shead{display:flex;flex-direction:column;margin:14px 2px 8px}.cl-shead>b{font-size:17px;font-weight:900}.cl-shead span{font-size:12.5px;opacity:.75}
+.cl-shopen{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.cl-eb{border:0;border-radius:16px;padding:12px 4px;background:linear-gradient(160deg,#fde047,#f59e0b);color:#111;cursor:pointer;box-shadow:0 6px 14px rgba(245,158,11,.3)}
+.cl-eb b{display:block;font-size:17px;font-weight:900}.cl-eb span{font-size:11.5px;font-weight:800}.cl-eb:last-child{background:linear-gradient(160deg,#a5f3fc,#0891b2);color:#fff}
+.cl-q{width:100%;padding:12px 14px;border-radius:14px;border:2px solid var(--line,#e3e6ee);font-size:15px;background:var(--card,#fff);color:inherit;margin-bottom:8px}
+.cl-chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}.cl-chips button{border:0;border-radius:999px;padding:7px 12px;font-weight:800;font-size:12.5px;background:var(--card2,#eef1f6);color:inherit;white-space:nowrap}.cl-chips button.on{background:#111827;color:#fff}
+.cl-slist{display:grid;gap:8px}.cl-sp{display:flex;gap:10px;align-items:center;background:var(--card,#fff);border-radius:16px;padding:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cl-spi{flex:1;min-width:0}.cl-spi b{display:block;font-size:15px;font-weight:900}.cl-spi small{display:block;font-size:12px;opacity:.75;margin-bottom:6px}.cl-spi em{display:block;font-style:normal;font-size:11px;color:#dc2626;margin-top:3px}
+.cl-more{width:100%;margin-top:10px}
 .cl-tabs button{position:relative;border:0;border-radius:14px;padding:8px 2px;background:var(--card,#fff);color:inherit;font-size:20px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.cl-tabs button span{display:block;font-size:11.5px;font-weight:800}.cl-tabs button.on{background:#111827;color:#fff}
+.cl-tabs button span{display:block;font-size:10.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cl-tabs button.on{background:#111827;color:#fff}
 .cl-tabs em{position:absolute;top:6px;right:10px;width:9px;height:9px;border-radius:50%;background:#ef4444}
 .cl-play{display:block;width:100%;border:0;border-radius:20px;padding:18px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#16a34a,#065f46);box-shadow:0 14px 30px rgba(22,163,74,.4);animation:clPulse 2.2s ease-in-out infinite}
 .cl-play b{display:block;font-size:22px;font-weight:900;letter-spacing:.02em}.cl-play span{font-size:13px;opacity:.9}.cl-play:disabled{filter:grayscale(.8);animation:none;opacity:.7}
