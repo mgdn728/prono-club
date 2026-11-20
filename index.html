@@ -1416,6 +1416,11 @@ body.pf-lock{overflow:hidden}
 .st-bi em{font-style:normal;font-size:10px;font-weight:800;opacity:.75;margin-bottom:2px}
 .st-bi small{font-size:9px;opacity:.6;margin-top:3px}
 .st-n{font-size:12px;opacity:.65;margin-top:12px}
+.cashbtn em{font-style:normal;font-weight:900}
+.cashbtn.up{animation:cashUp 1.2s ease}.cashbtn.dn{animation:cashDn 1.2s ease}
+@keyframes cashUp{0%,60%{background:linear-gradient(90deg,#16a34a,#22c55e);transform:scale(1.03)}}
+@keyframes cashDn{0%,60%{background:linear-gradient(90deg,#dc2626,#f97316);transform:scale(.98)}}
+.cashbtn.off{background:var(--card2,#eef0f5);color:inherit;opacity:.6;box-shadow:none;text-align:center;font-weight:700;font-size:13px;cursor:default}
 .cashbtn{display:block;width:calc(100% - 24px);margin:8px 12px 2px;border:0;border-radius:12px;padding:11px;font-weight:800;font-size:15px;color:#fff;background:linear-gradient(90deg,#00b86b,#00a3ff);box-shadow:0 6px 16px rgba(0,163,255,.25);cursor:pointer}
 .cashbtn b{font-weight:900}
 .mm-row{display:flex;justify-content:space-between;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(138,61,255,.12),rgba(255,61,154,.12));border:1px solid rgba(138,61,255,.3);border-radius:12px;padding:9px 12px;margin:6px 0}
@@ -2023,8 +2028,24 @@ function cashValue(b){
   const bm=b.boost?(b.boost===true?1.1:Math.min(1.25,+b.boost||1)):1;
   let v=b.stake*f*bm*0.94;v=Math.min(v,b.stake*b.odds*0.97);
   return Math.max(1,Math.floor(v))}
+function cashBtn(b,v){return v!=null?'<button class="cashbtn" data-cash="'+b.id+'" data-v="'+v+'">💸 Encaisser <b>'+nf(v)+' '+bcur(b)+'</b><em></em></button>':'<div class="cashbtn off" data-cashph="'+b.id+'">💸 Encaissement indisponible pour le moment</div>'}
+// le montant du cash out bouge en direct, sans recharger la page
+function cashTick(){
+  if(ui.tab!=='paris'||document.visibilityState!=='visible')return;
+  for(const b of state.bets){if(b.status!=='pending')continue;
+    const el=document.querySelector('[data-cash="'+b.id+'"],[data-cashph="'+b.id+'"]');if(!el)continue;
+    const v=cashValue(b);
+    if(v==null){if(el.dataset.cash){el.outerHTML=cashBtn(b,null)}continue}
+    if(el.dataset.cashph){el.outerHTML=cashBtn(b,v);continue}
+    const old=+el.dataset.v;if(old===v)continue;
+    el.dataset.v=v;el.querySelector('b').textContent=nf(v)+' '+bcur(b);
+    const up=v>old;el.querySelector('em').textContent=up?' ▲':' ▼';el.classList.remove('up','dn');void el.offsetWidth;el.classList.add(up?'up':'dn');
+    clearTimeout(el._t);el._t=setTimeout(()=>{el.classList.remove('up','dn');const e=el.querySelector('em');if(e)e.textContent=''},2500)}
+  const pv=document.getElementById('cashPopV');
+  if(pv){const b=state.bets.find(x=>x.id===pv.dataset.id),v=cashValue(b);pv.textContent=v==null?'⏸ suspendu':nf(v)+' '+bcur(b);const g=document.querySelector('[data-cashgo]');if(g)g.disabled=v==null}}
+setInterval(cashTick,2000);
 function openCash(id){const b=state.bets.find(x=>x.id===id),v=cashValue(b);if(v==null){toast('Encaissement indisponible pour le moment (match en pause ou cotes suspendues).');renderView();return}
-  popup('<div class="pop-ic big">💸</div><h3>Encaisser ce pari ?</h3><p>Tu reçois <b>'+nf(v)+' '+bcur(b)+'</b> tout de suite et le pari s\'arrête là.<br><small>Gain possible si tu attends la fin : '+nf(Math.round(b.stake*b.odds))+' '+bcur(b)+'</small></p><div class="pop-btns"><button class="pbtn" data-cashgo="'+b.id+'">💸 Encaisser '+nf(v)+' '+bcur(b)+'</button><button class="pbtn ghost2" data-popclose="1">Je garde mon pari</button></div><p style="font-size:12px;opacity:.65;margin-top:8px">Le montant change avec le score et les cotes : il est recalculé au moment où tu valides.</p>')}
+  popup('<div class="pop-ic big">💸</div><h3>Encaisser ce pari ?</h3><p>Tu reçois <b id="cashPopV" data-id="'+b.id+'">'+nf(v)+' '+bcur(b)+'</b> tout de suite et le pari s\'arrête là.<br><small>Gain possible si tu attends la fin : '+nf(Math.round(b.stake*b.odds))+' '+bcur(b)+'</small></p><div class="pop-btns"><button class="pbtn" data-cashgo="'+b.id+'">💸 Encaisser maintenant</button><button class="pbtn ghost2" data-popclose="1">Je garde mon pari</button></div><p style="font-size:12px;opacity:.65;margin-top:8px">Le montant change avec le score et les cotes : il est recalculé au moment où tu valides.</p>')}
 function doCash(id){const b=state.bets.find(x=>x.id===id),v=cashValue(b);closePop();
   if(v==null){toast('Trop tard : les cotes viennent de changer ou le match est en pause. Réessaie.');renderView();return}
   b.status='cash';b.payout=v;b.cashAt=Date.now();
@@ -3341,9 +3362,9 @@ async function liveLoad(){
   liveLast=Date.now();liveBusy=false;
   if(settle())save();
   const focused=document.activeElement&&document.activeElement.matches('input,textarea');
-  renderHeader();if(!focused){if(ui.tab==='live')renderView();if(ui.slip.some(x=>String(x.matchId).startsWith('L:')))renderSlip()}
+  renderHeader();cashTick();if(!focused){if(ui.tab==='live')renderView();if(ui.slip.some(x=>String(x.matchId).startsWith('L:')))renderSlip()}
 }
-setInterval(()=>{if(document.visibilityState!=='visible')return;const t=ui.tab==='live'?10000:liveNeed().size>0?15000:60000;if(Date.now()-liveLast>=t)liveLoad()},2000);
+setInterval(()=>{if(document.visibilityState!=='visible')return;const t=ui.tab==='live'||(ui.tab==='paris'&&liveNeed().size>0)?10000:liveNeed().size>0?15000:60000;if(Date.now()-liveLast>=t)liveLoad()},2000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(ui.tab==='live'||liveNeed().size))liveLoad()});
 setInterval(()=>{const e=document.getElementById('lvUpd');if(e&&liveLast)e.textContent='Mis à jour il y a '+Math.max(0,Math.round((Date.now()-liveLast)/1000))+' s'},1000);
 const LCLK=[[/Halftime|HT$/i,'Mi-temps'],[/End of (\d)\w* Quarter/i,'Fin QT $1'],[/End of (\d)\w* Period/i,'Fin P$1'],[/End of (\d)\w* Half/i,'Fin MT $1'],[/(\d)\w* Quarter/i,'QT $1'],[/(\d)\w* Period/i,'P$1'],[/(\d)\w* Half/i,'MT $1'],[/(\d)\w* Set/i,'Set $1'],[/OT/,'Prol.'],[/Top (\d+)\w*/i,'Haut $1e'],[/Bot (\d+)\w*/i,'Bas $1e'],[/Mid (\d+)\w*/i,'Mi-$1e'],[/End (\d+)\w*/i,'Fin $1e'],[/Final/i,'Terminé'],[/Delayed/i,'Retardé']];
@@ -3436,7 +3457,7 @@ function renderBets(){
     const cv=b.status==='pending'?cashValue(b):null;
     return '<div class="bet '+(b.status==='cash'?'won':b.status)+'"><div class="bh"><b>'+b.type+(b.boost?' 🚀':'')+(b.shield?' 🛡️':'')+'</b>'+tag+'</div>'+lines+
       '<div class="bf"><span>Mise <b>'+nf(b.stake)+' 🪙</b></span><span>Cote <b>'+fo(b.odds)+'</b></span><span>Gain possible <b>'+nf(b.stake*b.odds)+' '+bcur(b)+'</b></span></div>'+
-      (cv!=null?'<button class="cashbtn" data-cash="'+b.id+'">💸 Encaisser <b>'+nf(cv)+' '+bcur(b)+'</b></button>':'')+
+      (b.status==='pending'&&!b.sels.some(x=>x.bo)?cashBtn(b,cv):'')+
       (b.status==='won'?'<button class="sharebtn win" data-sharebet="'+b.id+'">📸 Partager mon ticket gagnant</button>':b.status!=='void'?'<button class="sharebtn" data-sharebet="'+b.id+'">📤 Partager ce pari</button>':'')+'</div>'};
   return pageHero('ph-bets','🧾','Mes paris','Réglés automatiquement dès que le résultat réel du match est publié. Partagez vos plus beaux coupons !')+
    '<div class="stats"><div class="stat"><small>Paris gagnés</small><b>'+s.won+' / '+tot+'</b></div><div class="stat"><small>Réussite</small><b>'+(tot?Math.round(s.won/tot*100):0)+' %</b></div><div class="stat"><small>Diamants gagnés</small><b style="color:var(--dia)">'+nf(s.earned)+'</b></div><div class="stat"><small>Plus grosse cote gagnée</small><b>'+(s.best?fo(s.best):'–')+'</b></div></div>'+
