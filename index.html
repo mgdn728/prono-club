@@ -1416,6 +1416,27 @@ body.pf-lock{overflow:hidden}
 .st-bi em{font-style:normal;font-size:10px;font-weight:800;opacity:.75;margin-bottom:2px}
 .st-bi small{font-size:9px;opacity:.6;margin-top:3px}
 .st-n{font-size:12px;opacity:.65;margin-top:12px}
+.cashbtn{display:block;width:calc(100% - 24px);margin:8px 12px 2px;border:0;border-radius:12px;padding:11px;font-weight:800;font-size:15px;color:#fff;background:linear-gradient(90deg,#00b86b,#00a3ff);box-shadow:0 6px 16px rgba(0,163,255,.25);cursor:pointer}
+.cashbtn b{font-weight:900}
+.mm-row{display:flex;justify-content:space-between;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(138,61,255,.12),rgba(255,61,154,.12));border:1px solid rgba(138,61,255,.3);border-radius:12px;padding:9px 12px;margin:6px 0}
+.mm-row small{display:block;font-size:12px;opacity:.7;font-weight:600}
+.mm-row b{font-size:18px;color:var(--acc)}
+.mm-hint{font-size:13px;background:rgba(138,61,255,.1);border-radius:12px;padding:9px 12px;margin:6px 0}
+.mm-tip{font-size:12.5px;opacity:.75;margin:8px 12px 0}
+.fav-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 12px 0;font-size:13px}
+.fav-row>span{opacity:.7;font-weight:700}
+.fav{border:1px solid var(--line,#e3e6ee);background:var(--card2,#f4f6fa);color:inherit;border-radius:999px;padding:6px 11px;font-size:13px;font-weight:700;cursor:pointer}
+.fav.on{background:rgba(255,45,85,.12);border-color:rgba(255,45,85,.45)}
+.fv{font-style:normal;font-size:.8em}
+.fav-h{color:#ff2d55}
+.pm-st{margin:10px 12px 0;background:var(--card2,#f4f6fa);border-radius:14px;padding:10px 12px}
+.pm-st h4{margin:0 0 6px;font-size:14px}
+.pm-r{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:3px 0}
+.pm-r span{opacity:.8;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pm-r b{white-space:nowrap}
+.pm-n{font-size:11px;opacity:.6;margin:2px 0 4px}
+.fm{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:6px;font-style:normal;font-size:11px;font-weight:900;color:#fff;margin-left:3px}
+.fm-V{background:#16a34a}.fm-N{background:#9ca3af}.fm-D{background:#dc2626}
 .guide-cta{display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(229,18,107,.18),rgba(106,44,245,.18));border:1px solid rgba(229,18,107,.35);border-radius:14px;padding:12px 14px;margin-bottom:14px;color:inherit;text-decoration:none;font-size:14px}
 .guide-cta em{margin-left:auto;font-style:normal;font-size:20px}
 .legal-l{font-size:13px;opacity:.75;margin-top:14px;text-align:center;line-height:1.8}
@@ -1678,7 +1699,7 @@ function dayLabel(t,day){const k=dkey(new Date(t));if(k===day)return hhmm(t);ret
 
 /* ---------- Sports et marchés ---------- */
 /* Noms en français (programme automatique et matchs en direct) */
-const FRN={"Afghanistan":"Afghanistan","Albania":"Albanie","Algeria":"Algérie","Andorra":"Andorre","Angola":"Angola","Argentina":"Argentine","Armenia":"Arménie","Australia":"Australie","Austria":"Autriche","Azerbaijan":"Azerbaïdjan","Bahrain":"Bahreïn","Bangladesh":"Bangladesh","Barbados":"Barbade","Belarus":"Biélorussie","Belgium":"Belgique","Belize":"Belize","Benin":"Bénin","Bolivia":"Bolivie","Bosnia-Herzegovina":"Bosnie-Herzégovine","Bosnia and Herzegovina":"Bosnie-Herzégovine","Botswana":"Botswana","Brazil":"Brésil","Bulgaria":"Bulgarie","Burkina Faso":"Burkina Faso","Burundi":"Burundi","Cambodia":"Cambodge","Cameroon":"Cameroun","Canada":"Canada","Cape Verde":"Cap-Vert","Cape Verde Islands":"Cap-Vert","Central African Republic":"Centrafrique","Chad":"Tchad","Chile":"Chili","China":"Chine","China PR":"Chine","Colombia":"Colombie","Comoros":"Comores","Congo":"Congo","Congo DR":"RD Congo","DR Congo":"RD Congo","Costa Rica":"Costa Rica","Croatia":"Croatie","Cuba":"Cuba","Curacao":"Curaçao","Curaçao":"Curaçao","Cyprus":"Chypre","Czechia":"Tchéquie","Czech Republic":"Tchéquie","Denmark":"Danemark","Djibouti":"Djibouti","Dominican Republic":"République dominicaine","Ecuador":"Équateur","Egypt":"Égypte","El Salvador":"Salvador","England":"Angleterre","Equatorial Guinea":"Guinée équatoriale","Eritrea":"Érythrée","Estonia":"Estonie","Eswatini":"Eswatini","Ethiopia":"Éthiopie","Faroe Islands":"Îles Féroé","Fiji":"Fidji","Finland":"Finlande","France":"France","Gabon":"Gabon","Gambia":"Gambie","Georgia":"Géorgie","Germany":"Allemagne","Ghana":"Ghana","Gibraltar":"Gibraltar","Greece":"Grèce","Guatemala":"Guatemala","Guinea":"Guinée","Guinea-Bissau":"Guinée-Bissau","Haiti":"Haïti","Honduras":"Honduras","Hong Kong":"Hong Kong","Hungary":"Hongrie","Iceland":"Islande","India":"Inde","Indonesia":"Indonésie","Iran":"Iran","Iraq":"Irak","Republic of Ireland":"Irlande","Ireland":"Irlande","Israel":"Israël","Italy":"Italie","Ivory Coast":"Côte d'Ivoire","Cote d'Ivoire":"Côte d'Ivoire","Jamaica":"Jamaïque","Japan":"Japon","Jordan":"Jordanie","Kazakhstan":"Kazakhstan","Kenya":"Kenya","Kosovo":"Kosovo","Kuwait":"Koweït","Kyrgyz Republic":"Kirghizistan","Kyrgyzstan":"Kirghizistan","Latvia":"Lettonie","Lebanon":"Liban","Lesotho":"Lesotho","Liberia":"Liberia","Libya":"Libye","Liechtenstein":"Liechtenstein","Lithuania":"Lituanie","Luxembourg":"Luxembourg","Madagascar":"Madagascar","Malawi":"Malawi","Malaysia":"Malaisie","Mali":"Mali","Malta":"Malte","Mauritania":"Mauritanie","Mauritius":"Maurice","Mexico":"Mexique","Moldova":"Moldavie","Mongolia":"Mongolie","Montenegro":"Monténégro","Morocco":"Maroc","Mozambique":"Mozambique","Namibia":"Namibie","Netherlands":"Pays-Bas","New Zealand":"Nouvelle-Zélande","Nicaragua":"Nicaragua","Niger":"Niger","Nigeria":"Nigeria","North Korea":"Corée du Nord","North Macedonia":"Macédoine du Nord","Northern Ireland":"Irlande du Nord","Norway":"Norvège","Oman":"Oman","Pakistan":"Pakistan","Palestine":"Palestine","Panama":"Panama","Paraguay":"Paraguay","Peru":"Pérou","Philippines":"Philippines","Poland":"Pologne","Portugal":"Portugal","Qatar":"Qatar","Romania":"Roumanie","Russia":"Russie","Rwanda":"Rwanda","San Marino":"Saint-Marin","Saudi Arabia":"Arabie saoudite","Scotland":"Écosse","Senegal":"Sénégal","Serbia":"Serbie","Sierra Leone":"Sierra Leone","Singapore":"Singapour","Slovakia":"Slovaquie","Slovenia":"Slovénie","Somalia":"Somalie","South Africa":"Afrique du Sud","South Korea":"Corée du Sud","Korea Republic":"Corée du Sud","South Sudan":"Soudan du Sud","Spain":"Espagne","Sudan":"Soudan","Suriname":"Suriname","Sweden":"Suède","Switzerland":"Suisse","Syria":"Syrie","Tahiti":"Tahiti","Tajikistan":"Tadjikistan","Tanzania":"Tanzanie","Thailand":"Thaïlande","Togo":"Togo","Trinidad and Tobago":"Trinité-et-Tobago","Tunisia":"Tunisie","Turkey":"Turquie","Türkiye":"Turquie","Turkmenistan":"Turkménistan","Uganda":"Ouganda","Ukraine":"Ukraine","United Arab Emirates":"Émirats arabes unis","United States":"États-Unis","USA":"États-Unis","Uruguay":"Uruguay","Uzbekistan":"Ouzbékistan","Venezuela":"Venezuela","Vietnam":"Vietnam","Wales":"Pays de Galles","Yemen":"Yémen","Zambia":"Zambie","Zimbabwe":"Zimbabwe","Cook Islands":"Îles Cook","Cayman Islands":"Îles Caïmans","St. Kitts and Nevis":"Saint-Christophe-et-Niévès","St. Lucia":"Sainte-Lucie","Sint Maarten":"Saint-Martin","Bonaire":"Bonaire","Dominica":"Dominique","New Caledonia":"Nouvelle-Calédonie","Paris Saint-Germain":"Paris SG","Olympique Marseille":"Marseille","Olympique Lyonnais":"Lyon","AS Monaco":"Monaco","Lille OSC":"Lille","LOSC Lille":"Lille","Stade Rennais":"Rennes","OGC Nice":"Nice","RC Lens":"Lens","Stade Brestois 29":"Brest","Stade de Reims":"Reims","RC Strasbourg Alsace":"Strasbourg","FC Nantes":"Nantes","Montpellier HSC":"Montpellier","Toulouse FC":"Toulouse","AJ Auxerre":"Auxerre","Angers SCO":"Angers","Le Havre AC":"Le Havre","AS Saint-Etienne":"Saint-Étienne","Saint-Etienne":"Saint-Étienne","FC Lorient":"Lorient","FC Metz":"Metz","Paris FC":"Paris FC","Atletico Madrid":"Atlético Madrid","Atlético Madrid":"Atlético Madrid","Sevilla":"Séville","Sevilla FC":"Séville","Athletic Club":"Athletic Bilbao","Real Sociedad":"Real Sociedad","Celta Vigo":"Celta Vigo","Deportivo Alavés":"Alavés","Alavés":"Alavés","Napoli":"Naples","AS Roma":"AS Rome","Roma":"AS Rome","Internazionale":"Inter Milan","Inter":"Inter Milan","AC Milan":"AC Milan","Fiorentina":"Fiorentina","Lazio":"Lazio","Atalanta":"Atalanta","Juventus":"Juventus","Genoa":"Gênes","Sampdoria":"Sampdoria","Bayern Munich":"Bayern Munich","Borussia Dortmund":"Dortmund","Bayer Leverkusen":"Leverkusen","RB Leipzig":"Leipzig","Borussia Monchengladbach":"Mönchengladbach","Borussia Mönchengladbach":"Mönchengladbach","Eintracht Frankfurt":"Francfort","VfB Stuttgart":"Stuttgart","1. FC Köln":"Cologne","FC Cologne":"Cologne","SC Freiburg":"Fribourg","VfL Wolfsburg":"Wolfsburg","Werder Bremen":"Werder Brême","TSG Hoffenheim":"Hoffenheim","1. FC Union Berlin":"Union Berlin","Mainz":"Mayence","FSV Mainz 05":"Mayence","Hamburg SV":"Hambourg","Sporting CP":"Sporting Portugal","FC Porto":"FC Porto","Benfica":"Benfica","PSV Eindhoven":"PSV Eindhoven","Ajax Amsterdam":"Ajax","Ajax":"Ajax","Feyenoord Rotterdam":"Feyenoord","Club Brugge":"FC Bruges","Galatasaray":"Galatasaray","Fenerbahce":"Fenerbahçe","Celtic":"Celtic","Rangers":"Rangers","Red Bull Salzburg":"Salzbourg","Dinamo Zagreb":"Dinamo Zagreb","Shakhtar Donetsk":"Chakhtar Donetsk","Olympiacos":"Olympiakos","Young Boys":"Young Boys","Slavia Prague":"Slavia Prague","Sparta Prague":"Sparta Prague","Brighton & Hove Albion":"Brighton","Wolverhampton Wanderers":"Wolverhampton","Tottenham Hotspur":"Tottenham","AFC Bournemouth":"Bournemouth","West Ham United":"West Ham","Newcastle United":"Newcastle","Nottingham Forest":"Nottingham Forest"};
+const FRN={"Bordeaux Begles":"Bordeaux-Bègles","Montpellier Herault":"Montpellier","Stade Francais":"Stade Français","Stade Francais Paris":"Stade Français","Clermont Auvergne":"Clermont","ASM Clermont Auvergne":"Clermont","Castres Olympique":"Castres","Section Paloise":"Pau","Aviron Bayonnais":"Bayonne","USA Perpignan":"Perpignan","Toulouse":"Stade Toulousain","RC Toulon":"Toulon","Racing 92":"Racing 92","Stade Rochelais":"La Rochelle","US Montauban":"Montauban","RC Vannes":"Vannes","Lyon OU":"Lyon OU","Afghanistan":"Afghanistan","Albania":"Albanie","Algeria":"Algérie","Andorra":"Andorre","Angola":"Angola","Argentina":"Argentine","Armenia":"Arménie","Australia":"Australie","Austria":"Autriche","Azerbaijan":"Azerbaïdjan","Bahrain":"Bahreïn","Bangladesh":"Bangladesh","Barbados":"Barbade","Belarus":"Biélorussie","Belgium":"Belgique","Belize":"Belize","Benin":"Bénin","Bolivia":"Bolivie","Bosnia-Herzegovina":"Bosnie-Herzégovine","Bosnia and Herzegovina":"Bosnie-Herzégovine","Botswana":"Botswana","Brazil":"Brésil","Bulgaria":"Bulgarie","Burkina Faso":"Burkina Faso","Burundi":"Burundi","Cambodia":"Cambodge","Cameroon":"Cameroun","Canada":"Canada","Cape Verde":"Cap-Vert","Cape Verde Islands":"Cap-Vert","Central African Republic":"Centrafrique","Chad":"Tchad","Chile":"Chili","China":"Chine","China PR":"Chine","Colombia":"Colombie","Comoros":"Comores","Congo":"Congo","Congo DR":"RD Congo","DR Congo":"RD Congo","Costa Rica":"Costa Rica","Croatia":"Croatie","Cuba":"Cuba","Curacao":"Curaçao","Curaçao":"Curaçao","Cyprus":"Chypre","Czechia":"Tchéquie","Czech Republic":"Tchéquie","Denmark":"Danemark","Djibouti":"Djibouti","Dominican Republic":"République dominicaine","Ecuador":"Équateur","Egypt":"Égypte","El Salvador":"Salvador","England":"Angleterre","Equatorial Guinea":"Guinée équatoriale","Eritrea":"Érythrée","Estonia":"Estonie","Eswatini":"Eswatini","Ethiopia":"Éthiopie","Faroe Islands":"Îles Féroé","Fiji":"Fidji","Finland":"Finlande","France":"France","Gabon":"Gabon","Gambia":"Gambie","Georgia":"Géorgie","Germany":"Allemagne","Ghana":"Ghana","Gibraltar":"Gibraltar","Greece":"Grèce","Guatemala":"Guatemala","Guinea":"Guinée","Guinea-Bissau":"Guinée-Bissau","Haiti":"Haïti","Honduras":"Honduras","Hong Kong":"Hong Kong","Hungary":"Hongrie","Iceland":"Islande","India":"Inde","Indonesia":"Indonésie","Iran":"Iran","Iraq":"Irak","Republic of Ireland":"Irlande","Ireland":"Irlande","Israel":"Israël","Italy":"Italie","Ivory Coast":"Côte d'Ivoire","Cote d'Ivoire":"Côte d'Ivoire","Jamaica":"Jamaïque","Japan":"Japon","Jordan":"Jordanie","Kazakhstan":"Kazakhstan","Kenya":"Kenya","Kosovo":"Kosovo","Kuwait":"Koweït","Kyrgyz Republic":"Kirghizistan","Kyrgyzstan":"Kirghizistan","Latvia":"Lettonie","Lebanon":"Liban","Lesotho":"Lesotho","Liberia":"Liberia","Libya":"Libye","Liechtenstein":"Liechtenstein","Lithuania":"Lituanie","Luxembourg":"Luxembourg","Madagascar":"Madagascar","Malawi":"Malawi","Malaysia":"Malaisie","Mali":"Mali","Malta":"Malte","Mauritania":"Mauritanie","Mauritius":"Maurice","Mexico":"Mexique","Moldova":"Moldavie","Mongolia":"Mongolie","Montenegro":"Monténégro","Morocco":"Maroc","Mozambique":"Mozambique","Namibia":"Namibie","Netherlands":"Pays-Bas","New Zealand":"Nouvelle-Zélande","Nicaragua":"Nicaragua","Niger":"Niger","Nigeria":"Nigeria","North Korea":"Corée du Nord","North Macedonia":"Macédoine du Nord","Northern Ireland":"Irlande du Nord","Norway":"Norvège","Oman":"Oman","Pakistan":"Pakistan","Palestine":"Palestine","Panama":"Panama","Paraguay":"Paraguay","Peru":"Pérou","Philippines":"Philippines","Poland":"Pologne","Portugal":"Portugal","Qatar":"Qatar","Romania":"Roumanie","Russia":"Russie","Rwanda":"Rwanda","San Marino":"Saint-Marin","Saudi Arabia":"Arabie saoudite","Scotland":"Écosse","Senegal":"Sénégal","Serbia":"Serbie","Sierra Leone":"Sierra Leone","Singapore":"Singapour","Slovakia":"Slovaquie","Slovenia":"Slovénie","Somalia":"Somalie","South Africa":"Afrique du Sud","South Korea":"Corée du Sud","Korea Republic":"Corée du Sud","South Sudan":"Soudan du Sud","Spain":"Espagne","Sudan":"Soudan","Suriname":"Suriname","Sweden":"Suède","Switzerland":"Suisse","Syria":"Syrie","Tahiti":"Tahiti","Tajikistan":"Tadjikistan","Tanzania":"Tanzanie","Thailand":"Thaïlande","Togo":"Togo","Trinidad and Tobago":"Trinité-et-Tobago","Tunisia":"Tunisie","Turkey":"Turquie","Türkiye":"Turquie","Turkmenistan":"Turkménistan","Uganda":"Ouganda","Ukraine":"Ukraine","United Arab Emirates":"Émirats arabes unis","United States":"États-Unis","USA":"États-Unis","Uruguay":"Uruguay","Uzbekistan":"Ouzbékistan","Venezuela":"Venezuela","Vietnam":"Vietnam","Wales":"Pays de Galles","Yemen":"Yémen","Zambia":"Zambie","Zimbabwe":"Zimbabwe","Cook Islands":"Îles Cook","Cayman Islands":"Îles Caïmans","St. Kitts and Nevis":"Saint-Christophe-et-Niévès","St. Lucia":"Sainte-Lucie","Sint Maarten":"Saint-Martin","Bonaire":"Bonaire","Dominica":"Dominique","New Caledonia":"Nouvelle-Calédonie","Paris Saint-Germain":"Paris SG","Olympique Marseille":"Marseille","Olympique Lyonnais":"Lyon","AS Monaco":"Monaco","Lille OSC":"Lille","LOSC Lille":"Lille","Stade Rennais":"Rennes","OGC Nice":"Nice","RC Lens":"Lens","Stade Brestois 29":"Brest","Stade de Reims":"Reims","RC Strasbourg Alsace":"Strasbourg","FC Nantes":"Nantes","Montpellier HSC":"Montpellier","Toulouse FC":"Toulouse","AJ Auxerre":"Auxerre","Angers SCO":"Angers","Le Havre AC":"Le Havre","AS Saint-Etienne":"Saint-Étienne","Saint-Etienne":"Saint-Étienne","FC Lorient":"Lorient","FC Metz":"Metz","Paris FC":"Paris FC","Atletico Madrid":"Atlético Madrid","Atlético Madrid":"Atlético Madrid","Sevilla":"Séville","Sevilla FC":"Séville","Athletic Club":"Athletic Bilbao","Real Sociedad":"Real Sociedad","Celta Vigo":"Celta Vigo","Deportivo Alavés":"Alavés","Alavés":"Alavés","Napoli":"Naples","AS Roma":"AS Rome","Roma":"AS Rome","Internazionale":"Inter Milan","Inter":"Inter Milan","AC Milan":"AC Milan","Fiorentina":"Fiorentina","Lazio":"Lazio","Atalanta":"Atalanta","Juventus":"Juventus","Genoa":"Gênes","Sampdoria":"Sampdoria","Bayern Munich":"Bayern Munich","Borussia Dortmund":"Dortmund","Bayer Leverkusen":"Leverkusen","RB Leipzig":"Leipzig","Borussia Monchengladbach":"Mönchengladbach","Borussia Mönchengladbach":"Mönchengladbach","Eintracht Frankfurt":"Francfort","VfB Stuttgart":"Stuttgart","1. FC Köln":"Cologne","FC Cologne":"Cologne","SC Freiburg":"Fribourg","VfL Wolfsburg":"Wolfsburg","Werder Bremen":"Werder Brême","TSG Hoffenheim":"Hoffenheim","1. FC Union Berlin":"Union Berlin","Mainz":"Mayence","FSV Mainz 05":"Mayence","Hamburg SV":"Hambourg","Sporting CP":"Sporting Portugal","FC Porto":"FC Porto","Benfica":"Benfica","PSV Eindhoven":"PSV Eindhoven","Ajax Amsterdam":"Ajax","Ajax":"Ajax","Feyenoord Rotterdam":"Feyenoord","Club Brugge":"FC Bruges","Galatasaray":"Galatasaray","Fenerbahce":"Fenerbahçe","Celtic":"Celtic","Rangers":"Rangers","Red Bull Salzburg":"Salzbourg","Dinamo Zagreb":"Dinamo Zagreb","Shakhtar Donetsk":"Chakhtar Donetsk","Olympiacos":"Olympiakos","Young Boys":"Young Boys","Slavia Prague":"Slavia Prague","Sparta Prague":"Sparta Prague","Brighton & Hove Albion":"Brighton","Wolverhampton Wanderers":"Wolverhampton","Tottenham Hotspur":"Tottenham","AFC Bournemouth":"Bournemouth","West Ham United":"West Ham","Newcastle United":"Newcastle","Nottingham Forest":"Nottingham Forest"};
 const FRC={"Men's International Friendly":"Match amical","International Friendly":"Match amical","Women's International Friendly":"Match amical F.","AFCON Qualifying":"Qualif. CAN","Africa Cup of Nations Qualifying":"Qualif. CAN","UEFA Nations League":"Ligue des nations","Concacaf Nations League":"Ligue des nations Concacaf","EURO U-21 Qualifying":"Qualif. Euro Espoirs","Men's U-21 Friendly":"Amical Espoirs","FIFA World Cup Qualifying - UEFA":"Qualif. Coupe du monde","UEFA Champions League":"Ligue des champions","UEFA Europa League":"Ligue Europa","UEFA Conference League":"Ligue Conférence","UEFA Women's Champions League":"Ligue des champions F.","English Premier League":"Premier League","Spanish LaLiga":"Liga","LaLiga":"Liga","Italian Serie A":"Serie A","German Bundesliga":"Bundesliga","French Ligue 1":"Ligue 1","Ligue 1":"Ligue 1","EFL Trophy":"EFL Trophy","Copa Colombia":"Coupe de Colombie","SAFF Championship":"Championnat SAFF","Première Ligue":"Première Ligue (F)"};
 function frn(x){if(!x)return x;x=String(x);if(FRN[x])return FRN[x];const m=x.match(/^(.*?) (U-?\d\d|U\d\d|Women|W)$/);if(m&&FRN[m[1]])return FRN[m[1]]+' '+m[2].replace('Women','F.').replace(/^W$/,'F.');return x}
 function frc(x){return x&&FRC[x]||x}
@@ -1815,7 +1836,7 @@ function build(day,arr){
   FIX[day]=arr.map(r=>{
     const sp=SPORTS[r.sp]?r.sp:'foot';
     const prev=old.find(m=>m.id===day+'_'+r.id);
-    const m={id:day+'_'+r.id,day,sp,comp:frc(r.c)||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:frn(r.h),away:frn(r.a),ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,bt:Array.isArray(r.bt)?r.bt:null,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
+    const m={id:day+'_'+r.id,day,sp,comp:frc(r.c)||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:frn(r.h),away:frn(r.a),ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,bt:Array.isArray(r.bt)?r.bt:null,stx:r.stx||null,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
     if(m.bt&&m.s&&!Array.isArray(m.s[2]))m.s=null; // buteurs pas encore connus : le match n'est pas réglé
     const same=prev&&prev.o.join()===r.o.join()&&prev.tl===r.tl&&prev.bo===m.bo;
     if(same){m.dist=prev.dist;m.hl=prev.hl}
@@ -1961,8 +1982,9 @@ function liveBuild(r){
 function findMatch(id){if(id&&id.startsWith('L:'))return LV[id]||null;const d=id.split('_')[0];return(FIX[d]||[]).find(m=>m.id===id)}
 function mkTitle(mk,m){return typeof mk.title==='function'?mk.title(m):mk.title}
 function marketOf(m,mk){return marketsOf(m).find(k=>k.key===mk)||null}
-function getOpt(m,mk,opt){const K=marketOf(m,mk);if(!K)return null;if(K.parse)return K.parse(m,opt);return K.opts(m).find(o=>o.id===opt)||null}
+function getOpt(m,mk,opt){if(mk==='mm')return mmOpt(m,opt);const K=marketOf(m,mk);if(!K)return null;if(K.parse)return K.parse(m,opt);return K.opts(m).find(o=>o.id===opt)||null}
 function oddsOf(m,mk,opt){
+  if(mk==='mm')return m.L?null:mmOdds(m,mmParts(opt));
   if(m.L)return liveOdds(m,mk,opt);
   if(mk==='1x2'){const i={'1':0,'N':1,'2':2}[opt];return m.o[i]}
   if(mk==='win'){return m.o[opt==='1'?0:1]}
@@ -1974,6 +1996,53 @@ function oddsOf(m,mk,opt){
   const v=p<0.004?null:Math.min(250,Math.max(1.01,Math.floor(100/(p*1.065))/100));
   return m._o[key]=v;
 }
+/* ---------- Combiné même match ---------- */
+function mmParts(opt){try{const p=JSON.parse(opt);return Array.isArray(p)?p:[]}catch(e){return[]}}
+function mmOpt(m,opt){const P=mmParts(opt);if(P.length<2)return null;const S=P.map(([k,o])=>k==='mm'?null:getOpt(m,k,o));if(S.some(x=>!x))return null;
+  return{id:opt,label:P.map(([k],i)=>mmLbl(m,k,S[i])).join(' + '),fn:(h,a,w)=>S.every(x=>x.fn(h,a,w))}}
+function mmLbl(m,k,o){if(k==='1x2'||k==='win'||k==='but'||k==='dc')return o.label;const K=marketOf(m,k);return K?mkTitle(K,m).replace(/\s*\(.*\)$/,'')+' : '+o.label:o.label}
+function mmOdds(m,P){
+  if(m.L||!m.dist||!m.tot||P.length<2)return null;
+  const base=[],but=[];for(const[k,o]of P){if(k==='but')but.push(o);else{const x=getOpt(m,k,o);if(!x)return null;base.push(x)}}
+  let p=1;if(base.length){p=0;for(const x of m.dist)if(base.every(b=>b.fn(x[0],x[1],x[3])))p+=x[2];p/=m.tot}
+  for(const o of but){const v=oddsOf(m,'but',o);if(!v)return null;p*=Math.min(.95,1.06/v)}
+  if(p<0.002)return null;return Math.min(500,Math.max(1.05,Math.floor(100/(p*1.08))/100))}
+/* ---------- Cash out ---------- */
+function curOddsSel(m,s){
+  if(s.mk==='mm')return m.L||status(m)!=='avenir'?null:mmOdds(m,mmParts(s.opt));
+  if(m.L){if(!liveOpen(m)||liveSusp(m))return null;return liveOdds(m,s.mk,s.opt)}
+  return status(m)==='avenir'?oddsOf(m,s.mk,s.opt):null}
+function cashValue(b){
+  if(!b||b.status!=='pending'||!Array.isArray(b.sels)||b.sels.some(s=>s.bo))return null;
+  let f=1,pend=0;
+  for(const s of b.sels){const m=findMatch(s.matchId);if(!m)return null;
+    if(m.x)continue;
+    if(m.s){const o=getOpt(m,s.mk,s.opt);if(!(o&&o.fn(m.s[0],m.s[1],m.s[2])))return null;f*=s.odds;continue}
+    const c=curOddsSel(m,s);if(!c)return null;f*=s.odds/c;pend++}
+  if(!pend)return null;
+  const bm=b.boost?(b.boost===true?1.1:Math.min(1.25,+b.boost||1)):1;
+  let v=b.stake*f*bm*0.94;v=Math.min(v,b.stake*b.odds*0.97);
+  return Math.max(1,Math.floor(v))}
+function openCash(id){const b=state.bets.find(x=>x.id===id),v=cashValue(b);if(v==null){toast('Encaissement indisponible pour le moment (match en pause ou cotes suspendues).');renderView();return}
+  popup('<div class="pop-ic big">💸</div><h3>Encaisser ce pari ?</h3><p>Tu reçois <b>'+nf(v)+' '+bcur(b)+'</b> tout de suite et le pari s\'arrête là.<br><small>Gain possible si tu attends la fin : '+nf(Math.round(b.stake*b.odds))+' '+bcur(b)+'</small></p><div class="pop-btns"><button class="pbtn" data-cashgo="'+b.id+'">💸 Encaisser '+nf(v)+' '+bcur(b)+'</button><button class="pbtn ghost2" data-popclose="1">Je garde mon pari</button></div><p style="font-size:12px;opacity:.65;margin-top:8px">Le montant change avec le score et les cotes : il est recalculé au moment où tu valides.</p>')}
+function doCash(id){const b=state.bets.find(x=>x.id===id),v=cashValue(b);closePop();
+  if(v==null){toast('Trop tard : les cotes viennent de changer ou le match est en pause. Réessaie.');renderView();return}
+  b.status='cash';b.payout=v;b.cashAt=Date.now();
+  if(b.pay==='c')state.coins+=v;else{state.diamonds+=v;state.stats.earned=(state.stats.earned||0)+v;
+    if(!state.month||state.month.id!==monthId())state.month={id:monthId(),earned:0};state.month.earned+=v;if(state.week)state.week.earned+=v}
+  save();renderAll();celebrate('💸','Pari encaissé !','<b>+'+nf(v)+' '+bcur(b)+'</b> ajoutés. Bien joué !')}
+/* ---------- Équipes favorites ---------- */
+const isFav=n=>Array.isArray(state.favs)&&state.favs.includes(n);
+function toggleFav(n){state.favs=Array.isArray(state.favs)?state.favs:[];const i=state.favs.indexOf(n);
+  if(i>=0){state.favs.splice(i,1);toast('💔 '+n+' retiré de tes équipes')}else{if(state.favs.length>=20){toast('20 équipes maximum');return}state.favs.push(n);toast('❤️ '+n+' ajouté à tes équipes'+(notifOn()?' : notification avant ses matchs':''))}
+  save();renderView()}
+function statsHtml(m){const x=m.stx;if(!x)return'';
+  const fm=f=>String(f||'').split('').slice(0,5).map(c=>'<i class="fm fm-'+c+'">'+c+'</i>').join('')||'<small>–</small>';
+  let h='<div class="pm-st"><h4>📊 Avant-match</h4>';
+  if(x.f&&(x.f[0]||x.f[1]))h+='<div class="pm-r"><span>'+esc(m.home)+'</span><b>'+fm(x.f[0])+'</b></div><div class="pm-r"><span>'+esc(m.away)+'</span><b>'+fm(x.f[1])+'</b></div><p class="pm-n">Forme sur les 5 derniers matchs (V victoire · N nul · D défaite)</p>';
+  if(x.r&&(x.r[0]||x.r[1]))h+='<div class="pm-r"><span>Classement</span><b>'+(x.r[0]?x.r[0]+'<sup>e</sup>':'–')+' · '+(x.r[1]?x.r[1]+'<sup>e</sup>':'–')+'</b></div>';
+  if(x.h&&(x.h[0]+x.h[1]+x.h[2]))h+='<div class="pm-r"><span>Face-à-face ('+(x.h[0]+x.h[1]+x.h[2])+' derniers)</span><b>'+esc(m.home)+' '+x.h[0]+' V · '+x.h[1]+' N · '+x.h[2]+' D</b></div>';
+  return h+'</div>'}
 function status(m){
   if(m.x)return'annule';
   if(m.s)return'fini';
@@ -2205,16 +2274,18 @@ function slipCalc(){
   const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?(s.bo||oddsOf(m,s.mk,s.opt)):1,open:m&&(m.L?liveOpen(m):status(m)==='avenir')}}).filter(s=>s.m);
   const single=(ui.mode==='simple'&&sels.length===1)||(ui.mode==='combi'&&sels.length>=2);
   const b25On=ui.boost25&&single&&(state.inv.boost25||0)>0, boostOn=!b25On&&ui.boost&&single&&state.inv.boost>0, shieldOn=ui.shield&&single&&state.inv.shield>0, bm=b25On?1.25:boostOn?1.1:1;
-  let total=0,gain=0,err='',combiOdds=1;
+  let total=0,gain=0,err='',combiOdds=1;const groups=[];
   if(ui.mode==='simple'){
     for(const s of sels){const st=Math.max(0,Math.floor(+ui.stakes[selKey(s)]||0));total+=st;gain+=st*s.odds*bm}
   }else{
-    for(const s of sels)combiOdds*=s.odds;
+    for(const s of sels){let g=groups.find(x=>x.id===s.matchId);if(!g){g={id:s.matchId,m:s.m,list:[]};groups.push(g)}g.list.push(s)}
+    for(const g of groups){if(g.list.length>1){g.mm=true;g.odds=mmOdds(g.m,g.list.map(s=>[s.mk,s.opt]))}else g.odds=g.list[0].odds;combiOdds*=g.odds||1}
     combiOdds=Math.round(combiOdds*bm*100)/100;
     total=Math.max(0,Math.floor(+ui.combi||0));gain=total*combiOdds;
-    const ids=sels.map(s=>s.matchId);
     if(sels.length<2)err='Un combiné demande au moins 2 sélections.';
-    else if(new Set(ids).size!==ids.length)err='Un combiné ne peut pas contenir 2 paris sur le même match.';
+    else if(groups.some(g=>g.mm&&g.m.L))err='Le combiné même match n\'est pas possible sur un match en direct.';
+    else if(groups.some(g=>g.mm&&g.list.some(s=>s.bo)))err='La cote boostée ne peut pas entrer dans un combiné même match.';
+    else if(groups.some(g=>g.mm&&!g.odds))err='Ces paris sur le même match ne peuvent pas gagner ensemble.';
   }
   if(!err&&sels.some(s=>s.m.L&&s.m.lv.st!=='post'&&(!s.open||s.odds==null)))err='⏸ Paris en direct suspendus quelques instants, réessaie dans quelques secondes.';
   if(!err&&sels.some(s=>!s.open||s.odds==null))err='Un des matchs a commencé ou ce pari n\'est plus disponible : retirez-le du coupon.';
@@ -2222,7 +2293,7 @@ function slipCalc(){
   if(!err&&sels.some(s=>s.bo)&&(ui.mode==='simple'?sels.some(s=>s.bo&&Math.floor(+ui.stakes[selKey(s)]||0)>10000):total>10000))err='Cote boostée : mise maximum 10 000 pièces.';
   if(!err&&sels.some(s=>s.bo)&&state.boostDay===today())err='Tu as déjà joué la cote boostée aujourd\'hui.';
   if(!err&&sels.length&&(ui.mode==='simple'?sels.some(s=>!(Math.floor(+ui.stakes[selKey(s)]||0)>0)):!(total>0)))err='Indiquez une mise pour chaque pari.';
-  return{sels,single,boostOn,b25On,bm,shieldOn,total,gain,err,combiOdds};
+  return{sels,single,boostOn,b25On,bm,shieldOn,total,gain,err,combiOdds,groups};
 }
 function placeBets(){
   const c=slipCalc();if(c.err||!c.sels.length)return;
@@ -2232,7 +2303,9 @@ function placeBets(){
   if(ui.mode==='simple'){
     for(const s of c.sels){const st=Math.floor(+ui.stakes[selKey(s)]);state.bets.push({...base,id:uid(),type:'Simple',sels:[snap(s)],stake:st,odds:Math.round(s.odds*c.bm*100)/100})}
   }else{
-    state.bets.push({...base,id:uid(),type:'Combiné ('+c.sels.length+')',sels:c.sels.map(snap),stake:Math.floor(+ui.combi),odds:c.combiOdds});
+    const snapMM=g=>({matchId:g.id,mk:'mm',opt:JSON.stringify(g.list.map(s=>[s.mk,s.opt])),odds:g.odds,sp:g.m.sp,match:g.m.home+' – '+g.m.away,market:'🧩 Combiné même match',pick:g.list.map(s=>mmLbl(s.m,s.mk,getOpt(s.m,s.mk,s.opt))).join(' + '),comp:g.m.flag+' '+g.m.comp,ko:g.m.ko});
+    const legs=c.groups.map(g=>g.mm?snapMM(g):snap(g.list[0]));
+    state.bets.push({...base,id:uid(),type:legs.length===1?'Combiné même match':'Combiné ('+legs.length+')',sels:legs,stake:Math.floor(+ui.combi),odds:c.combiOdds});
   }
   state.coins-=c.total;
   if(c.boostOn)state.inv.boost--;
@@ -2663,7 +2736,7 @@ function shareLigue(code,nom){
 }
 
 /* ---------- Notifications ---------- */
-const NPREFS=[['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat']];
+const NPREFS=[['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat'],['equipes','❤️','Mes équipes','1 h avant leurs matchs, et le résultat à la fin']];
 const NPROPRIO=[['proprio_comptes','👤','Nouveaux joueurs','Chaque nouveau compte créé'],['proprio_chat','💬','Messages du chat','Tous les messages, pour surveiller le salon']];
 const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
 function notifSupport(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
@@ -2876,10 +2949,13 @@ function matchCard(m){
   const myBets=state.bets.some(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
   let html='<article class="mc'+(ui.open===m.id?' open':'')+'" style="--sc:'+SPORTS[m.sp].col+'">'+
     '<div class="mc-h"><span class="mc-w">'+whenHtml(m)+'</span><span class="mc-c">'+m.flag+' '+esc(m.comp)+'</span>'+(myBets?'<span class="mc-b">Pari en cours</span>':'')+'</div>'+
-    '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+'<i>'+esc(m.home)+'</i>'+sc(0)+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+'</i>'+sc(1)+'</span></button>'+
+    '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+'<i>'+esc(m.home)+(isFav(m.home)?' <em class="fv">❤️</em>':'')+'</i>'+sc(0)+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+(isFav(m.away)?' <em class="fv">❤️</em>':'')+'</i>'+sc(1)+'</span></button>'+
     '<div class="mc-o'+(three?'':' two')+'">'+quick+'</div>'+(st==='avenir'?tendBar(m):'')+
     '<button class="mc-m" data-open="'+m.id+'">'+(ui.open===m.id?'Masquer les paris ▲':'+'+nb+' paris ▼')+'</button>';
   if(ui.open===m.id){
+    html+='<div class="fav-row"><span>Suivre</span>'+[m.home,m.away].map(n=>'<button class="fav'+(isFav(n)?' on':'')+'" data-fav="'+esc(n)+'">'+(isFav(n)?'❤️':'🤍')+' '+esc(n)+'</button>').join('')+'</div>';
+    html+=statsHtml(m);
+    if(st==='avenir')html+='<p class="mm-tip">🧩 Ajoute plusieurs paris de ce match au coupon, puis choisis <b>Combiné</b> : tu obtiens un <b>combiné même match</b>.</p>';
     if(st==='avenir'&&session)html+='<button class="du-btn" data-duel="'+m.id+'">⚔️ Défier un ami sur ce match</button>';
     html+='<div class="markets">'+mks.slice(1).map(k=>{const btns=k.opts(m).map(o=>oddBtn(m,k.key,o,closed,res)).join('');return btns?'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.cs?' cs':'')+'">'+btns+'</div></div>':''}).join('')+'</div>';
   }
@@ -2936,7 +3012,9 @@ function renderMatches(){
       return '<h3 class="day">'+title+'</h3>'+sec.items.map(matchCard).join('');
     }).join('');
   }
-  return installBanner()+guestBanner()+eventBanner()+dailyRow()+dashHtml()+boostCard()+invBanner()+defiCard()+tabs+
+  const favs=Array.isArray(state.favs)&&state.favs.length?vis.filter(m=>(isFav(m.home)||isFav(m.away))&&status(m)!=='annule'&&!(m.s&&Date.now()>m.ko+3*3600e3)).sort((a,b)=>a.ko-b.ko).slice(0,6):[];
+  const favH=favs.length?'<h3 class="day fav-h">❤️ Mes équipes</h3>'+favs.map(matchCard).join(''):'';
+  return installBanner()+guestBanner()+eventBanner()+dailyRow()+dashHtml()+boostCard()+invBanner()+defiCard()+favH+tabs+
    (ui.comp==='all'&&ui.sport==='foot'?featured(vis):'')+
    comp+body+
    '<p class="reset-note" style="margin-top:14px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>';
@@ -3349,14 +3427,16 @@ function renderBets(){
   const s=state.stats,tot=s.won+s.lost;
   const list=state.bets.filter(b=>ui.betFilter==='pending'?b.status==='pending':b.status!=='pending').slice().reverse();
   const card=b=>{
-    const tag=b.status==='pending'?'<span class="tag pending">En cours</span>':b.status==='won'?'<span class="tag won">Gagné +'+nf(b.payout)+' '+bcur(b)+'</span>':b.status==='void'?'<span class="tag pending">Annulé · mise rendue</span>':'<span class="tag lost">Perdu'+(b.refund?' · remboursé '+nf(b.refund)+' '+bcur(b):'')+'</span>';
+    const tag=b.status==='pending'?'<span class="tag pending">En cours</span>':b.status==='cash'?'<span class="tag won">💸 Encaissé +'+nf(b.payout)+' '+bcur(b)+'</span>':b.status==='won'?'<span class="tag won">Gagné +'+nf(b.payout)+' '+bcur(b)+'</span>':b.status==='void'?'<span class="tag pending">Annulé · mise rendue</span>':'<span class="tag lost">Perdu'+(b.refund?' · remboursé '+nf(b.refund)+' '+bcur(b):'')+'</span>';
     const lines=b.sels.map(x=>{const m=findMatch(x.matchId);let mark='',score='';
       if(m&&status(m)==='fini'){const o=getOpt(m,x.mk,x.opt),ok=o&&o.fn(m.s[0],m.s[1],m.s[2]);mark='<span class="mark '+(ok?'ok':'ko')+'">'+(ok?'✓':'✗')+'</span>';score=' · '+scoreTxt(m)}
       else if(m&&status(m)==='annule')score=' · '+m.x;
       else if(m&&status(m)==='live')score=' · en cours';else score=' · '+hhmm(x.ko||(m&&m.ko));
       return '<div class="bl"><div><div><b>'+esc(x.pick)+'</b> <span style="color:var(--acc);font-weight:700">'+fo(x.odds)+'</span></div><div class="s">'+esc(x.market)+'</div><div class="s">'+esc(x.match)+score+'</div></div>'+mark+'</div>'}).join('');
-    return '<div class="bet '+b.status+'"><div class="bh"><b>'+b.type+(b.boost?' 🚀':'')+(b.shield?' 🛡️':'')+'</b>'+tag+'</div>'+lines+
+    const cv=b.status==='pending'?cashValue(b):null;
+    return '<div class="bet '+(b.status==='cash'?'won':b.status)+'"><div class="bh"><b>'+b.type+(b.boost?' 🚀':'')+(b.shield?' 🛡️':'')+'</b>'+tag+'</div>'+lines+
       '<div class="bf"><span>Mise <b>'+nf(b.stake)+' 🪙</b></span><span>Cote <b>'+fo(b.odds)+'</b></span><span>Gain possible <b>'+nf(b.stake*b.odds)+' '+bcur(b)+'</b></span></div>'+
+      (cv!=null?'<button class="cashbtn" data-cash="'+b.id+'">💸 Encaisser <b>'+nf(cv)+' '+bcur(b)+'</b></button>':'')+
       (b.status==='won'?'<button class="sharebtn win" data-sharebet="'+b.id+'">📸 Partager mon ticket gagnant</button>':b.status!=='void'?'<button class="sharebtn" data-sharebet="'+b.id+'">📤 Partager ce pari</button>':'')+'</div>'};
   return pageHero('ph-bets','🧾','Mes paris','Réglés automatiquement dès que le résultat réel du match est publié. Partagez vos plus beaux coupons !')+
    '<div class="stats"><div class="stat"><small>Paris gagnés</small><b>'+s.won+' / '+tot+'</b></div><div class="stat"><small>Réussite</small><b>'+(tot?Math.round(s.won/tot*100):0)+' %</b></div><div class="stat"><small>Diamants gagnés</small><b style="color:var(--dia)">'+nf(s.earned)+'</b></div><div class="stat"><small>Plus grosse cote gagnée</small><b>'+(s.best?fo(s.best):'–')+'</b></div></div>'+
@@ -3395,6 +3475,9 @@ function renderRules(){
   '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙 en plus</b>. Les pièces se gardent d\'un jour à l\'autre : vous pouvez les économiser (si vous ne venez pas pendant plusieurs jours, jusqu\'à 7 jours sont rattrapés).</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
+  '<li><b>Cash out</b> : dans « Mes paris », le bouton 💸 <b>Encaisser</b> te permet d\'arrêter un pari en cours et de récupérer tout de suite un montant qui dépend des cotes du moment (avant le match, ou en direct quand les paris sont ouverts).</li>'+
+  '<li><b>Combiné même match</b> 🧩 : ajoute plusieurs paris d\'un même match au coupon et choisis « Combiné ». La cote tient compte du lien entre les paris (par exemple une victoire et beaucoup de buts). Pas disponible en direct.</li>'+
+  '<li><b>Mes équipes</b> ❤️ : ouvre un match et touche « Suivre » pour retrouver les matchs de tes équipes en haut du programme et être prévenu 1 h avant.</li>'+
   '<li><b>Paris en direct</b> : dans l\'onglet Live, tu peux parier pendant les matchs (foot, tennis, basket, hockey, foot US, baseball, volley…). Les cotes changent avec le score et le temps de jeu, et les paris sont suspendus quelques secondes après chaque but. <b>Les scores en direct sont fournis par ESPN, et les points des jeux de tennis par Sofascore.</b></li>'+
   '<li>Dans le coupon, tu peux choisir d\'être payé en <b>pièces 🪙</b> au lieu des diamants : elles s\'ajoutent à tes pièces (mais ne comptent pas pour le classement).</li>'+
   '<li>Les diamants ne se parient pas : ils s\'échangent dans la <b>Boutique</b> contre des bonus (pièces en plus, boost de cote, assurance) ou des récompenses (titres, thèmes).</li>'+
@@ -4145,6 +4228,8 @@ function renderSlip(){
   body+=c.sels.map(s=>{const k=selKey(s),o=getOpt(s.m,s.mk,s.opt);
     return '<div class="sel"><div class="top"><div><div class="pick">'+esc(o.label)+'</div><div class="sub">'+esc(mkTitle(marketOf(s.m,s.mk),s.m))+'</div><div class="sub">'+esc(s.m.home+' – '+s.m.away)+(s.open?'':' · <span style="color:var(--bad)">commencé</span>')+'</div></div><div style="display:flex;align-items:flex-start"><span class="o">'+fo(s.odds)+'</span><button class="rm" data-rm="'+k+'" aria-label="Retirer">×</button></div></div>'+
     (ui.mode==='simple'?'<div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="'+k+'" value="'+(ui.stakes[k]??'')+'" aria-label="Mise"><span class="g" data-g="'+k+'">→ '+nf((Math.floor(+ui.stakes[k]||0))*s.odds*c.bm)+' '+payCur()+'</span></div>'+qs(k):'')+'</div>'}).join('');
+  if(ui.mode==='combi')body+=c.groups.filter(g=>g.mm).map(g=>'<div class="mm-row"><span>🧩 Combiné même match<small>'+esc(g.m.home+' – '+g.m.away)+' · '+g.list.length+' paris</small></span><b>'+(g.odds?fo(g.odds):'✗')+'</b></div>').join('');
+  else if(c.sels.length>1&&new Set(c.sels.map(s=>s.matchId)).size<c.sels.length)body+='<div class="mm-hint">🧩 Astuce : passe en <b>Combiné</b> pour créer un <b>combiné même match</b> avec une seule grosse cote.</div>';
   if(ui.mode==='combi')body+='<div class="sel"><div class="row"><span>Cote totale</span><span class="v" style="color:var(--acc)">'+fo(c.combiOdds)+'</span></div><div class="stake"><input type="number" min="1" step="1" inputmode="numeric" data-stake="__combi" value="'+ui.combi+'" aria-label="Mise du combiné"></div>'+qs('__combi')+'</div>';
   $('#slipBody').innerHTML=body;
   $('#slipFoot').innerHTML=slipFootHtml(c);
@@ -4267,6 +4352,9 @@ document.addEventListener('click',e=>{
   if(d.sport){ui.sport=d.sport;ui.open=null;ui.comp='all';renderView();return}
   if(d.comp){ui.comp=d.comp;renderView();return}
   if(d.bf){ui.betFilter=d.bf;renderView();return}
+  if(d.cash){openCash(d.cash);return}
+  if(d.cashgo){doCash(d.cashgo);return}
+  if(d.fav){toggleFav(d.fav);return}
   if(d.rm){ui.slip=ui.slip.filter(s=>selKey(s)!==d.rm);if(ui.slip.length<2&&ui.mode==='combi')ui.mode='simple';renderSlip();renderView();return}
   if(d.mode){ui.mode=d.mode;renderSlip();return}
   if(d.lsp){ui.lsp=d.lsp;renderView();return}

@@ -89,7 +89,13 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
     if (!built.has(day)) { built.add(day); const arr = await fixtures(day); if (Array.isArray(arr) && arr.length) E.build(day, arr); }
     return (E.FIX[day] || []).find((m: any) => m.id === mid) || null;
   };
-  const opt = (m: any, mk: string, o: string) => {
+  const opt = (m: any, mk: string, o: string): any => {
+    if (mk === "mm") { // combiné même match : tous les paris doivent être gagnants
+      let P: any[] = []; try { P = JSON.parse(o); } catch (_) { /* illisible */ }
+      const S = Array.isArray(P) ? P.map((p: any) => (Array.isArray(p) && p[0] !== "mm" ? opt(m, String(p[0]), String(p[1])) : null)) : [];
+      if (S.length < 2 || S.some((x: any) => !x)) return null;
+      return { fn: (h: number, a: number, w: any) => S.every((x: any) => x.fn(h, a, w)) };
+    }
     const K = (m._mk || E.SPORTS[m.sp].markets(m)).find((x: any) => x.key === mk);
     if (K && K.parse) return K.parse(m, o);
     return K ? K.opts(m).find((x: any) => x.id === o) || null : null;
@@ -181,6 +187,7 @@ async function preparer() {
   for (const s of subs || []) {
     const p = prefs.get(s.joueur_id) || {};
     for (const [k, v] of Object.entries(s.prefs || {})) if (v === true) p[k] = true;
+    if ((s.prefs || {}).equipes !== false) p.equipes = true; // « Mes équipes » activé par défaut
     prefs.set(s.joueur_id, p);
   }
   if (paris().min % 5 === 4) { try { await progAuto(); } catch (e) { console.error("progAuto", e); } } // programme + résultats automatiques : toutes les 5 min
@@ -239,6 +246,29 @@ async function preparer() {
   }
   // 2 ter. (supprimé : les pièces se gardent maintenant d'un jour à l'autre)
 
+  // 2 quater. Mes équipes : 1 h avant leurs matchs, puis le résultat (toutes les 5 minutes)
+  if (now.min % 5 === 1) {
+    const fans = (js || []).filter((j: any) => prefs.get(j.id)!.equipes && Array.isArray(j.etat?.favs) && j.etat.favs.length);
+    if (fans.length) {
+      const E = await moteur();
+      const L: any[] = [];
+      for (const day of [addDays(now.day, -1), now.day]) { const arr = await fixtures(day); if (Array.isArray(arr) && arr.length) { E.build(day, arr); L.push(...(E.FIX[day] || [])); } }
+      for (const m of L) {
+        const dt = m.ko - Date.now();
+        const avant = !m.s && !m.x && dt > 45 * 60e3 && dt <= 65 * 60e3;
+        const apres = Array.isArray(m.s) && Date.now() - m.ko < 8 * 3600e3;
+        if (!avant && !apres) continue;
+        for (const j of fans) {
+          const fv: string[] = j.etat.favs;
+          const eq = fv.includes(m.home) ? m.home : fv.includes(m.away) ? m.away : "";
+          if (!eq) continue;
+          if (avant && await marquer(j.id, "favav:" + m.id)) await ajouter(j.id, "equipes", `❤️ ${eq} joue dans 1 h !`, `${m.home} – ${m.away} : fais ton prono avant le coup d'envoi 👀`, "?");
+          if (apres && await marquer(j.id, "favres:" + m.id)) await ajouter(j.id, "equipes", `❤️ Résultat : ${m.home} ${m.s[0]}-${m.s[1]} ${m.away}`, `Le match de ${eq} est terminé. Ouvre PronoClub pour voir tes paris !`, "?paris");
+        }
+      }
+    }
+  }
+
   // 3. Série en danger (à partir de 19 h)
   if (now.hour >= 19) {
     const hier = addDays(now.day, -1);
@@ -295,7 +325,8 @@ async function envoyer() {
     await db.from("notifs").update({ envoye_le: new Date().toISOString() }).eq("id", x.id);
     const { data: ss } = await db.from("abonnements").select("id,endpoint,p256dh,auth,prefs").eq("joueur_id", x.joueur_id);
     for (const s of ss || []) {
-      if (!(s.prefs || {})[x.type]) continue;
+      const pr = s.prefs || {};
+      if (x.type === "equipes" ? pr.equipes === false : !pr[x.type]) continue; // « Mes équipes » : activé sauf si le joueur l'a coupé
       try {
         await webpush.sendNotification(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
@@ -328,8 +359,10 @@ const FEEDS: [string, string][] = [
   ["field-hockey/womens-college-field-hockey", "fhk"],
   ["water-polo/mens-college-water-polo", "wpolo"],
   ["mma/ufc", "mma"],
+  ["rugby/270559", "rugby"], ["rugby/271937", "rugby"], ["rugby/180659", "rugby"], ["rugby/267979", "rugby"], ["rugby/270557", "rugby"], ["rugby/272073", "rugby"], ["rugby/289234", "rugby"],
 ];
 const LG: Record<string, string> = {
+  "rugby/270559": "Top 14", "rugby/180659": "Six Nations", "rugby/271937": "Champions Cup", "rugby/289234": "Test-match", "rugby/272073": "Challenge Cup", "rugby/267979": "Premiership (rugby)", "rugby/270557": "United Rugby Championship",
   "basketball/nba": "NBA", "basketball/wnba": "WNBA", "basketball/mens-college-basketball": "NCAA (basket)", "basketball/womens-college-basketball": "NCAA F. (basket)",
   "hockey/nhl": "NHL", "hockey/mens-college-hockey": "NCAA (hockey)", "hockey/womens-college-hockey": "NCAA F. (hockey)",
   "football/nfl": "NFL", "football/college-football": "NCAA (foot US)", "football/cfl": "CFL", "football/ufl": "UFL",
@@ -576,8 +609,10 @@ const PRE: [string, string, string, string][] = [
   ["soccer/sau.1", "foot", "Saudi Pro League", "🇸🇦"], ["soccer/usa.1", "foot", "MLS", "🇺🇸"], ["soccer/bra.1", "foot", "Brasileirão", "🇧🇷"],
   ["soccer/arg.1", "foot", "Liga Argentine", "🇦🇷"], ["soccer/mex.1", "foot", "Liga MX", "🇲🇽"], ["soccer/uefa.wchampions", "foot", "Ligue des champions F.", "🇪🇺"],
   ["basketball/nba", "basket", "NBA", "🇺🇸"], ["hockey/nhl", "hockey", "NHL", "🇺🇸"], ["tennis/atp", "tennis", "ATP", "🎾"], ["tennis/wta", "tennis", "WTA", "🎾"],
+  ["rugby/270559", "rugby", "Top 14", "🇫🇷"], ["rugby/180659", "rugby", "Six Nations", "🌍"], ["rugby/271937", "rugby", "Champions Cup", "🇪🇺"], ["rugby/289234", "rugby", "Test-match", "🌍"],
+  ["rugby/272073", "rugby", "Challenge Cup", "🇪🇺"], ["rugby/267979", "rugby", "Premiership", "🏴󠁧󠁢󠁥󠁮󠁧󠁿"], ["rugby/270557", "rugby", "United Rugby Championship", "🌍"],
 ];
-const CAP: Record<string, number> = { foot: 25, basket: 10, hockey: 8, tennis: 12 };
+const CAP: Record<string, number> = { foot: 25, basket: 10, hockey: 8, tennis: 12, rugby: 8 };
 const cote = (p: number) => Math.min(60, Math.max(1.02, Math.floor(100 / (p * 1.06)) / 100));
 function preCotes(sp: string, c: any, H: any, A: any) {
   if (sp === "tennis") {
@@ -585,6 +620,13 @@ function preCotes(sp: string, c: any, H: any, A: any) {
     if (rh >= 400 && ra >= 400) return null;
     const p = Math.min(0.93, Math.max(0.07, 1 / (1 + Math.pow(rh / ra, 0.75))));
     return { o: [cote(p), cote(1 - p)] };
+  }
+  if (sp === "rugby") { // pas de cotes chez ESPN : estimation à partir de la forme récente (5 derniers matchs), avantage du terrain
+    const forme = (x: any) => { const f = String(x.form || x.records?.[0]?.summary || "").toUpperCase(); if (!/^[WLTD]{2,}$/.test(f)) return 0.5; let t = 0; for (const ch of f) t += ch === "W" ? 1 : ch === "L" ? 0 : 0.5; return t / f.length; };
+    const k0 = cotes(c);
+    let ph = k0 && k0.h && k0.a ? (1 / k0.h) / (1 / k0.h + 1 / k0.a) : Math.max(0.1, Math.min(0.9, 0.5 + 0.5 * (forme(H) - forme(A)) + 0.1));
+    const D = 0.03;
+    return { o: [cote(ph * (1 - D)), cote(D), cote((1 - ph) * (1 - D))], tl: k0?.tot ?? 46 };
   }
   const k = cotes(c); if (!k || !k.h || !k.a) return null;
   if (sp === "foot") { if (!k.d) return null; return { o: [k.h, k.d, k.a], tl: k.tot ?? undefined }; }
@@ -666,6 +708,36 @@ function buteurs(j: any, m: any) {
   return out.length >= 6 ? out : null;
 }
 
+// Stats d'avant-match à partir de la fiche ESPN : forme (5 derniers matchs), classement, face-à-face
+function statsMatch(j: any) {
+  const comp = j?.header?.competitions?.[0]?.competitors || [];
+  const hid = String((comp.find((c: any) => c.homeAway === "home") || {}).id || (comp.find((c: any) => c.homeAway === "home") || {}).team?.id || "");
+  const aid = String((comp.find((c: any) => c.homeAway === "away") || {}).id || (comp.find((c: any) => c.homeAway === "away") || {}).team?.id || "");
+  if (!hid || !aid) return null;
+  const R: Record<string, string> = { W: "V", D: "N", T: "N", L: "D" };
+  const forme = (id: string) => {
+    const t = (j.lastFiveGames || []).find((x: any) => String(x.team?.id || "") === id);
+    return t && Array.isArray(t.events) ? t.events.slice(0, 5).map((e: any) => R[String(e.gameResult || "").toUpperCase()] || "").join("") : "";
+  };
+  const rang = (id: string) => {
+    for (const g of j.standings?.groups || []) {
+      const E = g.standings?.entries || g.entries || [];
+      const i = E.findIndex((x: any) => String(x.id || x.team?.id || x.teamId || "") === id);
+      if (i >= 0) { const st = (E[i].stats || []).find((s: any) => /^(rank|position)$/i.test(String(s.name || s.type || ""))); return Number(st?.value) || i + 1; }
+    }
+    return 0;
+  };
+  let h = [0, 0, 0];
+  const hh = j.headToHeadGames?.[0];
+  if (hh && Array.isArray(hh.events)) {
+    const inv = String(hh.team?.id || "") === aid;
+    for (const e of hh.events.slice(0, 5)) { const g = String(e.gameResult || "").toUpperCase(); if (g === "W") h[inv ? 2 : 0]++; else if (g === "L") h[inv ? 0 : 2]++; else if (g === "D" || g === "T") h[1]++; }
+  }
+  const f = [forme(hid), forme(aid)], r = [rang(hid), rang(aid)];
+  if (!f[0] && !f[1] && !r[0] && !r[1] && !(h[0] + h[1] + h[2])) return null;
+  return { f, r, h };
+}
+
 async function progAuto() {
   const now = paris(), days = [now.day, addDays(now.day, 1), addDays(now.day, 2)], prev = addDays(now.day, -1);
   const ymd = (d: string) => d.replace(/-/g, "");
@@ -720,6 +792,22 @@ async function progAuto() {
     if (C.tl != null) m.tl = C.tl;
     if (k.sp === "tennis") m.bo = k.x.bo || 3;
     arr.push(m); ch.add(k.day);
+  }
+  // stats d'avant-match (forme, classement, face-à-face), une fois par match, quelques-uns par passage
+  let nst = 0;
+  for (const [day, arr] of DB) for (const m of arr) {
+    if (nst >= 6 || m.stx || m.s || m.x || !m.lp || !m.e || !["foot", "basket", "hockey", "rugby"].includes(m.sp)) continue;
+    const dt = Date.parse(m.t) - Date.now();
+    if (dt < 0 || dt > 40 * 3600e3) continue;
+    if (m.stxTry && Date.now() - m.stxTry < 3 * 3600e3) continue;
+    nst++; m.stxTry = Date.now(); ch.add(day);
+    try {
+      const ev = String(m.e).split("-").pop();
+      const r = await fetch(ESPN + m.lp + "/summary?event=" + ev, { headers: { "User-Agent": "Mozilla/5.0 PronoClub" } });
+      if (!r.ok) continue;
+      const st = statsMatch(await r.json());
+      if (st) { m.stx = st; delete m.stxTry; }
+    } catch (_) { /* pas de stats pour ce match */ }
   }
   // compositions officielles (~1 h avant les gros matchs de foot) : paris buteurs automatiques
   for (const [day, arr] of DB) for (const m of arr) {
