@@ -3622,7 +3622,7 @@ function renderRules(){
   '<li><b>Android</b> : ouvrez le site dans Chrome, menu ⋮ puis « Installer l\'application » (ou « Ajouter à l\'écran d\'accueil »).</li>'+
   '<li><b>iPhone / iPad</b> : ouvrez le site dans Safari, bouton Partager (carré avec une flèche) puis « Sur l\'écran d\'accueil ».</li></ul>'+
   '<h3>Les cotes</h3><p style="margin:0">Les cotes du vainqueur (1N2) sont relevées ou estimées d\'après le marché au moment de la mise à jour : elles sont proches de celles de Betclic ou Winamax, sans être exactement les leurs. Les cotes des autres marchés sont calculées à partir de ces cotes.</p>'+
-  '<p class="disc">Jeu gratuit, sans argent réel. Les pièces et les diamants n\'ont aucune valeur et ne peuvent être ni achetés ni convertis en argent. Si les jeux d\'argent vous posent problème : Joueurs Info Service, 09 74 75 13 13 (appel non surtaxé).</p><p class="legal-l"><a href="guides.html">Guides</a> · <a href="a-propos.html">À propos</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a> · <a href="contact.html">Contact</a></p></div>';
+  '<p class="disc">Jeu gratuit, sans argent réel. Les pièces et les diamants n\'ont aucune valeur et ne peuvent être ni achetés ni convertis en argent. Si les jeux d\'argent vous posent problème : Joueurs Info Service, 09 74 75 13 13 (appel non surtaxé).</p><p class="legal-l"><a href="pronostics-du-jour.html">Pronos du jour</a> · <a href="guides.html">Guides</a> · <a href="a-propos.html">À propos</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a> · <a href="contact.html">Contact</a></p></div>';
 }
 /* ---------- Chat ---------- */
 const chat={msgs:[],last:0,timer:null,state:'loading',sending:false};
@@ -4281,7 +4281,7 @@ function landingRender(){
   el.innerHTML='<div class="lw"><img class="lg" src="icons/icon-192.png" alt=""><h1>Prono<span>Club</span></h1><p class="tg">Les paris sportifs <b>100 % gratuits</b><br>sur les vrais matchs du jour.</p>'+
    '<div class="ft"><div><i>🪙</i><span><b>20 000 pièces offertes</b> chaque jour, sans payer</span></div><div><i>⚽</i><span>Foot, NBA, tennis, NHL… et <b>tous les sports en direct</b></span></div><div><i>💎</i><span>Gagnez des <b>diamants</b> et défiez vos potes en ligue</span></div></div>'+
    (done?'<button class="ib" id="lInstall">✅ Appli installée</button><p class="ok">Ouvrez PronoClub depuis l\'icône sur votre écran d\'accueil.</p>':'<button class="ib" id="lInstall">📲 Installer l\'appli</button>')+
-   '<div class="hp" id="lHelp"></div><button class="sk" id="lSkip">Continuer sur le site →</button><p class="legal-l"><a href="guides.html">Guides</a> · <a href="a-propos.html">À propos</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a> · <a href="contact.html">Contact</a></p></div>';
+   '<div class="hp" id="lHelp"></div><button class="sk" id="lSkip">Continuer sur le site →</button><p class="legal-l"><a href="pronostics-du-jour.html">Pronos du jour</a> · <a href="guides.html">Guides</a> · <a href="a-propos.html">À propos</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a> · <a href="contact.html">Contact</a></p></div>';
 }
 function landingOpen(){const el=$('#landing');if(!el)return;landingRender();el.classList.add('open')}
 function landingClose(){const el=$('#landing');if(el)el.classList.remove('open');try{sessionStorage.setItem('pc_land','1')}catch(e){}}

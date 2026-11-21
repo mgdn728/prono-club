@@ -1,0 +1,43 @@
+# Publie le site sur GitHub Pages et (re)crée les pages Google des gros matchs toutes les 3 heures.
+name: Site et pages des matchs
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '7 */3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Pages des matchs
+        run: node scripts/gen-matchs.mjs || echo "Génération impossible cette fois-ci, le site est publié quand même."
+      - name: Garder les pages dans le dépôt
+        run: |
+          git config user.name "pronoclub-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A prono pronostics-du-jour.html sitemap.xml
+          if ! git diff --cached --quiet; then
+            git commit -q -m "Pages des matchs (auto)"
+            git pull -q --rebase origin main && git push -q origin HEAD:main || echo "push impossible"
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deploy
+        uses: actions/deploy-pages@v4
