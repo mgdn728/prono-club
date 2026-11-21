@@ -571,6 +571,7 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .t-trophy{background:linear-gradient(135deg,#a855f7,#d4148f)}
 @media (min-width:901px){.dash{margin:0 0 14px;padding:2px 2px 8px}.tile{flex:1 1 0;min-width:140px}}
 
+.dm-sec{border:2px solid rgba(250,204,21,.45)}.ms-b.alt{background:transparent;border:2px solid currentColor;opacity:.8}.dm-bonus{background:linear-gradient(90deg,rgba(250,204,21,.16),transparent)}
 /* défi du jour */
 .defi{position:relative;overflow:hidden;border-radius:22px;padding:16px;margin-bottom:16px;color:#fff;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.22),transparent 45%),linear-gradient(130deg,#6a2cf5,#3b1fa8 60%,#1c0f66);box-shadow:0 12px 26px rgba(106,44,245,.32)}
 .defi::after{content:"🎯";position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.13;transform:rotate(-12deg)}
@@ -2242,6 +2243,7 @@ async function loadFixtures(){
 }
 
 const streakBonus=n=>Math.min(Math.max(n,1),7)*100;
+const STREAK_MS={3:{c:2000},7:{c:10000,d:1000},14:{c:25000,d:3000},30:{c:100000,d:10000},60:{c:250000,d:25000},100:{c:500000,d:50000}};
 function streakDots(n){let h='<div class="sdots">';const f=n>7?7:n;for(let i=1;i<=7;i++)h+='<div class="'+(i<=f?'on':'')+'">J'+i+'<br>+'+i*100+'</div>';return h+'</div>'}
 /* Diamants déjà dépensés en boutique (comptés dans le classement) : estimés une fois pour les anciens comptes */
 const OLDCOST={nx_gold:1500,nx_neon:2500,nx_fire:3000,nx_rainbow:4000,fr_fire:1200,fr_ice:1200,fr_gold:3000,fr_crown:6000,t1:1000,t2:3000,t3:10000,t4:2000,t5:5000,th_gold:2500,th_purple:2500,th_red:2500};
@@ -2264,8 +2266,9 @@ function daily(){
   if((!session||synced)&&vipDaily())ch=true;
   if(session&&synced&&state.streak.last!==today()){
     const s=state.streak;s.n=s.last===addDays(today(),-1)?s.n+1:1;s.last=today();
-    const bonus=streakBonus(s.n);state.coins+=bonus;ch=true;
-    setTimeout(()=>celebrate('🔥','Série de '+s.n+' jour'+(s.n>1?'s':''),nf(DAILY)+' pièces du jour + <b>'+nf(bonus)+' pièces de bonus</b> !<br>Revenez demain pour <b>+'+nf(streakBonus(s.n+1))+'</b>.',streakDots(s.n)),600);
+    const bonus=streakBonus(s.n);state.coins+=bonus;ch=true;const ms=STREAK_MS[s.n];if(ms)giveRw(ms);
+    const nx=Object.keys(STREAK_MS).map(Number).find(k=>k>s.n);
+    setTimeout(()=>celebrate('🔥','Série de '+s.n+' jour'+(s.n>1?'s':''),nf(DAILY)+' pièces du jour + <b>'+nf(bonus)+' pièces de bonus</b> !'+(ms?'<br>🏆 <b>Palier '+s.n+' jours : '+rwTxt(ms)+' en plus !</b>':'')+'<br>Revenez demain pour <b>+'+nf(streakBonus(s.n+1))+'</b>.'+(nx?'<br><small>Prochain palier : '+nx+' jours ('+rwTxt(STREAK_MS[nx])+')</small>':''),streakDots(s.n)),600);
   }
   return ch;
 }
@@ -2618,13 +2621,42 @@ const MISS=[
  {id:'cal5',ic:'📅',t:'Récupère 5 cadeaux du calendrier',ev:'cal',n:5,rw:{d:700}}];
 function missWeek(){const w=weekId();if(!state.miss||state.miss.w!==w)state.miss={w,p:{},c:[]};return state.miss}
 const missList=()=>shuffleBy(MISS,hstr(weekId()+'pc')).slice(0,5);
-function missProgress(ev,d){if(!session)return;const M=missWeek();for(const m of missList()){if(m.ev!==ev||M.c.includes(m.id))continue;if(m.f&&!m.f(d||{}))continue;
+function missProgress(ev,d){if(!session)return;dmProgress(ev,d);const M=missWeek();for(const m of missList()){if(m.ev!==ev||M.c.includes(m.id))continue;if(m.f&&!m.f(d||{}))continue;
   const before=M.p[m.id]||0;if(before>=m.n)continue;M.p[m.id]=before+1;if(M.p[m.id]>=m.n)setTimeout(()=>toast('🎯 Mission réussie : '+m.t+' — récupère ta récompense !'),900)}}
-function missReady(){const M=missWeek();return missList().filter(m=>(M.p[m.id]||0)>=m.n&&!M.c.includes(m.id)).length}
+function missReady(){const M=missWeek();return missList().filter(m=>(M.p[m.id]||0)>=m.n&&!M.c.includes(m.id)).length+dmReady()}
+/* ---- Missions du jour (3 par jour, + bonus si les 3 sont faites) ---- */
+const DMISS=[
+ {id:'d_bet2',ic:'🎫',t:'Place 2 paris',ev:'bet',n:2,rw:{c:1500}},
+ {id:'d_win1',ic:'✅',t:'Gagne 1 pari',ev:'win',n:1,rw:{d:300}},
+ {id:'d_foot2',ic:'⚽',t:'Place 2 paris sur le foot',ev:'bet',f:d=>(d.sp||[]).includes('foot'),n:2,rw:{c:1500}},
+ {id:'d_combi',ic:'🧩',t:'Place un combiné de 2 matchs ou +',ev:'bet',f:d=>d.n>=2,n:1,rw:{c:2000}},
+ {id:'d_game3',ic:'🎮',t:'Joue 3 parties aux mini-jeux',ev:'game',n:3,rw:{c:1000}},
+ {id:'d_wheel',ic:'🎰',t:'Tourne la roue',ev:'wheel',n:1,rw:{c:800}},
+ {id:'d_chest',ic:'🧰',t:'Ouvre ton coffre',ev:'chest',n:1,rw:{d:200}},
+ {id:'d_club1',ic:'🏟️',t:'Joue un match avec Mon Club',ev:'club',n:1,rw:{c:2000}},
+ {id:'d_clubw',ic:'🏆',t:'Gagne un match avec Mon Club',ev:'club',f:d=>d.res==='V',n:1,rw:{d:400}},
+ {id:'d_clubl',ic:'🎮',t:'Joue toi-même un match de Mon Club',ev:'club',f:d=>d.live,n:1,rw:{c:3000}},
+ {id:'d_goal3',ic:'🥅',t:'Marque 3 buts avec Mon Club',ev:'club',f:d=>true,cnt:d=>d.goals||0,n:3,rw:{d:500}},
+ {id:'d_pack',ic:'🎁',t:'Ouvre un pack de joueurs',ev:'pack',n:1,rw:{c:1500}},
+ {id:'d_share',ic:'📤',t:'Partage un ticket ou ton lien d\'invitation',ev:'share',n:1,rw:{c:1000}}];
+const DM_BONUS={c:5000,d:500};
+function dmDay(){const d=today();if(!state.dmiss||state.dmiss.d!==d)state.dmiss={d,p:{},c:[],b:0};return state.dmiss}
+function dmList(){const L=shuffleBy(DMISS,hstr(today()+'pcd')),out=[];let club=0;for(const m of L){const isC=m.ev==='club'||m.ev==='pack';if(isC&&club>=1)continue;if(isC)club++;out.push(m);if(out.length===3)break}return out}
+function dmProgress(ev,d){const M=dmDay();for(const m of dmList()){if(m.ev!==ev||M.c.includes(m.id))continue;if(m.f&&!m.f(d||{}))continue;
+  const before=M.p[m.id]||0;if(before>=m.n)continue;const inc=m.cnt?m.cnt(d||{}):1;if(inc<=0)continue;M.p[m.id]=Math.min(m.n,before+inc);if(M.p[m.id]>=m.n)setTimeout(()=>toast('☀️ Mission du jour réussie : '+m.t+' — récupère ta récompense !'),1100)}}
+function dmReady(){if(!session)return 0;const M=dmDay();return dmList().filter(m=>(M.p[m.id]||0)>=m.n&&!M.c.includes(m.id)).length+(M.c.length>=3&&!M.b?1:0)}
+function dmClaim(id){const M=dmDay();if(id==='bonus'){if(M.c.length<3||M.b)return;M.b=1;giveRw(DM_BONUS);addXp(XPV.mission);bjSnd('win');winFx('fx-gold');celebrate('🎉','Les 3 missions du jour sont faites !','<b>'+rwTxt(DM_BONUS)+'</b> récupérés. De nouvelles missions arrivent demain.');save();renderAll();return}
+  const m=dmList().find(x=>x.id===id);if(!m||M.c.includes(id)||(M.p[id]||0)<m.n)return;
+  M.c.push(id);giveRw(m.rw);addXp(Math.round(XPV.mission/2));bjSnd('win');winFx('fx-confetti');toast('🎁 '+rwTxt(m.rw)+' récupérés !');save();renderAll()}
+
 function missClaim(id){const M=missWeek(),m=missList().find(x=>x.id===id);if(!m||M.c.includes(id)||(M.p[id]||0)<m.n)return;
   M.c.push(id);giveRw(m.rw);addXp(XPV.mission);bjSnd('win');winFx('fx-confetti');toast('🎁 '+rwTxt(m.rw)+' récupérés !');
   if(M.c.length===missList().length)unlockBadge('allmiss');save();renderAll()}
 
+function dmHtml(){const M=dmDay(),L=dmList(),now=new Date(),mid=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+  return '<div class="pg-sec dm-sec"><div class="pg-h"><b>☀️ Missions du jour</b><span>Nouvelles missions dans '+leftTxt(mid-now)+'</span></div>'+L.map(m=>{const p=Math.min(M.p[m.id]||0,m.n),done=p>=m.n,got=M.c.includes(m.id);
+     return '<div class="ms'+(got?' got':done?' done':'')+'"><i>'+m.ic+'</i><div><b>'+m.t+'</b><div class="inv-bar s"><i style="width:'+(100*p/m.n)+'%"></i></div><small>'+p+' / '+m.n+' · '+rwTxt(m.rw)+'</small></div>'+(got?'<em>✓</em>':done?'<button class="ms-b" data-dmission="'+m.id+'">Récupérer</button>':(m.ev==='club'||m.ev==='pack'?'<button class="ms-b alt" data-tab="club">Y aller</button>':''))+'</div>'}).join('')+
+   '<div class="ms dm-bonus'+(M.b?' got':M.c.length>=3?' done':'')+'"><i>🎁</i><div><b>Bonus : fais les 3 missions</b><div class="inv-bar s"><i style="width:'+(100*Math.min(3,M.c.length)/3)+'%"></i></div><small>'+Math.min(3,M.c.length)+' / 3 récupérées · '+rwTxt(DM_BONUS)+'</small></div>'+(M.b?'<em>✓</em>':M.c.length>=3?'<button class="ms-b" data-dmission="bonus">Récupérer</button>':'')+'</div></div>'}
 /* ---- Badges ---- */
 const BADGES=[
  {id:'bet1',ic:'🎫',n:'Premier pari',d:'Placer son premier pari'},{id:'win1',ic:'✅',n:'Premier gain',d:'Gagner son premier pari'},
@@ -2675,7 +2707,7 @@ function dailyRow(){if(!session)return '';const c=chestReady(),k=calReady(),w=wh
   const it=(on,ic,t,a,s)=>'<button class="dr-b'+(on?' on':'')+'" '+a+'><span class="dr-ic">'+ic+(on?'<i></i>':'')+'</span><b>'+t+'</b><small>'+s+'</small></button>';
   return '<div class="drow"><div class="dr-h"><b>🎁 Bonus du jour</b>'+(c||k||w||m?'<span>'+[c,k,w>0,m>0].filter(Boolean).length+' à récupérer</span>':'<span>Tout est récupéré ✓</span>')+'</div><div class="dr-g">'+
     it(c,'🧰','Coffre','data-chest="1"',c?'À ouvrir':'Demain')+it(k,'📅','Calendrier','data-cal="1"',k?'Jour '+calNext().i+'/7':'Jour '+calNext().i+' ✓')+
-    it(w>0,'🎡','Roue','data-wheel="1"',w>0?w+' tour'+(w>1?'s':''):'Demain')+it(m>0,'🎯','Missions','data-tab="prog"',m>0?m+' à récupérer':(missWeek().c.length+'/5'))+'</div></div>'}
+    it(w>0,'🎡','Roue','data-wheel="1"',w>0?w+' tour'+(w>1?'s':''):'Demain')+it(m>0,'🎯','Missions','data-tab="prog"',m>0?m+' à récupérer':(session?dmDay().c.length+'/3 du jour':''))+'</div></div>'}
 function openCal(){if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour récupérer vos cadeaux.');return}
   const V=$('#chestView'),N=calNext();V.classList.add('open');
   const cells=CAL.map((r,i)=>{const day=i+1,got=N.done?day<=N.i:day<N.i,cur=!N.done&&day===N.i;
@@ -2795,7 +2827,7 @@ function renderProg(){
   const I=lvInfo(state.xp),M=missWeek(),L=missList(),bd=state.badges||[];
   const now=new Date(),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()+((8-(now.getDay()||7))%7||7));
   return '<div class="pg-lv"><div class="pg-lvn"><small>Niveau</small><b>'+I.L+'</b></div><div class="pg-lvb"><div class="pg-lvt"><b>'+pname(session.pseudo,myDeco())+'</b><span>'+nf(I.cur)+' / '+nf(I.need)+' XP</span></div><div class="inv-bar"><i style="width:'+(100*I.cur/I.need)+'%"></i></div><small>Niveau '+(I.L+1)+' : '+rwTxt(lvRw(I.L+1))+(evVal('xp')>1?' · ⚡ XP ×2 en ce moment':'')+'</small></div></div>'+
-   '<div class="pg-sec"><div class="pg-h"><b>🎯 Missions de la semaine</b><span>Nouvelles missions dans '+leftTxt(mon-now)+'</span></div>'+L.map(m=>{const p=Math.min(M.p[m.id]||0,m.n),done=p>=m.n,got=M.c.includes(m.id);
+   dmHtml()+'<div class="pg-sec"><div class="pg-h"><b>🎯 Missions de la semaine</b><span>Nouvelles missions dans '+leftTxt(mon-now)+'</span></div>'+L.map(m=>{const p=Math.min(M.p[m.id]||0,m.n),done=p>=m.n,got=M.c.includes(m.id);
      return '<div class="ms'+(got?' got':done?' done':'')+'"><i>'+m.ic+'</i><div><b>'+m.t+'</b><div class="inv-bar s"><i style="width:'+(100*p/m.n)+'%"></i></div><small>'+p+' / '+m.n+' · '+rwTxt(m.rw)+' + '+XPV.mission+' XP</small></div>'+(got?'<em>✓</em>':done?'<button class="ms-b" data-mission="'+m.id+'">Récupérer</button>':'')+'</div>'}).join('')+'</div>'+
    '<div class="pg-sec"><div class="pg-h"><b>🏅 Badges</b><span>'+bd.length+' / '+BADGES.length+'</span></div><div class="bd-g">'+BADGES.map(b=>'<div class="bd'+(bd.includes(b.id)?' on':'')+'" title="'+esc(b.d)+'"><i>'+b.ic+'</i><b>'+b.n+'</b><small>'+b.d+'</small></div>').join('')+'</div></div>'+
    '<div class="pg-sec"><div class="pg-h"><b>⚡ Comment gagner de l\'XP</b></div><p class="pg-p">Pari placé +10 · pari gagné +25 (+25 si cote ≥ 3) · partie de mini-jeu +3 (+3 si gagnée) · poker gagné +40 · coffre, roue +10 · calendrier +15 · duel +20 · ami +20 · partage +15 · mission +50.<br>Le week-end, l\'XP est doublée !</p></div>'}
@@ -4438,6 +4470,7 @@ document.addEventListener('click',e=>{
   if(d.wheelgo){wheelGo();return}
   if(d.wheelshare){closeChest();shareInvite();return}
   if(d.mission){missClaim(d.mission);return}
+  if(d.dmission){dmClaim(d.dmission);return}
   if(d.boostbet){addBoost();return}
   if(d.duel){duelOpen(d.duel);return}
   if(d.duelami){duelSt.ami=d.duelami;document.querySelectorAll('[data-duelami]').forEach(x=>x.classList.toggle('on',x===t));return}
@@ -4541,6 +4574,6 @@ else if(!lsGet('pc_welcome')){lsSet('pc_welcome','1');const par=lsGet('pc_parrai
 chatSoon();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){loadFixtures();refreshFromServer()}});
 </script>
-<script src="club.js?v=4"></script><script src="club-match.js?v=4"></script>
+<script src="club.js?v=5"></script><script src="club-match.js?v=4"></script>
 </body>
 </html>

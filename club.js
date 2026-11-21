@@ -434,6 +434,7 @@ function openPack(id){const c=C(),p=PACKS.find(x=>x.id===id);if(!p)return;
   if(p.cur==='free'){if(c.free===today())return;c.free=today()}
   else if(p.cur==='c'){if(state.coins<p.cost)return;state.coins-=p.cost}
   else{if(state.diamonds<p.cost)return;state.diamonds-=p.cost;state.spent=(state.spent||0)+p.cost}
+  try{window.track&&window.track('pack',{})}catch(e){}
   const got=[],ex=owned();for(let i=0;i<p.nb;i++){let k=rollK(p.odds);if(p.id==='legende'&&i===0&&k!=='i')k='l';got.push(mk(k,rollPos(),ex))}
   got.sort((a,b)=>'bao li'.indexOf(a.k)-'bao li'.indexOf(b.k));
   c.sq.push(...got);const over=c.sq.length-40;
@@ -515,6 +516,7 @@ function quick(o){const c=C();
   requestAnimationFrame(frame)}
 function finish(ov,o,S,mult,info){const c=C(),pen=info&&info.pens&&S.sh===S.sa?info.pens:null,pw=pen?pen[0]>pen[1]:false;
   const res=pen?(pw?'V':'N'):S.sh>S.sa?'V':S.sh<S.sa?'D':'N';
+  try{window.track&&window.track('club',{res,goals:S.sh,live:!!(info&&info.live&&!info.abandon)})}catch(e){}
   const gain=Math.round((res==='V'?1500+(10-c.div)*500:res==='N'?500:200)*(mult||1)),pts=pen?(pw?2:1):res==='V'?3:res==='N'?1:0;
   state.coins+=gain;c.pts+=pts;if(res==='V')c.w=(c.w||0)+1;else if(res==='N')c.d=(c.d||0)+1;else c.l=(c.l||0)+1;
   c.hist=(c.hist||[]).concat({r:res,s:S.sh+'-'+S.sa+(pen?' ('+pen[0]+'-'+pen[1]+' tab)':''),o:o.n,t:Date.now()}).slice(-20);
