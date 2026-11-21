@@ -374,7 +374,7 @@ function renderClub(){
   if(!C())return renderCreate();
   migrate();energy();const v=ui.cv||'home';
   const tabs='<div class="cl-tabs">'+[['home','🏟️','Club'],['team','👕','Équipe'],['packs','🎁','Packs'],['shop','🛒','Boutique'],['board','🏆','Classement']].map(t=>'<button class="'+(v===t[0]?'on':'')+'" data-cv="'+t[0]+'">'+t[1]+'<span>'+t[2]+'</span>'+(t[0]==='packs'&&C().free!==today()?'<em></em>':'')+'</button>').join('')+'</div>';
-  return '<div class="cl-wrap">'+head()+tabs+(v==='team'?vTeam():v==='packs'?vPacks():v==='shop'?vShop():v==='board'?vBoard():vHome())+'</div>'}
+  return '<div class="cl-wrap">'+head()+tabs+(v==='team'?vTeam():v==='packs'?vPacks():v==='shop'?vShop():v==='board'?vBoard():v==='cup'?vCup():v==='market'?vMarket():vHome())+'</div>'}
 function renderCreate(){const ci=ui.clCol||0,e=ui.clE||'🦁';
   return '<div class="cl-wrap"><div class="cl-intro"><div class="cl-big">⚽</div><h2>Crée ton club</h2><p>Tu commences en Division 10 avec 15 jeunes joueurs. À toi de les entraîner, d\'ouvrir des packs et de battre les autres clubs pour grimper jusqu\'à la <b>Ligue des Légendes</b>.</p>'+
     '<input id="clName" maxlength="22" placeholder="Nom du club (ex. FC Épône)" value="'+esc(ui.clNm||'')+'">'+
@@ -387,6 +387,7 @@ function vHome(){const c=C(),en=energy(),inc=income(),up=25000*c.st*c.st,ne=next
     (en<5?'<p class="cl-en">⚡ +1 énergie toutes les 20 min'+' · <button class="cl-link" data-cv="shop">🛒 Acheter de l\'énergie</button>'+'</p>':'')+
     '<div class="cl-grid"><div class="cl-tile"><i>🏟️</i><b>Stade niv. '+c.st+'</b><span>'+nf(800*c.st)+' 🪙 / heure (8 h max)</span><button class="cl-sbtn" data-clcollect="1"'+(inc<1?' disabled':'')+'>Récupérer '+nf(inc)+' 🪙</button>'+(c.st<10?'<button class="cl-sbtn alt" data-clstade="1">Agrandir · '+nf(up)+' 🪙</button>':'<small>Niveau maximum</small>')+'</div>'+
     '<div class="cl-tile"><i>📊</i><b>Saison</b><span>'+(c.w||0)+' V · '+(c.d||0)+' N · '+(c.l||0)+' D</span>'+(last.length?'<div class="cl-form">'+last.map(h=>'<i class="fm fm-'+h.r+'">'+h.r+'</i>').join('')+'</div>':'<small>Joue ton premier match !</small>')+'</div></div>'+
+    cupCard()+'<button class="cl-mkt" data-cv="market"><i>💱</i><span><b>Marché des transferts</b><small>Achète et vends des joueurs avec les autres joueurs de PronoClub</small></span><em>›</em></button>'+
     '<div class="cl-help"><b>Comment progresser ?</b><ul><li>🏆 Victoire = 3 pts, nul = 1 pt. <b>30 pts</b> pour monter de division.</li><li>🎁 Un <b>pack gratuit</b> chaque jour, et des packs à acheter avec tes pièces ou tes diamants.</li><li>💪 Entraîne tes joueurs dans <b>Équipe</b> pour augmenter leur note.</li><li>🏟️ Ton stade te rapporte des pièces même quand tu ne joues pas.</li></ul></div>'}
 function vTeam(){const c=C(),L=lineup(),sel=ui.clSel;
   const pitch='<div class="cl-pitch">'+[[8,9,10],[5,6,7],[1,2,3,4],[0]].map(row=>'<div class="cl-row">'+row.map(i=>{const x=L[i];
@@ -430,8 +431,8 @@ function vBoard(){
 async function loadBoard(){try{ui.clBoard=await rpc('club_classement',{})||[]}catch(e){ui.clBoard='off'}if(ui.tab==='club')renderView()}
 
 /* ---------- packs ---------- */
-function openPack(id){const c=C(),p=PACKS.find(x=>x.id===id);if(!p)return;
-  if(p.cur==='free'){if(c.free===today())return;c.free=today()}
+function openPack(id,gift){const c=C(),p=PACKS.find(x=>x.id===id);if(!p)return;
+  if(gift){}else if(p.cur==='free'){if(c.free===today())return;c.free=today()}
   else if(p.cur==='c'){if(state.coins<p.cost)return;state.coins-=p.cost}
   else{if(state.diamonds<p.cost)return;state.diamonds-=p.cost;state.spent=(state.spent||0)+p.cost}
   try{window.track&&window.track('pack',{})}catch(e){}
@@ -453,7 +454,7 @@ function packShow(got,p){const ov=document.createElement('div');ov.className='cl
 /* ---------- adversaires ---------- */
 function bot(note,used){const n=Math.max(45,Math.min(95,note+R(9)-4)),v=()=>Math.max(40,Math.min(99,n+R(7)-3)),ci=R(COLS.length);let nm=pick(BOTN),k=0;while(used&&used.has(nm)&&k++<20)nm=pick(BOTN);used&&used.add(nm);
   return{bot:1,pseudo:'IA',n:nm,e:pick(CRESTS),c1:COLS[ci][0],c2:COLS[ci][1],note:n,att:v(),mid:v(),def:v(),gk:v(),div:C().div,noms:botNames(n)}}
-async function choose(){const c=C();if(energy()<1){popup('<div class="pop-ic big">⚡</div><h3>Plus d\'énergie</h3><p>Tu récupères <b>+1 ⚡ toutes les 20 min</b>. Tu peux aussi en acheter tout de suite dans la boutique du club.</p><div class="pop-btns"><button class="pbtn" data-cv="shop">🛒 Acheter de l\'énergie</button><button class="pbtn ghost2" data-popclose="1">Plus tard</button></div>');return}
+async function choose(){ui.clCup=false;const c=C();if(energy()<1){popup('<div class="pop-ic big">⚡</div><h3>Plus d\'énergie</h3><p>Tu récupères <b>+1 ⚡ toutes les 20 min</b>. Tu peux aussi en acheter tout de suite dans la boutique du club.</p><div class="pop-btns"><button class="pbtn" data-cv="shop">🛒 Acheter de l\'énergie</button><button class="pbtn ghost2" data-popclose="1">Plus tard</button></div>');return}
   const me=notes().note;let L=[];
   try{L=(await rpc('club_adversaires',{p_token:session.token,p_note:me}))||[]}catch(e){}
   L=L.filter(x=>x&&x.n&&x.note).slice(0,3);const used=new Set(L.map(x=>x.n));while(L.length<3)L.push(bot(me,used));
@@ -481,7 +482,8 @@ function play(i){const o=ui.clOpp&&ui.clOpp[i];if(!o)return;ui.clOi=i;closePop()
     '<button class="cl-mode" data-clmode="watch"><b>📺 Regarder le match</b><small>Ton équipe joue toute seule, en direct</small></button>'+
     '<button class="cl-mode" data-clmode="fast"><b>⚡ Résultat rapide</b><small>Le résumé du match en quelques secondes</small></button></div><button class="pbtn ghost2" data-popclose="1">Annuler</button>'),200)}
 function cdist(a,b){const f=h=>{h=String(h||'#000').replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');const n=parseInt(h,16)||0;return[n>>16,n>>8&255,n&255]};const x=f(a),y=f(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2])}
-function go(mode){const o=ui.clOpp&&ui.clOpp[ui.clOi];if(!o)return;closePop();const c=C();energy();if(c.en<1){toast('Plus d\'énergie : reviens dans quelques minutes ⚡');return}c.en--;if(c.en===4)c.enT=Date.now();csave();
+function go(mode){const o=ui.clOpp&&ui.clOpp[ui.clOi];if(!o)return;closePop();const c=C();
+  if(!ui.clCup){energy();if(c.en<1){toast('Plus d\'énergie : reviens dans quelques minutes ⚡');return}c.en--;if(c.en===4)c.enT=Date.now()}csave();
   if(mode==='fast'||!window.ClMatch){quick(o);return}
   const home={n:c.n,e:c.e,c1:c.c1,c2:c.c2,pl:lineup().map(x=>({n:x.pl?x.pl.n:'Remplaçant',sn:x.pl?shortN(x.pl.n):'?',r:x.pl?eff(c,x.pl,x.i)+2:40}))};
   let a1=o.c1,a2=o.c2;if(cdist(a1,c.c1)<110){if(cdist(a2,c.c1)>=110){a1=o.c2;a2=o.c1}else{a1=cdist('#f8fafc',c.c1)>150?'#f8fafc':'#111827';a2=c.c1}}
@@ -514,7 +516,7 @@ function quick(o){const c=C();
     if(t>=90){done=true;while(ei<S.ev.length){const e=S.ev[ei++];if(e.t==='g'){ov.querySelector('#mvS').textContent=e.sc[0]+' - '+e.sc[1];say(e.m,'<b>⚽ '+esc(e.p)+'</b>','goal '+(e.s===1?'h':'a'))}}setTimeout(()=>finish(ov,o,S),600);return}
     requestAnimationFrame(frame)};
   requestAnimationFrame(frame)}
-function finish(ov,o,S,mult,info){const c=C(),pen=info&&info.pens&&S.sh===S.sa?info.pens:null,pw=pen?pen[0]>pen[1]:false;
+function finish(ov,o,S,mult,info){if(ui.clCup)return cupFinish(ov,o,S,info);const c=C(),pen=info&&info.pens&&S.sh===S.sa?info.pens:null,pw=pen?pen[0]>pen[1]:false;
   const res=pen?(pw?'V':'N'):S.sh>S.sa?'V':S.sh<S.sa?'D':'N';
   try{window.track&&window.track('club',{res,goals:S.sh,live:!!(info&&info.live&&!info.abandon)})}catch(e){}
   const gain=Math.round((res==='V'?1500+(10-c.div)*500:res==='N'?500:200)*(mult||1)),pts=pen?(pw?2:1):res==='V'?3:res==='N'?1:0;
@@ -530,12 +532,94 @@ function finish(ov,o,S,mult,info){const c=C(),pen=info&&info.pens&&S.sh===S.sa?i
   ov.appendChild(box);if(res==='V'){winFx(promo?'fx-fireworks':null)}
   box.addEventListener('click',e=>{const b=e.target.closest('[data-mvend]');if(!b)return;ov.remove();renderView();if(b.dataset.mvend==='again'&&energy()>0)choose()})}
 
+/* ---------- Coupe du week-end ---------- */
+const CUPR=['8es de finale','Quarts de finale','Demi-finale','Finale'],CUPD=[-3,0,3,6],CUPG=[{c:5000},{c:10000},{c:20000,d:2000},{c:100000,d:10000}];
+const CUPN=['FC Galaxie','Real Tempête','Inter Comète','Athletic Volcan','Dynamo Éclipse','Sporting Typhon','Olympique Aurore','United Météore','Racing Avalanche','AC Ouragan','Borussia Orage','Celtic Nébuleuse'];
+function dowP(){return new Date(today()+'T12:00:00').getDay()}
+function cupId(){const w=dowP();if(w===6)return today();if(w===0){const d=new Date(today()+'T12:00:00');d.setDate(d.getDate()-1);return d.toISOString().slice(0,10)}return null}
+function cupNext(){const w=dowP(),n=(6-w+7)%7||7,d=new Date(today()+'T00:00:00');d.setDate(d.getDate()+n);return d}
+function cupState(){const c=C(),id=cupId();if(!id)return null;if(!c.cup||c.cup.id!==id){const me=notes().note,used=new Set();
+    c.cup={id,r:0,out:false,res:[],opp:CUPD.map((dl,i)=>{const b=bot(me+dl,used);let nm=pick(CUPN),k=0;while(used.has(nm)&&k++<20)nm=pick(CUPN);used.add(nm);b.n=nm;b.note=Math.max(45,Math.min(97,me+dl));['att','mid','def','gk'].forEach(x=>b[x]=Math.max(40,Math.min(99,b.note+R(5)-2)));b.noms=botNames(b.note);return b})}}
+  return c.cup}
+function rwT(r){return [r.c?nf(r.c)+' 🪙':'',r.d?nf(r.d)+' 💎':''].filter(Boolean).join(' + ')}
+function cupCard(){const id=cupId();
+  if(!id){const d=cupNext();return '<button class="cl-cup off" data-cv="cup"><i>🏆</i><span><b>Coupe du week-end</b><small>Prochaine coupe samedi '+d.getDate()+' · 16 clubs, 4 tours, un trophée et un pack Légende</small></span><em>›</em></button>'}
+  const k=cupState(),st=k.r>=4?'🏆 Tu as gagné la coupe !':k.out?'❌ Éliminé en '+CUPR[k.r].toLowerCase():'▶ Prochain match : '+CUPR[k.r];
+  return '<button class="cl-cup" data-cv="cup"><i>🏆</i><span><b>Coupe du week-end <em class="cl-live">EN COURS</em></b><small>'+st+'</small></span><em>›</em></button>'}
+function vCup(){const back='<button class="cl-back" data-cv="home">‹ Retour au club</button>';const id=cupId();
+  if(!id){const d=cupNext(),ms=d-Date.now(),h=Math.floor(ms/3600e3);
+    return back+'<div class="cup-hero off"><i>🏆</i><h3>Coupe du week-end</h3><p>Elle ouvre <b>samedi</b> et dure tout le week-end.<br>Encore <b>'+(h>=24?Math.floor(h/24)+' j '+(h%24)+' h':h+' h')+'</b> à attendre.</p></div>'+cupRules()}
+  const k=cupState();
+  let h=back+'<div class="cup-hero"><i>🏆</i><h3>Coupe du week-end</h3><p>16 clubs · élimination directe · <b>sans énergie</b>. En cas d\'égalité : tirs au but !</p></div><div class="cup-list">';
+  k.opp.forEach((o,i)=>{const done=i<k.r,cur=i===k.r&&!k.out,lost=k.out&&i===k.r,res=k.res[i];
+    h+='<div class="cup-r'+(done?' ok':lost?' ko':cur?' cur':' lock')+'"><div class="cup-n"><b>'+CUPR[i]+'</b><small>Gain : '+rwT(CUPG[i])+(i===3?' + pack Légende':'')+'</small></div>'+
+      '<div class="cup-o"><i style="background:linear-gradient(135deg,'+esc(o.c1)+' 50%,'+esc(o.c2)+' 50%)">'+esc(o.e)+'</i><span><b>'+(done||cur||lost?esc(o.n):'???')+'</b><small>'+(done||cur||lost?'Note '+o.note:'Adversaire mystère')+'</small></span></div>'+
+      (done?'<strong class="w">'+esc(res||'')+'</strong>':lost?'<strong class="l">'+esc(res||'')+'</strong>':cur?'<button class="cl-sbtn" data-clcup="'+i+'">▶ Jouer</button>':'<strong>🔒</strong>')+'</div>'});
+  h+='</div>';
+  if(k.r>=4)h+='<div class="cup-win">🏆 <b>Vainqueur de la Coupe !</b><br>Reviens le week-end prochain pour la défendre.</div>';
+  else if(k.out)h+='<div class="cup-lose">Éliminé… La prochaine coupe ouvre samedi prochain.</div>';
+  return h+cupRules()}
+function cupRules(){const c=C();return '<div class="cl-help"><b>Les règles</b><ul><li>Chaque samedi, une nouvelle coupe de <b>16 clubs</b> commence. Elle se termine dimanche soir.</li><li>4 tours : 8es, quarts, demie, finale. Les adversaires sont de plus en plus forts.</li><li>Les matchs de coupe <b>ne coûtent pas d\'énergie</b>, mais une défaite et c\'est fini jusqu\'à la semaine prochaine.</li><li>Victoire en finale : <b>100 000 🪙 + 10 000 💎 + un pack Légende</b> et un trophée.</li></ul><p>🏆 Coupes gagnées : <b>'+(c.cups||0)+'</b></p></div>'}
+function cupPlay(i){const k=cupState();if(!k||k.out||k.r!==i||k.r>=4)return;ui.clCup=true;ui.clOpp=[k.opp[i]];ui.clOi=0;play(0)}
+function cupFinish(ov,o,S,info){const c=C(),k=cupState();ui.clCup=false;
+  let pen=info&&info.pens&&S.sh===S.sa?info.pens:null;
+  if(S.sh===S.sa&&!pen){let a=0,b=0;for(let i=0;i<5;i++){if(Math.random()<.75)a++;if(Math.random()<.72)b++}while(a===b){if(Math.random()<.75)a++;if(Math.random()<.72)b++}pen=[a,b]}
+  const win=S.sh>S.sa||(pen&&pen[0]>pen[1]),abandon=info&&info.abandon,i=k?k.r:0;
+  try{window.track&&window.track('club',{res:win?'V':'D',goals:S.sh,live:!!(info&&info.live&&!abandon)})}catch(e){}
+  const score=S.sh+'-'+S.sa+(pen?' ('+pen[0]+'-'+pen[1]+' tab)':'');
+  let msg='',rw=null;
+  if(k&&!abandon&&win){k.res[i]=score;rw=CUPG[i];state.coins+=rw.c||0;state.diamonds+=rw.d||0;k.r++;
+    if(k.r>=4){c.cups=(c.cups||0)+1;msg='<div class="mv-promo">🏆 TU AS GAGNÉ LA COUPE DU WEEK-END !<br>+'+rwT(rw)+' + un pack Légende</div>'}
+    else msg='<div class="mv-promo">✅ Qualifié pour les <b>'+CUPR[k.r].toLowerCase()+'</b> ! +'+rwT(rw)+'</div>'}
+  else if(k){k.res[i]=score;k.out=true;state.coins+=2000;msg='<p>Éliminé en '+CUPR[i].toLowerCase()+'… +2 000 🪙 de consolation</p>'}
+  csave();renderHeader();
+  const box=document.createElement('div');box.className='mv-end '+(win&&!abandon?'V':'D');
+  box.innerHTML='<div class="mv-res">'+(win&&!abandon?'VICTOIRE':'DÉFAITE')+(pen?'<small class="mv-tab">aux tirs au but</small>':'')+'</div><div class="mv-cup">🏆 Coupe du week-end · '+CUPR[i]+'</div><div class="mv-fs">'+S.sh+' - '+S.sa+'</div>'+(pen?'<div class="mv-pen">Tirs au but : <b>'+pen[0]+' - '+pen[1]+'</b></div>':'')+msg+
+    '<div class="mv-btns"><button class="cl-go" data-mvend="cup">'+(k&&k.r>=4?'🎁 Ouvrir mon pack Légende':'Voir la coupe')+'</button></div>';
+  ov.appendChild(box);if(win&&!abandon)winFx(k&&k.r>=4?'fx-fireworks':null);
+  box.addEventListener('click',e=>{const b=e.target.closest('[data-mvend]');if(!b)return;ov.remove();ui.tab='club';ui.cv='cup';renderView();if(k&&k.r>=4&&!k.pack){k.pack=1;csave();openPack('legende',true)}})}
+
+/* ---------- Marché des transferts ---------- */
+function mktMax(p){return Math.max(5000,price(p.r)*2)}
+function mktMin(p){return RAR[p.k].sell}
+function vMarket(){const back='<button class="cl-back" data-cv="home">‹ Retour au club</button>';const tab=ui.mkTab||'buy';
+  const seg='<div class="cl-chips">'+[['buy','🛒 Acheter'],['sell','💰 Vendre'],['mine','📋 Mes ventes']].map(x=>'<button class="'+(tab===x[0]?'on':'')+'" data-clmk="'+x[0]+'">'+x[1]+'</button>').join('')+'</div>';
+  let h=back+'<div class="cl-shead"><b>💱 Marché des transferts</b><span>Les joueurs mis en vente par les autres joueurs de PronoClub. Le vendeur reçoit 95 % du prix.</span></div>'+seg;
+  if(tab==='sell'){const c=C(),L=c.sq.filter(p=>!c.xi.includes(p.id)).sort((a,b)=>b.r-a.r);
+    if(!L.length)return h+'<p class="cl-hint">Tous tes joueurs sont titulaires. Seuls les remplaçants peuvent être vendus.</p>';
+    return h+'<p class="cl-hint">Choisis un remplaçant à vendre (les titulaires ne peuvent pas être vendus).</p><div class="cl-slist">'+L.map(p=>'<div class="cl-sp">'+card(p,{sm:1})+'<div class="cl-spi"><b>'+esc(p.n)+'</b><small>'+POSN[p.p]+' · note '+p.r+' · prix conseillé '+nf(Math.round(price(p.r)/1000)*1000||1000)+' 🪙</small><button class="cl-sbtn" data-clmksell="'+p.id+'">💰 Mettre en vente</button></div></div>').join('')+'</div>'}
+  if(ui.mkList===undefined){ui.mkList=null;loadMkt()}
+  if(ui.mkList===null)return h+'<p class="cl-hint">Chargement du marché…</p>';
+  if(ui.mkList==='off')return h+'<p class="cl-hint">Le marché n\'est pas encore activé (il faut lancer <b>supabase-marche-chat.sql</b> dans Supabase).</p>';
+  const L=ui.mkList.filter(x=>tab==='mine'?x.mine:!x.mine);
+  if(!L.length)return h+'<p class="cl-hint">'+(tab==='mine'?'Tu n\'as aucun joueur en vente.':'Aucun joueur en vente pour l\'instant. Reviens plus tard, ou mets un des tiens en vente !')+'</p>';
+  const own=owned();
+  return h+'<div class="cl-slist">'+L.map(x=>{const p=x.joueur,has=own.has(p.n);
+    return '<div class="cl-sp">'+card(Object.assign({id:'mk'+x.id},p),{sm:1})+'<div class="cl-spi"><b>'+esc(p.n)+'</b><small>'+POSN[p.p]+' · note '+p.r+' · vendu par '+esc(x.vendeur)+'</small>'+
+      (x.mine?'<button class="cl-sbtn alt" data-clmkdel="'+x.id+'">↩️ Retirer de la vente ('+nf(x.prix)+' 🪙)</button>':'<button class="cl-sbtn" data-clmkbuy="'+x.id+'"'+(has?' disabled':'')+'>'+(has?'✓ Déjà dans ton effectif':'🪙 '+nf(x.prix))+'</button>')+'</div></div>'}).join('')+'</div>'}
+async function loadMkt(){try{ui.mkList=(await rpc('marche_lister',{p_token:session.token}))||[]}catch(e){ui.mkList='off'}if(ui.tab==='club'&&ui.cv==='market')renderView()}
+function mkSellAsk(id){const c=C(),p=byId(id);if(!p||c.xi.includes(id))return;const sug=Math.max(mktMin(p),Math.round(price(p.r)/1000)*1000||1000);
+  popup('<div class="pop-ic big">💰</div><h3>Vendre '+esc(p.n)+'</h3><p>Note <b>'+p.r+'</b> · '+POSN[p.p]+'</p><p>Prix entre <b>'+nf(mktMin(p))+'</b> et <b>'+nf(mktMax(p))+'</b> 🪙</p><input id="mkPrix" class="cl-q" type="number" inputmode="numeric" value="'+sug+'" min="'+mktMin(p)+'" max="'+mktMax(p)+'"><p class="cl-hint">Tu recevras <b>95 %</b> du prix quand un joueur l\'achète. Le joueur quitte ton effectif pendant la vente (tu peux le retirer quand tu veux).</p><div class="pop-btns"><button class="pbtn" data-clmksellok="'+id+'">Mettre en vente</button><button class="pbtn ghost2" data-popclose="1">Annuler</button></div>')}
+async function mkSell(id){const c=C(),p=byId(id),inp=$('#mkPrix');if(!p||!inp)return;const prix=Math.round(+inp.value||0);
+  if(prix<mktMin(p)||prix>mktMax(p)){toast('Prix entre '+nf(mktMin(p))+' et '+nf(mktMax(p))+' 🪙');return}
+  const j={n:p.n,f:p.f,p:p.p,k:p.k,r:p.r,t:p.t||0,real:1};
+  try{await rpc('marche_vendre',{p_token:session.token,p_joueur:j,p_prix:prix})}catch(e){toast(e.code==='trop'?'5 joueurs en vente maximum':e.code==='prix'?'Prix refusé':'Vente impossible pour l\'instant');return}
+  c.sq.splice(c.sq.indexOf(p),1);csave();closePop();toast('💰 '+p.n+' est en vente pour '+nf(prix)+' 🪙');ui.mkTab='mine';ui.mkList=undefined;renderView()}
+async function mkDel(id){const c=C();try{const r=await rpc('marche_retirer',{p_token:session.token,p_id:id});if(r&&r.joueur){const j=r.joueur;c.sq.push({id:uid(),n:j.n,f:j.f,p:j.p,k:j.k,r:j.r,t:j.t||0,real:1});csave();toast('↩️ '+j.n+' revient dans ton effectif')}}
+  catch(e){toast(e.code==='vendu'?'Trop tard : ce joueur vient d\'être acheté !':'Impossible pour l\'instant')}ui.mkList=undefined;renderView()}
+async function mkBuy(id){const c=C(),x=(ui.mkList||[]).find(y=>y.id===id);if(!x)return;
+  if(owned().has(x.joueur.n)){toast('Déjà dans ton effectif');return}if(c.sq.length>=40){toast('Effectif plein (40)');return}if(state.coins<x.prix){toast('Il te manque '+nf(x.prix-state.coins)+' 🪙');return}
+  try{const r=await rpc('marche_acheter',{p_token:session.token,p_id:id});const j=r.joueur;state.coins-=r.prix;c.sq.push({id:uid(),n:j.n,f:j.f,p:j.p,k:j.k,r:j.r,t:j.t||0,real:1});csave();renderHeader();closePop();
+    celebrate('✍️',esc(j.n)+' signe au '+esc(c.n)+' !','Transfert réussi pour <b>'+nf(r.prix)+' 🪙</b>. Mets-le dans ton équipe depuis l\'onglet <b>Équipe</b>.');}
+  catch(e){toast(e.code==='vendu'?'Trop tard : quelqu\'un l\'a acheté avant toi':e.code==='toi'?'C\'est ton propre joueur':'Achat impossible pour l\'instant')}
+  ui.mkList=undefined;renderView()}
+
 /* ---------- actions ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-cv],[data-cle],[data-clc],[data-clcreate],[data-clplay],[data-clopp],[data-clslot],[data-clsub],[data-clauto],[data-cltrain],[data-clsell],[data-clpack],[data-clcollect],[data-clstade],[data-clrefill],[data-clopen],[data-clmode],[data-clbuy],[data-clbuyen],[data-clbuyok],[data-clpos],[data-clmore]');if(!t)return;
+  const t=e.target.closest('[data-cv],[data-cle],[data-clc],[data-clcreate],[data-clplay],[data-clopp],[data-clslot],[data-clsub],[data-clauto],[data-cltrain],[data-clsell],[data-clpack],[data-clcollect],[data-clstade],[data-clrefill],[data-clopen],[data-clmode],[data-clbuy],[data-clbuyen],[data-clbuyok],[data-clpos],[data-clmore],[data-clcup],[data-clmk],[data-clmksell],[data-clmksellok],[data-clmkdel],[data-clmkbuy],[data-clmkbuyok]');if(!t)return;
   const d=t.dataset,c=C();
   if(d.clopen){ui.tab='club';ui.cv='home';closePop();renderHeader();renderView();window.scrollTo(0,0);return}
-  if(d.cv){const inPop=!!t.closest('#popModal');if(inPop)closePop();ui.tab='club';ui.cv=d.cv;ui.clSel=null;if(d.cv==='board')ui.clBoard=null;renderView();if(inPop)window.scrollTo(0,0);return}
+  if(d.cv){const inPop=!!t.closest('#popModal');if(inPop)closePop();ui.tab='club';ui.cv=d.cv;ui.clSel=null;if(d.cv==='board')ui.clBoard=null;if(d.cv==='market')ui.mkList=undefined;renderView();if(inPop)window.scrollTo(0,0);return}
   if(d.clpos){ui.clPos=d.clpos;ui.clLim=30;renderView();return}
   if(d.clmore){ui.clLim=(ui.clLim||30)+30;const L=document.getElementById('clShopL');if(L)L.innerHTML=shopList();return}
   if(d.cle){ui.clNm=($('#clName')||{}).value||'';ui.clE=d.cle;renderView();return}
@@ -545,6 +629,13 @@ document.addEventListener('click',e=>{
   if(!c)return;
   if(d.clplay){choose();return}
   if(d.clmode){go(d.clmode);return}
+  if(d.clcup!=null&&t.matches('[data-clcup]')){cupPlay(+d.clcup);return}
+  if(d.clmk){ui.mkTab=d.clmk;if(d.clmk!=='sell')ui.mkList=undefined;renderView();return}
+  if(d.clmksell){mkSellAsk(d.clmksell);return}
+  if(d.clmksellok){mkSell(d.clmksellok);return}
+  if(d.clmkdel){mkDel(+d.clmkdel);return}
+  if(d.clmkbuy){const x=(ui.mkList||[]).find(y=>y.id===+d.clmkbuy);if(!x)return;popup('<div class="pop-ic big">✍️</div><h3>Acheter '+esc(x.joueur.n)+' ?</h3><p>Note <b>'+x.joueur.r+'</b> · vendu par '+esc(x.vendeur)+'<br>Prix : <b>'+nf(x.prix)+' 🪙</b></p><div class="pop-btns"><button class="pbtn" data-clmkbuyok="'+x.id+'">Confirmer l\'achat</button><button class="pbtn ghost2" data-popclose="1">Annuler</button></div>');return}
+  if(d.clmkbuyok){mkBuy(+d.clmkbuyok);return}
   if(d.clbuyen!=null&&t.matches('[data-clbuyen]')){const x=ENP[+d.clbuyen];if(!x)return;const en=energy();if(en>=20){toast('Énergie au maximum (20)');return}
     if(x.c){if(state.coins<x.c){toast('Pas assez de pièces');return}state.coins-=x.c}else{if(state.diamonds<x.d){toast('Pas assez de diamants');return}state.diamonds-=x.d;state.spent=(state.spent||0)+x.d}
     c.en=Math.min(20,en+x.q);if(c.en>=5)c.enT=Date.now();csave();renderHeader();toast('⚡ +'+x.q+' énergie ('+c.en+' ⚡)');renderView();return}
@@ -596,6 +687,18 @@ window.clubBanner=function(){if(!session)return '';const c=C();
 .cl-bar.big{height:12px;margin:12px 0 4px}
 .cl-note{text-align:center;background:rgba(0,0,0,.25);border-radius:14px;padding:6px 10px}.cl-note b{display:block;font-size:26px;font-weight:900;line-height:1}.cl-note small{font-size:9px;font-weight:800;opacity:.8}
 .cl-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
+.cl-cup,.cl-mkt{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:18px;padding:14px;margin:10px 0 0;text-align:left;cursor:pointer;color:#fff;background:linear-gradient(135deg,#b45309,#f59e0b 55%,#fde047);box-shadow:0 10px 24px rgba(245,158,11,.3)}
+.cl-mkt{background:linear-gradient(135deg,#0f766e,#14b8a6);box-shadow:0 10px 24px rgba(20,184,166,.25)}.cl-cup.off{background:linear-gradient(135deg,#475569,#94a3b8);box-shadow:none}
+.cl-cup>i,.cl-mkt>i{font-style:normal;font-size:30px}.cl-cup span,.cl-mkt span{flex:1}.cl-cup b,.cl-mkt b{display:block;font-size:16px;font-weight:900}.cl-cup small,.cl-mkt small{font-size:12.5px;opacity:.95}.cl-cup>em,.cl-mkt>em{font-style:normal;font-size:26px;opacity:.8}
+.cl-live{font-style:normal;font-size:10px;background:#dc2626;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:middle;animation:clPulse 1.4s infinite}
+.cl-back{border:0;background:none;color:inherit;font-weight:800;font-size:14px;padding:6px 0;cursor:pointer;opacity:.8}
+.cup-hero{text-align:center;border-radius:20px;padding:18px;color:#fff;background:radial-gradient(circle at 50% 0,#fde047,#b45309 70%);margin:6px 0 12px}.cup-hero.off{background:linear-gradient(135deg,#475569,#94a3b8)}.cup-hero i{font-style:normal;font-size:46px}.cup-hero h3{margin:4px 0;font-size:22px}.cup-hero p{margin:0;font-size:13.5px}
+.cup-list{display:grid;gap:8px}.cup-r{display:flex;align-items:center;gap:10px;background:var(--card,#fff);border-radius:16px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cup-r.cur{outline:3px solid #f59e0b}.cup-r.lock{opacity:.55}.cup-r.ok{background:linear-gradient(90deg,rgba(22,163,74,.14),var(--card,#fff))}.cup-r.ko{background:linear-gradient(90deg,rgba(220,38,38,.14),var(--card,#fff))}
+.cup-n{width:96px}.cup-n b{display:block;font-size:13px}.cup-n small{font-size:10.5px;opacity:.7}.cup-o{flex:1;display:flex;align-items:center;gap:8px;min-width:0}.cup-o i{font-style:normal;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:18px;flex:none}
+.cup-o span{min-width:0}.cup-o b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cup-o small{font-size:11px;opacity:.7}.cup-r .cl-sbtn{width:auto;flex:none;margin:0;padding:9px 14px;white-space:nowrap}.cup-r strong{font-size:13px}.cup-r strong.w{color:#16a34a}.cup-r strong.l{color:#dc2626}
+.cup-win,.cup-lose{margin-top:12px;text-align:center;padding:14px;border-radius:16px;background:linear-gradient(135deg,#fde047,#f59e0b);color:#3b2600;font-size:14px}.cup-lose{background:var(--card2,#eef1f6);color:inherit}
+.mv-cup{font-weight:800;font-size:13px;color:#facc15;margin:-2px 0 2px}
 .cl-shead{display:flex;flex-direction:column;margin:14px 2px 8px}.cl-shead>b{font-size:17px;font-weight:900}.cl-shead span{font-size:12.5px;opacity:.75}
 .cl-shopen{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.cl-eb{border:0;border-radius:16px;padding:12px 4px;background:linear-gradient(160deg,#fde047,#f59e0b);color:#111;cursor:pointer;box-shadow:0 6px 14px rgba(245,158,11,.3)}
 .cl-eb b{display:block;font-size:17px;font-weight:900}.cl-eb span{font-size:11.5px;font-weight:800}.cl-eb:last-child{background:linear-gradient(160deg,#a5f3fc,#0891b2);color:#fff}

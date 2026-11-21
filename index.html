@@ -572,6 +572,19 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 @media (min-width:901px){.dash{margin:0 0 14px;padding:2px 2px 8px}.tile{flex:1 1 0;min-width:140px}}
 
 .dm-sec{border:2px solid rgba(250,204,21,.45)}.ms-b.alt{background:transparent;border:2px solid currentColor;opacity:.8}.dm-bonus{background:linear-gradient(90deg,rgba(250,204,21,.16),transparent)}
+.mc-chat{border:0;border-radius:999px;padding:6px 12px;font-weight:800;font-size:12.5px;background:rgba(99,102,241,.14);color:inherit;cursor:pointer}.mc-chat b{background:#6366f1;color:#fff;border-radius:999px;padding:0 6px;font-size:11px}
+.mc-chat.sm{padding:2px 8px;margin-left:auto;font-size:11.5px}.mc-h .mc-chat{margin-left:auto}.mc-cr{margin:10px 12px 0}
+.mcx{display:flex;flex-direction:column;max-height:76vh}.mcx-h{margin-bottom:8px}.mcx-h b{display:block;font-size:17px;padding-right:26px}.mcx-h small{opacity:.7}
+.mcx-l{flex:1;overflow:auto;min-height:220px;max-height:52vh;background:var(--bg2,rgba(0,0,0,.04));border-radius:14px;padding:8px;margin-bottom:8px}.mcx-r{border:0;background:none;cursor:pointer;font-size:11px;padding:0 2px;opacity:.65}
+.cb-card{margin:0 0 14px;border-radius:20px;padding:14px;color:#fff;background:linear-gradient(120deg,#4f46e5,#7c3aed);box-shadow:0 8px 20px rgba(99,60,230,.3)}
+.cb-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}.cb-h b{font-size:16px}.cb-h span{font-size:12px;opacity:.85}
+.cb-l{display:grid;grid-template-columns:1fr auto;gap:0 8px;padding:7px 0;border-top:1px solid rgba(255,255,255,.18)}.cb-l span{font-weight:800;font-size:14px}.cb-l small{grid-column:1;font-size:11.5px;opacity:.85}.cb-l b{grid-row:1/3;grid-column:2;align-self:center;background:rgba(255,255,255,.18);border-radius:10px;padding:5px 9px}
+.cb-b{width:100%;margin-top:8px;border:0;border-radius:14px;padding:12px;font-weight:900;font-size:15px;background:#fde047;color:#3b2600;cursor:pointer}.cb-b.on{background:#fff;color:#4f46e5}
+.tuto{position:fixed;inset:0;z-index:10080;background:rgba(5,10,25,.72);backdrop-filter:blur(6px);display:grid;place-items:center;padding:18px;opacity:0;transition:opacity .25s}.tuto.in{opacity:1}
+.tuto-b{position:relative;width:min(420px,100%);background:var(--card,#fff);color:var(--txt,#0b1220);border-radius:26px;padding:26px 22px 20px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.45);animation:mvIn .35s ease}
+.tuto-x{position:absolute;right:14px;top:12px;border:0;background:none;color:inherit;opacity:.6;font-weight:800;cursor:pointer}.tuto-ic{font-size:64px;line-height:1.1;margin:8px 0}
+.tuto-b h2{margin:6px 0 8px;font-size:22px}.tuto-b p{margin:0 0 14px;font-size:15px;line-height:1.5}.tuto-d{display:flex;gap:6px;justify-content:center;margin-bottom:14px}.tuto-d i{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,.18)}.tuto-d i.on{width:22px;border-radius:6px;background:#e5126b}
+.tuto-n{display:flex;justify-content:space-between;gap:10px}.tuto-n button{flex:1;border:0;border-radius:14px;padding:13px;font-weight:900;font-size:15px;background:linear-gradient(90deg,#e5126b,#7c3aed);color:#fff;cursor:pointer}.tuto-n button.alt{flex:.6;background:rgba(0,0,0,.07);color:inherit}.tuto-n span{flex:.6}
 /* défi du jour */
 .defi{position:relative;overflow:hidden;border-radius:22px;padding:16px;margin-bottom:16px;color:#fff;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.22),transparent 45%),linear-gradient(130deg,#6a2cf5,#3b1fa8 60%,#1c0f66);box-shadow:0 12px 26px rgba(106,44,245,.32)}
 .defi::after{content:"🎯";position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.13;transform:rotate(-12deg)}
@@ -2186,7 +2199,7 @@ async function claimBonus(){
   if(!session||!synced)return;
   try{const r=await rpc('bonus_recuperer',{p_token:session.token});if(!r)return;const f0=ui.filleuls;ui.filleuls=r.filleuls||0;checkParrain();if(f0!==ui.filleuls&&(ui.tab==='matchs'||ui.tab==='invite'))renderView();
     if(r.bonus>0||r.dia>0){state.coins+=r.bonus||0;state.diamonds+=r.dia||0;save();renderAll();
-      celebrate('🎁',r.dia>0&&!(r.bonus>0)?'Récompense reçue !':'Bonus reçu !','<b>'+[r.bonus>0?'+'+nf(r.bonus)+' pièces':'',r.dia>0?'+'+nf(r.dia)+' 💎':''].filter(Boolean).join(' et ')+'</b> pour toi (parrainage ou Grille du jour). Bravo !')}}catch(e){}
+      celebrate('🎁',r.dia>0&&!(r.bonus>0)?'Récompense reçue !':'Bonus reçu !','<b>'+[r.bonus>0?'+'+nf(r.bonus)+' pièces':'',r.dia>0?'+'+nf(r.dia)+' 💎':''].filter(Boolean).join(' et ')+'</b> pour toi (parrainage, Grille du jour ou vente au marché des transferts). Bravo !')}}catch(e){}
 }
 async function refreshFromServer(){
   if(!session)return;
@@ -2753,6 +2766,71 @@ function addBoost(){const B=boostMatch();if(!B)return;const i=ui.slip.findIndex(
   if(!ui.slip.some(s=>s.bo)){const s={matchId:B.m.id,mk:'1x2',opt:B.opt,bo:B.odds};ui.slip.push(s);ui.stakes[selKey(s)]=100}else{ui.slip=ui.slip.filter(s=>!s.bo)}
   renderSlip();renderView();if(ui.slip.some(s=>s.bo))$('#aside')&&$('#aside').classList.add('open')}
 
+/* ---- Chat du match ---- */
+const MC={key:null,title:'',msgs:[],last:0,timer:null,sending:false,cnt:{},cntAt:0};
+const MC_ERR={trop_vite:'Doucement : attends quelques secondes entre deux messages.',trop_long:'Message trop long (200 caractères maximum).',vide:'Écris un message.',
+  interdit:'Message bloqué : pas de liens, de réseaux sociaux (Snap, Insta…) ni de numéros de téléphone.',insulte:'Message bloqué : reste respectueux 🙏',session:ERR.session};
+function mcKey(m){return dkey(new Date(m.ko))+'-'+hstr(String(m.home).toLowerCase()+'|'+String(m.away).toLowerCase()).toString(36)}
+function mcBtn(m,full){const k=mcKey(m),n=MC.cnt[k]||0;if(!full&&!n)return '';
+  return '<button class="mc-chat'+(full?'':' sm')+'" data-mchat="'+esc(k)+'" data-mct="'+esc(m.home+' – '+m.away)+'">💬 '+(full?'Chat du match':'')+(n?' <b>'+n+'</b>':'')+'</button>'}
+async function mcCounts(){if(Date.now()-MC.cntAt<60e3)return;MC.cntAt=Date.now();
+  try{const ids=[...new Set(visibleMatches().filter(m=>status(m)!=='annule'&&Math.abs(m.ko-Date.now())<36*3600e3).map(mcKey).concat(Object.values(LV||{}).map(mcKey)))].slice(0,150);if(!ids.length)return;
+    const r=await rpc('chatm_comptes',{p_ids:ids});const old=JSON.stringify(MC.cnt);MC.cnt=r||{};if(old!==JSON.stringify(MC.cnt)&&(ui.tab==='matchs'||ui.tab==='live'))renderView()}catch(e){}}
+function mcOpen(key,title){MC.key=key;MC.title=title;MC.msgs=[];MC.last=0;
+  popup('<div class="mcx"><div class="mcx-h"><b>💬 '+esc(title)+'</b><small>Chat du match · tous les joueurs</small></div><div class="mcx-l" id="mcxL"><div class="chat-empty">Chargement…</div></div>'+
+    (session?'<form class="chat-form mcx-f" id="mcxF" autocomplete="off"><input id="mcxIn" maxlength="200" placeholder="Ton message…" enterkeyhint="send"><button type="submit" aria-label="Envoyer">➤</button></form><div class="err" id="mcxE"></div>'
+      :'<div class="chat-login"><button class="btn" data-auth="login">Connecte-toi pour écrire</button></div>')+
+    '<p class="chat-rules">Reste respectueux. Pas de liens, pas de réseaux sociaux, jamais d\'informations personnelles. ⚠️ = signaler un message.</p></div>');
+  mcPoll()}
+function mcHtml(){if(!MC.msgs.length)return '<div class="chat-empty">👋 Aucun message sur ce match.<br>Lance la discussion !</div>';const me=session&&session.pseudo.toLowerCase(),adm=isAdmin();
+  return MC.msgs.map(m=>{const mine=m.pseudo.toLowerCase()===me;return '<div class="cm'+(mine?' me':'')+'"><div class="cb"><div class="cn">'+(mine?'Toi':esc(m.pseudo))+' <small>'+hhmm(m.ts)+'</small>'+
+    (!mine&&session?' <button class="mcx-r" data-mcsig="'+m.id+'" title="Signaler">⚠️</button>':'')+(adm?' <button class="mcx-r" data-mcdel="'+m.id+'" title="Supprimer">🗑️</button>':'')+'</div><div class="ct">'+esc(m.texte)+'</div></div></div>'}).join('')}
+function mcRender(){const L=document.getElementById('mcxL');if(!L)return false;const atB=L.scrollHeight-L.scrollTop-L.clientHeight<60||!L.dataset.r;L.innerHTML=mcHtml();L.dataset.r='1';if(atB)L.scrollTop=L.scrollHeight;return true}
+async function mcPoll(){clearTimeout(MC.timer);if(!document.getElementById('mcxL')||!$('#popModal').classList.contains('open')){MC.key=null;return}
+  try{const r=await rpc('chatm_lire',{p_match:MC.key,p_apres:MC.last});if(Array.isArray(r)&&r.length){MC.msgs=MC.msgs.concat(r).slice(-100);MC.last=r[r.length-1].id}mcRender()}
+  catch(e){const L=document.getElementById('mcxL');if(L&&/function|404|PGRST/i.test(e.message||''))L.innerHTML='<div class="chat-empty">Le chat des matchs n\'est pas encore activé.</div>'}
+  MC.timer=setTimeout(mcPoll,document.visibilityState==='visible'?4000:15000)}
+document.addEventListener('submit',async e=>{if(e.target.id!=='mcxF')return;e.preventDefault();if(!session||MC.sending)return;
+  const inp=$('#mcxIn'),t=inp.value.trim(),er=$('#mcxE');if(!t)return;MC.sending=true;er.textContent='';
+  try{await rpc('chatm_envoyer',{p_token:session.token,p_match:MC.key,p_texte:t});inp.value='';MC.cnt[MC.key]=(MC.cnt[MC.key]||0)+1;await mcPoll()}
+  catch(err){er.textContent=MC_ERR[err.code]||'Envoi impossible, réessaie.';if(err.code==='session')logout(ERR.session)}MC.sending=false;inp.focus()});
+document.addEventListener('click',async e=>{const a=e.target.closest('[data-mchat],[data-mcsig],[data-mcdel]');if(!a)return;e.preventDefault();e.stopPropagation();
+  if(a.dataset.mchat){mcOpen(a.dataset.mchat,a.dataset.mct||'Match');return}
+  if(a.dataset.mcsig){try{await rpc('chatm_signaler',{p_token:session.token,p_id:+a.dataset.mcsig});toast('Merci, le message a été signalé')}catch(err){toast('Signalement impossible')}return}
+  if(a.dataset.mcdel){try{await rpc('chatm_suppr',{p_token:session.token,p_id:+a.dataset.mcdel});MC.msgs=MC.msgs.filter(m=>m.id!==+a.dataset.mcdel);mcRender()}catch(err){toast('Suppression impossible')}}},true);
+
+/* ---- Combiné du jour ---- */
+function comboPicks(){const B=boostMatch(),now=Date.now();
+  const L=visibleMatches().filter(m=>status(m)==='avenir'&&m.ko>now+20*60e3&&m.ko<now+30*3600e3&&(m.sp==='foot'||m.sp==='basket')&&m.o&&(!B||m.id!==B.m.id))
+    .map(m=>{const three=m.o.length===3,fi=three?(m.o[0]<=m.o[2]?0:2):(m.o[0]<=m.o[1]?0:1),opt=three?(fi===0?'1':'2'):(fi===0?'1':'2'),od=oddsOf(m,'1x2',opt);return{m,opt,od}})
+    .filter(x=>x.od&&x.od>=1.22&&x.od<=1.9).sort((a,b)=>compRank(a.m)-compRank(b.m)||a.m.ko-b.m.ko).slice(0,12);
+  if(L.length<3)return null;const h=hstr(today()+'combo'),out=[],used=new Set();
+  for(let i=0;out.length<3&&i<L.length*2;i++){const x=L[(h+i*7)%L.length];if(used.has(x.m.id))continue;used.add(x.m.id);out.push(x)}
+  return out.length===3?out:null}
+function comboCard(){const P=comboPicks();if(!P)return '';const tot=P.reduce((a,x)=>a*x.od,1),on=P.every(x=>inSlip(x.m.id,'1x2',x.opt));
+  return '<div class="cb-card"><div class="cb-h"><b>🧩 Le combiné du jour</b><span>3 favoris choisis pour toi</span></div>'+
+    P.map(x=>'<div class="cb-l"><span>'+x.m.flag+' '+esc(x.opt==='1'?x.m.home:x.m.away)+' gagne</span><small>'+esc(x.m.home)+' – '+esc(x.m.away)+' · '+hhmm(x.m.ko)+'</small><b>'+fo(x.od)+'</b></div>').join('')+
+    '<button class="cb-b'+(on?' on':'')+'" data-combo="1">'+(on?'✓ Dans le coupon':'Ajouter au coupon')+' · cote <b>'+fo(Math.round(tot*100)/100)+'</b></button></div>'}
+function addCombo(){const P=comboPicks();if(!P)return;const on=P.every(x=>inSlip(x.m.id,'1x2',x.opt));
+  if(on){ui.slip=ui.slip.filter(s=>!P.some(x=>s.matchId===x.m.id&&s.mk==='1x2'&&s.opt===x.opt))}
+  else for(const x of P){ui.slip=ui.slip.filter(s=>!(s.matchId===x.m.id&&s.mk==='1x2'));if(ui.slip.length>=12)break;const s={matchId:x.m.id,mk:'1x2',opt:x.opt};ui.slip.push(s);if(!(selKey(s) in ui.stakes))ui.stakes[selKey(s)]=100}
+  if(!on){ui.mode='combi';if(!(+ui.combi>0))ui.combi=1000}renderSlip();renderView();if(!on){$('#aside')&&$('#aside').classList.add('open');toast('🧩 Combiné du jour ajouté : choisis ta mise')}}
+document.addEventListener('click',e=>{if(e.target.closest('[data-combo]')){e.preventDefault();addCombo()}});
+
+/* ---- Tutoriel du premier lancement ---- */
+const TUTO=[['⚽','Bienvenue sur PronoClub','Parie <b>gratuitement</b> sur les vrais matchs. Tu reçois <b>20 000 pièces chaque jour</b>, et tu ne mises jamais d\'argent réel.'],
+ ['🎫','Comment parier','Touche une <b>cote</b> pour l\'ajouter au coupon, choisis ta mise en pièces et valide. Si tu as raison, tu gagnes des <b>diamants 💎</b> pour la boutique.'],
+ ['🏟️','Mon Club','Dans l\'onglet <b>Jeux</b> : crée ton club, ouvre des packs de <b>vrais joueurs</b> et joue toi-même les matchs avec le joystick. La <b>Coupe du week-end</b> t\'attend chaque samedi.'],
+ ['🎯','Reviens chaque jour','<b>Missions du jour</b>, combiné du jour, Grille du jour, coffre, roue et série de connexion : plus tu viens, plus tu gagnes.'],
+ ['👥','Avec tes potes','Invite tes amis (ils reçoivent des pièces en plus), affrontez-vous dans une <b>ligue</b> et discute pendant les matchs dans le <b>chat du match</b>.']];
+function tutoOpen(){if(document.getElementById('tuto'))return;let i=0;const ov=document.createElement('div');ov.id='tuto';ov.className='tuto';
+  const draw=()=>{const t=TUTO[i];ov.innerHTML='<div class="tuto-b"><button class="tuto-x" data-tu="skip">Passer</button><div class="tuto-ic">'+t[0]+'</div><h2>'+t[1]+'</h2><p>'+t[2]+'</p><div class="tuto-d">'+TUTO.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('')+'</div>'+
+    '<div class="tuto-n">'+(i>0?'<button class="alt" data-tu="prev">‹ Retour</button>':'<span></span>')+'<button data-tu="'+(i<TUTO.length-1?'next':'end')+'">'+(i<TUTO.length-1?'Suivant ›':'C\'est parti ! 🚀')+'</button></div></div>'};
+  draw();document.body.appendChild(ov);setTimeout(()=>ov.classList.add('in'),20);
+  const end=()=>{lsSet('pc_tuto','1');ov.classList.remove('in');setTimeout(()=>ov.remove(),250)};
+  ov.addEventListener('click',e=>{const b=e.target.closest('[data-tu]');if(!b)return;const a=b.dataset.tu;if(a==='next'){i++;draw()}else if(a==='prev'){i--;draw()}else end()});
+  let x0=null;ov.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});ov.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)<50)return;if(dx<0&&i<TUTO.length-1){i++;draw()}else if(dx>0&&i>0){i--;draw()}},{passive:true})}
+
 /* ---- Tendances : ce que les joueurs ont choisi ---- */
 let tendAt=0,tendBusy=false;ui.tend={};
 async function loadTend(){if(tendBusy||Date.now()-tendAt<180e3)return;tendBusy=true;tendAt=Date.now();
@@ -3105,13 +3183,13 @@ function matchCard(m){
   const sc=(i)=>res?(m.sp==='mma'?(res[i]>res[1-i]?'<b class="sc win">✓ '+({KO:'KO',SUB:'Soum.',DEC:'Déc.'}[res[2]]||'')+'</b>':''):'<b class="sc'+(res[i]>res[1-i]?' win':'')+'">'+res[i]+'</b>'):'';
   const myBets=state.bets.some(b=>b.status==='pending'&&b.sels.some(s=>s.matchId===m.id));
   let html='<article class="mc'+(ui.open===m.id?' open':'')+'" style="--sc:'+SPORTS[m.sp].col+'">'+
-    '<div class="mc-h"><span class="mc-w">'+whenHtml(m)+'</span><span class="mc-c">'+m.flag+' '+esc(m.comp)+'</span>'+(myBets?'<span class="mc-b">Pari en cours</span>':'')+'</div>'+
+    '<div class="mc-h"><span class="mc-w">'+whenHtml(m)+'</span><span class="mc-c">'+m.flag+' '+esc(m.comp)+'</span>'+(myBets?'<span class="mc-b">Pari en cours</span>':'')+(st!=='annule'&&ui.open!==m.id?mcBtn(m,false):'')+'</div>'+
     '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+'<i>'+esc(m.home)+(isFav(m.home)?' <em class="fv">❤️</em>':'')+'</i>'+sc(0)+'</span><span>'+avatar(m.away)+'<i>'+esc(m.away)+(isFav(m.away)?' <em class="fv">❤️</em>':'')+'</i>'+sc(1)+'</span></button>'+
     '<div class="mc-o'+(three?'':' two')+'">'+quick+'</div>'+(st==='avenir'?tendBar(m):'')+
     '<button class="mc-m" data-open="'+m.id+'">'+(ui.open===m.id?'Masquer les paris ▲':'+'+nb+' paris ▼')+'</button>';
   if(ui.open===m.id){
     html+='<div class="fav-row"><span>Suivre</span>'+[m.home,m.away].map(n=>'<button class="fav'+(isFav(n)?' on':'')+'" data-fav="'+esc(n)+'">'+(isFav(n)?'❤️':'🤍')+' '+esc(n)+'</button>').join('')+'</div>';
-    html+=statsHtml(m);
+    html+=statsHtml(m);if(st!=='annule'&&st!=='fini')html+='<div class="mc-cr">'+mcBtn(m,true)+'</div>';
     if(st==='avenir')html+='<p class="mm-tip">🧩 Ajoute plusieurs paris de ce match au coupon, puis choisis <b>Combiné</b> : tu obtiens un <b>combiné même match</b>.</p>';
     if(st==='avenir'&&session)html+='<button class="du-btn" data-duel="'+m.id+'">⚔️ Défier un ami sur ce match</button>';
     html+='<div class="markets">'+mks.slice(1).map(k=>{const btns=k.opts(m).map(o=>oddBtn(m,k.key,o,closed,res)).join('');return btns?'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.cs?' cs':'')+'">'+btns+'</div></div>':''}).join('')+'</div>';
@@ -3138,7 +3216,7 @@ function featured(vis){
       '<div class="fc-o'+(three?'':' two')+'">'+k.opts(m).map(o=>oddBtn(m,k.key,o,false,null,three?o.id:o.id)).join('')+'</div></div>'}).join('')+'</div>';
 }
 function renderMatches(){
-  if(session)setTimeout(loadTend,0);
+  if(session)setTimeout(loadTend,0);setTimeout(mcCounts,0);
   const vis=visibleMatches();
   const count=sp=>vis.filter(m=>m.sp===sp&&status(m)==='avenir').length;
   if(!SPORTS[ui.sport])ui.sport='foot';
@@ -3172,7 +3250,7 @@ function renderMatches(){
   const favs=Array.isArray(state.favs)&&state.favs.length?vis.filter(m=>(isFav(m.home)||isFav(m.away))&&status(m)!=='annule'&&!(m.s&&Date.now()>m.ko+3*3600e3)).sort((a,b)=>a.ko-b.ko).slice(0,6):[];
   const favH=favs.length?'<h3 class="day fav-h">❤️ Mes équipes</h3>'+favs.map(matchCard).join(''):'';
   setTimeout(grPotAnim,30);
-  return installBanner()+guestBanner()+grilleBanner()+(window.clubBanner?clubBanner():'')+eventBanner()+dailyRow()+dashHtml()+boostCard()+invBanner()+defiCard()+favH+tabs+
+  return installBanner()+guestBanner()+grilleBanner()+(window.clubBanner?clubBanner():'')+eventBanner()+dailyRow()+dashHtml()+boostCard()+comboCard()+invBanner()+defiCard()+favH+tabs+
    (ui.comp==='all'&&ui.sport==='foot'?featured(vis):'')+
    comp+body+
    '<p class="reset-note" style="margin-top:14px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>';
@@ -3521,7 +3599,7 @@ function liveCard(m){
   const r=m.lv,open=liveOpen(m),susp=liveSusp(m),mks=m._mk,first=mks[0];
   const st=r.st==='in'?'<span class="st live">● '+esc(liveClock(r)||'En direct')+'</span>':r.st==='pre'?'<span class="st">Dans '+Math.max(1,Math.round((m.ko-lnow())/60000))+' min</span>':'<span class="st done">'+(r.fin?'Annulé':'Terminé')+'</span>';
   const pend=state.bets.filter(b=>b.status==='pending'&&b.sels.some(x=>x.matchId===m.id)).length;
-  let h='<article class="mc lvm'+(ui.open===m.id?' open':'')+'" style="--sc:'+SPORTS[m.sp].col+'"><div class="mc-h"><span class="mc-w">'+st+'</span><span class="mc-c">'+SPORTS[m.sp].ic+' '+esc(m.comp)+'</span>'+(pend?'<span class="mc-b">Pari en cours</span>':'')+'</div>'+
+  let h='<article class="mc lvm'+(ui.open===m.id?' open':'')+'" style="--sc:'+SPORTS[m.sp].col+'"><div class="mc-h"><span class="mc-w">'+st+'</span><span class="mc-c">'+SPORTS[m.sp].ic+' '+esc(m.comp)+'</span>'+(pend?'<span class="mc-b">Pari en cours</span>':'')+(r.st!=='post'?mcBtn(m,true):'')+'</div>'+
     '<button class="mc-t" data-open="'+m.id+'"><span>'+avatar(m.home)+liveSrv(m,0)+'<i>'+esc(m.home)+'</i>'+(r.st==='pre'?'':liveScore(m,0))+'</span><span>'+avatar(m.away)+liveSrv(m,1)+'<i>'+esc(m.away)+'</i>'+(r.st==='pre'?'':liveScore(m,1))+'</span></button>';
   if(r.st==='post')return h+'</article>';
   if(!first)return h+'<p class="lv-note">Score en direct uniquement (pas de paris sur ce sport)</p></article>';
@@ -3533,7 +3611,7 @@ function liveCard(m){
   if(open&&ui.open===m.id)h+='<div class="markets">'+mks.slice(1).map(k=>{const btns=k.opts(m).map(o=>liveBtn(m,k.key,o)).join('');return btns?'<div class="mk"><h4>'+esc(mkTitle(k,m))+'</h4><div class="opts'+(k.key==='cs'?' cs':'')+'">'+btns+'</div></div>':''}).join('')+'</div>';
   return h+'</article>';
 }
-function renderLive(){
+function renderLive(){setTimeout(mcCounts,0);
   const all=Object.values(LV),inn=all.filter(m=>m.lv.st==='in'),soon=all.filter(m=>m.lv.st==='pre'&&m.ko>lnow()-5*60e3).sort((a,b)=>a.ko-b.ko),fin=all.filter(m=>m.lv.st==='post').sort((a,b)=>b.lv.maj-a.lv.maj);
   const ORD=['foot','tennis','basket','hockey','usf','base','volley','afl','lax','rugby','hand','fhk','wpolo','mma'],rk=k=>{const i=ORD.indexOf(k);return i<0?99:i};
   const sps=[...new Set(inn.map(m=>m.sp))].sort((a,b)=>rk(a)-rk(b));if(ui.lsp&&ui.lsp!=='all'&&!sps.includes(ui.lsp))ui.lsp='all';
@@ -3633,7 +3711,7 @@ function renderRules(){
   '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙 en plus</b>. Les pièces se gardent d\'un jour à l\'autre : vous pouvez les économiser (si vous ne venez pas pendant plusieurs jours, jusqu\'à 7 jours sont rattrapés).</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
-  '<li><b>⚽ Mon Club</b> : crée ton club (onglet Jeux ou carte de l\'accueil), ouvre des packs de joueurs, entraîne-les et affronte les clubs des autres joueurs dans des matchs animés que tu peux jouer toi-même (téléphone sur le côté, joystick + Passe / Lob / Tir / Tacle, +25 % de pièces). Victoire 3 pts, nul 1 pt ; en cas d\'égalité à 90\' en match joué ou regardé : tirs au but (gagnés 2 pts, perdus 1 pt) : 30 pts pour monter de division, jusqu\'à la Ligue des Légendes. 5 matchs d\'énergie, +1 toutes les 20 min. Un pack gratuit chaque jour. Dans la <b>Boutique</b> du club : de l\'énergie et des joueurs à acheter avec tes pièces (plus le joueur est fort, plus il est cher).</li>'+
+  '<li><b>⚽ Mon Club</b> : crée ton club (onglet Jeux ou carte de l\'accueil), ouvre des packs de joueurs, entraîne-les et affronte les clubs des autres joueurs dans des matchs animés que tu peux jouer toi-même (téléphone sur le côté, joystick + Passe / Lob / Tir / Tacle, +25 % de pièces). Victoire 3 pts, nul 1 pt ; en cas d\'égalité à 90\' en match joué ou regardé : tirs au but (gagnés 2 pts, perdus 1 pt) : 30 pts pour monter de division, jusqu\'à la Ligue des Légendes. 5 matchs d\'énergie, +1 toutes les 20 min. Un pack gratuit chaque jour. Dans la <b>Boutique</b> du club : de l\'énergie et des joueurs à acheter avec tes pièces (plus le joueur est fort, plus il est cher).</li><li>🏆 <b>Coupe du week-end</b> (Mon Club) : chaque samedi et dimanche, 4 matchs à élimination directe sans énergie. Le vainqueur gagne 100 000 pièces, 10 000 💎 et un pack Légende.</li><li>💱 <b>Marché des transferts</b> : vends tes remplaçants aux autres joueurs (tu reçois 95 % du prix) ou achète les leurs.</li><li>🧩 <b>Combiné du jour</b> : 3 favoris choisis chaque jour, à ajouter au coupon en un clic.</li><li>💬 <b>Chat du match</b> : discute d\'un match avec tous les joueurs. Les liens, les réseaux sociaux et les numéros sont bloqués ; ⚠️ pour signaler un message.</li>'+
   '<li><b>🎰 La Grille du jour</b> : chaque matin, 5 à 7 gros matchs à pronostiquer gratuitement (1, N ou 2). Grille parfaite : la cagnotte est partagée entre les gagnants. Personne ? Elle grimpe de 250 000 💎 le lendemain. Une seule erreur : 150 000 💎 à partager (20 000 💎 maximum chacun). Modifiable jusqu\'au premier coup d\'envoi. Un match annulé compte comme juste pour tout le monde.</li>'+
   '<li><b>Cash out</b> : dans « Mes paris », le bouton 💸 <b>Encaisser</b> te permet d\'arrêter un pari en cours et de récupérer tout de suite un montant qui dépend des cotes du moment (avant le match, ou en direct quand les paris sont ouverts).</li>'+
   '<li><b>Combiné même match</b> 🧩 : ajoute plusieurs paris d\'un même match au coupon et choisis « Combiné ». La cote tient compte du lien entre les paris (par exemple une victoire et beaucoup de buts). Pas disponible en direct.</li>'+
@@ -3998,10 +4076,11 @@ function isMe(p){return !!(session&&p&&p.toLowerCase()===session.pseudo.toLowerC
 function pfMine(){return '<div class="pf-mine"><div><i>🪙</i><b>'+nf(state.coins)+'</b><small>pièces aujourd\'hui</small></div><div><i>💎</i><b>'+nf(state.diamonds)+'</b><small>diamants à dépenser</small></div></div>'}
 function pfMenu(p){if(!isMe(p))return '';
   const b=(k,ic,t,cl)=>'<button data-pfgo="'+k+'"'+(cl?' class="'+cl+'"':'')+'><i>'+ic+'</i><span>'+t+'</span><em>›</em></button>';
-  return '<div class="pf-sec pf-menu"><h4>Mon compte</h4>'+b('boutique','🛍️','Boutique')+b('invite','🎁','Inviter des amis')+b('prog','🎯','Progression · missions · badges')+b('notifs','🔔','Notifications')+b('regles','📖','Règles du jeu')+b('bug','🐞','Signaler un bug')+b('guides','📚','Guides des paris')+b('legal','ℹ️','À propos · confidentialité · contact')+(isAdmin()?b('admin','🛡️','Admin · donner pièces et diamants')+b('stats','📊','Admin · statistiques')+b('bugs','🐞','Admin · bugs signalés'):'')+b('logout','🚪','Se déconnecter','out')+b('delacc','🗑️','Supprimer mon compte','out')+'</div>'}
+  return '<div class="pf-sec pf-menu"><h4>Mon compte</h4>'+b('boutique','🛍️','Boutique')+b('invite','🎁','Inviter des amis')+b('prog','🎯','Progression · missions · badges')+b('notifs','🔔','Notifications')+b('regles','📖','Règles du jeu')+b('tuto','🎓','Revoir le tutoriel')+b('bug','🐞','Signaler un bug')+b('guides','📚','Guides des paris')+b('legal','ℹ️','À propos · confidentialité · contact')+(isAdmin()?b('admin','🛡️','Admin · donner pièces et diamants')+b('stats','📊','Admin · statistiques')+b('bugs','🐞','Admin · bugs signalés'):'')+b('logout','🚪','Se déconnecter','out')+b('delacc','🗑️','Supprimer mon compte','out')+'</div>'}
 function pfGo(k){ovBack();setTimeout(()=>{
   if(k==='logout'){notifUnlinkOnLogout(session&&session.token);ui.authMode='login';logout();return}
   if(k==='notifs'){openNotifs();return}
+  if(k==='tuto'){tutoOpen();return}
   if(k==='invite'){openInvite();return}
   if(k==='admin'){openAdmin();return}
   if(k==='bug'){openBug();return}
@@ -4568,12 +4647,13 @@ loadFixtures();loadEvents();
 setInterval(()=>tick(false),20000);
 setInterval(loadFixtures,3*60*1000);
 setTimeout(grLoad,1500);
+setTimeout(()=>{if(!lsGet('pc_tuto'))tutoOpen()},1200);
 if(session)refreshFromServer();
 else if(!lsGet('pc_welcome')){lsSet('pc_welcome','1');const par=lsGet('pc_parrain');
   popup('<div class="pop-ic big">⚽</div><h3>Bienvenue sur PronoClub</h3><p>Pariez <b>gratuitement</b> sur les vrais matchs : foot, basket, tennis, hockey… <b>'+nf(DAILY)+' pièces offertes chaque jour</b>, des diamants à gagner et des défis entre amis.'+(par?'<br><br>🎁 <b>'+esc(par)+'</b> vous offre <b>'+nf(PARRAIN_BONUS)+' pièces</b> à l\'inscription !':'')+'</p><div class="pop-btns"><button class="pbtn" data-auth="signup">Créer mon compte</button><button class="pbtn ghost2" data-popclose="1">Visiter d\'abord</button></div>')}
 chatSoon();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){loadFixtures();refreshFromServer()}});
 </script>
-<script src="club.js?v=5"></script><script src="club-match.js?v=4"></script>
+<script src="club.js?v=6"></script><script src="club-match.js?v=5"></script>
 </body>
 </html>
