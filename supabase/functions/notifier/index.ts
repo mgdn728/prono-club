@@ -212,6 +212,27 @@ async function retour() {
   if (n) console.log("cadeaux de retour", n);
 }
 
+// ---------- Le Survivant : règlement + notifications ----------
+async function survivant() {
+  const { data, error } = await db.rpc("surv_regler");
+  if (error) { if (!/surv_regler/.test(error.message || "")) console.error("surv", error.message); return; }
+  for (const e of (data as any[]) || []) {
+    if (e.win) await ajouter(e.j, "surv", "🏆 Tu as gagné le Survivant !", `Tu fais partie des derniers survivants : +${Number(e.win).toLocaleString("fr-FR")} pièces pour toi !`, "?tab=surv");
+    else if (e.ok === true) await ajouter(e.j, "surv", "✅ Toujours en vie !", `${e.eq} a gagné : tu restes dans le Survivant. Pense à choisir ton équipe demain.`, "?tab=surv");
+    else if (e.ok === false) await ajouter(e.j, "surv", "💀 Éliminé du Survivant", `${e.eq} n'a pas gagné… Rendez-vous lundi pour une nouvelle saison !`, "?tab=surv");
+    else if (e.elim && e.r === "oubli") await ajouter(e.j, "surv", "💀 Éliminé du Survivant", "Tu n'as pas choisi d'équipe hier… Rendez-vous lundi pour une nouvelle saison !", "?tab=surv");
+  }
+}
+async function survRappel() {
+  const p = paris();
+  const { data, error } = await db.rpc("surv_rappel");
+  if (error) return;
+  for (const jid of (data as number[]) || []) {
+    if (!(await marquer(jid, "survr:" + p.day))) continue;
+    await ajouter(jid, "surv", "🧟 Le Survivant t'attend", "Tu n'as pas encore choisi ton équipe du jour ! Sans choix avant les derniers matchs, tu es éliminé.", "?tab=surv");
+  }
+}
+
 async function preparer() {
   const { data: subs } = await db.from("abonnements").select("joueur_id,prefs");
   const prefs = new Map<number, Record<string, boolean>>();
@@ -227,6 +248,8 @@ async function preparer() {
   if (paris().min % 5 === 2) { try { await duels(); } catch (e) { console.error("duels", e); } }
   if (paris().min === 30) { try { await rangs(prefs); } catch (e) { console.error("rangs", e); } }
   if (paris().min === 40) { try { await retour(); } catch (e) { console.error("retour", e); } } // cadeaux de retour : une fois par heure
+  if (paris().min % 5 === 0) { try { await survivant(); } catch (e) { console.error("survivant", e); } } // Survivant : toutes les 5 min
+  if (paris().hour === 18 && paris().min === 5) { try { await survRappel(); } catch (e) { console.error("survRappel", e); } }
   const ids = [...prefs.keys()];
   if (!ids.length) return;
   const { data: js } = await db.from("joueurs").select("id,pseudo,etat").in("id", ids);
@@ -361,7 +384,7 @@ async function envoyer() {
     const { data: ss } = await db.from("abonnements").select("id,endpoint,p256dh,auth,prefs").eq("joueur_id", x.joueur_id);
     for (const s of ss || []) {
       const pr = s.prefs || {};
-      if (x.type === "equipes" || x.type === "retour" ? pr[x.type] === false : !pr[x.type]) continue; // « Mes équipes » et « Cadeaux de retour » : activés sauf si le joueur les a coupés
+      if (x.type === "equipes" || x.type === "retour" || x.type === "surv" ? pr[x.type] === false : !pr[x.type]) continue; // « Mes équipes » et « Cadeaux de retour » : activés sauf si le joueur les a coupés
       try {
         await webpush.sendNotification(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },

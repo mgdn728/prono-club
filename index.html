@@ -586,6 +586,21 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .tuto-x{position:absolute;right:14px;top:12px;border:0;background:none;color:inherit;opacity:.6;font-weight:800;cursor:pointer}.tuto-ic{font-size:64px;line-height:1.1;margin:8px 0}
 .tuto-b h2{margin:6px 0 8px;font-size:22px}.tuto-b p{margin:0 0 14px;font-size:15px;line-height:1.5}.tuto-d{display:flex;gap:6px;justify-content:center;margin-bottom:14px}.tuto-d i{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,.18)}.tuto-d i.on{width:22px;border-radius:6px;background:#e5126b}
 .tuto-n{display:flex;justify-content:space-between;gap:10px}.tuto-n button{flex:1;border:0;border-radius:14px;padding:13px;font-weight:900;font-size:15px;background:linear-gradient(90deg,#e5126b,#7c3aed);color:#fff;cursor:pointer}.tuto-n button.alt{flex:.6;background:rgba(0,0,0,.07);color:inherit}.tuto-n span{flex:.6}
+.sv-ban{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:18px;padding:12px 14px;margin:0 0 12px;text-align:left;color:#fff;cursor:pointer;background:linear-gradient(120deg,#14532d,#16a34a 60%,#65a30d);box-shadow:0 8px 20px rgba(22,163,74,.25)}
+.sv-ban.hot{animation:svHot 1.6s infinite}@keyframes svHot{50%{box-shadow:0 0 0 6px rgba(250,204,21,.45)}}
+.sv-ban>i{font-style:normal;font-size:30px}.sv-ban span{flex:1;min-width:0}.sv-ban b{display:block;font-size:16px}.sv-ban small{font-size:12.5px;opacity:.95}.sv-ban em{font-style:normal;font-weight:900;text-align:right;font-size:14px}.sv-ban em small{display:block;font-weight:700;font-size:11px}
+.sv{padding-bottom:30px}.sv-hero{text-align:center;color:#fff;border-radius:22px;padding:18px;margin:8px 0 14px;background:radial-gradient(circle at 50% 0,#4ade80,#14532d 75%)}.sv-hero i{font-style:normal;font-size:46px}.sv-hero h2{margin:2px 0;font-size:24px}.sv-hero p{margin:0 0 10px;opacity:.9;font-size:13px}
+.sv-st{display:flex;justify-content:center;gap:10px}.sv-st span{background:rgba(255,255,255,.15);border-radius:14px;padding:8px 10px;min-width:84px}.sv-st b{display:block;font-size:17px}.sv-st small{font-size:11px;opacity:.85}
+.sv-join{width:100%;border:0;border-radius:16px;padding:16px;font-size:17px;font-weight:900;background:linear-gradient(90deg,#4ade80,#facc15);color:#06281a;cursor:pointer;box-shadow:0 10px 24px rgba(74,222,128,.35)}
+.sv-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;line-height:1.5}.sv-box.ko{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3)}
+.sv-sec{margin:16px 2px 8px}.sv-sec b{display:block;font-size:16px}.sv-sec small{font-size:12.5px;color:var(--muted)}.sv-hint{color:var(--muted)}
+.sv-list{display:grid;gap:8px}.sv-m{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px}.sv-m.off{opacity:.55}.sv-mh{font-size:12px;color:var(--muted);margin-bottom:8px}
+.sv-mt{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}.sv-mt>span{font-size:12px;color:var(--muted)}
+.sv-t{border:2px solid var(--line);background:var(--bg,#fff);color:inherit;border-radius:12px;padding:11px 6px;font-weight:800;font-size:14px;cursor:pointer}.sv-t small{display:block;font-size:10px;font-weight:600;color:var(--muted)}
+.sv-t.on{background:#16a34a;border-color:#16a34a;color:#fff}.sv-t.used{text-decoration:line-through;opacity:.5}.sv-t:disabled{cursor:not-allowed}
+.sv-hist{display:grid;gap:6px}.sv-hist div{display:grid;grid-template-columns:90px 1fr auto;gap:0 8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;align-items:center}.sv-hist span{font-size:12px;color:var(--muted);grid-row:1/3}.sv-hist small{font-size:11.5px;color:var(--muted)}.sv-hist em{font-style:normal;grid-row:1/3;grid-column:3;font-size:18px}
+.sv-surv{display:flex;flex-wrap:wrap;gap:6px}.sv-surv span{background:rgba(22,163,74,.12);border-radius:999px;padding:5px 10px;font-size:12.5px;font-weight:700}
+.sv-rules{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:13.5px;line-height:1.5}.sv-rules ul{margin:6px 0 0;padding-left:18px}
 /* défi du jour */
 .defi{position:relative;overflow:hidden;border-radius:22px;padding:16px;margin-bottom:16px;color:#fff;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.22),transparent 45%),linear-gradient(130deg,#6a2cf5,#3b1fa8 60%,#1c0f66);box-shadow:0 12px 26px rgba(106,44,245,.32)}
 .defi::after{content:"🎯";position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.13;transform:rotate(-12deg)}
@@ -1897,7 +1912,7 @@ function build(day,arr){
   FIX[day]=arr.map(r=>{
     const sp=SPORTS[r.sp]?r.sp:'foot';
     const prev=old.find(m=>m.id===day+'_'+r.id);
-    const m={id:day+'_'+r.id,day,sp,comp:frc(r.c)||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:frn(r.h),away:frn(r.a),ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,bt:Array.isArray(r.bt)?r.bt:null,stx:r.stx||null,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
+    const m={id:day+'_'+r.id,day,sp,comp:frc(r.c)||SPORTS[sp].name,flag:r.f||SPORTS[sp].ic,home:frn(r.h),away:frn(r.a),rh:r.h,ra:r.a,ko:new Date(r.t).getTime(),o:r.o,bo:r.bo||3,tl:r.tl,bt:Array.isArray(r.bt)?r.bt:null,stx:r.stx||null,s:Array.isArray(r.s)?r.s:null,x:r.x||null,_o:{}};
     if(m.bt&&m.s&&!Array.isArray(m.s[2]))m.s=null; // buteurs pas encore connus : le match n'est pas réglé
     const same=prev&&prev.o.join()===r.o.join()&&prev.tl===r.tl&&prev.bo===m.bo;
     if(same){m.dist=prev.dist;m.hl=prev.hl}
@@ -2148,6 +2163,7 @@ try{session=JSON.parse(lsGet(LS_SESSION)||'null')}catch(e){}
   if(l&&/^[A-Za-z0-9]{6}$/.test(l))lsSet('pc_ligue',l.toUpperCase());
   if(q.has('paris'))ui.tab='paris';
   if(q.has('grille')){ui.tab='matchs';ui.grOpen=1}
+  const tb=q.get('tab');if(['surv','club','bj','matchs','live','paris','chat','boutique'].includes(tb))ui.tab=tb;
   if(q.has('chat')){ui.tab='chat';ui.social='chat'}
   if(q.has('amis')){ui.tab='chat';ui.social='amis';const ap=q.get('amis');if(ap)ui.mpStart=ap}
   if(q.has('ligues')){ui.tab='chat';ui.social='ligues'}
@@ -2801,6 +2817,52 @@ document.addEventListener('click',async e=>{const a=e.target.closest('[data-mcha
   if(a.dataset.mcsig){try{await rpc('chatm_signaler',{p_token:session.token,p_id:+a.dataset.mcsig});toast('Merci, le message a été signalé')}catch(err){toast('Signalement impossible')}return}
   if(a.dataset.mcdel){try{await rpc('chatm_suppr',{p_token:session.token,p_id:+a.dataset.mcdel});MC.msgs=MC.msgs.filter(m=>m.id!==+a.dataset.mcdel);mcRender()}catch(err){toast('Suppression impossible')}}},true);
 
+/* ---- Le Survivant ---- */
+const SV={d:null,t:0,busy:false};
+function fdate(d){return d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}
+const SV_ERR={commence:'Ce match a déjà commencé.',deja_prise:'Tu as déjà utilisé cette équipe cette semaine.',verrouille:'Ton match du jour a commencé : ton choix est bloqué.',
+  elimine:'Tu es éliminé pour cette saison.',pas_inscrit:'Inscris-toi d\'abord.',trop_tard:'Les inscriptions sont fermées (lundi → mercredi).',fini:'La saison est terminée.',match:'Match introuvable.',pas_aujourdhui:'Tu ne peux choisir qu\'un match du jour.',session:ERR.session};
+async function svLoad(force){if(SV.busy||(!force&&Date.now()-SV.t<60e3))return;SV.busy=true;
+  try{SV.d=await rpc('surv_get',{p_token:session?session.token:null});SV.t=Date.now()}catch(e){SV.d=SV.d||{off:1}}SV.busy=false;
+  if(ui.tab==='surv'||ui.tab==='matchs'||ui.tab==='bj')renderView()}
+function svToday(){const d=SV.d;return d&&!d.off?(d.choix||[]).find(c=>c.jour===d.auj):null}
+function survBanner(big){if(!SV.d){setTimeout(()=>svLoad(),0);return ''}const d=SV.d;if(d.off)return '';
+  const me=d.moi,tc=svToday(),alive=me&&me.vivant&&d.statut==='ouvert';
+  const st=d.statut!=='ouvert'?'Saison terminée · nouvelle saison lundi':!me?(d.peut_rejoindre?'Gratuit · inscriptions ouvertes jusqu\'à mercredi':'Inscriptions fermées · prochaine saison lundi'):!me.vivant?'💀 Éliminé · rejoue lundi':tc?'✅ Ton choix du jour : '+esc(frn(tc.equipe)):'⚠️ Choisis ton équipe du jour !';
+  if(!big&&!(alive&&!tc)&&me)return '';
+  return '<button class="sv-ban'+(alive&&!tc?' hot':'')+'" data-tab="surv"><i>🧟</i><span><b>Le Survivant</b><small>'+st+'</small></span><em>'+nf(d.cagnotte)+' 🪙<small>'+d.vivants+' en vie</small></em></button>'}
+function svMatches(){const d=SV.d,now=Date.now();return FIX&&d?visibleMatches().filter(m=>m.sp==='foot'&&m.day===d.auj&&m.rh&&status(m)!=='annule').sort((a,b)=>compRank(a)-compRank(b)||a.ko-b.ko):[]}
+function renderSurv(){if(!SV.d||Date.now()-SV.t>60e3)setTimeout(()=>svLoad(),0);const d=SV.d;
+  let h='<div class="sv"><button class="back" data-tab="matchs">← Matchs</button>';
+  if(!d)return h+'<p class="sv-hint">Chargement…</p></div>';
+  if(d.off)return h+'<p class="sv-hint">Le Survivant n\'est pas encore activé (il faut lancer <b>supabase-survivant.sql</b> dans Supabase).</p></div>';
+  const mon=new Date(d.saison+'T12:00:00');
+  h+='<div class="sv-hero"><i>🧟</i><h2>Le Survivant</h2><p>Saison du lundi '+mon.getDate()+' '+['janv.','févr.','mars','avril','mai','juin','juil.','août','sept.','oct.','nov.','déc.'][mon.getMonth()]+'</p>'+
+     '<div class="sv-st"><span><b>'+nf(d.cagnotte)+' 🪙</b><small>cagnotte</small></span><span><b>'+d.inscrits+'</b><small>inscrits</small></span><span><b>'+d.vivants+'</b><small>encore en vie</small></span></div></div>';
+  const me=d.moi,tc=svToday(),used=new Set((d.choix||[]).filter(c=>c.jour!==d.auj).map(c=>c.equipe));
+  if(d.statut!=='ouvert'){h+='<div class="sv-box">🏁 <b>Saison terminée !</b><br>Une nouvelle saison commence lundi. Inscriptions du lundi au mercredi.</div>'}
+  else if(!session){h+='<div class="sv-box"><b>Crée ton compte gratuit pour jouer.</b><br><button class="pbtn" data-auth="signup" style="margin-top:10px">Créer mon compte</button></div>'}
+  else if(!me){h+=d.peut_rejoindre?'<button class="sv-join" id="svJoin">🧟 Je participe (gratuit)</button>':'<div class="sv-box">Les inscriptions sont fermées pour cette saison (lundi → mercredi). Reviens <b>lundi</b> !</div>'}
+  else if(!me.vivant){h+='<div class="sv-box ko">💀 <b>Éliminé</b>'+(me.elimine_le?' le '+fdate(new Date(me.elimine_le+'T12:00:00')):'')+(me.raison==='oubli'?' : pas de choix ce jour-là.':me.raison?' : '+esc(frn(me.raison))+' n\'a pas gagné.':'.')+'<br>Rendez-vous lundi pour une nouvelle saison.</div>'}
+  else{const M=svMatches(),now=Date.now();const lock=tc&&new Date(tc.ko).getTime()<=now;
+    h+='<div class="sv-sec"><b>🎯 Ton équipe du jour</b><small>'+(tc?(lock?'Match en cours ou terminé : ton choix est bloqué.':'Tu peux changer jusqu\'au coup d\'envoi.'):'Choisis UNE équipe qui va gagner aujourd\'hui. Nul ou défaite = éliminé.')+'</small></div>';
+    if(tc&&tc.res==='x')h+='<div class="sv-box ko">💀 '+esc(frn(tc.equipe))+' n\'a pas gagné… Tu seras éliminé ce soir.</div>';
+    if(!M.length)h+='<div class="sv-box">Pas de match de foot aujourd\'hui : tu es qualifié d\'office pour demain 🙂</div>';
+    else h+='<div class="sv-list">'+M.map(m=>{const started=m.ko<=now,isM=tc&&tc.fid===m.id;
+      const btn=(raw,name)=>{const me2=isM&&tc.equipe===raw,u=used.has(raw),dis=started||lock||u;
+        return '<button class="sv-t'+(me2?' on':'')+(u?' used':'')+'" '+(dis?'disabled ':'')+'data-svpick="'+esc(m.id)+'" data-sveq="'+esc(raw)+'">'+esc(name)+(u?'<small>déjà utilisée</small>':'')+'</button>'};
+      return '<div class="sv-m'+(started?' off':'')+'"><div class="sv-mh">'+m.flag+' '+esc(m.comp)+' · '+(started?'commencé':hhmm(m.ko))+'</div><div class="sv-mt">'+btn(m.rh,m.home)+'<span>vs</span>'+btn(m.ra,m.away)+'</div></div>'}).join('')+'</div>'}
+  if(me&&(d.choix||[]).length)h+='<div class="sv-sec"><b>📜 Mon parcours</b></div><div class="sv-hist">'+(d.choix||[]).map(c=>'<div><span>'+fdate(new Date(c.jour+'T12:00:00'))+'</span><b>'+esc(frn(c.equipe))+'</b><small>contre '+esc(frn(c.adv))+'</small><em>'+(c.res==='v'?'✅':c.res==='x'?'❌':c.res==='a'?'↩️':'⏳')+'</em></div>').join('')+'</div>';
+  h+='<div class="sv-sec"><b>🧟 Encore en vie</b></div><div class="sv-surv">'+((d.survivants||[]).map(x=>'<span>'+esc(x)+'</span>').join('')||'<small>Personne pour l\'instant</small>')+'</div>';
+  if((d.derniers||[]).length)h+='<div class="sv-sec"><b>🏆 Derniers gagnants</b></div><div class="sv-surv">'+d.derniers.map(x=>'<span>'+esc(x.pseudo)+' · +'+nf(x.gain)+' 🪙</span>').join('')+'</div>';
+  h+='<div class="sv-rules"><b>Les règles</b><ul><li>Inscription <b>gratuite</b>, du lundi au mercredi.</li><li>Chaque jour, choisis <b>une équipe de foot</b> qui va <b>gagner</b> son match. Nul ou défaite : éliminé.</li><li>Pas de choix un jour où il y a des matchs : éliminé.</li><li>Une équipe ne peut servir <b>qu\'une fois</b> par saison.</li><li>Dimanche soir (ou dès qu\'il ne reste qu\'un survivant), les survivants se partagent la <b>cagnotte</b> : 200 000 🪙 + 20 000 🪙 par inscrit.</li><li>Si tous les survivants tombent le même jour, ils gagnent tous ensemble.</li></ul></div>';
+  return h+'</div>'}
+document.addEventListener('click',async e=>{const j=e.target.closest('#svJoin'),pk=e.target.closest('[data-svpick]');if(!j&&!pk)return;e.preventDefault();if(!session||SV.busy)return;
+  try{SV.busy=true;SV.d=j?await rpc('surv_rejoindre',{p_token:session.token}):await rpc('surv_choisir',{p_token:session.token,p_fid:pk.dataset.svpick,p_equipe:pk.dataset.sveq});SV.t=Date.now();
+    if(j){winFx('fx-confetti');toast('🧟 Tu participes au Survivant ! Choisis ton équipe du jour.')}else{toast('✅ Choix enregistré : '+frn(pk.dataset.sveq));track('surv')}}
+  catch(err){toast(SV_ERR[err.code]||'Impossible pour l\'instant, réessaie.');if(err.code==='session')logout(ERR.session)}
+  SV.busy=false;renderView()});
+
 /* ---- Combiné du jour ---- */
 function comboPicks(){const B=boostMatch(),now=Date.now();
   const L=visibleMatches().filter(m=>status(m)==='avenir'&&m.ko>now+20*60e3&&m.ko<now+30*3600e3&&m.sp==='foot'&&Array.isArray(m.o)&&m.o.length===3&&(!B||m.id!==B.m.id))
@@ -2973,7 +3035,7 @@ function shareLigue(code,nom){
 }
 
 /* ---------- Notifications ---------- */
-const NPREFS=[['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['retour','🎁','Cadeaux de retour','Des pièces offertes si tu n\'es pas venu depuis 24 h ou plus'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat'],['equipes','❤️','Mes équipes','1 h avant leurs matchs, et le résultat à la fin']];
+const NPREFS=[['surv','🧟','Le Survivant','Rappel pour choisir ton équipe, résultats, gains'],['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['retour','🎁','Cadeaux de retour','Des pièces offertes si tu n\'es pas venu depuis 24 h ou plus'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat'],['equipes','❤️','Mes équipes','1 h avant leurs matchs, et le résultat à la fin']];
 const NPROPRIO=[['proprio_comptes','👤','Nouveaux joueurs','Chaque nouveau compte créé'],['proprio_chat','💬','Messages du chat','Tous les messages, pour surveiller le salon']];
 const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
 function notifSupport(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
@@ -3252,7 +3314,7 @@ function renderMatches(){
   const favs=Array.isArray(state.favs)&&state.favs.length?vis.filter(m=>(isFav(m.home)||isFav(m.away))&&status(m)!=='annule'&&!(m.s&&Date.now()>m.ko+3*3600e3)).sort((a,b)=>a.ko-b.ko).slice(0,6):[];
   const favH=favs.length?'<h3 class="day fav-h">❤️ Mes équipes</h3>'+favs.map(matchCard).join(''):'';
   setTimeout(grPotAnim,30);
-  return installBanner()+guestBanner()+grilleBanner()+(window.clubBanner?clubBanner():'')+eventBanner()+dailyRow()+dashHtml()+boostCard()+comboCard()+invBanner()+defiCard()+favH+tabs+
+  return installBanner()+guestBanner()+grilleBanner()+survBanner(false)+(window.clubBanner?clubBanner():'')+eventBanner()+dailyRow()+dashHtml()+boostCard()+comboCard()+invBanner()+defiCard()+favH+tabs+
    (ui.comp==='all'&&ui.sport==='foot'?featured(vis):'')+
    comp+body+
    '<p class="reset-note" style="margin-top:14px">Matchs réels · résultats mis à jour plusieurs fois par jour'+(lastSync?' (dernière vérification '+hhmm(lastSync)+')':'')+'.</p>';
@@ -3415,7 +3477,7 @@ function gRefresh(){if(ui.gmOpen)gmRender();else if(ui.tab==='bj'){renderView();
 function renderGames(){
   if(state.gpend&&!gBusy)gFinish(true);
   if(ui.bjView==='board')return '<div class="gm-wrap"><button class="back" data-bjview="play">← Mini-jeux</button></div>'+renderBjBoard();
-  return (window.clubBanner?clubBanner():'')+'<div class="gm-wrap"><div class="gm-title"><b>🎮 Mini-jeux</b><span>🪙 '+nf(state.coins)+' pièces</span></div><div class="gm-list">'+
+  return (window.clubBanner?clubBanner():'')+survBanner(true)+'<div class="gm-wrap"><div class="gm-title"><b>🎮 Mini-jeux</b><span>🪙 '+nf(state.coins)+' pièces</span></div><div class="gm-list">'+
     GAMES.map(x=>'<button class="gm-c g-'+x.id+'" data-game="'+x.id+'"><i>'+x.ic+'</i><span><b>'+x.n+'</b><small>'+x.s+'</small></span><em>Jouer ›</em></button>').join('')+'</div>'+
     tournoiCard()+'<button class="gm-board" data-bjview="board">🏆 Classement du blackjack</button>'+
     '<p class="bj-rules">Les jeux se jouent avec vos pièces (mise de '+BJ_MIN+' à '+nf(BJ_MAX)+'). Jeux gratuits, sans argent réel.</p></div>'}
@@ -3713,7 +3775,7 @@ function renderRules(){
   '<li>Chaque jour, vous recevez <b>'+nf(DAILY)+' pièces 🪙 en plus</b>. Les pièces se gardent d\'un jour à l\'autre : vous pouvez les économiser (si vous ne venez pas pendant plusieurs jours, jusqu\'à 7 jours sont rattrapés).</li>'+
   '<li>Les matchs proposés sont les <b>vrais matchs</b> du jour et du lendemain. Choisissez un match, un marché (résultat, les deux équipes marquent, nombre de buts, score exact…) et une cote.</li>'+
   '<li>Si votre pari est gagnant, vous recevez <b>mise × cote</b> en <b>diamants 💎</b>. Exemple : 500 pièces à 1,50 = <b>750 💎</b>.</li>'+
-  '<li><b>⚽ Mon Club</b> : crée ton club (onglet Jeux ou carte de l\'accueil), ouvre des packs de joueurs, entraîne-les et affronte les clubs des autres joueurs dans des matchs animés que tu peux jouer toi-même (téléphone sur le côté, joystick + Passe / Lob / Tir / Tacle, +25 % de pièces). Victoire 3 pts, nul 1 pt ; en cas d\'égalité à 90\' en match joué ou regardé : tirs au but (gagnés 2 pts, perdus 1 pt) : 30 pts pour monter de division, jusqu\'à la Ligue des Légendes. 5 matchs d\'énergie, +1 toutes les 20 min. Un pack gratuit chaque jour. Dans la <b>Boutique</b> du club : de l\'énergie et des joueurs à acheter avec tes pièces (plus le joueur est fort, plus il est cher).</li><li>🏆 <b>Coupe du week-end</b> (Mon Club) : chaque samedi et dimanche, 4 matchs à élimination directe sans énergie. Le vainqueur gagne 100 000 pièces, 10 000 💎 et un pack Légende.</li><li>💱 <b>Marché des transferts</b> : vends tes remplaçants aux autres joueurs (tu reçois 95 % du prix) ou achète les leurs.</li><li>🧩 <b>Combiné du jour</b> : 3 favoris choisis chaque jour, à ajouter au coupon en un clic.</li><li>💬 <b>Chat du match</b> : discute d\'un match avec tous les joueurs. Les liens, les réseaux sociaux et les numéros sont bloqués ; ⚠️ pour signaler un message.</li>'+
+  '<li><b>⚽ Mon Club</b> : crée ton club (onglet Jeux ou carte de l\'accueil), ouvre des packs de joueurs, entraîne-les et affronte les clubs des autres joueurs dans des matchs animés que tu peux jouer toi-même (téléphone sur le côté, joystick + Passe / Lob / Tir / Tacle, +25 % de pièces). Victoire 3 pts, nul 1 pt ; en cas d\'égalité à 90\' en match joué ou regardé : tirs au but (gagnés 2 pts, perdus 1 pt) : 30 pts pour monter de division, jusqu\'à la Ligue des Légendes. 5 matchs d\'énergie, +1 toutes les 20 min. Un pack gratuit chaque jour. Dans la <b>Boutique</b> du club : de l\'énergie et des joueurs à acheter avec tes pièces (plus le joueur est fort, plus il est cher).</li><li>🏆 <b>Coupe du week-end</b> (Mon Club) : chaque samedi et dimanche, 4 matchs à élimination directe sans énergie. Le vainqueur gagne 100 000 pièces, 10 000 💎 et un pack Légende.</li><li>💱 <b>Marché des transferts</b> : vends tes remplaçants aux autres joueurs (tu reçois 95 % du prix) ou achète les leurs.</li><li>🧟 <b>Le Survivant</b> (onglet Jeux) : inscription gratuite du lundi au mercredi, puis chaque jour tu choisis une équipe de foot qui doit gagner (une équipe ne sert qu\'une fois). Nul, défaite ou oubli : éliminé. Les survivants se partagent la cagnotte.</li><li>🧩 <b>Combiné du jour</b> : 3 favoris choisis chaque jour, à ajouter au coupon en un clic.</li><li>💬 <b>Chat du match</b> : discute d\'un match avec tous les joueurs. Les liens, les réseaux sociaux et les numéros sont bloqués ; ⚠️ pour signaler un message.</li>'+
   '<li><b>🎰 La Grille du jour</b> : chaque matin, 5 à 7 gros matchs à pronostiquer gratuitement (1, N ou 2). Grille parfaite : la cagnotte est partagée entre les gagnants. Personne ? Elle grimpe de 250 000 💎 le lendemain. Une seule erreur : 150 000 💎 à partager (20 000 💎 maximum chacun). Modifiable jusqu\'au premier coup d\'envoi. Un match annulé compte comme juste pour tout le monde.</li>'+
   '<li><b>Cash out</b> : dans « Mes paris », le bouton 💸 <b>Encaisser</b> te permet d\'arrêter un pari en cours et de récupérer tout de suite un montant qui dépend des cotes du moment (avant le match, ou en direct quand les paris sont ouverts).</li>'+
   '<li><b>Combiné même match</b> 🧩 : ajoute plusieurs paris d\'un même match au coupon et choisis « Combiné ». La cote tient compte du lien entre les paris (par exemple une victoire et beaucoup de buts). Pas disponible en direct.</li>'+
@@ -4354,7 +4416,7 @@ function renderLigues(){
 }
 function renderView(){
   if(ui.tab==='classement'){ui.tab='chat';ui.social='board'}
-  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='chat'?renderSocial():ui.tab==='live'?renderLive():ui.tab==='bj'?renderGames():ui.tab==='club'?(window.renderClub?renderClub():''):ui.tab==='invite'?renderInvite():ui.tab==='prog'?renderProg():renderRules();
+  $('#view').innerHTML=ui.tab==='matchs'?renderMatches():ui.tab==='paris'?renderBets():ui.tab==='boutique'?renderShop():ui.tab==='chat'?renderSocial():ui.tab==='live'?renderLive():ui.tab==='bj'?renderGames():ui.tab==='club'?(window.renderClub?renderClub():''):ui.tab==='surv'?renderSurv():ui.tab==='invite'?renderInvite():ui.tab==='prog'?renderProg():renderRules();
 }
 
 /* --- Installation de l'appli (PWA) --- */
