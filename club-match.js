@@ -44,9 +44,15 @@ function mkSound(){let ac=null,on=true,cg=null,cf=null,lvl=.16,master=null;try{o
     get on(){return on},
     stop(){try{ac&&ac.close()}catch(e){}ac=null}}}
 
+/* ---------- touches du clavier (modifiables, gardées dans le navigateur) ---------- */
+const KDEF={up:'z',down:'s',left:'q',right:'d',pass:' ',lob:'l',shoot:'k',sprint:'shift'};
+const KLAB={up:'Haut',down:'Bas',left:'Gauche',right:'Droite',pass:'Passe / changer de joueur',lob:'Lob / pressing',shoot:'Tir / tacle / plonger',sprint:'Sprint'};
+function kLoad(){try{const o=JSON.parse(localStorage.getItem('cm_keys')||'{}');return Object.assign({},KDEF,o)}catch(e){return Object.assign({},KDEF)}}
+function kName(k){return({' ':'Espace',shift:'Maj',enter:'Entrée',control:'Ctrl',alt:'Alt',tab:'Tab',arrowup:'↑',arrowdown:'↓',arrowleft:'←',arrowright:'→',backspace:'Retour',capslock:'Verr. Maj'})[k]||String(k).toUpperCase()}
 function start(cfg){
   const SN=mkSound();SN.init();
   const PC=!!(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches);
+  let KB=kLoad();
   const live=cfg.mode==='live',T=[cfg.home,cfg.away];
   const P=[];
   T.forEach((tm,t)=>tm.pl.forEach((q,i)=>{const h=hash((q.n||'')+i+t);
@@ -63,25 +69,29 @@ function start(cfg){
   const ov=document.createElement('div');ov.className='cl-mov cm-ov'+(live?'':' watch');
   const short=s=>{s=String(s||'');return s.length>12?s.slice(0,11)+'…':s};
   ov.innerHTML='<canvas class="cm-cv"></canvas>'+
-   '<div class="cm-top"><button class="cm-x" data-cm="quit">✕</button><button class="cm-x cm-snd" data-cm="snd">'+(SN.on?'🔊':'🔇')+'</button><div class="cm-sb"><span class="cm-tm" style="--a:'+T[0].c1+';--b:'+T[0].c2+'"><i>'+T[0].e+'</i><b>'+esc(short(T[0].n))+'</b></span><span class="cm-sc"><b id="cmS">0 - 0</b><small id="cmM">0\'</small></span><span class="cm-tm r" style="--a:'+T[1].c1+';--b:'+T[1].c2+'"><b>'+esc(short(T[1].n))+'</b><i>'+T[1].e+'</i></span></div>'+
+   '<div class="cm-top"><button class="cm-x" data-cm="quit">✕</button><button class="cm-x cm-snd" data-cm="snd">'+(SN.on?'🔊':'🔇')+'</button>'+(PC?'<button class="cm-x cm-kb" data-cm="keys" title="Changer les touches">⌨️</button>':'')+'<div class="cm-sb"><span class="cm-tm" style="--a:'+T[0].c1+';--b:'+T[0].c2+'"><i>'+T[0].e+'</i><b>'+esc(short(T[0].n))+'</b></span><span class="cm-sc"><b id="cmS">0 - 0</b><small id="cmM">0\'</small></span><span class="cm-tm r" style="--a:'+T[1].c1+';--b:'+T[1].c2+'"><b>'+esc(short(T[1].n))+'</b><i>'+T[1].e+'</i></span></div>'+
    (live?'':'<div class="cm-spd"><button data-cm="sp1" class="on">×1</button><button data-cm="sp2">×2</button><button data-cm="sp4">×4</button><button data-cm="skip">Résultat</button></div>')+'</div>'+
    '<canvas class="cm-mini"></canvas><div class="cm-feed" id="cmFeed"></div><div class="cm-flash" id="cmFlash"></div>'+
    (live?'<div class="cm-joy" id="cmJoy"><i></i></div><div class="cm-pad">'+
-     '<button class="cm-b b-spr" data-k="spr"><span>SPRINT</span><small class="kh">Maj</small></button>'+
-     '<button class="cm-b b-2" data-k="b2"><span id="cmL2">LOB</span><small class="kh">L</small></button>'+
-     '<button class="cm-b b-1" data-k="b1"><span id="cmL1">PASSE</span><small class="kh">Espace</small></button>'+
-     '<button class="cm-b b-0" data-k="b0"><span id="cmL0">TIR</span><small class="kh">K</small><em id="cmPow"></em></button></div>'+
-     (PC?'<div class="cm-keys">⌨️ Flèches / ZQSD : bouger · <b>Espace</b> passe · <b>L</b> lob · <b>K</b> tir (maintenir) · <b>Maj</b> sprint</div>':'')+
-     (PC?'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer (clavier) !</b>'+
-       '<p>⬆️⬇️⬅️➡️ <b>Flèches</b> ou <b>Z Q S D</b> : déplacer ton joueur</p>'+
-       '<p>⚽ <b>Espace</b> : passe dans la direction choisie · <b>L</b> : passe en hauteur</p>'+
-       '<p>🎯 <b>K</b> (ou Entrée) : reste appuyé pour la puissance, relâche pour tirer</p>'+
-       '<p>⚡ <b>Maj</b> : sprint</p>'+
-       '<p>🛡️ En défense : <b>K</b> tacle · <b>Espace</b> changer de joueur · <b>L</b> pressing</p>'+
-       '<p>🥅 Tirs au but : vise avec les <b>flèches</b>, tire avec <b>K</b> · en gardien : flèche + <b>K</b> pour plonger</p>'
+     '<button class="cm-b b-spr" data-k="spr"><span>SPRINT</span><small class="kh" id="khS"></small></button>'+
+     '<button class="cm-b b-2" data-k="b2"><span id="cmL2">LOB</span><small class="kh" id="khL"></small></button>'+
+     '<button class="cm-b b-1" data-k="b1"><span id="cmL1">PASSE</span><small class="kh" id="khP"></small></button>'+
+     '<button class="cm-b b-0" data-k="b0"><span id="cmL0">TIR</span><small class="kh" id="khT"></small><em id="cmPow"></em></button></div>'+
+     (PC?'<div class="cm-keys" id="cmKbar"></div>':'')+
+     (PC?'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer (clavier) !</b><div id="cmHelpK"></div><button data-cm="keys" class="alt">⌨️ Changer les touches</button>'
      :'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer !</b><p class="rot">📱↪️ Tourne ton téléphone sur le côté</p><p>🕹️ <b>Joystick</b> (gauche) : déplacer ton joueur</p><p>⚽ <b>PASSE</b> : passe dans la direction du joystick · <b>LOB</b> : passe en hauteur</p><p>🎯 <b>TIR</b> : reste appuyé pour la puissance, relâche pour frapper</p><p>🛡️ En défense : <b>TACLE</b> pour récupérer le ballon, <b>CHANGER</b> de joueur, <b>PRESSING</b> pour qu\'un coéquipier presse</p>')+'<button data-cm="go">C\'est parti !</button></div>':'');
   if(PC)ov.classList.add('pc');
   document.body.appendChild(ov);
+  function kFill(){if(!PC)return;const n=a=>'<b>'+esc(kName(KB[a]))+'</b>',mv=kName(KB.up)+' '+kName(KB.left)+' '+kName(KB.down)+' '+kName(KB.right);
+    const set=(id,t)=>{const e=ov.querySelector('#'+id);if(e)e.innerHTML=t};
+    set('khS',esc(kName(KB.sprint)));set('khL',esc(kName(KB.lob)));set('khP',esc(kName(KB.pass)));set('khT',esc(kName(KB.shoot)));
+    set('cmKbar','⌨️ Flèches / '+esc(mv)+' : bouger · '+n('pass')+' passe · '+n('lob')+' lob · '+n('shoot')+' tir (maintenir) · '+n('sprint')+' sprint');
+    set('cmHelpK','<p>⬆️⬇️⬅️➡️ <b>Flèches</b> ou <b>'+esc(mv)+'</b> : déplacer ton joueur</p><p>⚽ '+n('pass')+' : passe dans la direction choisie · '+n('lob')+' : passe en hauteur</p><p>🎯 '+n('shoot')+' : reste appuyé pour la puissance, relâche pour tirer</p><p>⚡ '+n('sprint')+' : sprint</p><p>🛡️ En défense : '+n('shoot')+' tacle · '+n('pass')+' changer de joueur · '+n('lob')+' pressing</p><p>🥅 Tirs au but : vise avec les flèches, tire avec '+n('shoot')+' · en gardien : flèche + '+n('shoot')+' pour plonger</p>');
+    const P=ov.querySelector('#cmKeys');if(P)P.querySelector('.ck-l').innerHTML=Object.keys(KDEF).map(a=>'<button class="ck-r'+(G.kcap===a?' cap':'')+'" data-ck="'+a+'"><span>'+KLAB[a]+'</span><b>'+(G.kcap===a?'Appuie sur une touche…':esc(kName(KB[a])))+'</b></button>').join('')}
+  function kPanel(){if(ov.querySelector('#cmKeys'))return;G.kWas=paused;paused=true;const P=document.createElement('div');P.className='cm-help cm-kp';P.id='cmKeys';
+    P.innerHTML='<b>⌨️ Changer les touches</b><p>Clique sur une action, puis appuie sur la nouvelle touche (Échap pour annuler). Les flèches marchent toujours pour bouger.</p><div class="ck-l"></div><button data-cm="kreset" class="alt">Remettre les touches d\'origine</button><button data-cm="kclose">Terminé</button>';
+    ov.appendChild(P);kFill()}
+  kFill();
   const cv=ov.querySelector('.cm-cv'),ctx=cv.getContext('2d'),mini=ov.querySelector('.cm-mini'),mc=mini.getContext('2d');
   const FD=ov.querySelector('#cmFeed'),FL=ov.querySelector('#cmFlash');
   let W=0,H=0,DPR=1,S=10;
@@ -91,7 +101,7 @@ function start(cfg){
     if(cr){ov.style.width=vh+'px';ov.style.height=vw+'px';ov.style.left=vw+'px'}else{ov.style.width=ov.style.height=ov.style.left=''}
     W=ov.clientWidth;H=ov.clientHeight;ROT=W>H;ov.classList.toggle('land',ROT);cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
     S=ROT?(PC?Math.min(W/58,H/34):Math.min(W/44,H/24)):Math.min(W/22,H/36);const mw=ROT?105:68,mh=ROT?68:105;mini.width=mw*1.4*DPR;mini.height=mh*1.4*DPR;mini.style.width=mw+'px';mini.style.height=mh+'px'}
-  function joyW(){let jx=inp.jx,jy=inp.jy;const K=inp.keys;if(K.arrowleft||K.a||K.q)jx=-1;if(K.arrowright||K.d)jx=1;if(K.arrowup||K.w||K.z)jy=-1;if(K.arrowdown||K.s)jy=1;const l=hyp(jx,jy);if(l>1){jx/=l;jy/=l}return ROT?[jy,-jx]:[jx,jy]}
+  function joyW(){let jx=inp.jx,jy=inp.jy;const K=inp.keys;if(K.arrowleft||K.left)jx=-1;if(K.arrowright||K.right)jx=1;if(K.arrowup||K.up)jy=-1;if(K.arrowdown||K.down)jy=1;const l=hyp(jx,jy);if(l>1){jx/=l;jy/=l}return ROT?[jy,-jx]:[jx,jy]}
   function goFS(){try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement){d.requestFullscreen({navigationUI:'hide'}).then(()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}).catch(()=>{})}}catch(e){}}
   function exitFS(){try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch(e){}try{document.fullscreenElement&&document.exitFullscreen().catch(()=>{})}catch(e){}}
   goFS();
@@ -184,15 +194,21 @@ function start(cfg){
     ov.querySelectorAll('.cm-b').forEach(b=>{const k=b.dataset.k;
       b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();b.classList.add('dn');try{b.setPointerCapture(e.pointerId)}catch(_){ }act(k,true)});
       const u=e=>{if(!b.classList.contains('dn'))return;b.classList.remove('dn');act(k,false)};b.addEventListener('pointerup',u);b.addEventListener('pointercancel',u)});
-    const KM={' ':'b1',j:'b1',l:'b2',k:'b0',enter:'b0',shift:'spr',e:'b1'};
-    const kd=e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','z','q'].includes(k)){inp.keys[k]=e.type==='keydown';e.preventDefault()}
-      if(KM[k]&&!e.repeat){act(KM[k],e.type==='keydown');e.preventDefault()}};
+    const kd=e=>{const k=e.key.toLowerCase(),dn=e.type==='keydown';
+      if(G.kcap){if(!dn)return;e.preventDefault();if(k!=='escape'){const old=KB[G.kcap];for(const a in KB)if(KB[a]===k&&a!==G.kcap)KB[a]=old;KB[G.kcap]=k;try{localStorage.setItem('cm_keys',JSON.stringify(KB))}catch(_){}}G.kcap=null;kFill();return}
+      if(['arrowup','arrowdown','arrowleft','arrowright'].includes(k)){inp.keys[k]=dn;e.preventDefault()}
+      for(const a of ['up','down','left','right'])if(KB[a]===k){inp.keys[a]=dn;e.preventDefault()}
+      const KM={[KB.pass]:'b1',[KB.lob]:'b2',[KB.shoot]:'b0',[KB.sprint]:'spr',enter:'b0'};
+      if(KM[k]&&!e.repeat){act(KM[k],dn);e.preventDefault()}};
     window.addEventListener('keydown',kd);window.addEventListener('keyup',kd);G.offKeys=()=>{window.removeEventListener('keydown',kd);window.removeEventListener('keyup',kd)};
   }
   ov.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
-  ov.addEventListener('click',e=>{const b=e.target.closest('[data-cm]');if(!b)return;const a=b.dataset.cm;
+  ov.addEventListener('click',e=>{const ck=e.target.closest('[data-ck]');if(ck){G.kcap=ck.dataset.ck;kFill();return}const b=e.target.closest('[data-cm]');if(!b)return;const a=b.dataset.cm;
     if(a==='go'){ov.querySelector('#cmHelp').remove();paused=false;last=performance.now();SN.whistle(1)}
     else if(a==='snd'){b.textContent=SN.toggle()?'🔊':'🔇'}
+    else if(a==='keys'){kPanel()}
+    else if(a==='kreset'){KB=Object.assign({},KDEF);try{localStorage.removeItem('cm_keys')}catch(_){}G.kcap=null;kFill()}
+    else if(a==='kclose'){G.kcap=null;const P=ov.querySelector('#cmKeys');if(P)P.remove();paused=!!ov.querySelector('.cm-help');if(!paused)last=performance.now()}
     else if(a==='quit'){if(G.end)return;paused=true;const q=document.createElement('div');q.className='cm-help';q.innerHTML='<b>Abandonner le match ?</b><p>Un abandon compte comme une <b>défaite 0-3</b>.</p><button data-cm="quitok">Abandonner</button><button data-cm="resume" class="alt">Continuer à jouer</button>';ov.appendChild(q)}
     else if(a==='resume'){b.closest('.cm-help').remove();paused=false;last=performance.now()}
     else if(a==='quitok'){b.closest('.cm-help').remove();G.sc=[0,Math.max(3,G.sc[1])];done(true)}
@@ -520,6 +536,9 @@ const css=`
 .cm-ov.pc .cm-b .kh{display:block}.cm-ov.pc .cm-b span{transform:translateY(-5px)}
 .cm-ov.pc .cm-pad{transform:scale(.72);transform-origin:right bottom;opacity:.8}
 .cm-ov.pc .cm-joy{display:none}.cm-ov.pc .cm-joy.on{display:block}
+.cm-kb{left:98px!important;font-size:15px!important}.cm-ov:has(#cmKeys) #cmHelp{visibility:hidden}.cm-kp{background:rgba(2,6,23,.98)!important}.cm-kp{z-index:8}.ck-l{display:grid;gap:6px;margin:8px 0}
+.ck-r{display:flex!important;justify-content:space-between;align-items:center;margin:0!important;padding:10px 12px!important;font-size:14px!important;font-weight:700!important;background:rgba(255,255,255,.08)!important;color:#fff!important;border-radius:12px!important}
+.ck-r b{display:inline!important;margin:0!important;font-size:14px!important;background:rgba(255,255,255,.15);border-radius:8px;padding:3px 10px;min-width:40px;text-align:center}.ck-r.cap b{background:#facc15;color:#111}
 .cm-keys{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;background:rgba(2,6,23,.66);border-radius:999px;padding:6px 14px;font-size:12px;white-space:nowrap;pointer-events:none}
 .cm-ov.pc.land .cm-mini{bottom:46px}
 .cm-sb{display:flex;align-items:stretch;background:rgba(2,6,23,.82);border-radius:14px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.4);max-width:calc(100% - 100px)}
