@@ -1,18 +1,100 @@
 {
   "name": "PronoClub — Paris sportifs gratuits",
   "short_name": "PronoClub",
-  "description": "Paris sportifs gratuits sur les vrais matchs : 1 000 pièces par jour, des diamants à gagner et un classement entre amis.",
+  "description": "Paris sportifs gratuits sur les vrais matchs, sans argent réel : 20 000 pièces par jour, des diamants à gagner, ton propre club de foot jouable, la Coupe du week-end et le Survivant.",
   "lang": "fr",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#eef0f4",
   "theme_color": "#161b26",
-  "categories": ["sports", "games"],
+  "categories": [
+    "sports",
+    "games"
+  ],
   "icons": [
-    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
-  ]
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "id": "/",
+  "screenshots": [
+    {
+      "src": "/store/1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Paris sportifs gratuits"
+    },
+    {
+      "src": "/store/2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Joue toi-même tes matchs"
+    },
+    {
+      "src": "/store/3.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Recrute de vrais joueurs"
+    },
+    {
+      "src": "/store/4.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Le Survivant"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Matchs du jour",
+      "url": "/?tab=matchs",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Mon Club",
+      "url": "/?tab=club",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Le Survivant",
+      "url": "/?tab=surv",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
 }
