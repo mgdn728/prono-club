@@ -2350,7 +2350,8 @@ function toggleSel(id,mk,opt){
   renderSlip();renderView();
 }
 function slipCalc(){
-  const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?(s.bo||oddsOf(m,s.mk,s.opt)):1,open:m&&(m.L?liveOpen(m):status(m)==='avenir')}}).filter(s=>s.m);
+  ui.slip=ui.slip.filter(s=>{const m=findMatch(s.matchId);return !m||!!getOpt(m,s.mk,s.opt)});
+  const sels=ui.slip.map(s=>{const m=findMatch(s.matchId);return{...s,m,odds:m?(s.bo||oddsOf(m,s.mk,s.opt)):1,open:m&&(m.L?liveOpen(m):status(m)==='avenir')}}).filter(s=>s.m&&s.odds);
   const single=(ui.mode==='simple'&&sels.length===1)||(ui.mode==='combi'&&sels.length>=2);
   const b25On=ui.boost25&&single&&(state.inv.boost25||0)>0, boostOn=!b25On&&ui.boost&&single&&state.inv.boost>0, shieldOn=ui.shield&&single&&state.inv.shield>0, bm=b25On?1.25:boostOn?1.1:1;
   let total=0,gain=0,err='',combiOdds=1;const groups=[];
@@ -2801,9 +2802,9 @@ document.addEventListener('click',async e=>{const a=e.target.closest('[data-mcha
 
 /* ---- Combiné du jour ---- */
 function comboPicks(){const B=boostMatch(),now=Date.now();
-  const L=visibleMatches().filter(m=>status(m)==='avenir'&&m.ko>now+20*60e3&&m.ko<now+30*3600e3&&(m.sp==='foot'||m.sp==='basket')&&m.o&&(!B||m.id!==B.m.id))
+  const L=visibleMatches().filter(m=>status(m)==='avenir'&&m.ko>now+20*60e3&&m.ko<now+30*3600e3&&m.sp==='foot'&&Array.isArray(m.o)&&m.o.length===3&&(!B||m.id!==B.m.id))
     .map(m=>{const three=m.o.length===3,fi=three?(m.o[0]<=m.o[2]?0:2):(m.o[0]<=m.o[1]?0:1),opt=three?(fi===0?'1':'2'):(fi===0?'1':'2'),od=oddsOf(m,'1x2',opt);return{m,opt,od}})
-    .filter(x=>x.od&&x.od>=1.22&&x.od<=1.9).sort((a,b)=>compRank(a.m)-compRank(b.m)||a.m.ko-b.m.ko).slice(0,12);
+    .filter(x=>x.od&&x.od>=1.22&&x.od<=1.9&&getOpt(x.m,'1x2',x.opt)).sort((a,b)=>compRank(a.m)-compRank(b.m)||a.m.ko-b.m.ko).slice(0,12);
   if(L.length<3)return null;const h=hstr(today()+'combo'),out=[],used=new Set();
   for(let i=0;out.length<3&&i<L.length*2;i++){const x=L[(h+i*7)%L.length];if(used.has(x.m.id))continue;used.add(x.m.id);out.push(x)}
   return out.length===3?out:null}
