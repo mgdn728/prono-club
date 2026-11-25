@@ -601,6 +601,28 @@ nav .badge{background:#ffe14d;color:#3b1fa8}
 .sv-hist{display:grid;gap:6px}.sv-hist div{display:grid;grid-template-columns:90px 1fr auto;gap:0 8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;align-items:center}.sv-hist span{font-size:12px;color:var(--muted);grid-row:1/3}.sv-hist small{font-size:11.5px;color:var(--muted)}.sv-hist em{font-style:normal;grid-row:1/3;grid-column:3;font-size:18px}
 .sv-surv{display:flex;flex-wrap:wrap;gap:6px}.sv-surv span{background:rgba(22,163,74,.12);border-radius:999px;padding:5px 10px;font-size:12.5px;font-weight:700}
 .sv-rules{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:13.5px;line-height:1.5}.sv-rules ul{margin:6px 0 0;padding-left:18px}
+@keyframes mvPop{0%{transform:scale(.6);opacity:.3}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.mg-cash{background:linear-gradient(90deg,#16a34a,#22c55e)!important;animation:mgP 1s infinite}@keyframes mgP{50%{transform:scale(1.03)}}
+.s-cr,.s-tb,.s-mn,.s-gt{flex-direction:column;gap:10px}
+.cr-hist{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:22px}.cr-hist span{font-size:12px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(220,38,38,.2)}.cr-hist span.hi{background:rgba(22,163,74,.25)}
+.cr-box{position:relative;width:100%;max-width:520px;aspect-ratio:5/3;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 20% 100%,#1e3a8a,#0b1220 70%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.cr-svg{position:absolute;inset:0;width:100%;height:100%}.cr-svg polyline{fill:none;stroke:#facc15;stroke-width:1.2;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.cr-ball{position:absolute;left:0;top:100%;transform:translate(-50%,-50%);font-size:30px;filter:drop-shadow(0 0 10px #facc15)}.cr-ball.boom{font-size:54px;animation:mvPop .5s}
+.cr-m{position:absolute;left:0;right:0;top:30%;text-align:center;font-size:46px;font-weight:900;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6)}.cr-sub{position:absolute;left:0;right:0;top:62%;text-align:center;color:#cbd5e1;font-size:13px}
+.tb-lad{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}.tb-lad span{font-size:11px;font-weight:800;padding:3px 6px;border-radius:8px;background:rgba(127,127,127,.15)}.tb-lad span.ok{background:#16a34a;color:#fff}.tb-lad span.cur{outline:2px solid #facc15}
+.tb-goal{position:relative;width:100%;max-width:460px;aspect-ratio:2/1.15;border-radius:18px;background:linear-gradient(#0f5132 55%,#2e8b3a 55%);overflow:hidden}
+.tb-net{position:absolute;left:12%;right:12%;top:12%;height:46%;border:5px solid #fff;border-bottom:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 2px,transparent 2px 12px),repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0 2px,transparent 2px 12px)}
+.tb-gk{position:absolute;left:50%;top:30%;transform:translate(-50%,0);font-size:42px;transition:left .45s ease,transform .45s ease}.tb-gk.d0{left:24%;transform:translate(-50%,0) rotate(-70deg)}.tb-gk.d2{left:76%;transform:translate(-50%,0) rotate(70deg)}.tb-gk.d1{transform:translate(-50%,-12%) scale(1.15)}
+.tb-ball{position:absolute;left:50%;top:84%;transform:translate(-50%,-50%);font-size:30px;transition:left .45s ease,top .45s ease,font-size .45s}.tb-ball.z0{left:22%;top:30%;font-size:22px}.tb-ball.z1{left:50%;top:26%;font-size:22px}.tb-ball.z2{left:78%;top:30%;font-size:22px}
+.tb-msg{position:absolute;left:0;right:0;top:62%;text-align:center;font-size:32px;font-weight:900;animation:mvPop .5s}.tb-msg.ok{color:#facc15}.tb-msg.ko{color:#fca5a5}
+.tb-z{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tb-z button{border:0;border-radius:14px;padding:14px 6px;font-weight:900;font-size:15px;background:linear-gradient(160deg,#3b82f6,#1d4ed8);color:#fff;cursor:pointer}.tb-z button:disabled{opacity:.5}
+.mn-w{width:100%;max-width:400px}.mn-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;font-weight:700}.mn-n{display:flex;gap:6px}.mn-n button{border:0;border-radius:10px;padding:6px 12px;font-weight:900;background:rgba(127,127,127,.18);color:inherit;cursor:pointer}.mn-n button.on{background:#dc2626;color:#fff}
+.mn-g{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.mn-c{aspect-ratio:1;border:0;border-radius:12px;background:linear-gradient(160deg,#334155,#1e293b);box-shadow:inset 0 -4px 0 rgba(0,0,0,.3);font-size:24px;cursor:pointer;color:#fff}
+.mn-c:not(:disabled):hover{filter:brightness(1.25)}.mn-c.ok{background:linear-gradient(160deg,#22c55e,#15803d);animation:mvPop .3s}.mn-c.mine{background:#7f1d1d}.mn-c.boom{background:#dc2626;animation:mvPop .4s}
+.gt-t{width:100%;max-width:360px;border-radius:20px;padding:14px;background:linear-gradient(135deg,#fde047,#f59e0b);color:#3b2600;box-shadow:0 12px 30px rgba(245,158,11,.35)}.gt-t.idle p{text-align:center;font-weight:700;margin:10px 0 4px;line-height:1.6}
+.gt-h{text-align:center;font-weight:900;letter-spacing:.12em;margin-bottom:10px}.gt-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;touch-action:none}
+.gt-c{position:relative;aspect-ratio:1;border-radius:14px;background:#fff7d6;display:grid;place-items:center;font-size:34px;overflow:hidden;user-select:none;cursor:pointer}
+.gt-c i{position:absolute;inset:0;background:repeating-linear-gradient(135deg,#cbd5e1 0 6px,#e2e8f0 6px 12px);transition:opacity .35s,transform .35s}.gt-c.rev i{opacity:0;transform:scale(1.3)}.gt-c.win{background:#bbf7d0;animation:mvPop .5s}
 /* défi du jour */
 .defi{position:relative;overflow:hidden;border-radius:22px;padding:16px;margin-bottom:16px;color:#fff;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.22),transparent 45%),linear-gradient(130deg,#6a2cf5,#3b1fa8 60%,#1c0f66);box-shadow:0 12px 26px rgba(106,44,245,.32)}
 .defi::after{content:"🎯";position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.13;transform:rotate(-12deg)}
@@ -3461,7 +3483,7 @@ function bjAction(a){
   if(a==='stand'){c.st='dealer';bjReveal=true;save();bjRender();bjDealer()}
 }
 /* ---------- Mini-jeux : roulette, machine à sous, plinko (pièces uniquement) ---------- */
-const GAMES=[{id:'bj',ic:'🃏',n:'Blackjack',s:'Battez le croupier · gain ×2'},{id:'rl',ic:'🎡',n:'Roulette',s:'Couleur, douzaine ou numéro · jusqu\'à ×36'},{id:'sl',ic:'🎰',n:'Machine à sous',s:'3 symboles alignés · jusqu\'à ×150'},{id:'pl',ic:'🔻',n:'Plinko',s:'La bille rebondit · jusqu\'à ×16'},{id:'po',ic:'♠️',n:'Poker',s:'En face à face contre un ami'}];
+const GAMES=[{id:'bj',ic:'🃏',n:'Blackjack',s:'Battez le croupier · gain ×2'},{id:'rl',ic:'🎡',n:'Roulette',s:'Couleur, douzaine ou numéro · jusqu\'à ×36'},{id:'sl',ic:'🎰',n:'Machine à sous',s:'3 symboles alignés · jusqu\'à ×150'},{id:'pl',ic:'🔻',n:'Plinko',s:'La bille rebondit · jusqu\'à ×16'},{id:'cr',ic:'🚀',n:'Crash du ballon',s:'Encaisse avant l\'explosion · sans limite'},{id:'tb',ic:'🥅',n:'Tir au but express',s:'Enchaîne les buts · jusqu\'à ×55'},{id:'mn',ic:'💣',n:'Mines',s:'Évite les mines · jusqu\'à ×1 000+'},{id:'gt',ic:'🎟️',n:'Gratte-ticket',s:'3 symboles identiques · jusqu\'à ×50'},{id:'po',ic:'♠️',n:'Poker',s:'En face à face contre un ami'}];
 let gBusy=false,gFx=null;
 function gGame(){if(!ui.game)ui.game=lsGet('pc_game')||'bj';if(!GAMES.some(g=>g.id===ui.game&&g.id!=='po'))ui.game='bj';return ui.game}
 function gSt(g){state.gst=state.gst||{};return state.gst[g]=state.gst[g]||{n:0,w:0,best:0}}
@@ -3495,16 +3517,20 @@ function renderGames(){
 
 /* Jeu en plein écran */
 function gmOpen(g){if(gBusy)return;ui.game=g;lsSet('pc_game',g);ui.bjView='play';ui.gmOpen=true;$('#gmView').classList.add('open');ovLock();ovPush('gm');bjSnd('chip');gmRender()}
-function gmClose(){if(!ui.gmOpen)return;ui.gmOpen=false;$('#gmView').classList.remove('open');ovLock();if(state.gpend&&!gBusy)gFinish(true);renderView();renderHeader()}
+function gmClose(){if(!ui.gmOpen)return;if(MG.run)mgCash(true);if(MG.run)mgEnd(MG.run.bet);if(MG.gt&&!MG.gt.done)gtAll();ui.gmOpen=false;$('#gmView').classList.remove('open');ovLock();if(state.gpend&&!gBusy)gFinish(true);renderView();renderHeader()}
 const GM_HELP={
   bj:'Approchez-vous de 21 sans dépasser. Blackjack (As + 10 ou figure) ou main plus forte que le croupier : vous récupérez <b>2 × votre mise</b>. Égalité : mise rendue. « Doubler » double la mise et donne une seule carte. Le croupier tire jusqu\'à 16 et reste à 17.',
   rl:'Roulette européenne (0 à 36). Rouge/Noir, Pair/Impair, 1-18/19-36 : <b>×2</b>. Douzaine : <b>×3</b>. Numéro exact : <b>×36</b>. Le 0 fait perdre tous les paris sauf « numéro 0 ».',
   sl:'Alignez 3 symboles identiques sur la ligne rouge :<br>7️⃣7️⃣7️⃣ ×150 · 💎💎💎 ×60 · ⭐⭐⭐ ×30 · 🔔🔔🔔 ×20<br>🍉🍉🍉 ×12 · 🍋🍋🍋 ×10 · 🍒🍒🍒 ×8<br>2 symboles identiques : ×1,4.',
+  cr:'Le ballon monte et le multiplicateur grimpe : ×1,5… ×2… ×10… Il peut <b>éclater à tout moment</b>. Touchez <b>Encaisser</b> avant l\'explosion pour gagner votre mise × le multiplicateur. S\'il éclate avant, la mise est perdue. Si vous quittez le jeu pendant le vol, la mise est perdue.',
+  tb:'Choisissez un coin (gauche, milieu ou droite) : le gardien plonge au hasard. But = votre gain grimpe (×1,45 puis ×2,1, ×3,1, ×4,6, ×7… jusqu\'à ×55 au 10e but). Arrêt = tout est perdu. Encaissez quand vous voulez.',
+  mn:'Une grille de 25 cases cache des mines (1, 3, 5 ou 10, à vous de choisir). Chaque case sûre fait monter le gain. Encaissez quand vous voulez : une mine et tout est perdu. Plus il y a de mines, plus ça monte vite.',
+  gt:'Grattez les 9 cases du ticket. 3 symboles identiques = gagné :<br>💎 ×50 · 7️⃣ ×20 · ⭐ ×10 · ⚽ ×5 · 🍀 ×2 · 🪙 ×1 (mise rendue).',
   pl:'La bille tombe au hasard à gauche ou à droite sur chaque clou. Les bords rapportent le plus (jusqu\'à <b>×16</b>), le milieu rapporte moins que la mise (×0,5).'};
 function gmRender(){
   if(!ui.gmOpen)return;const g=gGame(),G=GAMES.find(x=>x.id===g);
   if(state.gpend&&!gBusy)gFinish(true);
-  const P=g==='rl'?rlParts():g==='sl'?slParts():g==='pl'?plParts():bjParts();
+  const P=g==='rl'?rlParts():g==='sl'?slParts():g==='pl'?plParts():g==='cr'?crParts():g==='tb'?tbParts():g==='mn'?mnParts():g==='gt'?gtParts():bjParts();
   $('#gmBox').innerHTML='<div class="gmv-top"><button class="gmv-x" data-gmclose="1" aria-label="Retour">←</button><div class="gmv-t"><b>'+G.ic+' '+G.n+'</b></div><span class="gmv-c">🪙 <b id="gmCoins">'+nf(state.coins)+'</b></span><button class="gmv-i" data-gmhelp="'+g+'" aria-label="Règles">?</button><button class="gmv-i" data-bjsnd="1" aria-label="Son">'+(bjSndOn()?'🔊':'🔇')+'</button></div>'+
     '<div class="gmv-stage s-'+g+'">'+P.stage+'</div><div class="gmv-ctl">'+P.ctl+'</div>'}
 function bjParts(){bjFull=true;let r;try{r=renderBJ()}finally{bjFull=false}return r}
@@ -3599,6 +3625,86 @@ function plDrop(){
     if(t<pts.length-1)requestAnimationFrame(step);else{ended=true;done()}};
   requestAnimationFrame(step);
   setTimeout(()=>{if(!ended){ended=true;done()}},seg*(pts.length+4))}
+
+/* ---- Mini-jeux à encaisser : Crash, Tir au but, Mines + Gratte-ticket ---- */
+const MG={run:null,mines:3,crHist:[],tbLast:null,gt:null};
+const mgM=x=>'×'+(Math.floor(x*100)/100).toFixed(2).replace('.',',');
+function mgBegin(g,extra){if(gBusy)return null;if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour jouer.');return null}
+  const bet=bjBet();if(state.coins<bet||bet<BJ_MIN){toast('Pas assez de pièces');return null}
+  gStart(g,bet,0,extra);gBusy=true;MG.run={g,bet,mult:1,...extra};bjSnd('chip');return MG.run}
+function mgSetWin(v){if(state.gpend)state.gpend.win=Math.floor(v);save()}
+function mgEnd(win){const r=MG.run;if(!r)return;MG.run=null;if(state.gpend)state.gpend.win=Math.floor(win);gBusy=false;gFinish();gRefresh()}
+function mgCash(quiet){const r=MG.run;if(!r)return;
+  if(r.g==='cr'){if(r.crashed)return;const m=crNow();cancelAnimationFrame(r.raf);MG.crHist.unshift({m,ok:1,c:r.crash});MG.crHist=MG.crHist.slice(0,8);mgEnd(quiet?0:r.bet*m);return}
+  if(r.g==='tb'){if(!r.n)return;mgEnd(r.bet*TB_M[r.n-1]);return}
+  if(r.g==='mn'){if(!r.k)return;r.done=1;MG.mnLast=r;mgEnd(r.bet*mnMult(r.mines,r.k));return}}
+function mgCashBtn(v,lbl){return '<button class="bj-deal mg-cash" data-mgcash="1">'+(lbl||'💰 Encaisser')+' · '+nf(Math.floor(v))+' 🪙</button>'}
+
+/* Crash du ballon */
+const crNow=()=>{const r=MG.run;if(!r||r.g!=='cr')return 1;return Math.max(1,Math.exp(.11*(performance.now()-r.t0)/1000))};
+function crParts(){const r=MG.run&&MG.run.g==='cr'?MG.run:null,last=MG.crHist[0];
+  const hist='<div class="cr-hist">'+MG.crHist.map(x=>'<span class="'+(x.c>=2?'hi':'')+'">'+mgM(x.c)+'</span>').join('')+'</div>';
+  const st='<div class="cr-box" id="crBox"><svg viewBox="0 0 100 60" preserveAspectRatio="none" class="cr-svg"><polyline id="crLine" points="0,60" /></svg><div class="cr-ball" id="crBall">⚽</div><div class="cr-m" id="crM">'+(r?mgM(crNow()):last?(last.ok?mgM(last.m):'💥 '+mgM(last.c)):'×1,00')+'</div>'+
+    (!r&&last?'<div class="cr-sub">'+(last.ok?'Encaissé ! Le ballon a éclaté à '+mgM(last.c):'Le ballon a éclaté…')+'</div>':'')+'</div>';
+  return {stage:hist+st+gFxHtml('cr'),ctl:r?mgCashBtn(r.bet*crNow()):gBetCtl('cr','🚀 Lancer le ballon')}}
+function crStart(){const r0=Math.random(),crash=Math.max(1,Math.floor(.97/(1-r0)*100)/100);
+  const r=mgBegin('cr',{crash:Math.min(crash,1000)});if(!r)return;r.t0=performance.now();r.pts=[];gRefresh();
+  const loop=()=>{if(MG.run!==r)return;const m=crNow(),t=(performance.now()-r.t0)/1000;
+    if(m>=r.crash){r.crashed=1;MG.crHist.unshift({m:r.crash,ok:0,c:r.crash});MG.crHist=MG.crHist.slice(0,8);bjSnd('lose');const b=$('#crBall');if(b){b.textContent='💥';b.classList.add('boom')}setTimeout(()=>mgEnd(0),700);return}
+    const el=$('#crM');if(el)el.textContent=mgM(m);const cb=document.querySelector('.mg-cash');if(cb)cb.textContent='💰 Encaisser · '+nf(Math.floor(r.bet*m))+' 🪙';
+    const x=Math.min(96,t*6),y=Math.max(4,58-Math.log(m)*16);r.pts.push(x.toFixed(1)+','+y.toFixed(1));const pl=$('#crLine');if(pl)pl.setAttribute('points','0,60 '+r.pts.slice(-300).join(' '));
+    const bl=$('#crBall');if(bl){bl.style.left=x+'%';bl.style.top=(y/60*100)+'%'}
+    r.raf=requestAnimationFrame(loop)};
+  r.raf=requestAnimationFrame(loop)}
+
+/* Tir au but express */
+const TB_M=[1.45,2.1,3.1,4.6,7,10.5,16,24,36,55];
+function tbParts(){const r=MG.run&&MG.run.g==='tb'?MG.run:null,L=MG.tbLast;
+  const n=r?r.n:0,goal='<div class="tb-goal"><div class="tb-net"></div><div class="tb-gk'+(L?' d'+L.k:'')+'" id="tbGk">🧤</div><div class="tb-ball'+(L?' z'+L.z+(L.ok?' in':' out'):'')+'" id="tbBall">⚽</div>'+
+    (L?'<div class="tb-msg '+(L.ok?'ok':'ko')+'">'+(L.ok?'BUT !':'ARRÊT !')+'</div>':'')+'</div>';
+  const ladder='<div class="tb-lad">'+TB_M.map((m,i)=>'<span class="'+(i<n?'ok':i===n&&r?'cur':'')+'">'+mgM(m)+'</span>').join('')+'</div>';
+  const ctl=r?'<div class="tb-z">'+['⬅️ Gauche','⬆️ Milieu','➡️ Droite'].map((t,i)=>'<button data-tbz="'+i+'"'+(r.busy||n>=10?' disabled':'')+'>'+t+'</button>').join('')+'</div>'+(n?mgCashBtn(r.bet*TB_M[n-1]):'<p class="bj-note">Choisis où tirer !</p>'):gBetCtl('tb','🥅 Commencer');
+  return {stage:ladder+goal+gFxHtml('tb'),ctl}}
+function tbStart(){const r=mgBegin('tb',{n:0});if(!r)return;MG.tbLast=null;gRefresh()}
+function tbShoot(z){const r=MG.run;if(!r||r.g!=='tb'||r.busy||r.n>=10)return;r.busy=1;const k=bjRand(3),ok=k!==z;MG.tbLast={z,k,ok};bjSnd('chip');gRefresh();
+  setTimeout(()=>{r.busy=0;if(ok){r.n++;bjSnd('win');mgSetWin(r.bet*TB_M[r.n-1]);if(r.n>=10){mgEnd(r.bet*TB_M[9]);return}gRefresh()}else{bjSnd('lose');mgEnd(0)}},750)}
+
+/* Mines */
+function mnMult(m,k){let x=1;for(let i=0;i<k;i++)x*=(25-i)/(25-m-i);return x*.97}
+function mnParts(){const r=MG.run&&MG.run.g==='mn'?MG.run:null,L=r||MG.mnLast;
+  const cells=Array.from({length:25},(_,i)=>{const op=L&&L.open&&L.open.includes(i),mine=L&&L.set&&L.set.includes(i),show=!r&&L&&L.done;
+    return '<button class="mn-c'+(op?' ok':'')+(show&&mine?' mine':'')+(L&&L.boom===i?' boom':'')+'" data-mnc="'+i+'"'+(!r||op?' disabled':'')+'>'+(op?'💎':show&&mine?'💣':'')+'</button>'}).join('');
+  const k=r?r.k:0,next=r?mnMult(r.mines,k+1):0;
+  const top='<div class="mn-top">'+(r?'<span>💣 '+r.mines+' mine'+(r.mines>1?'s':'')+'</span><span>Prochaine case : <b>'+mgM(next)+'</b></span>':'<span>Nombre de mines :</span><div class="mn-n">'+[1,3,5,10].map(v=>'<button class="'+(MG.mines===v?'on':'')+'" data-mnn="'+v+'">'+v+'</button>').join('')+'</div>')+'</div>';
+  return {stage:'<div class="mn-w">'+top+'<div class="mn-g">'+cells+'</div></div>'+gFxHtml('mn'),ctl:r?(k?mgCashBtn(r.bet*mnMult(r.mines,k),'💰 Encaisser '+mgM(mnMult(r.mines,k))):'<p class="bj-note">Touche une case !</p>'):gBetCtl('mn','💣 Jouer')}}
+function mnStart(){const m=MG.mines,set=[];while(set.length<m){const x=bjRand(25);if(!set.includes(x))set.push(x)}const r=mgBegin('mn',{mines:m,set,open:[],k:0});if(!r)return;MG.mnLast=null;gRefresh()}
+function mnPick(i){const r=MG.run;if(!r||r.g!=='mn'||r.open.includes(i))return;
+  if(r.set.includes(i)){r.boom=i;r.done=1;MG.mnLast=r;bjSnd('lose');mgEnd(0);return}
+  r.open.push(i);r.k++;bjSnd('tick');mgSetWin(r.bet*mnMult(r.mines,r.k));
+  if(r.k>=25-r.mines){r.done=1;MG.mnLast=r;mgEnd(r.bet*mnMult(r.mines,r.k));return}gRefresh()}
+
+/* Gratte-ticket */
+const GT_SYM=[['💎',50,.0004],['7️⃣',20,.004],['⭐',10,.012],['⚽',5,.06],['🍀',2,.13],['🪙',1,.14]];
+function gtMake(){let r=Math.random(),w=null;for(const x of GT_SYM){if(r<x[2]){w=x;break}r-=x[2]}
+  const pool=[];GT_SYM.forEach(x=>{if(!w||x!==w){pool.push(x[0],x[0])}});
+  for(let i=pool.length-1;i>0;i--){const j=bjRand(i+1);[pool[i],pool[j]]=[pool[j],pool[i]]}
+  let cells=w?[w[0],w[0],w[0]].concat(pool.slice(0,6)):pool.slice(0,9);
+  for(let i=cells.length-1;i>0;i--){const j=bjRand(i+1);[cells[i],cells[j]]=[cells[j],cells[i]]}
+  return{cells,w}}
+function gtParts(){const T=MG.gt;
+  const grid=T?'<div class="gt-t" id="gtT"><div class="gt-h">🎟️ PRONO-TICKET</div><div class="gt-g">'+T.cells.map((c,i)=>'<div class="gt-c'+(T.rev[i]?' rev':'')+(T.done&&T.w&&c===T.w[0]?' win':'')+'" data-gti="'+i+'"><span>'+c+'</span><i></i></div>').join('')+'</div></div>'
+    :'<div class="gt-t idle"><div class="gt-h">🎟️ PRONO-TICKET</div><p>3 symboles identiques = gagné<br>💎 ×50 · 7️⃣ ×20 · ⭐ ×10 · ⚽ ×5 · 🍀 ×2 · 🪙 ×1</p></div>';
+  return {stage:grid+gFxHtml('gt'),ctl:T&&!T.done?'<button class="bj-deal" data-gtall="1">✨ Tout gratter</button><p class="bj-note">Gratte les cases avec le doigt (ou la souris)</p>':gBetCtl('gt','🎟️ Acheter un ticket')}}
+function gtStart(){if(gBusy)return;if(!session){ui.authMode='signup';openAuth('Créez un compte gratuit pour jouer.');return}
+  const bet=bjBet();if(state.coins<bet){toast('Pas assez de pièces');return}const t=gtMake();
+  gStart('gt',bet,t.w?Math.floor(bet*t.w[1]):0,{});gBusy=true;MG.gt={...t,rev:Array(9).fill(false),done:false};bjSnd('chip');gRefresh()}
+function gtRev(i){const T=MG.gt;if(!T||T.done||T.rev[i])return;T.rev[i]=true;const el=document.querySelector('[data-gti="'+i+'"]');if(el)el.classList.add('rev');bjSnd('tick');if(T.rev.every(Boolean))gtDone()}
+function gtAll(){const T=MG.gt;if(!T||T.done)return;T.rev.fill(true);gtDone()}
+function gtDone(){const T=MG.gt;T.done=true;setTimeout(()=>{gBusy=false;gFinish();gRefresh()},450)}
+let gtDown=false;
+document.addEventListener('pointerdown',e=>{const c=e.target.closest('[data-gti]');if(!c)return;gtDown=true;gtRev(+c.dataset.gti)});
+document.addEventListener('pointerup',()=>{gtDown=false});
+document.addEventListener('pointermove',e=>{if(!gtDown)return;const el=document.elementFromPoint(e.clientX,e.clientY),c=el&&el.closest&&el.closest('[data-gti]');if(c)gtRev(+c.dataset.gti)});
 
 function bjResume(){const c=state.bj&&state.bj.cur;if(!c)return;c.d.concat(c.p).forEach(x=>bjSeen.add(x.id));if(c.st==='dealer'&&!bjBusy)bjDealer()}
 
@@ -4608,7 +4714,12 @@ document.addEventListener('click',e=>{
   if(d.gmhelp){const G=GAMES.find(x=>x.id===d.gmhelp);popup('<div class="pop-ic big">'+G.ic+'</div><h3>'+G.n+' : les règles</h3><p>'+GM_HELP[d.gmhelp]+'</p><p style="font-size:12px;color:var(--muted)">Mise de '+BJ_MIN+' à '+nf(BJ_MAX)+' pièces. Jeu gratuit, sans argent réel.</p><div class="pop-btns"><button class="pbtn" data-popclose="1">Compris</button></div>');return}
   if(d.rlnum){if(!gBusy)rlNumPop();return}
   if(d.rl){if(gBusy)return;ui.rlSel=d.rl;bjSnd('chip');if(d.rl[0]==='n')closePop();gRefresh();return}
-  if(d.gplay){const g=d.gplay;if(g==='rl')rlSpin();else if(g==='sl')slSpin();else if(g==='pl')plDrop();return}
+  if(d.gplay){const g=d.gplay;if(g==='rl')rlSpin();else if(g==='sl')slSpin();else if(g==='pl')plDrop();else if(g==='cr')crStart();else if(g==='tb')tbStart();else if(g==='mn')mnStart();else if(g==='gt')gtStart();return}
+  if(d.mgcash){mgCash(false);return}
+  if(d.tbz){tbShoot(+d.tbz);return}
+  if(d.mnc){mnPick(+d.mnc);return}
+  if(d.mnn){if(MG.run)return;MG.mines=+d.mnn;bjSnd('chip');gRefresh();return}
+  if(d.gtall){gtAll();return}
   if(d.bjchip){const b=bjS();if(gBusy||(gGame()==='bj'&&b.cur&&b.cur.st!=='done'))return;b.bet=+d.bjchip;b.bet=bjBet();bjSnd('chip');gRefresh();return}
   if(d.bjview){ui.bjView=d.bjview;if(d.bjview==='board'){ui.bjBoard=null;loadBjBoard()}renderView();return}
   if(d.bjset){const b=bjS();if(gBusy||(gGame()==='bj'&&b.cur&&b.cur.st!=='done'))return;b.bet=d.bjset==='less'?Math.max(BJ_MIN,b.bet-500):d.bjset==='more'?Math.min(BJ_MAX,b.bet+500):d.bjset==='half'?Math.max(BJ_MIN,Math.round(b.bet/2/50)*50):d.bjset==='dbl'?Math.min(BJ_MAX,b.bet*2):+d.bjset;b.bet=bjBet();bjSnd('chip');gRefresh();return}
