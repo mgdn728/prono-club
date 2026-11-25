@@ -181,6 +181,37 @@ async function regler(prefs: Map<number, Record<string, boolean>>) {
   }
 }
 
+// ---------- Cadeau de retour : faire revenir les joueurs absents depuis 24 h ou plus ----------
+// Une notification par palier d'absence (24 h, 3 jours, 7 jours), avec des pièces offertes
+// (créditées dans « bonus » : le joueur les récupère automatiquement en rouvrant l'appli).
+const RETOUR = [
+  { h: 168, c: 50000, t: "💎 50 000 pièces t'attendent !", x: "Une semaine sans toi… Ton club, tes pièces et les gros matchs t'attendent sur PronoClub. Reviens récupérer ton cadeau 🎁" },
+  { h: 72, c: 25000, t: "🔥 25 000 pièces offertes", x: "Ça fait 3 jours ! Reviens sur PronoClub : 25 000 pièces t'attendent pour tes prochains pronos ⚽" },
+  { h: 24, c: 10000, t: "🎁 10 000 pièces offertes", x: "Les matchs du jour sont là ! Reviens sur PronoClub récupérer tes 10 000 pièces et place tes pronos ⚽" },
+];
+async function retour() {
+  const p = paris();
+  if (p.hour < 11 || p.hour > 20) return; // jamais la nuit ni tôt le matin
+  const { data: subs } = await db.from("abonnements").select("joueur_id,prefs");
+  const ok = new Set<number>();
+  for (const s of subs || []) if ((s.prefs || {}).retour !== false) ok.add(s.joueur_id);
+  if (!ok.size) return;
+  const { data: js } = await db.from("joueurs").select("id,pseudo,maj_le,bonus,admin").in("id", [...ok]);
+  let n = 0;
+  for (const j of js || []) {
+    if (j.admin || String(j.pseudo).toLowerCase() === "mgdn367") continue;
+    const last = Date.parse(j.maj_le), h = (Date.now() - last) / 3600e3;
+    if (!(h >= 24) || h > 30 * 24) continue; // entre 24 h et 30 jours d'absence
+    const lv = RETOUR.find((r) => h >= r.h)!;
+    const cle = "retour" + lv.h + ":" + new Date(last).toISOString().slice(0, 10); // une seule fois par palier et par absence
+    if (!(await marquer(j.id, cle))) continue;
+    await db.from("joueurs").update({ bonus: (j.bonus || 0) + lv.c }).eq("id", j.id);
+    await ajouter(j.id, "retour", lv.t, lv.x, "?");
+    if (++n >= 200) break;
+  }
+  if (n) console.log("cadeaux de retour", n);
+}
+
 async function preparer() {
   const { data: subs } = await db.from("abonnements").select("joueur_id,prefs");
   const prefs = new Map<number, Record<string, boolean>>();
@@ -195,6 +226,7 @@ async function preparer() {
   if (paris().min % 2 === 0) { try { await regler(prefs); } catch (e) { console.error("regler", e); } } // paiement des paris des joueurs absents : toutes les 2 min
   if (paris().min % 5 === 2) { try { await duels(); } catch (e) { console.error("duels", e); } }
   if (paris().min === 30) { try { await rangs(prefs); } catch (e) { console.error("rangs", e); } }
+  if (paris().min === 40) { try { await retour(); } catch (e) { console.error("retour", e); } } // cadeaux de retour : une fois par heure
   const ids = [...prefs.keys()];
   if (!ids.length) return;
   const { data: js } = await db.from("joueurs").select("id,pseudo,etat").in("id", ids);
@@ -329,7 +361,7 @@ async function envoyer() {
     const { data: ss } = await db.from("abonnements").select("id,endpoint,p256dh,auth,prefs").eq("joueur_id", x.joueur_id);
     for (const s of ss || []) {
       const pr = s.prefs || {};
-      if (x.type === "equipes" ? pr.equipes === false : !pr[x.type]) continue; // « Mes équipes » : activé sauf si le joueur l'a coupé
+      if (x.type === "equipes" || x.type === "retour" ? pr[x.type] === false : !pr[x.type]) continue; // « Mes équipes » et « Cadeaux de retour » : activés sauf si le joueur les a coupés
       try {
         await webpush.sendNotification(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },

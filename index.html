@@ -2200,7 +2200,7 @@ async function claimBonus(){
   if(!session||!synced)return;
   try{const r=await rpc('bonus_recuperer',{p_token:session.token});if(!r)return;const f0=ui.filleuls;ui.filleuls=r.filleuls||0;checkParrain();if(f0!==ui.filleuls&&(ui.tab==='matchs'||ui.tab==='invite'))renderView();
     if(r.bonus>0||r.dia>0){state.coins+=r.bonus||0;state.diamonds+=r.dia||0;save();renderAll();
-      celebrate('🎁',r.dia>0&&!(r.bonus>0)?'Récompense reçue !':'Bonus reçu !','<b>'+[r.bonus>0?'+'+nf(r.bonus)+' pièces':'',r.dia>0?'+'+nf(r.dia)+' 💎':''].filter(Boolean).join(' et ')+'</b> pour toi (parrainage, Grille du jour ou vente au marché des transferts). Bravo !')}}catch(e){}
+      celebrate('🎁',r.dia>0&&!(r.bonus>0)?'Récompense reçue !':'Bonus reçu !','<b>'+[r.bonus>0?'+'+nf(r.bonus)+' pièces':'',r.dia>0?'+'+nf(r.dia)+' 💎':''].filter(Boolean).join(' et ')+'</b> pour toi (cadeau de retour, parrainage, Grille du jour ou vente au marché). Bravo !')}}catch(e){}
 }
 async function refreshFromServer(){
   if(!session)return;
@@ -2973,7 +2973,7 @@ function shareLigue(code,nom){
 }
 
 /* ---------- Notifications ---------- */
-const NPREFS=[['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat'],['equipes','❤️','Mes équipes','1 h avant leurs matchs, et le résultat à la fin']];
+const NPREFS=[['paris','🏁','Résultats de mes paris','Quand tous les matchs d\'un pari sont terminés'],['retour','🎁','Cadeaux de retour','Des pièces offertes si tu n\'es pas venu depuis 24 h ou plus'],['defi','🎯','Défi du jour','Le nouveau défi, vers 11 h'],['serie','🔥','Série en danger','Le soir, si vous n\'êtes pas encore venu'],['social','👥','Amis et ligues','Parrainage réussi, ligues, @mentions dans le chat'],['equipes','❤️','Mes équipes','1 h avant leurs matchs, et le résultat à la fin']];
 const NPROPRIO=[['proprio_comptes','👤','Nouveaux joueurs','Chaque nouveau compte créé'],['proprio_chat','💬','Messages du chat','Tous les messages, pour surveiller le salon']];
 const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
 function notifSupport(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
