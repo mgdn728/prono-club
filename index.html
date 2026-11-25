@@ -1782,6 +1782,7 @@ const SHOP=[
  {id:'fr_admin',sec:'Exclusif',ic:'🛡️',name:'Cadre Administrateur',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'frame',cls:'fr-admin',hidden:true},
  {id:'t_admin',sec:'Exclusif',ic:'🛡️',name:'Titre « Administrateur »',desc:'Réservé à l\'administrateur du club.',cost:0,kind:'title',label:'Administrateur',hidden:true}
 ];
+SHOP.forEach(i=>{i.cost*=3});
 
 /* ---------- Outils ---------- */
 const $=s=>document.querySelector(s);
