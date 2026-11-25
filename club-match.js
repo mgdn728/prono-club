@@ -46,6 +46,7 @@ function mkSound(){let ac=null,on=true,cg=null,cf=null,lvl=.16,master=null;try{o
 
 function start(cfg){
   const SN=mkSound();SN.init();
+  const PC=!!(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches);
   const live=cfg.mode==='live',T=[cfg.home,cfg.away];
   const P=[];
   T.forEach((tm,t)=>tm.pl.forEach((q,i)=>{const h=hash((q.n||'')+i+t);
@@ -66,11 +67,20 @@ function start(cfg){
    (live?'':'<div class="cm-spd"><button data-cm="sp1" class="on">×1</button><button data-cm="sp2">×2</button><button data-cm="sp4">×4</button><button data-cm="skip">Résultat</button></div>')+'</div>'+
    '<canvas class="cm-mini"></canvas><div class="cm-feed" id="cmFeed"></div><div class="cm-flash" id="cmFlash"></div>'+
    (live?'<div class="cm-joy" id="cmJoy"><i></i></div><div class="cm-pad">'+
-     '<button class="cm-b b-spr" data-k="spr"><span>SPRINT</span></button>'+
-     '<button class="cm-b b-2" data-k="b2"><span id="cmL2">LOB</span></button>'+
-     '<button class="cm-b b-1" data-k="b1"><span id="cmL1">PASSE</span></button>'+
-     '<button class="cm-b b-0" data-k="b0"><span id="cmL0">TIR</span><em id="cmPow"></em></button></div>'+
-     '<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer !</b><p class="rot">📱↪️ Tourne ton téléphone sur le côté</p><p>🕹️ <b>Joystick</b> (gauche) : déplacer ton joueur</p><p>⚽ <b>PASSE</b> : passe dans la direction du joystick · <b>LOB</b> : passe en hauteur</p><p>🎯 <b>TIR</b> : reste appuyé pour la puissance, relâche pour frapper</p><p>🛡️ En défense : <b>TACLE</b> pour récupérer le ballon, <b>CHANGER</b> de joueur, <b>PRESSING</b> pour qu\'un coéquipier presse</p><button data-cm="go">C\'est parti !</button></div>':'');
+     '<button class="cm-b b-spr" data-k="spr"><span>SPRINT</span><small class="kh">Maj</small></button>'+
+     '<button class="cm-b b-2" data-k="b2"><span id="cmL2">LOB</span><small class="kh">L</small></button>'+
+     '<button class="cm-b b-1" data-k="b1"><span id="cmL1">PASSE</span><small class="kh">Espace</small></button>'+
+     '<button class="cm-b b-0" data-k="b0"><span id="cmL0">TIR</span><small class="kh">K</small><em id="cmPow"></em></button></div>'+
+     (PC?'<div class="cm-keys">⌨️ Flèches / ZQSD : bouger · <b>Espace</b> passe · <b>L</b> lob · <b>K</b> tir (maintenir) · <b>Maj</b> sprint</div>':'')+
+     (PC?'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer (clavier) !</b>'+
+       '<p>⬆️⬇️⬅️➡️ <b>Flèches</b> ou <b>Z Q S D</b> : déplacer ton joueur</p>'+
+       '<p>⚽ <b>Espace</b> : passe dans la direction choisie · <b>L</b> : passe en hauteur</p>'+
+       '<p>🎯 <b>K</b> (ou Entrée) : reste appuyé pour la puissance, relâche pour tirer</p>'+
+       '<p>⚡ <b>Maj</b> : sprint</p>'+
+       '<p>🛡️ En défense : <b>K</b> tacle · <b>Espace</b> changer de joueur · <b>L</b> pressing</p>'+
+       '<p>🥅 Tirs au but : vise avec les <b>flèches</b>, tire avec <b>K</b> · en gardien : flèche + <b>K</b> pour plonger</p>'
+     :'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer !</b><p class="rot">📱↪️ Tourne ton téléphone sur le côté</p><p>🕹️ <b>Joystick</b> (gauche) : déplacer ton joueur</p><p>⚽ <b>PASSE</b> : passe dans la direction du joystick · <b>LOB</b> : passe en hauteur</p><p>🎯 <b>TIR</b> : reste appuyé pour la puissance, relâche pour frapper</p><p>🛡️ En défense : <b>TACLE</b> pour récupérer le ballon, <b>CHANGER</b> de joueur, <b>PRESSING</b> pour qu\'un coéquipier presse</p>')+'<button data-cm="go">C\'est parti !</button></div>':'');
+  if(PC)ov.classList.add('pc');
   document.body.appendChild(ov);
   const cv=ov.querySelector('.cm-cv'),ctx=cv.getContext('2d'),mini=ov.querySelector('.cm-mini'),mc=mini.getContext('2d');
   const FD=ov.querySelector('#cmFeed'),FL=ov.querySelector('#cmFlash');
@@ -80,7 +90,7 @@ function start(cfg){
     DPR=Math.min(2.5,window.devicePixelRatio||1);const vw=window.innerWidth,vh=window.innerHeight,cr=vh>vw;ov.classList.toggle('crot',cr);
     if(cr){ov.style.width=vh+'px';ov.style.height=vw+'px';ov.style.left=vw+'px'}else{ov.style.width=ov.style.height=ov.style.left=''}
     W=ov.clientWidth;H=ov.clientHeight;ROT=W>H;ov.classList.toggle('land',ROT);cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
-    S=ROT?Math.min(W/44,H/24):Math.min(W/22,H/36);const mw=ROT?105:68,mh=ROT?68:105;mini.width=mw*1.4*DPR;mini.height=mh*1.4*DPR;mini.style.width=mw+'px';mini.style.height=mh+'px'}
+    S=ROT?(PC?Math.min(W/58,H/34):Math.min(W/44,H/24)):Math.min(W/22,H/36);const mw=ROT?105:68,mh=ROT?68:105;mini.width=mw*1.4*DPR;mini.height=mh*1.4*DPR;mini.style.width=mw+'px';mini.style.height=mh+'px'}
   function joyW(){let jx=inp.jx,jy=inp.jy;const K=inp.keys;if(K.arrowleft||K.a||K.q)jx=-1;if(K.arrowright||K.d)jx=1;if(K.arrowup||K.w||K.z)jy=-1;if(K.arrowdown||K.s)jy=1;const l=hyp(jx,jy);if(l>1){jx/=l;jy/=l}return ROT?[jy,-jx]:[jx,jy]}
   function goFS(){try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement){d.requestFullscreen({navigationUI:'hide'}).then(()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}).catch(()=>{})}}catch(e){}}
   function exitFS(){try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch(e){}try{document.fullscreenElement&&document.exitFullscreen().catch(()=>{})}catch(e){}}
@@ -249,7 +259,7 @@ function start(cfg){
       if(G.half===1&&G.t>=HALF){G.half=2;G.ph='half';G.phT=2.4;SN.whistle(2);flash('MI-TEMPS','half',2.2);say('⏸️ Mi-temps : '+G.sc[0]+' - '+G.sc[1]);return}
       if(G.t>=HALF*2){if(G.sc[0]===G.sc[1]){G.ph='pre';G.phT=2.2;SN.whistle(3);flash('MATCH NUL<small>Place aux tirs au but !</small>','half',2.1);vib([60,40,60]);return}G.ph='full';G.phT=1.6;SN.whistle(3);flash('FIN DU MATCH','half',1.6);vib([60,40,60]);return}}
     if(G.bufT>0)G.bufT-=dt;
-    if(G.charge>=0)G.charge=Math.min(1.2,G.charge+dt*1.1);
+    if(G.charge>=0){if(live&&B.own!==G.ctrl)G.charge=-1;else G.charge=Math.min(1.2,G.charge+dt*1.1)}
     roles();
     // joueurs
     for(const p of P){if(p.cd>0)p.cd-=dt;if(p.kick>0)p.kick-=dt;if(p.dive>0)p.dive-=dt;
@@ -332,7 +342,7 @@ function start(cfg){
     Object.assign(B,{x:CX,y:11,z:0,vx:0,vy:0,vz:0,own:null,shot:false,tgt:null,net:0});
     G.ctrl=live?(t===0?sh:gk):null;
     const side=rnd()<.42?-1:rnd()<.72?1:0;PK.aiA=CX+side*(side?1.5+rnd()*1.9:rnd()*.8-.4);PK.aiP=.55+rnd()*.37;
-    flash(live?(t===0?'À TOI DE TIRER !<small>Vise avec le joystick, reste appuyé sur TIR</small>':'ARRÊTE-LE !<small>Joystick à gauche ou à droite + PLONGER</small>'):esc(sh.sn),t===0?'post':'save',1.6)}
+    flash(live?(t===0?'À TOI DE TIRER !<small>'+(PC?'Vise avec les flèches, reste appuyé sur K':'Vise avec le joystick, reste appuyé sur TIR')+'</small>':'ARRÊTE-LE !<small>'+(PC?'Flèche à gauche ou à droite + K pour plonger':'Joystick à gauche ou à droite + PLONGER')+'</small>'):esc(sh.sn),t===0?'post':'save',1.6)}
   function pkKick(ax,pow){if(PK.st!=='aim')return;PK.st='run';PK.t=0;PK.ax=ax;PK.pow=pow}
   function pkStep(dt){PK.t+=dt;const sh=PK.sh,gk=PK.gk;if(G.charge>=0)G.charge=Math.min(1.2,G.charge+dt*1.1);if(B.net>0)B.net=Math.max(0,B.net-dt);
     if(PK.st==='prep'){if(PK.t>1.3){PK.st='aim';PK.t=0}return}
@@ -506,6 +516,12 @@ const css=`
 .cm-top>*{pointer-events:auto}
 .cm-x{position:absolute;left:10px;top:calc(10px + env(safe-area-inset-top));width:36px;height:36px;border-radius:12px;border:0;background:rgba(2,6,23,.6);color:#fff;font-size:16px;font-weight:900}
 .cm-snd{left:54px!important;font-size:15px!important}
+.cm-b .kh{display:none;position:absolute;bottom:9px;left:0;right:0;font-size:9.5px;font-weight:800;opacity:.85;pointer-events:none}
+.cm-ov.pc .cm-b .kh{display:block}.cm-ov.pc .cm-b span{transform:translateY(-5px)}
+.cm-ov.pc .cm-pad{transform:scale(.72);transform-origin:right bottom;opacity:.8}
+.cm-ov.pc .cm-joy{display:none}.cm-ov.pc .cm-joy.on{display:block}
+.cm-keys{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;background:rgba(2,6,23,.66);border-radius:999px;padding:6px 14px;font-size:12px;white-space:nowrap;pointer-events:none}
+.cm-ov.pc.land .cm-mini{bottom:46px}
 .cm-sb{display:flex;align-items:stretch;background:rgba(2,6,23,.82);border-radius:14px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.4);max-width:calc(100% - 100px)}
 .cm-tm{display:flex;align-items:center;gap:6px;padding:6px 9px;font-size:12px;font-weight:800;min-width:0;border-left:4px solid var(--a)}
 .cm-tm.r{border-left:0;border-right:4px solid var(--a)}.cm-tm b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:22vw}.cm-tm i{font-style:normal;font-size:16px}
