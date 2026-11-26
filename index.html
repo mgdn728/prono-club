@@ -1324,6 +1324,7 @@ body.pf-lock{overflow:hidden}
 .kn-w{width:100%;max-width:440px}.kn-g{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}.kn-c{aspect-ratio:1;border:0;border-radius:9px;background:rgba(127,127,127,.2);color:inherit;font-weight:800;font-size:13px;cursor:pointer}
 .kn-c.on{background:#6366f1;color:#fff}.kn-c.dr{background:#f59e0b;color:#111;animation:mvPop .3s}.kn-c.hit{background:#16a34a;color:#fff;box-shadow:0 0 0 3px #facc15}
 .kn-pay{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:8px}.kn-pay span{font-size:11.5px;font-weight:800;padding:3px 7px;border-radius:8px;background:rgba(127,127,127,.16)}.kn-pay span.on{background:#16a34a;color:#fff}
+.tm-m{font-size:40px;font-weight:900;color:#22c55e;font-variant-numeric:tabular-nums;line-height:1}.tm-m.low{color:#ef4444}
 .tm-w{width:100%;max-width:440px;display:flex;flex-direction:column;gap:12px;align-items:center}.tm-bar{position:relative;width:100%;height:26px;border-radius:999px;background:rgba(239,68,68,.55);overflow:hidden}.tm-bar .z{position:absolute;top:0;bottom:0;background:#22c55e}
 .tm-bar b{position:absolute;top:0;bottom:0;width:5px;background:#fff;box-shadow:0 0 8px #000;transform:translateX(-50%)}.tm-tap{font-size:20px!important;padding:16px!important}
 .jg-s,.lf-s{position:relative;width:100%;height:190px;border-radius:18px;background:linear-gradient(#0f5132 70%,#2e8b3a 70%);overflow:hidden}.jg-p{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:70px}
@@ -3528,7 +3529,7 @@ function bjAction(a){
   if(a==='stand'){c.st='dealer';bjReveal=true;save();bjRender();bjDealer()}
 }
 /* ---------- Mini-jeux : roulette, machine à sous, plinko (pièces uniquement) ---------- */
-const GAMES=[{id:'bj',ic:'🃏',n:'Blackjack',s:'Battez le croupier · gain ×2'},{id:'rl',ic:'🎡',n:'Roulette',s:'Couleur, douzaine ou numéro · jusqu\'à ×36'},{id:'sl',ic:'🎰',n:'Machine à sous',s:'3 symboles alignés · jusqu\'à ×150'},{id:'pl',ic:'🔻',n:'Plinko',s:'La bille rebondit · jusqu\'à ×16'},{id:'cr',ic:'🚀',n:'Crash du ballon',s:'Encaisse avant l\'explosion · sans limite'},{id:'tb',ic:'🥅',n:'Tir au but express',s:'Enchaîne les buts · jusqu\'à ×55'},{id:'mn',ic:'💣',n:'Mines',s:'Évite les mines · jusqu\'à ×1 000+'},{id:'gt',ic:'🎟️',n:'Gratte-ticket',s:'3 symboles identiques · jusqu\'à ×50'},{id:'jp',ic:'👑',n:'Méga-jackpot',s:'Un jackpot commun à tous les joueurs'},{id:'hl',ic:'🃏',n:'Plus haut / plus bas',s:'Devine la carte suivante · encaisse quand tu veux'},{id:'tw',ic:'🗼',n:'La Tour',s:'Grimpe sans tomber · jusqu\'à ×24'},{id:'jg',ic:'⚽',n:'Jongles',s:'Tape au bon moment · jusqu\'à ×19'},{id:'lf',ic:'🏀',n:'Lancer franc',s:'Vise le panier · jusqu\'à ×23'},{id:'bn',ic:'🥤',n:'Bonneteau',s:'Trouve la balle · ×2,8'},{id:'ch',ic:'🏇',n:'Course de chevaux',s:'6 chevaux · jusqu\'à ×19'},{id:'rf',ic:'🎡',n:'Roue de la fortune',s:'Fais tourner · jusqu\'à ×20'},{id:'de',ic:'🎲',n:'Dés',s:'Choisis ton risque · jusqu\'à ×9,7'},{id:'pf',ic:'🪙',n:'Pile ou face',s:'Double ou encaisse'},{id:'kn',ic:'🎯',n:'Keno',s:'10 numéros sur 40 · gros gains'},{id:'bc',ic:'🎴',n:'Baccarat',s:'Joueur, Banquier ou Égalité'},{id:'po',ic:'♠️',n:'Poker',s:'En face à face contre un ami'}];
+const GAMES=[{id:'bj',ic:'🃏',n:'Blackjack',s:'Battez le croupier · gain ×2'},{id:'rl',ic:'🎡',n:'Roulette',s:'Couleur, douzaine ou numéro · jusqu\'à ×36'},{id:'sl',ic:'🎰',n:'Machine à sous',s:'3 symboles alignés · jusqu\'à ×150'},{id:'pl',ic:'🔻',n:'Plinko',s:'La bille rebondit · jusqu\'à ×16'},{id:'cr',ic:'🚀',n:'Crash du ballon',s:'Encaisse avant l\'explosion · sans limite'},{id:'tb',ic:'🥅',n:'Tir au but express',s:'Enchaîne les buts · jusqu\'à ×55'},{id:'mn',ic:'💣',n:'Mines',s:'Évite les mines · jusqu\'à ×1 000+'},{id:'gt',ic:'🎟️',n:'Gratte-ticket',s:'3 symboles identiques · jusqu\'à ×50'},{id:'jp',ic:'👑',n:'Méga-jackpot',s:'Un jackpot commun à tous les joueurs'},{id:'hl',ic:'🃏',n:'Plus haut / plus bas',s:'Devine la carte suivante · encaisse quand tu veux'},{id:'tw',ic:'🗼',n:'La Tour',s:'Grimpe sans tomber · jusqu\'à ×24'},{id:'jg',ic:'⚽',n:'Jongles',s:'Tape vite et au bon moment'},{id:'lf',ic:'🏀',n:'Lancer franc',s:'Vise vite et juste'},{id:'bn',ic:'🥤',n:'Bonneteau',s:'Trouve la balle · ×2,8'},{id:'ch',ic:'🏇',n:'Course de chevaux',s:'6 chevaux · jusqu\'à ×19'},{id:'rf',ic:'🎡',n:'Roue de la fortune',s:'Fais tourner · jusqu\'à ×20'},{id:'de',ic:'🎲',n:'Dés',s:'Choisis ton risque · jusqu\'à ×9,7'},{id:'pf',ic:'🪙',n:'Pile ou face',s:'Double ou encaisse'},{id:'kn',ic:'🎯',n:'Keno',s:'10 numéros sur 40 · gros gains'},{id:'bc',ic:'🎴',n:'Baccarat',s:'Joueur, Banquier ou Égalité'},{id:'po',ic:'♠️',n:'Poker',s:'En face à face contre un ami'}];
 let gBusy=false,gFx=null;
 function gGame(){if(!ui.game)ui.game=lsGet('pc_game')||'bj';if(!GAMES.some(g=>g.id===ui.game&&g.id!=='po'))ui.game='bj';return ui.game}
 function gSt(g){state.gst=state.gst||{};return state.gst[g]=state.gst[g]||{n:0,w:0,best:0}}
@@ -3578,8 +3579,8 @@ const GM_HELP={
   ch:'Choisis un cheval puis lance la course. S\'il gagne, tu reçois ta mise × sa cote. Les favoris gagnent plus souvent mais rapportent moins.',
   tw:'8 étages de 3 cases : à chaque étage, une case est piégée. Chaque étage réussi fait monter le gain (jusqu\'à <b>×24</b>). Encaisse quand tu veux, un piège et tout est perdu.',
   kn:'Choisis de 1 à 10 numéros sur 40. 10 boules sont tirées. Plus tu as de bons numéros, plus tu gagnes : le tableau sous la grille montre les gains.',
-  jg:'Le curseur bouge sur la barre : touche « Jongler » quand il est dans la <b>zone verte</b>. Chaque jongle réussi multiplie ton gain par 1,22, mais la zone rétrécit et le curseur accélère. Raté = tout est perdu.',
-  lf:'Le curseur bouge sur la barre : touche « Tirer » quand il est dans la <b>zone verte</b>. Chaque panier multiplie ton gain par 1,3, mais c\'est de plus en plus dur. Raté = tout est perdu.',
+  jg:'Le curseur bouge sur la barre : touche « Jongler » quand il est dans la <b>zone verte</b>. Chaque jongle réussi multiplie ton gain par 1,5. Mais entre deux jongles, le multiplicateur <b>baisse vite</b> : s\'il tombe à 0, c\'est perdu. S\'il est passé sous ×1, le jongle suivant le remet à ×1 (et il reste stable à ×1 jusqu\'au prochain jongle). Raté = tout est perdu. Encaisse quand tu veux.',
+  lf:'Le curseur bouge sur la barre : touche « Tirer » quand il est dans la <b>zone verte</b>. Chaque panier multiplie ton gain par 1,6. Mais entre deux tirs, le multiplicateur <b>baisse vite</b> : s\'il tombe à 0, c\'est perdu. S\'il est passé sous ×1, le panier suivant le remet à ×1 (et il reste stable à ×1 jusqu\'au prochain panier). Raté = tout est perdu. Encaisse quand tu veux.',
   bn:'La balle est sous un gobelet. Les gobelets se mélangent : suis-la des yeux et touche le bon gobelet pour gagner <b>×2,8</b>.',
   bc:'Parie sur la main qui sera la plus proche de 9 : <b>Joueur ×2</b>, <b>Banquier ×1,95</b> ou <b>Égalité ×9</b>. Les figures et les 10 valent 0. En cas d\'égalité, les paris Joueur et Banquier sont remboursés.',
   jp:'À chaque partie, 2 % de la mise de tous les joueurs vont dans le <b>Méga-jackpot</b>. 👑👑👑 fait gagner tout le jackpot ! Les autres combinaisons : 💎×40, 7️⃣×20, ⭐×10, ⚽×5, 🍀×3, 2 symboles pareils ×1,5.',
@@ -3864,24 +3865,31 @@ function knPlay(){const sel=MG.knSel.slice(),n=sel.length;if(!n)return;const bet
   draw.forEach((x,i)=>setTimeout(()=>{const e=$('#knC'+x);if(e){e.classList.add('dr');if(sel.includes(x))e.classList.add('hit')}bjSnd(sel.includes(x)?'card':'tick')},150+i*160))}
 
 /* 8. Jongles + 12. Lancer franc (jeu de timing) */
-const TM={jg:{step:1.22,max:15},lf:{step:1.3,max:12}};
-function tmMult(g,n){return mgF2(Math.pow(TM[g].step,n))}
+const TM={jg:{step:1.5,max:15},lf:{step:1.6,max:12}};
 function tmZone(n){const w=Math.max(7,30-n*2);return {w,c:w/2+3+Math.random()*(94-w)}}
+function tmInfo(r){return r.frozen?'stable à ×1':'en baisse ↓'}
 function tmParts(g){const r=MG.run&&MG.run.g===g?MG.run:null,L=MG.tmL&&MG.tmL.g===g?MG.tmL:null,Z=r?r.z:{w:30,c:50};
   const scene=g==='jg'?'<div class="jg-s"><div class="jg-ball'+(L&&L.ok?' up':'')+(L&&!L.ok?' fall':'')+'" id="tmB">⚽</div><div class="jg-p">🧍</div></div>'
     :'<div class="lf-s"><div class="lf-board"><div class="lf-hoop"></div></div><div class="lf-ball'+(L&&L.ok?' in':'')+(L&&!L.ok?' miss':'')+'" id="tmB">🏀</div></div>';
   const bar='<div class="tm-bar"><i class="z" style="left:'+(Z.c-Z.w/2)+'%;width:'+Z.w+'%"></i><b id="tmK" style="left:'+(r?r.pos:50)+'%"></b></div>';
-  const st='<div class="tm-w">'+scene+(r?'<div class="hl-m">'+(g==='jg'?'Jongles':'Paniers')+' : <b>'+r.n+'</b> · gain '+mgM(tmMult(g,r.n))+' · prochain '+mgM(tmMult(g,r.n+1))+'</div>':L&&!L.ok?'<div class="tb-msg ko">RATÉ !</div>':'')+bar+'</div>';
-  const ctl=r?'<button class="bj-deal tm-tap" data-mgtap="1">'+(g==='jg'?'🦶 Jongler !':'🏀 Tirer !')+'</button>'+(r.n?mgCashBtn(r.bet*tmMult(g,r.n)):'<p class="bj-note">Touche quand le curseur est dans la zone verte</p>'):gBetCtl(g,g==='jg'?'⚽ Commencer':'🏀 Commencer');
+  const st='<div class="tm-w">'+scene+(r?'<div class="tm-m'+(r.m<1?' low':'')+'" id="tmM">'+mgM(r.m)+'</div><div class="hl-m">'+(g==='jg'?'Jongles':'Paniers')+' : <b>'+r.n+'</b> · <span id="tmI">'+tmInfo(r)+'</span></div>':L&&!L.ok?'<div class="tb-msg ko">'+(L.zero?'TOMBÉ À 0 !':'RATÉ !')+'</div>':'')+bar+'</div>';
+  const ctl=r?'<button class="bj-deal tm-tap" data-mgtap="1">'+(g==='jg'?'🦶 Jongler !':'🏀 Tirer !')+'</button>'+(r.n?mgCashBtn(r.bet*r.m):'<p class="bj-note">Touche quand le curseur est dans la zone verte</p>'):gBetCtl(g,g==='jg'?'⚽ Commencer':'🏀 Commencer');
   return {stage:st+gFxHtml(g),ctl}}
 function jgParts(){return tmParts('jg')}function lfParts(){return tmParts('lf')}
-function tmPlay(g){const r=mgBegin(g,{n:0,pos:0,dir:1,z:tmZone(0)});if(!r)return;r.cash=()=>r.n?r.bet*tmMult(g,r.n):null;MG.tmL=null;r.lt=performance.now();gRefresh();
+function tmPlay(g){const r=mgBegin(g,{n:0,pos:0,dir:1,z:tmZone(0),m:1,frozen:true,ws:0});if(!r)return;r.cash=()=>r.n?r.bet*r.m:null;MG.tmL=null;r.lt=performance.now();gRefresh();
   const loop=now=>{if(MG.run!==r)return;const dt=Math.min(.05,(now-r.lt)/1000);r.lt=now;const sp=55+r.n*11;r.pos+=r.dir*sp*dt;if(r.pos>100){r.pos=200-r.pos;r.dir=-1}if(r.pos<0){r.pos=-r.pos;r.dir=1}
-    const k=$('#tmK');if(k)k.style.left=r.pos+'%';requestAnimationFrame(loop)};requestAnimationFrame(loop)}
+    const k=$('#tmK');if(k)k.style.left=r.pos+'%';
+    if(!r.frozen){r.m=r.m*Math.exp(-.25*dt)-.12*dt;
+      if(r.m<=0){r.m=0;r.lost=1;MG.tmL={g,ok:false,zero:true};bjSnd('lose');mgEnd(0);return}
+      const e=$('#tmM');if(e){e.textContent=mgM(r.m);e.classList.toggle('low',r.m<1)}const cb=document.querySelector('.mg-cash');if(cb&&r.n)cb.textContent='💰 Encaisser · '+nf(Math.floor(r.bet*r.m))+' 🪙';
+      r.ws+=dt;if(r.ws>.5){r.ws=0;if(state.gpend)state.gpend.win=Math.floor(r.bet*r.m)}}
+    requestAnimationFrame(loop)};requestAnimationFrame(loop)}
 function jgPlay(){tmPlay('jg')}function lfPlay(){tmPlay('lf')}
 function tmTap(){const r=MG.run;if(!r||!TM[r.g])return;const g=r.g,ok=Math.abs(r.pos-r.z.c)<=r.z.w/2;MG.tmL={g,ok};
   if(!ok){r.lost=1;bjSnd('lose');mgEnd(0);return}
-  r.n++;r.z=tmZone(r.n);bjSnd('win');mgSetWin(r.bet*tmMult(g,r.n));if(r.n>=TM[g].max){mgEnd(r.bet*tmMult(g,r.n));return}gRefresh()}
+  r.n++;r.z=tmZone(r.n);bjSnd('win');
+  if(r.m<1){r.m=1;r.frozen=true}else{r.m=mgF2(r.m*TM[g].step);r.frozen=false}
+  mgSetWin(r.bet*r.m);if(r.n>=TM[g].max){mgEnd(r.bet*r.m);return}gRefresh()}
 
 /* 9. Bonneteau */
 const BN_M=2.8;
