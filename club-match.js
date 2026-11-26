@@ -101,6 +101,12 @@ function start(cfg){
   function gPanel(){if(ov.querySelector('#cmPad'))return;const k=ov.querySelector('#cmKeys');if(k)k.remove();if(!ov.querySelector('#cmKeys'))G.kWas=paused;paused=true;const P=document.createElement('div');P.className='cm-help cm-kp';P.id='cmPad';
     P.innerHTML='<b>🎮 Manette</b><p class="gp-st"></p><p>Touche une action, puis appuie sur le bouton de la manette que tu veux. Start = reprendre le match.</p><div class="ck-l"></div><button data-cm="greset" class="alt">Remettre les boutons d\'origine</button><button data-cm="gclose">Terminé</button>';
     ov.appendChild(P);gFill()}
+  function coFill(){const P=ov.querySelector('#cmCom');if(!P)return;const L=coVoices(),cur=coVoice();
+    P.querySelector('.co-on').textContent=CO.on?'🎙️ Commentateur : activé (toucher pour couper)':'🔇 Commentateur : coupé (toucher pour activer)';
+    P.querySelector('.ck-l').innerHTML=L.length?L.slice().sort((a,b)=>coScore(b)-coScore(a)).map(v=>'<button class="ck-r'+(cur&&cur.name===v.name?' cap':'')+'" data-cm="cov:'+esc(v.name)+'"><span>'+esc(v.name.replace(/Microsoft /,'').slice(0,34))+'</span><b>'+(cur&&cur.name===v.name?'✓':'▶︎')+'</b></button>').join(''):'<p>Aucune voix française trouvée sur cet appareil.</p>'}
+  function coPanel(){if(ov.querySelector('#cmCom'))return;paused=live?true:paused;const P=document.createElement('div');P.className='cm-help cm-kp';P.id='cmCom';
+    P.innerHTML='<b>🎙️ Commentateur</b><button data-cm="coon" class="alt co-on"></button><p>Choisis la voix la plus naturelle (les voix « Natural », « Online », « Premium » ou « Améliorée » sont les plus humaines). Touche une voix pour l\'écouter.</p><div class="ck-l"></div><button data-cm="cotest" class="alt">▶︎ Tester un but</button><button data-cm="coclose">Terminé</button>';
+    ov.appendChild(P);coFill()}
   function kPanel(){if(ov.querySelector('#cmKeys'))return;G.kWas=paused;paused=true;const P=document.createElement('div');P.className='cm-help cm-kp';P.id='cmKeys';
     P.innerHTML='<b>⌨️ Changer les touches</b><p>Clique sur une action, puis appuie sur la nouvelle touche (Échap pour annuler). Les flèches marchent toujours pour bouger.</p><div class="ck-l"></div><button data-cm="kreset" class="alt">Remettre les touches d\'origine</button><button data-cm="kclose">Terminé</button>';
     ov.appendChild(P);kFill()}
@@ -129,15 +135,25 @@ function start(cfg){
 
   // ---- Commentateur (voix) ----
   const SS=window.speechSynthesis;
-  function coVoice(){if(CO.v||!SS)return CO.v;try{const L=SS.getVoices().filter(v=>/^fr/i.test(v.lang));CO.v=L.find(v=>/fr-FR/i.test(v.lang)&&/thomas|google|daniel|paul|henri|male/i.test(v.name))||L.find(v=>/fr-FR/i.test(v.lang))||L[0]||null}catch(e){}return CO.v}
+  function coVoices(){try{return SS?SS.getVoices().filter(v=>/^fr/i.test(v.lang)):[]}catch(e){return[]}}
+  function coScore(v){const n=v.name;let x=0;if(/natural|neural|online|premium|enhanced|amélior|siri/i.test(n))x+=6;if(/google/i.test(n))x+=3;if(/fr-FR/i.test(v.lang))x+=2;if(/thomas|henri|paul|remy|rémy|antoine|daniel|male|homme/i.test(n))x+=1;if(/espeak|robot|compact/i.test(n))x-=5;return x}
+  function coVoice(){if(CO.v||!SS)return CO.v;const L=coVoices();let want='';try{want=localStorage.getItem('cm_voice')||''}catch(e){}
+    CO.v=L.find(v=>v.name===want)||L.slice().sort((a,b)=>coScore(b)-coScore(a))[0]||null;return CO.v}
   try{SS&&SS.addEventListener&&SS.addEventListener('voiceschanged',()=>{CO.v=null;coVoice()})}catch(e){}
   const pick=a=>a[Math.floor(Math.random()*a.length)];
   const tn=t=>short(T[t].n);
   function scoreTxt(){const[a,b]=G.sc;return a===b?(a===0?'toujours zéro partout':'égalité, '+a+' partout'):a>b?tn(0)+' mène '+a+' à '+b:tn(1)+' mène '+b+' à '+a}
+  const TONE={cry:[1.22,1.5,1],hype:[1.18,1.28,1],live:[1.1,1.12,1],calm:[.97,.96,.85],info:[1,1.02,.95]};
+  function coSay(t,tone,first){const k=TONE[tone]||TONE.info,u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';const v=coVoice();if(v)u.voice=v;
+    u.rate=k[0]*(1+(Math.random()-.5)*.06);u.pitch=Math.min(2,k[1]*(1+(Math.random()-.5)*.08));u.volume=k[2];SS.speak(u)}
   function com(lines,prio,vars){if(!CO.on||!SS||G.sk||G.speed>2)return;const now=performance.now();
     if(prio<2&&(SS.speaking||now<CO.busyUntil))return;if(prio<1&&now-CO.last<6000)return;
     let t=pick(lines);for(const k in (vars||{}))t=t.split('{'+k+'}').join(vars[k]);
-    try{if(prio>=2)SS.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';const v=coVoice();if(v)u.voice=v;u.rate=prio>=2?1.12:1.05;u.pitch=prio>=2?1.1:1;u.volume=1;SS.speak(u);CO.last=now;CO.busyUntil=now+Math.min(5000,600+t.length*55)}catch(e){}}
+    try{if(prio>=2)SS.cancel();
+      const parts=t.match(/[^!.?…]+[!.?…]*/g)||[t];
+      parts.forEach((x,i)=>{x=x.trim();if(!x)return;const ex=/!$/.test(x);
+        const tone=/^(but|goo+l|ouii+|incroyable|quelle? |oh)/i.test(x)&&prio>=2&&i===0?'cry':prio>=2?(ex?'hype':'info'):prio===1?'live':'calm';coSay(x,tone)});
+      CO.last=now;CO.busyUntil=now+Math.min(6000,700+t.length*55)}catch(e){}}
   function coTick(dt){if(!CO.on||paused||G.ph!=='play')return;CO.quiet+=dt;if(CO.quiet<9+Math.random()*4)return;CO.quiet=0;const o=B.own;if(!o)return;
     const att=o.t===0?B.y<PL*.38:B.y>PL*.62;
     com(att?['{T} est aux abords de la surface !','{p} cherche la faille…','Attention, {T} s\'approche dangereusement !','Ça chauffe devant le but !']
@@ -254,7 +270,11 @@ function start(cfg){
   ov.addEventListener('click',e=>{const ck=e.target.closest('[data-ck]');if(ck){G.kcap=ck.dataset.ck;kFill();return}const gk=e.target.closest('[data-gk]');if(gk){G.gcap=gk.dataset.gk;gFill();return}const b=e.target.closest('[data-cm]');if(!b)return;const a=b.dataset.cm;
     if(a==='go'){ov.querySelector('#cmHelp').remove();paused=false;last=performance.now();SN.whistle(1);coIntro()}
     else if(a==='snd'){b.textContent=SN.toggle()?'🔊':'🔇'}
-    else if(a==='com'){CO.on=!CO.on;try{localStorage.setItem('cm_com',CO.on?'1':'0')}catch(_){}b.classList.toggle('off',!CO.on);if(!CO.on){try{SS&&SS.cancel()}catch(_){}}else com(['Le commentateur est de retour !'],3);flash(CO.on?'🎙️ Commentateur activé':'🎙️ Commentateur coupé','',1.2)}
+    else if(a==='com'){coPanel()}
+    else if(a==='coon'){CO.on=!CO.on;try{localStorage.setItem('cm_com',CO.on?'1':'0')}catch(_){}const cb=ov.querySelector('.cm-com');if(cb)cb.classList.toggle('off',!CO.on);if(!CO.on){try{SS&&SS.cancel()}catch(_){}}coFill()}
+    else if(a==='cotest'){const was=CO.on;CO.on=true;CO.busyUntil=0;com(['But ! But ! But ! Quelle frappe magnifique ! Le stade est en feu !'],3);CO.on=was}
+    else if(a==='coclose'){const P=ov.querySelector('#cmCom');if(P)P.remove();paused=!!ov.querySelector('.cm-help');if(!paused)last=performance.now()}
+    else if(a.startsWith('cov:')){const n=a.slice(4);try{localStorage.setItem('cm_voice',n)}catch(_){}CO.v=null;coVoice();coFill();CO.busyUntil=0;const was=CO.on;CO.on=true;com(['Tir de Mbappé ! Quel arrêt du gardien !'],3);CO.on=was}
     else if(a==='keys'){kPanel()}
     else if(a==='pad'){gPanel()}
     else if(a==='greset'){GB=Object.assign({},GDEF);try{localStorage.removeItem('cm_pad')}catch(_){}G.gcap=null;gFill()}
@@ -393,7 +413,7 @@ function start(cfg){
   function goal(t){SN.goal(t===0||!live);const k=B.kicker,sc=k&&k.t===t?k:null;G.sc[t]++;G.ph='goal';G.phT=3.4;G.next=1-t;B.net=1.2;B.shot=false;G.shake=.7;
     G.scorers.push({t,n:sc?sc.n:'csc',m:minute()});ov.querySelector('#cmS').textContent=G.sc[0]+' - '+G.sc[1];
     const who=sc?esc(sc.sn):'contre son camp';flash('BUUUT !<small>'+T[t].e+' '+who+'</small>',t===0?'goal':'goalA',3);
-    say('<b>⚽ BUT ! '+(sc?esc(sc.n):'Contre son camp')+'</b> ('+G.sc[0]+'-'+G.sc[1]+')','g'+t);CO.quiet=0;com(sc?['BUUUUUT ! {p} ! Quel but pour {T} ! {s} !','Et c\'est le but ! {p} trompe le gardien ! {s} !','Quelle frappe ! But de {p} ! {s} !','Gooool ! {p} fait trembler les filets ! {s} !']:['Contre son camp ! Quelle malchance ! {s} !'],3,{p:sc?sc.sn:'',T:tn(t),s:scoreTxt()});vib(t===0?[90,50,90,50,200]:80);
+    say('<b>⚽ BUT ! '+(sc?esc(sc.n):'Contre son camp')+'</b> ('+G.sc[0]+'-'+G.sc[1]+')','g'+t);CO.quiet=0;com(sc?['But ! But ! But ! {p} ! Quel but pour {T} ! {s} !','Ouiii ! Et c\'est le but ! {p} trompe le gardien ! {s} !','Quelle frappe ! But de {p} ! {s} !','Goool ! {p} fait trembler les filets ! {s} !','Incroyable ! {p} marque ! {s} !']:['Contre son camp ! Quelle malchance ! {s} !'],3,{p:sc?sc.sn:'',T:tn(t),s:scoreTxt()});vib(t===0?[90,50,90,50,200]:80);
     ov.classList.add('scored');setTimeout(()=>ov.classList.remove('scored'),900);
     if(t===0&&!live)return;if(t===0)confetti()}
   function confetti(){for(let i=0;i<46;i++){const d=document.createElement('i');d.className='cm-cf';d.style.left=(Math.random()*100)+'%';d.style.background=[T[0].c1,T[0].c2,'#facc15','#fff'][i%4];d.style.animationDelay=(Math.random()*.4)+'s';d.style.animationDuration=(1.6+Math.random())+'s';ov.appendChild(d);setTimeout(()=>d.remove(),3200)}}
@@ -589,7 +609,7 @@ const css=`
 .cm-ov.pc .cm-b .kh{display:block}.cm-ov.pc .cm-b span{transform:translateY(-5px)}
 .cm-ov.pc .cm-pad{transform:scale(.72);transform-origin:right bottom;opacity:.8}
 .cm-ov.pc .cm-joy{display:none}.cm-ov.pc .cm-joy.on{display:block}
-.cm-com{left:98px!important;font-size:15px!important}.cm-com.off{opacity:.45;text-decoration:line-through}.cm-kb{left:142px!important;font-size:15px!important}.cm-gp{left:186px!important;font-size:15px!important}.cm-gp.m{left:142px!important}.cm-gp[hidden]{display:none!important}.cm-ov:has(#cmPad) #cmHelp{visibility:hidden}.cm-ov:has(#cmKeys) #cmHelp{visibility:hidden}.cm-kp{background:rgba(2,6,23,.98)!important}.cm-kp{z-index:8}.ck-l{display:grid;gap:6px;margin:8px 0}
+.cm-com{left:98px!important;font-size:15px!important}.cm-com.off{opacity:.45;text-decoration:line-through}.cm-kb{left:142px!important;font-size:15px!important}.cm-gp{left:186px!important;font-size:15px!important}.cm-gp.m{left:142px!important}.cm-gp[hidden]{display:none!important}.cm-ov:has(#cmPad) #cmHelp,.cm-ov:has(#cmCom) #cmHelp{visibility:hidden}.cm-kp .ck-l{max-height:46vh;overflow:auto}.cm-ov:has(#cmKeys) #cmHelp{visibility:hidden}.cm-kp{background:rgba(2,6,23,.98)!important}.cm-kp{z-index:8}.ck-l{display:grid;gap:6px;margin:8px 0}
 .ck-r{display:flex!important;justify-content:space-between;align-items:center;margin:0!important;padding:10px 12px!important;font-size:14px!important;font-weight:700!important;background:rgba(255,255,255,.08)!important;color:#fff!important;border-radius:12px!important}
 .ck-r b{display:inline!important;margin:0!important;font-size:14px!important;background:rgba(255,255,255,.15);border-radius:8px;padding:3px 10px;min-width:40px;text-align:center}.ck-r.cap b{background:#facc15;color:#111}
 .cm-keys{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;background:rgba(2,6,23,.66);border-radius:999px;padding:6px 14px;font-size:12px;white-space:nowrap;pointer-events:none}
