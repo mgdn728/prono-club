@@ -439,6 +439,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 .mc-t span.av{display:inline-grid;place-items:center;gap:0;justify-content:center}
 /* barre de navigation du bas (mobile) */
 .bnav{display:none}
+.cm-pf{cursor:pointer}.cn .cm-pf:hover{text-decoration:underline}
 .sitefoot{max-width:900px;margin:28px auto 96px;padding:0 16px;color:var(--muted);font-size:12px;line-height:1.6;text-align:center}.sitefoot a{color:var(--muted)}.sitefoot p{margin:4px 0}
 @media (max-width:900px){
   .bnav{grid-template-columns:repeat(7,1fr)!important}
@@ -2878,7 +2879,7 @@ function mcOpen(key,title){MC.key=key;MC.title=title;MC.msgs=[];MC.last=0;
     '<p class="chat-rules">Reste respectueux. Pas de liens, pas de réseaux sociaux, jamais d\'informations personnelles. ⚠️ = signaler un message.</p></div>');
   mcPoll()}
 function mcHtml(){if(!MC.msgs.length)return '<div class="chat-empty">👋 Aucun message sur ce match.<br>Lance la discussion !</div>';const me=session&&session.pseudo.toLowerCase(),adm=isAdmin();
-  return MC.msgs.map(m=>{const mine=m.pseudo.toLowerCase()===me;return '<div class="cm'+(mine?' me':'')+'"><div class="cb"><div class="cn">'+(mine?'Toi':esc(m.pseudo))+' <small>'+hhmm(m.ts)+'</small>'+
+  return MC.msgs.map(m=>{const mine=m.pseudo.toLowerCase()===me;return '<div class="cm'+(mine?' me':'')+'"><div class="cb"><div class="cn">'+(mine?'Toi':'<span class="cm-pf" data-prof="'+esc(m.pseudo)+'" role="button" title="Voir le profil">'+esc(m.pseudo)+'</span>')+' <small>'+hhmm(m.ts)+'</small>'+
     (!mine&&session?' <button class="mcx-r" data-mcsig="'+m.id+'" title="Signaler">⚠️</button>':'')+(adm?' <button class="mcx-r" data-mcdel="'+m.id+'" title="Supprimer">🗑️</button>':'')+'</div><div class="ct">'+esc(m.texte)+'</div></div></div>'}).join('')}
 function mcRender(){const L=document.getElementById('mcxL');if(!L)return false;const atB=L.scrollHeight-L.scrollTop-L.clientHeight<60||!L.dataset.r;L.innerHTML=mcHtml();L.dataset.r='1';if(atB)L.scrollTop=L.scrollHeight;return true}
 async function mcPoll(){clearTimeout(MC.timer);if(!document.getElementById('mcxL')||!$('#popModal').classList.contains('open')){MC.key=null;return}
@@ -4163,7 +4164,7 @@ function chatListHtml(){
   if(!chat.msgs.length)return '<div class="chat-empty">👋 Aucun message pour l\'instant.<br>Lancez la discussion !</div>';
   const me=session&&session.pseudo.toLowerCase();let prev=null;
   return chat.msgs.map(m=>{const mine=m.pseudo.toLowerCase()===me,same=prev&&prev.pseudo===m.pseudo&&(new Date(m.cree_le)-new Date(prev.cree_le))<300000;prev=m;
-    return '<div class="cm'+(mine?' me':'')+(same?' same':'')+'">'+(!mine&&!same?pav(m.pseudo,m.deco):'<span class="av-sp"></span>')+'<div class="cb">'+(!same?'<div class="cn">'+(mine?'Vous':pname(m.pseudo,m.deco))+' <small>'+chatTime(m.cree_le)+'</small></div>':'')+'<div class="ct">'+esc(m.texte)+'</div></div></div>'}).join('')+(chat.state==='err'?'<div class="chat-empty small">Connexion perdue, nouvelle tentative…</div>':'');
+    return '<div class="cm'+(mine?' me':'')+(same?' same':'')+'">'+(!mine&&!same?'<span class="cm-pf" data-prof="'+esc(m.pseudo)+'" role="button" title="Voir le profil">'+pav(m.pseudo,m.deco)+'</span>':'<span class="av-sp"></span>')+'<div class="cb">'+(!same?'<div class="cn">'+(mine?'Vous':'<span class="cm-pf" data-prof="'+esc(m.pseudo)+'" role="button" title="Voir le profil">'+pname(m.pseudo,m.deco)+'</span>')+' <small>'+chatTime(m.cree_le)+'</small></div>':'')+'<div class="ct">'+esc(m.texte)+'</div></div></div>'}).join('')+(chat.state==='err'?'<div class="chat-empty small">Connexion perdue, nouvelle tentative…</div>':'');
 }
 function renderChatList(){
   const el=document.getElementById('chatList');if(!el)return;
