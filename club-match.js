@@ -177,7 +177,7 @@ function start(cfg){
 
   /* ---------- placement ---------- */
   function kickoff(kt){G.kt=kt;B.own=null;B.x=CX;B.y=PL/2;B.z=B.vx=B.vy=B.vz=0;B.shot=false;B.tgt=null;B.net=0;
-    REF.x=CX+9;REF.y=PL/2+3;REF.vx=REF.vy=0;G.cel=null;
+    REF.x=CX+9;REF.y=PL/2+3;REF.vx=REF.vy=0;G.cel=null;G.noRp=false;
     P.forEach(p=>{p.cel=p.sad=p.ks=p.head=p.spin=p.skill=p.kick=0});
     P.forEach(p=>{const f=(p.t===kt?KOA:KOD)[p.i],w=W2(p.t,f[0],f[1]);p.x=w[0];p.y=w[1];p.vx=p.vy=0;p.stun=p.slide=p.dive=0;p.dir=p.t===0?-Math.PI/2:Math.PI/2});
     const s=P.find(p=>p.t===kt&&p.i===9)||P.find(p=>p.t===kt&&p.i===10)||P.filter(p=>p.t===kt&&!p.gk).sort((a,b)=>b.i-a.i)[0];s.x=CX;s.y=PL/2+(kt===0?.6:-.6);B.own=s;B.lt=kt;
@@ -227,7 +227,7 @@ function start(cfg){
 
   /* ---------- user input ---------- */
   function mode(){return B.own?B.own.t===0?'att':'def':(B.lt===0&&B.tgt&&B.tgt.t===0)?'att':'free'}
-  function act(k,down){if(!live||paused)return;if(G.ph==='replay'){if(down)rpSkip();return}const c=G.ctrl;if(!c)return;
+  function act(k,down){if(!live||paused||G.ph==='pkw')return;if(G.ph==='replay'){if(down)rpSkip();return}const c=G.ctrl;if(!c)return;
     if(G.ph==='pens'){if(k!=='b0')return;
       if(PK.turn===0&&PK.st==='aim'){if(down)G.charge=0;else if(G.charge>=0){const pw=cl(.3+G.charge*.8,.3,1.05);G.charge=-1;pkKick(PK.aim,pw)}}
       else if(PK.turn===1&&down&&PK.dive==null&&(PK.st!=='flight'||PK.t<.12)&&PK.st!=='result'){const j=joyW();PK.dive=Math.abs(j[0])<.35?0:Math.sign(j[0]);vib(20)}
@@ -375,8 +375,8 @@ function start(cfg){
     else{say('🟡 Faute de <b>'+nm+'</b> sur '+vn);com(['Faute de {p}.','Coup de sifflet, faute de {p} sur {v}.','L\'arbitre siffle la faute.'],1,{p:off.sn,v:vic.sn})}
     if(card==='r'||card==='r2')sendOff(off);
     vic.stun=0;off.stun=.8;
-    if(inBox){const taker=team(tv).filter(q=>!q.gk).sort((a,b)=>b.r-a.r)[0]||vic;const py=gy+(off.t===0?-11:11);
-      restart(taker,CX,py,'⚠️ <b>PENALTY</b> pour '+esc(T[tv].n)+' !');G.phT=2.2;setTimeout(()=>{flash('PENALTY !','goal',1.6)},card?1900:0);com(['Penalty ! L\'arbitre désigne le point de penalty !','Et c\'est penalty !'],3)}
+    if(inBox){const taker=team(tv).filter(q=>!q.gk).sort((a,b)=>b.r-a.r)[0]||vic;P.forEach(q=>{q.vx=q.vy=0;q.slide=0});
+      say('⚠️ <b>PENALTY</b> pour '+esc(T[tv].n)+' !');G.ph='pkw';G.phT=card?2.4:1.4;G.pkw={sh:taker,t:tv};setTimeout(()=>{if(G.ph==='pkw'||G.ph==='pens')flash('PENALTY !','goal',1.4)},card?1900:0);com(['Penalty ! L\'arbitre désigne le point de penalty !','Et c\'est penalty !'],3)}
     else{restart(vic,cl(vic.x,2,PW-2),cl(vic.y,2,PL-2),'Coup franc pour '+esc(short(T[tv].n)));G.phT=card?2:1.3}
     return true}
 
@@ -390,7 +390,7 @@ function start(cfg){
     const pb=new Map();for(const e of Z[8])pb.set(e[0],e);
     for(const e of A[8]){const p=e[0],f=pb.get(p)||e;p.x=e[1]+(f[1]-e[1])*u;p.y=e[2]+(f[2]-e[2])*u;p.dir=la(e[3],f[3],u);p.ph=e[4]+(f[4]-e[4])*u;p.vx=e[5];p.vy=e[6];p.slide=e[7];p.stun=e[8];p.kick=e[9];p.dive=e[10];p.diveS=e[11];p.head=e[12];p.spin=e[13];p.cel=e[14];p.ks=e[15];p.spinS=e[16];p.sad=e[17]}
     REF.x=L(9);REF.y=L(10);REF.dir=la(A[11],Z[11],u);REF.ph=L(12)}
-  function rpStart(){const back=rbN-G.rpMark,gi=RB.length-1-back;if(gi<24)return false;
+  function rpStart(){if(G.noRp)return false;const back=rbN-G.rpMark,gi=RB.length-1-back;if(gi<24)return false;
     const s=Math.max(0,gi-74),e=Math.min(RB.length-1,gi+22);G.rp={fr:RB.slice(s,e+1),f:0};G.ph='replay';BT.length=0;ov.classList.add('rpm');
     com(['Revoyons ce but au ralenti.','Regardez-moi ça au ralenti !','On le revoit, quel but !'],1);return true}
   function rpStep(dt){const R=G.rp;R.f+=dt*30*.55;const n=R.fr.length;
@@ -442,7 +442,7 @@ function start(cfg){
     if(G.ph==='pens'){pkStep(dt);return}
     if(G.ph!=='play'){G.phT-=dt;
       if(G.ph==='goal'){ballPhys(dt);celStep(dt);rbTick(dt,fast)}
-      if(G.phT<=0){if(G.ph==='goal'&&!fast&&!G.sk&&G.speed<4&&rpStart())return;if(G.ph==='goal'||G.ph==='half')kickoff(G.ph==='half'?1:G.next);else if(G.ph==='full'){done(false);return}else if(G.ph==='pre'){pkStart();return}else G.ph='play'}
+      if(G.phT<=0){if(G.ph==='goal'&&!fast&&!G.sk&&G.speed<4&&rpStart())return;if(G.ph==='goal'||G.ph==='half')kickoff(G.ph==='half'?1:G.next);else if(G.ph==='full'){done(false);return}else if(G.ph==='pre'){pkStart();return}else if(G.ph==='pkw'){const w=G.pkw;G.pkw=null;if(w&&P.includes(w.sh)){pkSingle(w.sh,w.t);return}G.ph='play'}else G.ph='play'}
       if(G.ph==='kick'||G.ph==='out'){P.forEach(p=>{p.vx=p.vy=0})}
       if(G.ph!=='play')return}
     if(G.ph==='play'){G.t+=dt;G.stats.pos[B.own?B.own.t:B.lt]+=dt;
@@ -529,23 +529,27 @@ function start(cfg){
 
   /* ---------- tirs au but ---------- */
   const PK={};const PKel=document.createElement('div');PKel.className='cm-pk';
-  function pkStart(){G.ph='pens';G.charge=-1;ov.querySelector('.cm-top').appendChild(PKel);
+  function pkSingle(sh,t){G.stats.pk=(G.stats.pk||0)+1;G.ph='pens';G.charge=-1;Object.assign(PK,{single:true,gy:goalY(t),turn:t,sh0:sh});pkPrep()}
+  function pkStart(){G.ph='pens';G.charge=-1;PK.single=false;PK.gy=0;ov.querySelector('.cm-top').appendChild(PKel);
     Object.assign(PK,{g:[0,0],n:[0,0],res:[[],[]],turn:0,ord:[0,1].map(t=>team(t).filter(p=>!p.gk).sort((a,b)=>b.r-a.r))});
     say('🥅 Match nul : place aux <b>tirs au but</b> !');pkPrep();pkHud()}
   function pkHud(){PKel.innerHTML=[0,1].map(t=>{const n=Math.max(5,PK.n[0],PK.n[1]);let h='<div class="pk-r"><i>'+T[t].e+'</i>';for(let k=0;k<n;k++){const r=PK.res[t][k];h+='<b class="'+(r==null?'':r?'ok':'ko')+'">'+(r==null?'':r?'✓':'✗')+'</b>'}return h+'<em>'+PK.g[t]+'</em></div>'}).join('')}
-  function pkPrep(){const t=PK.turn,sh=PK.ord[t][PK.n[t]%PK.ord[t].length],gk=P.find(p=>p.t!==t&&p.gk);Object.assign(PK,{sh,gk,st:'prep',t:0,aim:CX,dive:null,dv:0,out:''});
-    let k=[0,0];for(const p of P){p.vx=p.vy=0;p.stun=p.slide=p.dive=p.kick=0;if(p===sh||p===gk)continue;p.x=CX-15+k[p.t]*3.1+(p.t?1.5:0);p.y=PL/2+(p.t?2:-2);k[p.t]++;p.dir=-Math.PI/2}
-    sh.x=CX;sh.y=13.6;sh.dir=-Math.PI/2;gk.x=CX;gk.y=.45;gk.dir=Math.PI/2;
-    Object.assign(B,{x:CX,y:11,z:0,vx:0,vy:0,vz:0,own:null,shot:false,tgt:null,net:0});
+  function pkPrep(){const t=PK.turn,sh=PK.single?PK.sh0:PK.ord[t][PK.n[t]%PK.ord[t].length],gk=P.find(p=>p.t!==t&&p.gk),Y=y=>PK.gy?PL-y:y,D=PK.gy?-1:1;Object.assign(PK,{sh,gk,st:'prep',t:PK.single?-.6:0,aim:CX,dive:null,dv:0,out:''});
+    let k=[0,0];for(const p of P){p.vx=p.vy=0;p.stun=p.slide=p.dive=p.kick=0;p.cel=p.sad=p.ks=p.head=p.spin=0;if(p===sh||p===gk)continue;
+      if(PK.single){if(p.gk){p.x=CX;p.y=PL-PK.gy+(PK.gy?.45:-.45);p.dir=D>0?-Math.PI/2:Math.PI/2;continue}const i=k[0]+k[1];p.x=CX-15+i*1.62+(i%2)*.4;p.y=Y(19.5+(i%3)*1.6);k[p.t]++;p.dir=D>0?-Math.PI/2:Math.PI/2}
+      else{p.x=CX-15+k[p.t]*3.1+(p.t?1.5:0);p.y=PL/2+(p.t?2:-2);k[p.t]++;p.dir=-Math.PI/2}}
+    if(PK.single){REF.x=CX+9;REF.y=Y(15);REF.vx=REF.vy=0}
+    sh.x=CX;sh.y=Y(13.6);sh.dir=D>0?-Math.PI/2:Math.PI/2;gk.x=CX;gk.y=Y(.45);gk.dir=D>0?Math.PI/2:-Math.PI/2;
+    Object.assign(B,{x:CX,y:Y(11),z:0,vx:0,vy:0,vz:0,own:null,shot:false,tgt:null,net:0});
     G.ctrl=live?(t===0?sh:gk):null;
     const side=rnd()<.42?-1:rnd()<.72?1:0;PK.aiA=CX+side*(side?1.5+rnd()*1.9:rnd()*.8-.4);PK.aiP=.55+rnd()*.37;
-    flash(live?(t===0?'À TOI DE TIRER !<small>'+(PC?'Vise avec les flèches, reste appuyé sur K':'Vise avec le joystick, reste appuyé sur TIR')+'</small>':'ARRÊTE-LE !<small>'+(PC?'Flèche à gauche ou à droite + K pour plonger':'Joystick à gauche ou à droite + PLONGER')+'</small>'):esc(sh.sn),t===0?'post':'save',1.6)}
+    if(PK.single&&!live)return;flash(live?(t===0?'À TOI DE TIRER !<small>'+(PC?'Vise avec les flèches, reste appuyé sur K':'Vise avec le joystick, reste appuyé sur TIR')+'</small>':'ARRÊTE-LE !<small>'+(PC?'Flèche à gauche ou à droite + K pour plonger':'Joystick à gauche ou à droite + PLONGER')+'</small>'):esc(sh.sn),t===0?'post':'save',1.6)}
   function pkKick(ax,pow){if(PK.st!=='aim')return;PK.st='run';PK.t=0;PK.ax=ax;PK.pow=pow}
-  function pkStep(dt){PK.t+=dt;const sh=PK.sh,gk=PK.gk;if(G.charge>=0)G.charge=Math.min(1.2,G.charge+dt*1.1);if(B.net>0)B.net=Math.max(0,B.net-dt);
+  function pkStep(dt){PK.t+=dt;const sh=PK.sh,gk=PK.gk,Y=y=>PK.gy?PL-y:y,D=PK.gy?-1:1;if(G.charge>=0)G.charge=Math.min(1.2,G.charge+dt*1.1);if(B.net>0)B.net=Math.max(0,B.net-dt);
     if(PK.st==='prep'){if(PK.t>1.3){PK.st='aim';PK.t=0}return}
     if(PK.st==='aim'){if(live&&PK.turn===0){const j=joyW();PK.aim=CX+cl(j[0],-1,1)*(GW/2+.3)+Math.sin(PK.t*3.2)*.4;if(PK.t>12)pkKick(PK.aim,.6)}
       else if(PK.t>(live?1.5:.9))pkKick(PK.aiA,PK.aiP);return}
-    if(PK.st==='run'){const u=Math.min(1,PK.t/.4);sh.y=13.6-2*u;sh.ph+=dt*14;
+    if(PK.st==='run'){const u=Math.min(1,PK.t/.4);sh.y=Y(13.6-2*u);sh.ph+=dt*14;
       if(u>=1){sh.kick=.25;SN.kick(.9);const pow=PK.pow,err=.25+(100-sh.r)/100*.6+Math.max(0,pow-.8)*1.6;let bx=PK.ax+gauss()*err*.8;
         const over=pow>.99||(pow>.95&&rnd()<(pow-.95)*8);
         let dv;if(live&&PK.turn===1)dv=PK.dive==null?0:PK.dive;else{const bs=Math.abs(bx-CX)<1.1?0:Math.sign(bx-CX),pc=cl(.36+(gk.r-sh.r)/150,.2,.55);
@@ -553,18 +557,20 @@ function start(cfg){
         const dX=CX+dv*2.7,reach=(dv===0?.95:1.3+(gk.r-60)/100)-Math.max(0,pow-.7)*1;const ad=Math.abs(bx-CX);
         PK.out=over?'over':Math.abs(ad-GW/2)<.2?'post':ad>GW/2?'wide':Math.abs(bx-dX)<reach?'save':'goal';
         Object.assign(PK,{st:'flight',t:0,bx,dv,dX,T:11/(17+pow*13),h:over?3.4:.3+rnd()*1.6})}return}
-    if(PK.st==='flight'){const u=Math.min(1,PK.t/PK.T);B.x=CX+(PK.bx-CX)*u;B.y=11-11*u;B.z=PK.h*Math.sin(u*Math.PI/2);B.rot+=dt*20;
-      gk.x=CX+(PK.dX-CX)*Math.min(1,u*1.5);if(PK.dv){gk.dive=Math.max(.02,.55-u*.6);gk.diveS=PK.dv*(gk.t===0?-1:1)}
-      if(u>=1){const t=PK.turn,ok=PK.out==='goal';PK.res[t].push(ok);PK.n[t]++;if(ok)PK.g[t]++;PK.st='result';PK.t=0;
+    if(PK.st==='flight'){const u=Math.min(1,PK.t/PK.T);B.x=CX+(PK.bx-CX)*u;B.y=Y(11-11*u);B.z=PK.h*Math.sin(u*Math.PI/2);B.rot+=dt*20;
+      gk.x=CX+(PK.dX-CX)*Math.min(1,u*1.5);if(PK.dv){gk.dive=Math.max(.02,.55-u*.6);gk.diveS=PK.dv*(gk.t===0?-1:1)*D}
+      if(u>=1){const t=PK.turn,ok=PK.out==='goal';
+        if(PK.single&&ok){PK.single=false;B.kicker=sh;B.vx=(PK.bx-CX)*.5;B.vy=-9*D;B.vz=0;G.noRp=true;goal(t);return}
+        if(!PK.single){PK.res[t].push(ok);PK.n[t]++;if(ok)PK.g[t]++}PK.st='result';PK.t=0;
         if(ok)SN.goal(t===0||!live);else SN.ooh();
-        if(ok){B.vx=(PK.bx-CX)*.5;B.vy=-9;B.vz=0;B.net=1.2;flash(t===0?'BUUUT !':'BUT…','goal'+(t===0?'':'A'),1.4);vib(t===0?[80,40,120]:60);if(t===0&&live)confetti()}
-        else if(PK.out==='save'){B.vx=(rnd()-.5)*12;B.vy=8;B.vz=2;flash(t===1?'ARRÊT !!':'ARRÊT DU GARDIEN','save',1.4);vib(t===1?[60,30,90]:40);if(t===1&&live)confetti()}
-        else if(PK.out==='post'){B.vx=(B.x>CX?1:-1)*3;B.vy=7;B.vz=1;flash('POTEAU !','post',1.4)}
-        else{B.vx=(B.x-CX)*.6;B.vy=-10;B.vz=PK.out==='over'?2:0;flash(PK.out==='over'?'AU-DESSUS !':'À CÔTÉ !','post',1.4)}
-        say((ok?'✅ ':'❌ ')+'<b>'+esc(sh.sn)+'</b> ('+esc(T[t].n)+')');com(ok?['{p} transforme !','Dans le filet ! {p} ne tremble pas !','{p} marque, imparable !']:PK.out==='save'?['Arrêté ! Quelle parade du gardien !','Le gardien devine et arrête le tir de {p} !']:['Raté ! {p} manque le cadre !','Oh non ! {p} rate son tir au but !'],3,{p:sh.sn});pkHud();
-        ov.querySelector('#cmS').textContent=G.sc[0]+' - '+G.sc[1]+' ('+PK.g[0]+'-'+PK.g[1]+')'}return}
-    if(PK.st==='result'){const f=Math.exp(-2*dt);B.vx*=f;B.vy*=f;B.x+=B.vx*dt;B.y+=B.vy*dt;B.vz-=9.8*dt;B.z=Math.max(0,B.z+B.vz*dt);if(B.y<-1.7){B.y=-1.7;B.vy=0}
-      if(PK.t>1.7){const[a,b]=PK.g,[na,nb]=PK.n;let end=false;
+        if(ok){B.vx=(PK.bx-CX)*.5;B.vy=-9*D;B.vz=0;B.net=1.2;flash(t===0?'BUUUT !':'BUT…','goal'+(t===0?'':'A'),1.4);vib(t===0?[80,40,120]:60);if(t===0&&live)confetti()}
+        else if(PK.out==='save'){B.vx=(rnd()-.5)*12;B.vy=8*D;B.vz=2;flash(t===1?'ARRÊT !!':'ARRÊT DU GARDIEN','save',1.4);vib(t===1?[60,30,90]:40);if(t===1&&live)confetti()}
+        else if(PK.out==='post'){B.vx=(B.x>CX?1:-1)*3;B.vy=7*D;B.vz=1;flash('POTEAU !','post',1.4)}
+        else{B.vx=(B.x-CX)*.6;B.vy=-10*D;B.vz=PK.out==='over'?2:0;flash(PK.out==='over'?'AU-DESSUS !':'À CÔTÉ !','post',1.4)}
+        say((ok?'✅ ':'❌ ')+'<b>'+esc(sh.sn)+'</b> ('+esc(T[t].n)+')');com(ok?['{p} transforme !','Dans le filet ! {p} ne tremble pas !','{p} marque, imparable !']:PK.out==='save'?['Arrêté ! Quelle parade du gardien !','Le gardien devine et arrête le tir de {p} !']:['Raté ! {p} manque le cadre !','Oh non ! {p} rate son tir au but !'],3,{p:sh.sn});if(!PK.single){pkHud();
+        ov.querySelector('#cmS').textContent=G.sc[0]+' - '+G.sc[1]+' ('+PK.g[0]+'-'+PK.g[1]+')'}}return}
+    if(PK.st==='result'){const f=Math.exp(-2*dt);B.vx*=f;B.vy*=f;B.x+=B.vx*dt;B.y+=B.vy*dt;B.vz-=9.8*dt;B.z=Math.max(0,B.z+B.vz*dt);if(D>0&&B.y<-1.7){B.y=-1.7;B.vy=0}if(D<0&&B.y>PL+1.7){B.y=PL+1.7;B.vy=0}
+      if(PK.t>1.7){if(PK.single){PK.single=false;const g=gk;B.z=0;restart(g,CX,PK.gy?PL-5.5:5.5,PK.out==='save'?'🧤 Penalty arrêté par <b>'+esc(g.sn)+'</b> !':'Penalty manqué !');G.phT=1.2;return}const[a,b]=PK.g,[na,nb]=PK.n;let end=false;
         if(na<=5&&nb<=5){if(a+(5-na)<b||b+(5-nb)<a)end=true}
         if(na>=5&&na===nb&&a!==b)end=true;
         if(end){G.pens=[a,b];G.ph='full';G.phT=2.6;const w=a>b?0:1;setTimeout(()=>com(['{W} remporte la séance de tirs au but, {a} à {b} ! Quel suspense !'],3,{W:tn(w),a:Math.max(a,b),b:Math.min(a,b)}),1300);flash((w===0?'VICTOIRE':'DÉFAITE')+'<small>Tirs au but '+a+' - '+b+'</small>',w===0?'goal':'goalA',2.5);vib(w===0?[90,50,90,50,200]:80);if(w===0&&live)confetti();return}
@@ -573,7 +579,7 @@ function start(cfg){
   /* ---------- rendu ---------- */
   function draw(dt){
     const pk=G.ph==='pens',rp=G.ph==='replay',Z=S*(pk||rp?1.3:1);
-    const cs=G.ph==='goal'&&G.cel&&G.phT<3.1?G.cel.sc:null,lookY=(B.own&&!rp&&!cs?fwd(B.own.t)*5:0),tx=pk?CX:cs?cl(cs.x,0,PW):cl(B.x,0,PW),ty=pk?(ROT?8:10):cs?cs.y:B.y+lookY;
+    const cs=G.ph==='goal'&&G.cel&&G.phT<3.1?G.cel.sc:null,lookY=(B.own&&!rp&&!cs?fwd(B.own.t)*5:0),tx=pk?CX:cs?cl(cs.x,0,PW):cl(B.x,0,PW),ty=pk?(PK.gy?PL-(ROT?8:10):(ROT?8:10)):cs?cs.y:B.y+lookY;
     cam.x+=(tx-cam.x)*Math.min(1,dt*(rp?6:3.2));cam.y+=(ty-cam.y)*Math.min(1,dt*(rp?6:3.2));
     const hw=(ROT?H:W)/2/Z,hh=(ROT?W:H)/2/Z;cam.x=PW+26<hw*2?CX:cl(cam.x,hw-13,PW+13-hw);if(!pk)cam.y=cl(cam.y,hh-14,PL+14-hh);
     let sx=0,sy=0;if(G.shake>0){G.shake-=dt;sx=(rnd()-.5)*G.shake*.8;sy=(rnd()-.5)*G.shake*.8}
@@ -582,10 +588,10 @@ function start(cfg){
     if(ROT)ctx.setTransform(0,DPR*Z,-DPR*Z,0,DPR*(W/2+cy*Z),DPR*(H/2-cx*Z));else ctx.setTransform(DPR*Z,0,0,DPR*Z,DPR*(W/2-cx*Z),DPR*(H/2-cy*Z));
     drawStadium(dt);
     drawGoal(0,true);drawGoal(PL,true);
-    if(pk&&live&&PK.turn===0&&(PK.st==='aim'||PK.st==='prep')){const a=PK.aim,pz=.5+Math.sin(performance.now()/120)*.06;ctx.strokeStyle='#facc15';ctx.lineWidth=.12;ctx.beginPath();ctx.arc(a,-.15,pz,0,7);ctx.moveTo(a-pz-.3,-.15);ctx.lineTo(a+pz+.3,-.15);ctx.moveTo(a,-.15-pz-.3);ctx.lineTo(a,-.15+pz+.3);ctx.stroke()}
-    if(pk&&live&&PK.turn===1&&PK.dive!=null&&PK.st!=='result'){ctx.fillStyle='rgba(250,204,21,.35)';ctx.beginPath();ctx.arc(CX+PK.dive*2.7,.4,1.1,0,7);ctx.fill()}
+    if(pk&&live&&PK.turn===0&&(PK.st==='aim'||PK.st==='prep')){const ay=PK.gy?PL+.15:-.15,a=PK.aim,pz=.5+Math.sin(performance.now()/120)*.06;ctx.strokeStyle='#facc15';ctx.lineWidth=.12;ctx.beginPath();ctx.arc(a,ay,pz,0,7);ctx.moveTo(a-pz-.3,ay);ctx.lineTo(a+pz+.3,ay);ctx.moveTo(a,ay-pz-.3);ctx.lineTo(a,ay+pz+.3);ctx.stroke()}
+    if(pk&&live&&PK.turn===1&&PK.dive!=null&&PK.st!=='result'){ctx.fillStyle='rgba(250,204,21,.35)';ctx.beginPath();ctx.arc(CX+PK.dive*2.7,PK.gy?PL-.4:.4,1.1,0,7);ctx.fill()}
     // ombres + joueurs
-    const list=(G.ph==='pens'?P.slice():P.concat([REF])).filter(p=>vis(p.x,p.y,2.5)).sort((a,b)=>a.y-b.y);
+    const list=(G.ph==='pens'&&!PK.single?P.slice():P.concat([REF])).filter(p=>vis(p.x,p.y,2.5)).sort((a,b)=>a.y-b.y);
     const ctrl=live&&!rp?G.ctrl:null,jw=joyW(),mdx=hyp(jw[0],jw[1])>.2?jw:null;
     let tgt=null;if(ctrl&&B.own===ctrl)tgt=bestPass(ctrl,mdx?mdx[0]:Math.cos(ctrl.dir),mdx?mdx[1]:Math.sin(ctrl.dir));
     if(tgt){ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=.12;ctx.setLineDash([.4,.3]);ctx.beginPath();ctx.arc(tgt.x,tgt.y,1,0,7);ctx.stroke();ctx.setLineDash([])}
@@ -820,7 +826,7 @@ function start(cfg){
   setTimeout(()=>{try{stands(1)}catch(e){}},1800);setTimeout(()=>{try{stands(2)}catch(e){}},3200);
   if(!live){/* regarder : rien à attendre */}
   requestAnimationFrame(t=>{last=t;loop(t)});
-  return{ov,G,P,B,step,act,inp}
+  return{ov,G,P,B,step,act,inp,pk:pkSingle}
 }
 
 
