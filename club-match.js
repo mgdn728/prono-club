@@ -197,14 +197,14 @@ function start(cfg){
     if(me){const side=aim!=null&&Math.abs(aim)>.3?Math.sign(aim):(p.x<CX?1:-1)*(p.t===0?1:1);ax=CX+side*(GW/2-.85)+gauss()*.3}
     else{const side=p.x<CX?1:-1;ax=CX+side*(GW/2-1.05)*(rnd()<.7?1:-1)+gauss()*.5}
     const spd=16+pow*15,T2=d/spd,h=pow>.97?1.9+(pow-.97)*40:.3+rnd()*(me?1.1:1.3);
-    const err=me?.008+(100-p.r)/100*.045+(d>24?.015:0)+(pressure(p)<1.6?.02:0):.015+(100-p.r)/100*.075+(d>22?.02:0)+(pressure(p)<2?.035:0);
+    const err=me?.016+(100-p.r)/100*.055+(d>24?.025:0)+(pressure(p)<1.6?.03:0):(live?.011+(100-p.r)/100*.06+(d>22?.015:0)+(pressure(p)<2?.025:0):.015+(100-p.r)/100*.075+(d>22?.02:0)+(pressure(p)<2?.035:0));
     kick(p,ax,gy,spd,cl((h+4.9*T2*T2)/T2,0,14),err);B.shot=true;B.shooter=p;B.lockT=.35;G.stats.sh[p.t]++;
     say((p.t===0?'🎯 ':'')+'Frappe de <b>'+esc(p.sn)+'</b> !');CO.quiet=0;com(['{p} tente sa chance !','Frappe de {p} !','{p} déclenche !','Et c\'est {p} qui frappe !','{p} arme sa frappe !'],1,{p:p.sn})}
   function pressure(p){let m=99;for(const o of P)if(o.t!==p.t&&!o.gk)m=Math.min(m,hyp(o.x-p.x,o.y-p.y));return m}
   function tackle(p){if(p.stun>0||p.slide>0)return;const c=B.own;p.cd=.45;
     if(c&&c.t!==p.t){const d=hyp(c.x-p.x,c.y-p.y);if(d<1.8){tryTk(p,c,.08);return}if(d<6)p.dir=Math.atan2(c.y+c.vy*.3-p.y,c.x+c.vx*.3-p.x)}
     p.slide=.42;p.tkDone=false}
-  function tryTk(p,c,bonus){p.tkDone=true;p.slide=0;const ch=cl(.62+bonus+(p.r-c.r)/80,.38,.88);
+  function tryTk(p,c,bonus){p.tkDone=true;p.slide=0;const ch=cl(.5+bonus+(p.r-c.r)/80,.3,.8);
     if(rnd()<ch){G.stats.utk++;c.stun=.6;take(p);B.tgt=null;vib(30);say('🛡️ Tacle réussi de <b>'+esc(p.sn)+'</b> !');com(['Superbe tacle de {p} !','Quelle intervention de {p} !','{p} récupère le ballon !'],1,{p:p.sn});return true}
     p.stun=.55;return false}
   function switchP(){const c=G.ctrl;let b=null,bd=1e9;const tx=B.x+B.vx*.4,ty=B.y+B.vy*.4;
@@ -306,7 +306,7 @@ function start(cfg){
     const a=Math.atan2(B.y-gy,B.x-CX),dd=cl(hyp(B.x-CX,B.y-gy)*.08,.8,3.2);steer(p,cl(CX+Math.cos(a)*dd,CX-GW/2+.4,CX+GW/2-.4),gy+Math.sin(a)*dd+s*0,p.spd,dt);
     if(Math.abs(p.y-gy)<.4)p.y=gy-s*.4}
   function carrierAI(p,dt){const t=p.t,gy=goalY(t),dG=hyp(CX-p.x,gy-p.y),pr=pressure(p);
-    p.dc-=dt;if(p.dc<=0){p.dc=.22+rnd()*.18;
+    p.dc-=dt;if(p.dc<=0){p.dc=live&&t===1?.14+rnd()*.12:.22+rnd()*.18;
       const ang=Math.abs(p.x-CX)/Math.max(1,Math.abs(gy-p.y));
       if(dG<32&&ang<1.5&&(dG<18||rnd()<(32-dG)/32*.8)){shoot(p,.55+rnd()*.38,null);return}
       if((pr<2.4&&rnd()<.45)||rnd()<.05){const q=bestPass(p,0,0);if(q&&(pr<2.6||YN(t,q.y)>YN(t,p.y)-.02)){pass(p,q,hyp(q.x-p.x,q.y-p.y)>24&&rnd()<.5);return}}
@@ -314,17 +314,17 @@ function start(cfg){
       let o=null,od=6;for(const q of P)if(q.t!==t){const d=hyp(q.x-p.x,q.y-p.y);if(d<od&&((q.y-p.y)*dy+(q.x-p.x)*dx)>-.5){od=d;o=q}}
       if(o){const sx=-(o.y-p.y),sy=o.x-p.x,sl=hyp(sx,sy)||1,side=((CX-p.x)*sx/sl+0)>0?1:-1;const k=(6-od)/6*1.3;dx+=sx/sl*side*k;dy+=sy/sl*side*k;const l2=hyp(dx,dy);dx/=l2;dy/=l2}
       p.mv=[dx,dy]}
-    const sp=p.spd*(pr<4?1.02:.92);steer(p,p.x+p.mv[0]*4,p.y+p.mv[1]*4,sp,dt)}
+    const sp=p.spd*(pr<4?1.02:.92)*(live&&t===1?1.07:1);steer(p,p.x+p.mv[0]*4,p.y+p.mv[1]*4,sp,dt)}
   function offBall(p,dt){const t=p.t,att=(B.own?B.own.t:B.lt)===t;
     if(B.tgt===p&&!B.own){const lead=.35;steer(p,B.x+B.vx*lead,B.y+B.vy*lead,p.spd*1.1,dt);return}
-    if(!B.own){const n=chaser[t];if(n===p){steer(p,B.x+B.vx*.35,B.y+B.vy*.35,p.spd*1.12,dt);return}}
+    if(!B.own){const n=chaser[t];if(n===p){steer(p,B.x+B.vx*.35,B.y+B.vy*.35,p.spd*(live&&t===1?1.24:1.12),dt);return}}
     else if(!att){const c=B.own;if(presser[t]===p){const dd=hyp(c.x-p.x,c.y-p.y),stop=t===0&&!G.press?1.6:.4;
-        if(dd>stop)steer(p,c.x+c.vx*.25,c.y+c.vy*.25,p.spd*(t===1||G.press?1.1:1),dt);else{p.vx*=.85;p.vy*=.85}
+        if(dd>stop)steer(p,c.x+c.vx*.25,c.y+c.vy*.25,p.spd*(t===1?(live?1.24:1.1):G.press?1.1:1),dt);else{p.vx*=.85;p.vy*=.85}
         autoTk(p,c,dt);return}
-      if(cover[t]===p){const gy=ownY(t),k=4.5/Math.max(4.5,hyp(CX-c.x,gy-c.y));steer(p,c.x+(CX-c.x)*k,c.y+(gy-c.y)*k,p.spd,dt);autoTk(p,c,dt);return}}
-    const w=targetOf(p);steer(p,w[0],w[1],p.spd*(att&&p.role==='A'?1:.9),dt);if(B.own&&B.own.t!==t)autoTk(p,B.own,dt)}
+      if(cover[t]===p){const gy=ownY(t),k=(live&&t===1?2.6:4.5)/Math.max(4.5,hyp(CX-c.x,gy-c.y));steer(p,c.x+(CX-c.x)*k,c.y+(gy-c.y)*k,p.spd*(live&&t===1?1.12:1),dt);autoTk(p,c,dt);return}}
+    const w=targetOf(p);steer(p,w[0],w[1],p.spd*(att&&p.role==='A'?1:.9)*(live&&t===1?1.08:1),dt);if(B.own&&B.own.t!==t)autoTk(p,B.own,dt)}
   function autoTk(p,c,dt){if(p.cd>0||p.stun>0)return;const d=hyp(c.x-p.x,c.y-p.y);if(d>1.35)return;p.cd=.55;
-    const base=live?(p.t===1?.33:.24):.28,ch=cl(base*Math.pow(p.r/c.r,2)*(c===G.ctrl&&inp.sprint?.8:1),.08,.6);
+    const base=live?(p.t===1?.46:.2):.28,ch=cl(base*Math.pow(p.r/c.r,2)*(c===G.ctrl&&inp.sprint?.85:1),.08,live&&p.t===1?.72:.6);
     if(rnd()<ch){G.stats.tk++;B.own=p;B.lt=p.t;B.shot=false;B.tgt=null;c.stun=.45;p.cd=.4;if(live&&p.t===1&&c===G.ctrl)vib(25);if(rnd()<.35){say('Ballon récupéré par <b>'+esc(p.sn)+'</b>');com(['Ballon récupéré par {p}.','{p} intercepte !','Bien vu de {p} qui récupère.'],0,{p:p.sn})}if(live&&p.t===0)G.ctrl=p}}
   let chaser=[null,null],presser=[null,null],cover=[null,null];
   function roles(){for(let t=0;t<2;t++){chaser[t]=presser[t]=cover[t]=null;const ex=live&&t===0?G.ctrl:null;
@@ -389,7 +389,7 @@ function start(cfg){
     // gardien
     if(B.shot&&!B.gkTry){const dt2=1-B.kicker.t,g=P.find(p=>p.t===dt2&&p.gk),reach=1.05+(g.r-50)/45*1.25+(B.z>1.2?.2:0),d=hyp(g.x-B.x,g.y-B.y);
       if(d<reach+.45&&B.z<GH+.4){B.gkTry=true;const v=hyp(B.vx,B.vy),sh=B.shooter||B.kicker;
-        const ps=cl((live&&sh.t===0?.27:.42)+(g.r-sh.r)/55-(v-24)/26-(d>reach*.75?.12:0),.12,.93);g.dive=.55;g.diveS=Math.sign((B.x-g.x)*(dt2===0?1:-1))||1;
+        const ps=cl((live&&sh.t===0?.37:live?.36:.42)+(g.r-sh.r)/55-(v-24)/26-(d>reach*.75?.12:0),.12,.93);g.dive=.55;g.diveS=Math.sign((B.x-g.x)*(dt2===0?1:-1))||1;
         if(rnd()<ps){SN.ooh();G.stats.sv++;if(sh.t===0)G.stats.usv++;if(v<21&&rnd()<.6){B.own=g;B.lt=g.t;B.shot=false;B.tgt=null;say('🧤 <b>'+esc(g.sn)+'</b> capte le ballon');com(['{p} capte le ballon.','Tranquille pour le gardien {p}.','{p} s\'empare du ballon.'],1,{p:g.sn});}
           else{B.vy=(dt2===0?-1:1)*(5+rnd()*5);B.vx=(rnd()<.5?-1:1)*(4+rnd()*8);B.vz=2+rnd()*3;B.shot=false;B.lt=g.t;B.lock=g;B.lockT=.4;say('🧤 Parade de <b>'+esc(g.sn)+'</b> !');com(['Quelle parade de {p} !','Arrêt décisif de {p} !','{p} sort le grand jeu !','Le gardien {p} est impérial !'],2,{p:g.sn})}
           if(live)flash(dt2===0?'ARRÊT !':'ARRÊT DU GARDIEN','save',1);vib(25);return}}}
