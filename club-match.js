@@ -80,6 +80,7 @@ function start(cfg){
   const REF={x:CX+9,y:PL/2,vx:0,vy:0,dir:Math.PI,ph:0,stun:0,slide:0,kick:0,dive:0,diveS:0,gk:false,ref:true,t:0,i:0,r:70,n:'Arbitre',sn:'Arbitre',num:'',skin:SKIN[1],hair:HAIR[0],bald:true,cardT:0,card:null};
   const B={x:CX,y:PL/2,z:0,vx:0,vy:0,vz:0,own:null,lt:0,lock:null,lockT:0,shot:false,shooter:null,gkTry:false,tgt:null,kicker:null,rot:0,net:0};
   const G={t:0,half:1,sc:[0,0],ph:'kick',phT:1.2,kt:0,ctrl:null,end:false,speed:1,msg:'',msgT:0,flash:'',flashT:0,shake:0,feed:[],scorers:[],charge:-1,buf:null,bufT:0,stats:{sh:[0,0],pos:[0,0],tk:0,pa:0,sv:0,out:0,usv:0,umiss:0,utk:0,ublk:0}};
+  G.ex=[null,null];
   const cam={x:CX,y:PL/2};
 
   /* ---------- DOM ---------- */
@@ -172,7 +173,8 @@ function start(cfg){
       :['{T} fait tourner le ballon.','{p} remonte le terrain.','Belle séquence de passes pour {T}.','{p} prend le temps de construire.','Le ballon circule bien chez {T}.'],0,{T:tn(o.t),p:o.sn})}
   function say(txt,cls){const d=document.createElement('div');d.className='cm-e '+(cls||'');d.innerHTML='<em>'+minute()+'\'</em> '+txt;FD.prepend(d);while(FD.children.length>3)FD.lastChild.remove();setTimeout(()=>d.classList.add('old'),3500)}
   function flash(txt,cls,dur){FL.className='cm-flash on '+(cls||'');FL.innerHTML=txt;G.flashT=dur||1.6}
-  function minute(){return G.half===1?Math.min(45,Math.floor(G.t/HALF*45)):Math.min(90,45+Math.floor(Math.max(0,G.t-HALF)/HALF*45))}
+  function minute(){const base=G.half===1?0:HALF,lim=G.half===1?45:90,e=G.t-base-HALF;if(e>=0&&G.ex&&G.ex[G.half-1]!=null)return lim+'+'+Math.min(G.ex[G.half-1],1+Math.floor(e/HALF*45));return G.half===1?Math.min(45,Math.floor(G.t/HALF*45)):Math.min(90,45+Math.floor(Math.max(0,G.t-HALF)/HALF*45))}
+  function exAnnounce(h){G.ex=G.ex||[null,null];if(G.ex[h]!=null)return;const k=1+Math.floor(rnd()*10);G.ex[h]=k;flash('⏱️ +'+k+' MIN<small>Temps additionnel</small>','post',2);say('⏱️ <b>'+k+' minute'+(k>1?'s':'')+'</b> de temps additionnel');com(['Le quatrième arbitre annonce {k} minute{s} de temps additionnel !','{k} minute{s} de temps additionnel !'],2,{k:k,s:k>1?'s':''})}
   function vib(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}try{G.gpRumble&&G.gpRumble(Array.isArray(p)?p[0]:p)}catch(e){}}
 
   /* ---------- placement ---------- */
@@ -446,8 +448,9 @@ function start(cfg){
       if(G.ph==='kick'||G.ph==='out'){P.forEach(p=>{p.vx=p.vy=0})}
       if(G.ph!=='play')return}
     if(G.ph==='play'){G.t+=dt;G.stats.pos[B.own?B.own.t:B.lt]+=dt;
-      if(G.half===1&&G.t>=HALF){G.half=2;G.ph='half';G.phT=2.4;SN.whistle(2);flash('MI-TEMPS','half',2.2);SN.applause(2.5,.2);com(['C\'est la mi-temps ! {s}.','L\'arbitre siffle la pause. {s}.'],3,{s:scoreTxt()});say('⏸️ Mi-temps : '+G.sc[0]+' - '+G.sc[1]);return}
-      if(G.t>=HALF*2){if(G.sc[0]===G.sc[1]){G.ph='pre';G.phT=2.2;SN.whistle(3);flash('MATCH NUL<small>Place aux tirs au but !</small>','half',2.1);com(['Match nul ! On va aux tirs au but ! Le suspense est total !','Égalité à la fin du temps réglementaire ! Place à la séance de tirs au but !'],3);vib([60,40,60]);return}G.ph='full';G.phT=1.6;SN.whistle(3);flash('FIN DU MATCH','half',1.6);com(['C\'est terminé ! Victoire de {W} ! Score final {a} à {b} !','Coup de sifflet final ! {W} l\'emporte {a} à {b} !'],3,{W:tn(G.sc[0]>G.sc[1]?0:1),a:Math.max(...G.sc),b:Math.min(...G.sc)});vib([60,40,60]);return}}
+      if(G.t>=HALF&&G.half===1)exAnnounce(0);if(G.t>=HALF*2&&G.half===2)exAnnounce(1);
+      if(G.half===1&&G.t>=HALF+G.ex[0]*HALF/45){G.t=HALF;G.half=2;G.ph='half';G.phT=2.4;SN.whistle(2);flash('MI-TEMPS','half',2.2);SN.applause(2.5,.2);com(['C\'est la mi-temps ! {s}.','L\'arbitre siffle la pause. {s}.'],3,{s:scoreTxt()});say('⏸️ Mi-temps : '+G.sc[0]+' - '+G.sc[1]);return}
+      if(G.half===2&&G.t>=HALF*2+G.ex[1]*HALF/45){if(G.sc[0]===G.sc[1]){G.ph='pre';G.phT=2.2;SN.whistle(3);flash('MATCH NUL<small>Place aux tirs au but !</small>','half',2.1);com(['Match nul ! On va aux tirs au but ! Le suspense est total !','Égalité à la fin du temps réglementaire ! Place à la séance de tirs au but !'],3);vib([60,40,60]);return}G.ph='full';G.phT=1.6;SN.whistle(3);flash('FIN DU MATCH','half',1.6);com(['C\'est terminé ! Victoire de {W} ! Score final {a} à {b} !','Coup de sifflet final ! {W} l\'emporte {a} à {b} !'],3,{W:tn(G.sc[0]>G.sc[1]?0:1),a:Math.max(...G.sc),b:Math.min(...G.sc)});vib([60,40,60]);return}}
     if(G.bufT>0)G.bufT-=dt;
     if(G.charge>=0){if(live&&B.own!==G.ctrl)G.charge=-1;else G.charge=Math.min(1.2,G.charge+dt*1.1)}
     roles();
