@@ -1,6 +1,6 @@
 // PronoClub — service worker : l'appli s'ouvre même sans réseau (dernière version connue)
-const CACHE = 'pronoclub-v90';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon.png', './club.js?v=6','./club-match.js?v=12'];
+const CACHE = 'pronoclub-v91';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon.png', './club.js?v=6','./club-match.js?v=13'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
