@@ -455,10 +455,13 @@ function packShow(got,p){const ov=document.createElement('div');ov.className='cl
 function bot(note,used){const n=Math.max(45,Math.min(95,note+R(9)-4)),v=()=>Math.max(40,Math.min(99,n+R(7)-3)),ci=R(COLS.length);let nm=pick(BOTN),k=0;while(used&&used.has(nm)&&k++<20)nm=pick(BOTN);used&&used.add(nm);
   return{bot:1,pseudo:'IA',n:nm,e:pick(CRESTS),c1:COLS[ci][0],c2:COLS[ci][1],note:n,att:v(),mid:v(),def:v(),gk:v(),div:C().div,noms:botNames(n)}}
 async function choose(){ui.clCup=false;const c=C();if(energy()<1){popup('<div class="pop-ic big">⚡</div><h3>Plus d\'énergie</h3><p>Tu récupères <b>+1 ⚡ toutes les 20 min</b>. Tu peux aussi en acheter tout de suite dans la boutique du club.</p><div class="pop-btns"><button class="pbtn" data-cv="shop">🛒 Acheter de l\'énergie</button><button class="pbtn ghost2" data-popclose="1">Plus tard</button></div>');return}
-  const me=notes().note;let L=[];
-  try{L=(await rpc('club_adversaires',{p_token:session.token,p_note:me}))||[]}catch(e){}
-  L=L.filter(x=>x&&x.n&&x.note).slice(0,3);const used=new Set(L.map(x=>x.n));while(L.length<3)L.push(bot(me,used));
-  ui.clOpp=L;
+  const me=notes().note,D=clDiff(),tg=Math.round(Math.max(45,Math.min(99,me+1+D*14)));let L=[];
+  try{L=(await rpc('club_adversaires',{p_token:session.token,p_note:tg}))||[]}catch(e){}
+  L=L.filter(x=>x&&x.n&&x.note);let o=L.length&&R(2)===0?Object.assign({},pick(L)):bot(tg);
+  if(o.note<tg){o.note=tg;['att','mid','def','gk'].forEach(k=>{o[k]=Math.max(40,Math.min(99,tg+R(5)-2))})}
+  if(D>.85){o.note=99;['att','mid','def','gk'].forEach(k=>{o[k]=99})}
+  ui.clOpp=[o];ui.clOi=0;ui.clD=D;const st=Math.max(1,Math.min(5,Math.ceil(D*5)));
+  toast('⚔️ Adversaire : '+o.n+' ('+o.note+') · difficulté '+'★'.repeat(st)+'☆'.repeat(5-st));go('live');return;
   popup('<div class="pop-ic big">⚔️</div><h3>Choisis ton adversaire</h3><div class="cl-opps">'+L.map((o,i)=>{const d=o.note-me;
     return '<button class="cl-opp" data-clopp="'+i+'"><i style="background:linear-gradient(135deg,'+esc(o.c1)+' 50%,'+esc(o.c2)+' 50%)">'+esc(o.e)+'</i><span><b>'+esc(o.n)+'</b><small>'+(o.bot?'Club IA':'Club de '+esc(o.pseudo))+' · '+DIVN[o.div||10]+'</small></span><strong class="'+(d>3?'hard':d<-3?'easy':'mid')+'">'+o.note+'<small>'+(d>3?'Difficile':d<-3?'Facile':'Équilibré')+'</small></strong></button>'}).join('')+'</div><button class="pbtn ghost2" data-popclose="1">Annuler</button>')}
 
@@ -476,7 +479,9 @@ function simulate(H,A,seed){const r=rng(seed),ev=[];let sh=0,sa=0;
     else if(r()<.012)ev.push({m,s:r()<.5?1:2,t:'yc',p:who(r()<.5?H:A,false)})}
   return{ev,sh,sa}}
 const TXT={g:['BUUUT ! {p} trompe le gardien !','BUT ! Frappe imparable de {p} !','BUT ! {p} conclut une action magnifique !','BUT ! Tête rageuse de {p} !'],sv:['Arrêt du gardien sur la frappe de {p} !','{p} tente sa chance… parade décisive !'],ms:['{p} frappe… à côté !','{p} trouve le poteau !','Énorme occasion pour {p}, ça passe au-dessus !'],ch:['Belle action collective…','Le ballon circule bien.','Centre dangereux, dégagé de justesse !','Accélération sur l\'aile !'],yc:['Carton jaune pour {p}.']};
-function play(i){const o=ui.clOpp&&ui.clOpp[i];if(!o)return;ui.clOi=i;closePop();
+function clDiff(){const c=C(),me=notes().note,h=(c.hist||[]).slice(-10),wr=h.length?h.filter(x=>x.r==='V').length/h.length:0;let s=0;for(let i=h.length-1;i>=0&&h[i].r==='V';i--)s++;
+  return Math.max(0,Math.min(1,.1+(me-65)/30*.4+Math.max(0,wr-.4)*1+s*.07))}
+function play(i){const o=ui.clOpp&&ui.clOpp[i];if(!o)return;ui.clOi=i;closePop();go('live');return;
   setTimeout(()=>popup('<div class="pop-ic big">⚽</div><h3>Comment veux-tu jouer ?</h3><p>Contre <b>'+esc(o.n)+'</b> ('+o.note+')</p><div class="cl-modes">'+
     '<button class="cl-mode main" data-clmode="live"><b>🎮 Jouer moi-même</b><small>Tu contrôles tes joueurs : joystick, passe, tir, tacle · <em>+25 % de pièces</em></small></button>'+
     '<button class="cl-mode" data-clmode="watch"><b>📺 Regarder le match</b><small>Ton équipe joue toute seule, en direct</small></button>'+
@@ -490,7 +495,7 @@ function go(mode){const o=ui.clOpp&&ui.clOpp[ui.clOi];if(!o)return;closePop();co
   const nm=(o.noms||[]).slice(),RL=['gk','def','def','def','def','mid','mid','mid','att','att','att'],ord=[9,8,10,6,5,7,1,2,3,4,0];const names=new Array(11);
   const fb=botNames(o.note||60).filter(x=>!nm.includes(x));ord.forEach((k,j)=>{names[k]=nm[j]||fb[j]||'Joueur'});
   const away={n:o.n,e:o.e,c1:a1,c2:a2,pl:RL.map((k,j)=>({n:names[j],sn:shortN(names[j]),r:Math.max(40,Math.min(99,(o[k]||o.note||60)+R(5)-2))}))};
-  window.ClMatch.start({mode,home,away,onEnd:(ov,res)=>finish(ov,o,{sh:res.sh,sa:res.sa},mode==='live'&&!res.abandon?1.25:1,res)})}
+  window.ClMatch.start({mode,home,away,diff:ui.clCup?clDiff()*.7:(ui.clD||clDiff()),onEnd:(ov,res)=>finish(ov,o,{sh:res.sh,sa:res.sa},mode==='live'&&!res.abandon?1.25:1,res)})}
 function quick(o){const c=C();
   const n=notes(),H={att:n.att+2,mid:n.mid+2,def:n.def+2,gk:n.gk+2},S=simulate(H,o,Date.now()%1e9);csave();
   const ov=document.createElement('div');ov.className='cl-mov';ov.style.setProperty('--h1',c.c1);ov.style.setProperty('--h2',c.c2);ov.style.setProperty('--a1',o.c1);ov.style.setProperty('--a2',o.c2);
