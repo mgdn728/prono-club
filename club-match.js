@@ -47,6 +47,11 @@ function mkSound(){let ac=null,on=true,cg=null,cf=null,lvl=.16,master=null;try{o
 /* ---------- touches du clavier (modifiables, gardées dans le navigateur) ---------- */
 const KDEF={up:'z',down:'s',left:'q',right:'d',pass:' ',lob:'l',shoot:'k',sprint:'shift'};
 const KLAB={up:'Haut',down:'Bas',left:'Gauche',right:'Droite',pass:'Passe / changer de joueur',lob:'Lob / pressing',shoot:'Tir / tacle / plonger',sprint:'Sprint'};
+const GDEF={pass:0,lob:1,shoot:2,sprint:7};
+const GLAB={pass:'Passe / changer de joueur',lob:'Lob / pressing',shoot:'Tir / tacle / plonger',sprint:'Sprint'};
+function gLoad(){try{const o=JSON.parse(localStorage.getItem('cm_pad')||'{}');return Object.assign({},GDEF,o)}catch(e){return Object.assign({},GDEF)}}
+function gName(i){return(['A / ✕','B / ○','X / □','Y / △','LB / L1','RB / R1','LT / L2','RT / R2','Select','Start','L3','R3','Croix ↑','Croix ↓','Croix ←','Croix →'])[i]||('Bouton '+i)}
+function gPad(){try{const L=navigator.getGamepads?navigator.getGamepads():[];for(const g of L)if(g&&g.connected)return g}catch(e){}return null}
 function kLoad(){try{const o=JSON.parse(localStorage.getItem('cm_keys')||'{}');return Object.assign({},KDEF,o)}catch(e){return Object.assign({},KDEF)}}
 function kName(k){return({' ':'Espace',shift:'Maj',enter:'Entrée',control:'Ctrl',alt:'Alt',tab:'Tab',arrowup:'↑',arrowdown:'↓',arrowleft:'←',arrowright:'→',backspace:'Retour',capslock:'Verr. Maj'})[k]||String(k).toUpperCase()}
 function start(cfg){
@@ -69,7 +74,7 @@ function start(cfg){
   const ov=document.createElement('div');ov.className='cl-mov cm-ov'+(live?'':' watch');
   const short=s=>{s=String(s||'');return s.length>12?s.slice(0,11)+'…':s};
   ov.innerHTML='<canvas class="cm-cv"></canvas>'+
-   '<div class="cm-top"><button class="cm-x" data-cm="quit">✕</button><button class="cm-x cm-snd" data-cm="snd">'+(SN.on?'🔊':'🔇')+'</button>'+(PC?'<button class="cm-x cm-kb" data-cm="keys" title="Changer les touches">⌨️</button>':'')+'<div class="cm-sb"><span class="cm-tm" style="--a:'+T[0].c1+';--b:'+T[0].c2+'"><i>'+T[0].e+'</i><b>'+esc(short(T[0].n))+'</b></span><span class="cm-sc"><b id="cmS">0 - 0</b><small id="cmM">0\'</small></span><span class="cm-tm r" style="--a:'+T[1].c1+';--b:'+T[1].c2+'"><b>'+esc(short(T[1].n))+'</b><i>'+T[1].e+'</i></span></div>'+
+   '<div class="cm-top"><button class="cm-x" data-cm="quit">✕</button><button class="cm-x cm-snd" data-cm="snd">'+(SN.on?'🔊':'🔇')+'</button>'+(PC?'<button class="cm-x cm-kb" data-cm="keys" title="Changer les touches">⌨️</button>':'')+(live?'<button class="cm-x cm-gp'+(PC?'':' m')+'" data-cm="pad" title="Manette"'+(gPad()?'':' hidden')+'>🎮</button>':'')+'<div class="cm-sb"><span class="cm-tm" style="--a:'+T[0].c1+';--b:'+T[0].c2+'"><i>'+T[0].e+'</i><b>'+esc(short(T[0].n))+'</b></span><span class="cm-sc"><b id="cmS">0 - 0</b><small id="cmM">0\'</small></span><span class="cm-tm r" style="--a:'+T[1].c1+';--b:'+T[1].c2+'"><b>'+esc(short(T[1].n))+'</b><i>'+T[1].e+'</i></span></div>'+
    (live?'':'<div class="cm-spd"><button data-cm="sp1" class="on">×1</button><button data-cm="sp2">×2</button><button data-cm="sp4">×4</button><button data-cm="skip">Résultat</button></div>')+'</div>'+
    '<canvas class="cm-mini"></canvas><div class="cm-feed" id="cmFeed"></div><div class="cm-flash" id="cmFlash"></div>'+
    (live?'<div class="cm-joy" id="cmJoy"><i></i></div><div class="cm-pad">'+
@@ -79,15 +84,22 @@ function start(cfg){
      '<button class="cm-b b-0" data-k="b0"><span id="cmL0">TIR</span><small class="kh" id="khT"></small><em id="cmPow"></em></button></div>'+
      (PC?'<div class="cm-keys" id="cmKbar"></div>':'')+
      (PC?'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer (clavier) !</b><div id="cmHelpK"></div><button data-cm="keys" class="alt">⌨️ Changer les touches</button>'
-     :'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer !</b><p class="rot">📱↪️ Tourne ton téléphone sur le côté</p><p>🕹️ <b>Joystick</b> (gauche) : déplacer ton joueur</p><p>⚽ <b>PASSE</b> : passe dans la direction du joystick · <b>LOB</b> : passe en hauteur</p><p>🎯 <b>TIR</b> : reste appuyé pour la puissance, relâche pour frapper</p><p>🛡️ En défense : <b>TACLE</b> pour récupérer le ballon, <b>CHANGER</b> de joueur, <b>PRESSING</b> pour qu\'un coéquipier presse</p>')+'<button data-cm="go">C\'est parti !</button></div>':'');
+     :'<div class="cm-help" id="cmHelp"><b>🎮 À toi de jouer !</b><p class="rot">📱↪️ Tourne ton téléphone sur le côté</p><p>🕹️ <b>Joystick</b> (gauche) : déplacer ton joueur</p><p>⚽ <b>PASSE</b> : passe dans la direction du joystick · <b>LOB</b> : passe en hauteur</p><p>🎯 <b>TIR</b> : reste appuyé pour la puissance, relâche pour frapper</p><p>🛡️ En défense : <b>TACLE</b> pour récupérer le ballon, <b>CHANGER</b> de joueur, <b>PRESSING</b> pour qu\'un coéquipier presse</p><p>🎮 Tu as une manette ? Connecte-la et appuie sur un bouton.</p>')+'<button data-cm="go">C\'est parti !</button></div>':'');
   if(PC)ov.classList.add('pc');
   document.body.appendChild(ov);
   function kFill(){if(!PC)return;const n=a=>'<b>'+esc(kName(KB[a]))+'</b>',mv=kName(KB.up)+' '+kName(KB.left)+' '+kName(KB.down)+' '+kName(KB.right);
     const set=(id,t)=>{const e=ov.querySelector('#'+id);if(e)e.innerHTML=t};
     set('khS',esc(kName(KB.sprint)));set('khL',esc(kName(KB.lob)));set('khP',esc(kName(KB.pass)));set('khT',esc(kName(KB.shoot)));
     set('cmKbar','⌨️ Flèches / '+esc(mv)+' : bouger · '+n('pass')+' passe · '+n('lob')+' lob · '+n('shoot')+' tir (maintenir) · '+n('sprint')+' sprint');
-    set('cmHelpK','<p>⬆️⬇️⬅️➡️ <b>Flèches</b> ou <b>'+esc(mv)+'</b> : déplacer ton joueur</p><p>⚽ '+n('pass')+' : passe dans la direction choisie · '+n('lob')+' : passe en hauteur</p><p>🎯 '+n('shoot')+' : reste appuyé pour la puissance, relâche pour tirer</p><p>⚡ '+n('sprint')+' : sprint</p><p>🛡️ En défense : '+n('shoot')+' tacle · '+n('pass')+' changer de joueur · '+n('lob')+' pressing</p><p>🥅 Tirs au but : vise avec les flèches, tire avec '+n('shoot')+' · en gardien : flèche + '+n('shoot')+' pour plonger</p>');
+    set('cmHelpK','<p>⬆️⬇️⬅️➡️ <b>Flèches</b> ou <b>'+esc(mv)+'</b> : déplacer ton joueur</p><p>⚽ '+n('pass')+' : passe dans la direction choisie · '+n('lob')+' : passe en hauteur</p><p>🎯 '+n('shoot')+' : reste appuyé pour la puissance, relâche pour tirer</p><p>⚡ '+n('sprint')+' : sprint</p><p>🛡️ En défense : '+n('shoot')+' tacle · '+n('pass')+' changer de joueur · '+n('lob')+' pressing</p><p>🥅 Tirs au but : vise avec les flèches, tire avec '+n('shoot')+' · en gardien : flèche + '+n('shoot')+' pour plonger</p>'+'<p>🎮 Tu as une manette ? Branche-la et appuie sur un bouton, puis touche 🎮 en haut pour choisir tes boutons.</p>');
     const P=ov.querySelector('#cmKeys');if(P)P.querySelector('.ck-l').innerHTML=Object.keys(KDEF).map(a=>'<button class="ck-r'+(G.kcap===a?' cap':'')+'" data-ck="'+a+'"><span>'+KLAB[a]+'</span><b>'+(G.kcap===a?'Appuie sur une touche…':esc(kName(KB[a])))+'</b></button>').join('')}
+  let GB=gLoad();
+  function gFill(){const P=ov.querySelector('#cmPad');if(!P)return;const g=gPad();
+    P.querySelector('.gp-st').innerHTML=g?'✅ Manette détectée : <b>'+esc(String(g.id).replace(/\(.*\)/,'').slice(0,40))+'</b>':'❌ Aucune manette détectée. Branche-la (ou connecte-la en Bluetooth) puis appuie sur un bouton.';
+    P.querySelector('.ck-l').innerHTML='<div class="ck-r"><span>Bouger</span><b>Joystick gauche / croix</b></div>'+Object.keys(GDEF).map(a=>'<button class="ck-r'+(G.gcap===a?' cap':'')+'" data-gk="'+a+'"><span>'+GLAB[a]+'</span><b>'+(G.gcap===a?'Appuie sur un bouton…':esc(gName(GB[a])))+'</b></button>').join('')}
+  function gPanel(){if(ov.querySelector('#cmPad'))return;const k=ov.querySelector('#cmKeys');if(k)k.remove();if(!ov.querySelector('#cmKeys'))G.kWas=paused;paused=true;const P=document.createElement('div');P.className='cm-help cm-kp';P.id='cmPad';
+    P.innerHTML='<b>🎮 Manette</b><p class="gp-st"></p><p>Touche une action, puis appuie sur le bouton de la manette que tu veux. Start = reprendre le match.</p><div class="ck-l"></div><button data-cm="greset" class="alt">Remettre les boutons d\'origine</button><button data-cm="gclose">Terminé</button>';
+    ov.appendChild(P);gFill()}
   function kPanel(){if(ov.querySelector('#cmKeys'))return;G.kWas=paused;paused=true;const P=document.createElement('div');P.className='cm-help cm-kp';P.id='cmKeys';
     P.innerHTML='<b>⌨️ Changer les touches</b><p>Clique sur une action, puis appuie sur la nouvelle touche (Échap pour annuler). Les flèches marchent toujours pour bouger.</p><div class="ck-l"></div><button data-cm="kreset" class="alt">Remettre les touches d\'origine</button><button data-cm="kclose">Terminé</button>';
     ov.appendChild(P);kFill()}
@@ -116,7 +128,7 @@ function start(cfg){
   function say(txt,cls){const d=document.createElement('div');d.className='cm-e '+(cls||'');d.innerHTML='<em>'+minute()+'\'</em> '+txt;FD.prepend(d);while(FD.children.length>3)FD.lastChild.remove();setTimeout(()=>d.classList.add('old'),3500)}
   function flash(txt,cls,dur){FL.className='cm-flash on '+(cls||'');FL.innerHTML=txt;G.flashT=dur||1.6}
   function minute(){return G.half===1?Math.min(45,Math.floor(G.t/HALF*45)):Math.min(90,45+Math.floor(Math.max(0,G.t-HALF)/HALF*45))}
-  function vib(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+  function vib(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}try{G.gpRumble&&G.gpRumble(Array.isArray(p)?p[0]:p)}catch(e){}}
 
   /* ---------- placement ---------- */
   function kickoff(kt){G.kt=kt;B.own=null;B.x=CX;B.y=PL/2;B.z=B.vx=B.vy=B.vz=0;B.shot=false;B.tgt=null;B.net=0;
@@ -200,13 +212,35 @@ function start(cfg){
       for(const a of ['up','down','left','right'])if(KB[a]===k){inp.keys[a]=dn;e.preventDefault()}
       const KM={[KB.pass]:'b1',[KB.lob]:'b2',[KB.shoot]:'b0',[KB.sprint]:'spr',enter:'b0'};
       if(KM[k]&&!e.repeat){act(KM[k],dn);e.preventDefault()}};
+    // ---- Manette de jeu ----
+    const gprev={};let gMove=false;
+    const gBtn=ev=>{const b=ov.querySelector('.cm-gp');if(b)b.hidden=!gPad();if(ev&&ev.type==='gamepadconnected'){flash('🎮 Manette connectée !<small>Touche 🎮 en haut pour choisir tes boutons</small>','',2.2)}gFill()};
+    window.addEventListener('gamepadconnected',gBtn);window.addEventListener('gamepaddisconnected',gBtn);
+    const gLoop=()=>{if(G.end||!ov.isConnected){window.removeEventListener('gamepadconnected',gBtn);window.removeEventListener('gamepaddisconnected',gBtn);return}
+      const g=gPad();if(g){const pr=i=>!!(g.buttons[i]&&(g.buttons[i].pressed||g.buttons[i].value>.5));
+        const gb=ov.querySelector('.cm-gp');if(gb&&gb.hidden)gb.hidden=false;
+        if(G.gcap){for(let i=0;i<g.buttons.length;i++){if(pr(i)&&!gprev[i]&&i<12&&i!==9){const old=GB[G.gcap];for(const a in GB)if(GB[a]===i&&a!==G.gcap)GB[a]=old;GB[G.gcap]=i;try{localStorage.setItem('cm_pad',JSON.stringify(GB))}catch(_){}G.gcap=null;gFill();break}}}
+        else{
+          let ax=g.axes[0]||0,ay=g.axes[1]||0;if(pr(14))ax=-1;if(pr(15))ax=1;if(pr(12))ay=-1;if(pr(13))ay=1;
+          const m=hyp(ax,ay);if(m>.22){inp.jx=ax/Math.max(1,m);inp.jy=ay/Math.max(1,m);gMove=true}else if(gMove){inp.jx=inp.jy=0;gMove=false}
+          const AM={[GB.pass]:'b1',[GB.lob]:'b2',[GB.shoot]:'b0',[GB.sprint]:'spr'};
+          for(const i in AM){const d=pr(+i);if(d!==!!gprev[i]){const help=ov.querySelector('#cmHelp');if(!(help&&d))act(AM[i],d)}}
+          if(pr(9)&&!gprev[9]){const go=['gclose','kclose','resume','go'].map(x=>ov.querySelector('[data-cm="'+x+'"]')).find(Boolean);if(go)go.click()}
+          if(pr(GB.pass)&&!gprev[GB.pass]){const go=ov.querySelector('#cmHelp [data-cm="go"]');if(go)go.click()}
+        }
+        for(let i=0;i<g.buttons.length;i++)gprev[i]=pr(i)}
+      requestAnimationFrame(gLoop)};
+    requestAnimationFrame(gLoop);G.gpRumble=ms=>{const g=gPad();try{g&&g.vibrationActuator&&g.vibrationActuator.playEffect('dual-rumble',{duration:Math.min(400,ms),strongMagnitude:.6,weakMagnitude:.4})}catch(_){}};
     window.addEventListener('keydown',kd);window.addEventListener('keyup',kd);G.offKeys=()=>{window.removeEventListener('keydown',kd);window.removeEventListener('keyup',kd)};
   }
   ov.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
-  ov.addEventListener('click',e=>{const ck=e.target.closest('[data-ck]');if(ck){G.kcap=ck.dataset.ck;kFill();return}const b=e.target.closest('[data-cm]');if(!b)return;const a=b.dataset.cm;
+  ov.addEventListener('click',e=>{const ck=e.target.closest('[data-ck]');if(ck){G.kcap=ck.dataset.ck;kFill();return}const gk=e.target.closest('[data-gk]');if(gk){G.gcap=gk.dataset.gk;gFill();return}const b=e.target.closest('[data-cm]');if(!b)return;const a=b.dataset.cm;
     if(a==='go'){ov.querySelector('#cmHelp').remove();paused=false;last=performance.now();SN.whistle(1)}
     else if(a==='snd'){b.textContent=SN.toggle()?'🔊':'🔇'}
     else if(a==='keys'){kPanel()}
+    else if(a==='pad'){gPanel()}
+    else if(a==='greset'){GB=Object.assign({},GDEF);try{localStorage.removeItem('cm_pad')}catch(_){}G.gcap=null;gFill()}
+    else if(a==='gclose'){G.gcap=null;const P=ov.querySelector('#cmPad');if(P)P.remove();paused=!!ov.querySelector('.cm-help');if(!paused)last=performance.now()}
     else if(a==='kreset'){KB=Object.assign({},KDEF);try{localStorage.removeItem('cm_keys')}catch(_){}G.kcap=null;kFill()}
     else if(a==='kclose'){G.kcap=null;const P=ov.querySelector('#cmKeys');if(P)P.remove();paused=!!ov.querySelector('.cm-help');if(!paused)last=performance.now()}
     else if(a==='quit'){if(G.end)return;paused=true;const q=document.createElement('div');q.className='cm-help';q.innerHTML='<b>Abandonner le match ?</b><p>Un abandon compte comme une <b>défaite 0-3</b>.</p><button data-cm="quitok">Abandonner</button><button data-cm="resume" class="alt">Continuer à jouer</button>';ov.appendChild(q)}
@@ -536,7 +570,7 @@ const css=`
 .cm-ov.pc .cm-b .kh{display:block}.cm-ov.pc .cm-b span{transform:translateY(-5px)}
 .cm-ov.pc .cm-pad{transform:scale(.72);transform-origin:right bottom;opacity:.8}
 .cm-ov.pc .cm-joy{display:none}.cm-ov.pc .cm-joy.on{display:block}
-.cm-kb{left:98px!important;font-size:15px!important}.cm-ov:has(#cmKeys) #cmHelp{visibility:hidden}.cm-kp{background:rgba(2,6,23,.98)!important}.cm-kp{z-index:8}.ck-l{display:grid;gap:6px;margin:8px 0}
+.cm-kb{left:98px!important;font-size:15px!important}.cm-gp{left:144px!important;font-size:15px!important}.cm-gp.m{left:98px!important}.cm-gp[hidden]{display:none!important}.cm-ov:has(#cmPad) #cmHelp{visibility:hidden}.cm-ov:has(#cmKeys) #cmHelp{visibility:hidden}.cm-kp{background:rgba(2,6,23,.98)!important}.cm-kp{z-index:8}.ck-l{display:grid;gap:6px;margin:8px 0}
 .ck-r{display:flex!important;justify-content:space-between;align-items:center;margin:0!important;padding:10px 12px!important;font-size:14px!important;font-weight:700!important;background:rgba(255,255,255,.08)!important;color:#fff!important;border-radius:12px!important}
 .ck-r b{display:inline!important;margin:0!important;font-size:14px!important;background:rgba(255,255,255,.15);border-radius:8px;padding:3px 10px;min-width:40px;text-align:center}.ck-r.cap b{background:#facc15;color:#111}
 .cm-keys{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;background:rgba(2,6,23,.66);border-radius:999px;padding:6px 14px;font-size:12px;white-space:nowrap;pointer-events:none}
