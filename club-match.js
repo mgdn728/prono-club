@@ -67,6 +67,7 @@ function start(cfg){
       skin:SKIN[h%SKIN.length],hair:HAIR[(h>>3)%HAIR.length],bald:(h>>6)%9===0})}));
   P.forEach(p=>{p.spd=(5.5+(p.r-60)*.045)*(p.gk?.92:1)});
   const team=t=>P.filter(p=>p.t===t);
+  const REF={x:CX+9,y:PL/2,vx:0,vy:0,dir:Math.PI,ph:0,stun:0,slide:0,kick:0,dive:0,diveS:0,gk:false,ref:true,t:0,i:0,r:70,n:'Arbitre',sn:'Arbitre',num:'',skin:SKIN[1],hair:HAIR[0],bald:true,cardT:0,card:null};
   const B={x:CX,y:PL/2,z:0,vx:0,vy:0,vz:0,own:null,lt:0,lock:null,lockT:0,shot:false,shooter:null,gkTry:false,tgt:null,kicker:null,rot:0,net:0};
   const G={t:0,half:1,sc:[0,0],ph:'kick',phT:1.2,kt:0,ctrl:null,end:false,speed:1,msg:'',msgT:0,flash:'',flashT:0,shake:0,feed:[],scorers:[],charge:-1,buf:null,bufT:0,stats:{sh:[0,0],pos:[0,0],tk:0,pa:0,sv:0,out:0,usv:0,umiss:0,utk:0,ublk:0}};
   const cam={x:CX,y:PL/2};
@@ -165,8 +166,9 @@ function start(cfg){
 
   /* ---------- placement ---------- */
   function kickoff(kt){G.kt=kt;B.own=null;B.x=CX;B.y=PL/2;B.z=B.vx=B.vy=B.vz=0;B.shot=false;B.tgt=null;B.net=0;
+    REF.x=CX+9;REF.y=PL/2+3;REF.vx=REF.vy=0;
     P.forEach(p=>{const f=(p.t===kt?KOA:KOD)[p.i],w=W2(p.t,f[0],f[1]);p.x=w[0];p.y=w[1];p.vx=p.vy=0;p.stun=p.slide=p.dive=0;p.dir=p.t===0?-Math.PI/2:Math.PI/2});
-    const s=P.find(p=>p.t===kt&&p.i===9);s.x=CX;s.y=PL/2+(kt===0?.6:-.6);B.own=s;B.lt=kt;
+    const s=P.find(p=>p.t===kt&&p.i===9)||P.find(p=>p.t===kt&&p.i===10)||P.filter(p=>p.t===kt&&!p.gk).sort((a,b)=>b.i-a.i)[0];s.x=CX;s.y=PL/2+(kt===0?.6:-.6);B.own=s;B.lt=kt;
     G.ph='kick';G.phT=1.1;if(live)G.ctrl=kt===0?s:nearest(0,B.x,B.y,true);if(!(live&&paused))SN.whistle(1)}
   function nearest(t,x,y,noGK,ex){let b=null,bd=1e9;for(const p of P){if(p.t!==t||(noGK&&p.gk)||p===ex)continue;const d=hyp(p.x-x,p.y-y);if(d<bd){bd=d;b=p}}return b}
   function restart(p,x,y,msg){G.stats.out++;P.forEach(q=>{q.vx=q.vy=0;q.slide=0});p.x=x;p.y=y;B.own=p;B.x=x;B.y=y;B.z=B.vx=B.vy=B.vz=0;B.shot=false;B.tgt=null;B.lt=p.t;
@@ -205,8 +207,9 @@ function start(cfg){
     if(c&&c.t!==p.t){const d=hyp(c.x-p.x,c.y-p.y);if(d<1.8){tryTk(p,c,.08);return}if(d<6)p.dir=Math.atan2(c.y+c.vy*.3-p.y,c.x+c.vx*.3-p.x)}
     p.slide=.42;p.tkDone=false}
   function tryTk(p,c,bonus){p.tkDone=true;p.slide=0;const ch=cl(.5+bonus+(p.r-c.r)/80,.3,.8);
+    if(rnd()<(inp.sprint?.11:.06)){foul(p,c,inp.sprint);return false}
     if(rnd()<ch){G.stats.utk++;c.stun=.6;take(p);B.tgt=null;vib(30);say('🛡️ Tacle réussi de <b>'+esc(p.sn)+'</b> !');com(['Superbe tacle de {p} !','Quelle intervention de {p} !','{p} récupère le ballon !'],1,{p:p.sn});return true}
-    p.stun=.55;return false}
+    p.stun=.55;if(rnd()<(inp.sprint?.38:.26)&&foul(p,c,inp.sprint))return false;return false}
   function switchP(){const c=G.ctrl;let b=null,bd=1e9;const tx=B.x+B.vx*.4,ty=B.y+B.vy*.4;
     for(const p of P){if(p.t!==0||p.gk||p===c)continue;const d=hyp(p.x-tx,p.y-ty);if(d<bd){bd=d;b=p}}if(b)G.ctrl=b}
 
@@ -325,7 +328,7 @@ function start(cfg){
     const w=targetOf(p);steer(p,w[0],w[1],p.spd*(att&&p.role==='A'?1:.9)*(live&&t===1?1.08:1),dt);if(B.own&&B.own.t!==t)autoTk(p,B.own,dt)}
   function autoTk(p,c,dt){if(p.cd>0||p.stun>0)return;const d=hyp(c.x-p.x,c.y-p.y);if(d>1.35)return;p.cd=.55;
     const base=live?(p.t===1?.46:.2):.28,ch=cl(base*Math.pow(p.r/c.r,2)*(c===G.ctrl&&inp.sprint?.85:1),.08,live&&p.t===1?.72:.6);
-    if(rnd()<ch){G.stats.tk++;B.own=p;B.lt=p.t;B.shot=false;B.tgt=null;c.stun=.45;p.cd=.4;if(live&&p.t===1&&c===G.ctrl)vib(25);if(rnd()<.35){say('Ballon récupéré par <b>'+esc(p.sn)+'</b>');com(['Ballon récupéré par {p}.','{p} intercepte !','Bien vu de {p} qui récupère.'],0,{p:p.sn})}if(live&&p.t===0)G.ctrl=p}}
+    if(rnd()<.045){foul(p,c,false);return}if(rnd()<ch){G.stats.tk++;B.own=p;B.lt=p.t;B.shot=false;B.tgt=null;c.stun=.45;p.cd=.4;if(live&&p.t===1&&c===G.ctrl)vib(25);if(rnd()<.35){say('Ballon récupéré par <b>'+esc(p.sn)+'</b>');com(['Ballon récupéré par {p}.','{p} intercepte !','Bien vu de {p} qui récupère.'],0,{p:p.sn})}if(live&&p.t===0)G.ctrl=p}}
   let chaser=[null,null],presser=[null,null],cover=[null,null];
   function roles(){for(let t=0;t<2;t++){chaser[t]=presser[t]=cover[t]=null;const ex=live&&t===0?G.ctrl:null;
     if(!B.own){let bd=1e9;const tx=B.x+B.vx*.4,ty=B.y+B.vy*.4;for(const p of P)if(p.t===t&&!p.gk&&p!==ex&&p.stun<=0){const d=hyp(p.x-tx,p.y-ty);if(d<bd){bd=d;chaser[t]=p}}
@@ -334,7 +337,31 @@ function start(cfg){
       presser[t]=L[0]||null;cover[t]=L[1]||null;if(ex&&hyp(ex.x-c.x,ex.y-c.y)<4&&!G.press){cover[t]=presser[t];presser[t]=null}}}}
 
   /* ---------- simulation ---------- */
-  function step(dt,fast){
+  function refStep(dt){if(REF.cardT>0)REF.cardT-=dt;if(G.ph==='pens')return;const side=B.x<CX?1:-1,tx=cl(B.x+side*7,2,PW-2),ty=cl(B.y+(B.lt===0?5:-5),3,PL-3),dx=tx-REF.x,dy=ty-REF.y,d=hyp(dx,dy);
+    const sp=d>2.5?Math.min(6.6,d*1.3):0,a=Math.min(1,dt*4);REF.vx+=((d?dx/d:0)*sp-REF.vx)*a;REF.vy+=((d?dy/d:0)*sp-REF.vy)*a;REF.x+=REF.vx*dt;REF.y+=REF.vy*dt;
+    REF.dir=hyp(REF.vx,REF.vy)>.4?Math.atan2(REF.vy,REF.vx):Math.atan2(B.y-REF.y,B.x-REF.x);REF.ph+=hyp(REF.vx,REF.vy)*dt*2.4}
+  G.cards=[0,0];
+  function sendOff(p){const i=P.indexOf(p);if(i<0)return;P.splice(i,1);if(G.ctrl===p)G.ctrl=null;if(B.own===p)B.own=null;for(let t=0;t<2;t++){if(chaser[t]===p)chaser[t]=null;if(presser[t]===p)presser[t]=null;if(cover[t]===p)cover[t]=null}}
+  function foul(off,vic,hard){if(G.ph!=='play'||!vic||!off||off.t===vic.t||!P.includes(vic))return false;
+    const behind=hyp(vic.vx,vic.vy)>1&&((off.x-vic.x)*vic.vx+(off.y-vic.y)*vic.vy)<0;
+    const sev=rnd()+(behind?.25:0)+(hard?.15:0);let card=null;
+    if(!off.gk&&sev>1.12)card='r';else if(sev>.72)card='y';
+    if(card==='y'){off.yc=(off.yc||0)+1;if(off.yc>=2&&!off.gk)card='r2'}
+    const gy=ownY(off.t),inBox=Math.abs(vic.x-CX)<20.2&&Math.abs(vic.y-gy)<16.5;
+    G.nf=(G.nf||0)+1;SN.whistle(1);vib(40);REF.card=card?(card==='y'?'y':'r'):null;REF.cardT=card?2.4:0;
+    const nm=esc(off.sn),vn=esc(vic.sn),tv=vic.t;
+    if(card){G.cards[off.t]++;}
+    if(card==='y'){flash('🟨 CARTON JAUNE<small>'+nm+' ('+esc(short(T[off.t].n))+')</small>','post',1.8);say('🟨 Carton jaune pour <b>'+nm+'</b>');com(['Faute de {p} ! Carton jaune !','L\'arbitre sort le carton jaune pour {p} !','Avertissement pour {p}, c\'était trop appuyé !'],3,{p:off.sn})}
+    else if(card){flash('🟥 CARTON ROUGE<small>'+nm+(card==='r2'?' · 2e jaune':'')+' · expulsé !</small>','goalA',2.2);say('🟥 Carton rouge pour <b>'+nm+'</b>'+(card==='r2'?' (deuxième jaune)':'')+' !');
+      com(card==='r2'?['Deuxième carton jaune pour {p} ! C\'est le rouge ! {T} va finir à dix !','{p} prend un deuxième jaune ! Expulsé !']:['Carton rouge ! {p} est expulsé ! Quel tacle dangereux !','Rouge direct pour {p} ! L\'arbitre ne pardonne pas !'],3,{p:off.sn,T:short(T[off.t].n)})}
+    else{say('🟡 Faute de <b>'+nm+'</b> sur '+vn);com(['Faute de {p}.','Coup de sifflet, faute de {p} sur {v}.','L\'arbitre siffle la faute.'],1,{p:off.sn,v:vic.sn})}
+    if(card==='r'||card==='r2')sendOff(off);
+    vic.stun=0;off.stun=.8;
+    if(inBox){const taker=team(tv).filter(q=>!q.gk).sort((a,b)=>b.r-a.r)[0]||vic;const py=gy+(off.t===0?-11:11);
+      restart(taker,CX,py,'⚠️ <b>PENALTY</b> pour '+esc(T[tv].n)+' !');G.phT=2.2;setTimeout(()=>{flash('PENALTY !','goal',1.6)},card?1900:0);com(['Penalty ! L\'arbitre désigne le point de penalty !','Et c\'est penalty !'],3)}
+    else{restart(vic,cl(vic.x,2,PW-2),cl(vic.y,2,PL-2),'Coup franc pour '+esc(short(T[tv].n)));G.phT=card?2:1.3}
+    return true}
+  function step(dt,fast){refStep(dt);
     if(G.end)return;
     G.flashT-=dt;if(G.flashT<=0&&FL.classList.contains('on')&&!fast)FL.classList.remove('on');
     if(G.ph==='pens'){pkStep(dt);return}
@@ -500,7 +527,7 @@ function start(cfg){
     if(pk&&live&&PK.turn===0&&(PK.st==='aim'||PK.st==='prep')){const a=PK.aim,pz=.5+Math.sin(performance.now()/120)*.06;ctx.strokeStyle='#facc15';ctx.lineWidth=.12;ctx.beginPath();ctx.arc(a,-.15,pz,0,7);ctx.moveTo(a-pz-.3,-.15);ctx.lineTo(a+pz+.3,-.15);ctx.moveTo(a,-.15-pz-.3);ctx.lineTo(a,-.15+pz+.3);ctx.stroke()}
     if(pk&&live&&PK.turn===1&&PK.dive!=null&&PK.st!=='result'){ctx.fillStyle='rgba(250,204,21,.35)';ctx.beginPath();ctx.arc(CX+PK.dive*2.7,.4,1.1,0,7);ctx.fill()}
     // ombres + joueurs
-    const list=P.slice().sort((a,b)=>a.y-b.y);
+    const list=(G.ph==='pens'?P.slice():P.concat([REF])).sort((a,b)=>a.y-b.y);
     const ctrl=live?G.ctrl:null,jw=joyW(),mdx=hyp(jw[0],jw[1])>.2?jw:null;
     let tgt=null;if(ctrl&&B.own===ctrl)tgt=bestPass(ctrl,mdx?mdx[0]:Math.cos(ctrl.dir),mdx?mdx[1]:Math.sin(ctrl.dir));
     if(tgt){ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=.12;ctx.setLineDash([.4,.3]);ctx.beginPath();ctx.arc(tgt.x,tgt.y,1,0,7);ctx.stroke();ctx.setLineDash([])}
@@ -512,6 +539,7 @@ function start(cfg){
     let ballDrawn=false;
     for(const p of list){if(!ballDrawn&&p.y>B.y){drawBall();ballDrawn=true}drawPlayer(p)}
     if(!ballDrawn)drawBall();
+    if(REF.cardT>0&&G.ph!=='pens'){const w=ROT?1.3:.9,h=ROT?.9:1.3,cx=REF.x+(ROT?-2.4:0),cy=REF.y+(ROT?0:-2.4);ctx.fillStyle=REF.card==='r'?'#dc2626':'#facc15';ctx.strokeStyle='#000';ctx.lineWidth=.08;ctx.fillRect(cx-w/2,cy-h/2,w,h);ctx.strokeRect(cx-w/2,cy-h/2,w,h)}
     drawGoal(0,false);drawGoal(PL,false);
     // étiquettes (écran)
     ctx.setTransform(DPR,0,0,DPR,0,0);
@@ -539,7 +567,7 @@ function start(cfg){
     ctx.fillStyle='#1f2937';for(let k=0;k<3;k++){const a=B.rot+k*2.1;ctx.beginPath();ctx.arc(x+Math.cos(a)*r*.62,y+Math.sin(a*.7)*r*.55,r*.3,0,7);ctx.fill()}
     const g=ctx.createRadialGradient(x-r*.35,y-r*.35,r*.1,x,y,r);g.addColorStop(0,'rgba(255,255,255,.5)');g.addColorStop(1,'rgba(0,0,0,.3)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,2*r,2*r);ctx.restore();
     ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=.03;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.stroke()}
-  function drawPlayer(p){const tm=T[p.t],c1=p.gk?gkCol(tm.c1):tm.c1,c2=p.gk?'#111827':tm.c2,sh=p.gk?'#111827':shade(tm.c1,.45),sock=p.gk?c1:tm.c2;
+  function drawPlayer(p){const tm=T[p.t],c1=p.ref?'#151515':p.gk?gkCol(tm.c1):tm.c1,c2=p.ref?'#111111':p.gk?'#111827':tm.c2,sh=p.ref?'#facc15':p.gk?'#111827':shade(tm.c1,.45),sock=p.ref?'#111111':p.gk?c1:tm.c2;
     ctx.save();ctx.translate(p.x,p.y);const K=1.4;ctx.scale(K,K);ctx.rotate(p.dir);
     const down=p.stun>0&&p.slide<=0&&p.stun>.2;const sliding=p.slide>0,diving=p.dive>0;
     if(diving){ctx.rotate(p.diveS*Math.PI/2*Math.min(1,(.55-p.dive)*6))}
