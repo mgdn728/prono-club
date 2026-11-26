@@ -37,7 +37,10 @@ const SPORT = { foot: 'Football', basket: 'Basketball', hockey: 'Hockey sur glac
 const COMP = [[/ligue des champions|champions league/i, 'pronostics-ligue-des-champions.html', 'Ligue des champions'], [/^ligue 1/i, 'pronostics-ligue-1.html', 'Ligue 1'],
   [/premier league/i, 'pronostics-premier-league.html', 'Premier League'], [/liga|laliga/i, 'pronostics-liga.html', 'Liga'], [/serie a/i, 'pronostics-serie-a.html', 'Serie A'],
   [/bundesliga/i, 'pronostics-bundesliga.html', 'Bundesliga'], [/nba/i, 'pronostics-nba.html', 'NBA'], [/nhl/i, 'pronostics-nhl.html', 'NHL'], [/atp|wta|tennis/i, 'pronostics-tennis.html', 'tennis']];
-const compPage = c => COMP.find(x => x[0].test(c || ''));
+const EXACT = { 'pronostics-ligue-1.html': ['Ligue 1'], 'pronostics-ligue-des-champions.html': ['Ligue des champions'], 'pronostics-premier-league.html': ['Premier League'],
+  'pronostics-liga.html': ['Liga'], 'pronostics-serie-a.html': ['Serie A'], 'pronostics-bundesliga.html': ['Bundesliga'], 'pronostics-nba.html': ['NBA'] };
+const inComp = (x, c) => { c = String(c || '').trim(); const e = EXACT[x[1]]; if (e) return e.includes(c); if (x[1] === 'pronostics-nhl.html') return /^NHL/.test(c); return x[0].test(c) };
+const compPage = c => COMP.find(x => inComp(x, c));
 const TOP = /ligue 1|premier league|liga|serie a|bundesliga|ligue des champions|champions league|europa|conference|nba|coupe de france|top 14|six nations|coupe du monde|euro|ligue des nations/i;
 
 const head = (title, desc, url, extra = '') => `<!DOCTYPE html>
@@ -148,6 +151,36 @@ function hubPage(byDay) {
   return h + foot;
 }
 
+/* ---------- pages par compétition : section mise à jour automatiquement ---------- */
+function compSection(cp, all) {
+  const name = cp[2], L = all.filter(m => inComp(cp, m.C));
+  const up = L.filter(m => !Array.isArray(m.s) && !(m.s && !Array.isArray(m.s)) && m.day >= today).sort((a, b) => a.t.localeCompare(b.t)).slice(0, 14);
+  const past = L.filter(m => Array.isArray(m.s)).sort((a, b) => b.t.localeCompare(a.t)).slice(0, 8);
+  const link = m => m.file ? `<a href="/prono/${m.file}">${esc(m.H)} – ${esc(m.A)}</a>` : `${esc(m.H)} – ${esc(m.A)}`;
+  let h = `<!--AUTO-->\n<p class="maj">🔄 Mis à jour automatiquement le ${esc(fJourAn(today + 'T12:00:00+01:00'))}</p>\n`;
+  h += `<h2>Pronostic ${esc(name)} : les prochains matchs</h2>\n`;
+  if (up.length) {
+    h += `<table><tr><th>Date</th><th>Match</th><th>Cotes</th><th>Notre prono</th></tr>${up.map(m => { const a = analyse(m); return `<tr><td>${esc(fDayLabel(m.day))}<br><span class="maj">${fHeure(m.t)}</span></td><td>${link(m)}</td><td>${m.o.map(nf).join(' · ')}</td><td><b>${esc(a.prono.t)}</b></td></tr>` }).join('')}</table>\n`;
+    h += `<p class="maj">Pronostics indicatifs calculés à partir des cotes et de la forme des équipes. Cliquez sur un match pour l'analyse complète.</p>\n<p><a class="btn" href="/">⚽ Parier gratuitement sur ces matchs</a></p>\n`;
+    const ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: `Prochains matchs de ${name}`, itemListElement: up.map((m, i) => ({ '@type': 'ListItem', position: i + 1,
+      item: { '@type': 'SportsEvent', name: `${m.H} – ${m.A}`, startDate: m.t, eventStatus: 'https://schema.org/EventScheduled', eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: { '@type': 'Place', name: `Stade de ${m.H}` }, homeTeam: { '@type': 'SportsTeam', name: m.H }, awayTeam: { '@type': 'SportsTeam', name: m.A }, ...(m.file ? { url: `${SITE}/prono/${m.file}` } : {}) } })) };
+    h += `<script type="application/ld+json">${JSON.stringify(ld)}</script>\n`;
+  } else h += `<p>Pas de match de ${esc(name)} programmé dans les tout prochains jours. Cette page se met à jour toute seule : revenez bientôt, ou retrouvez <a href="/pronostics-du-jour.html">tous les pronos du jour</a>.</p>\n`;
+  if (past.length) h += `<h2>Derniers résultats de ${esc(name)} et nos pronos</h2>\n<ul>${past.map(m => { const a = analyse(m); return `<li>${link(m)} : <b>${m.s[0]}-${m.s[1]}</b> · notre prono (${esc(a.prono.t)}) ${a.ok ? '✅' : '❌'}</li>` }).join('')}</ul>\n`;
+  return h + `<!--/AUTO-->`;
+}
+function updateComp(cp, all) {
+  const f = path.join(ROOT, cp[1]); if (!fs.existsSync(f)) return false;
+  let s = fs.readFileSync(f, 'utf8'); const sec = compSection(cp, all), name = cp[2];
+  if (s.includes('<!--AUTO-->')) s = s.replace(/<!--AUTO-->[\s\S]*?<!--\/AUTO-->/, sec);
+  else { const i = s.indexOf('</p>', s.indexOf('class="btn"')); if (i < 0) return false; s = s.slice(0, i + 4) + '\n' + sec + s.slice(i + 4) }
+  s = s.replace(/<title>[^<]*<\/title>/, `<title>Pronostic ${esc(name)} : nos pronos gratuits des prochains matchs — PronoClub</title>`)
+    .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="Pronostic ${esc(name)} gratuit : les prochains matchs avec leurs cotes et notre prono, mis à jour chaque jour. Pariez entre amis sur PronoClub, sans argent réel.">`)
+    .replace(/<h1>[^<]*<\/h1>/, `<h1>Pronostic ${esc(name)}</h1>`);
+  return writeIf(f, s);
+}
+
 /* ---------- sitemap ---------- */
 function sitemap() {
   const statics = fs.readdirSync(ROOT).filter(f => f.endsWith('.html') && !['index.html', '404.html'].includes(f));
@@ -167,12 +200,13 @@ async function load() {
 const writeIf = (f, s) => { if (fs.existsSync(f) && fs.readFileSync(f, 'utf8') === s) return false; fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, s); return true };
 
 const data = process.argv[2] ? JSON.parse(fs.readFileSync(process.argv[2], 'utf8')) : await load();
-const byDay = {};
+const byDay = {}, ALL = [];
 let n = 0;
 for (const d of DAYS) {
-  const L = (data[d] || []).filter(m => m && m.h && m.a && Array.isArray(m.o) && m.o.length >= 2 && m.o.every(x => x > 1))
-    .map(m => ({ ...m, day: d, H: frn(m.h), A: frn(m.a), C: frc(m.c) || m.c || '' }))
-    .filter(m => m.big || TOP.test(m.C))
+  const L0 = (data[d] || []).filter(m => m && m.h && m.a && Array.isArray(m.o) && m.o.length >= 2 && m.o.every(x => x > 1))
+    .map(m => ({ ...m, day: d, H: frn(m.h), A: frn(m.a), C: frc(m.c) || m.c || '' }));
+  ALL.push(...L0);
+  const L = L0.filter(m => m.big || TOP.test(m.C))
     .sort((a, b) => (b.big ? 1 : 0) - (a.big ? 1 : 0) || (TOP.test(b.C) ? 1 : 0) - (TOP.test(a.C) ? 1 : 0) || a.t.localeCompare(b.t))
     .slice(0, MAXJ).sort((a, b) => a.t.localeCompare(b.t));
   L.forEach(m => { m.file = `${d}-${slug(m.H)}-${slug(m.A)}.html`; m.others = L });
@@ -180,5 +214,6 @@ for (const d of DAYS) {
   for (const m of L) if (writeIf(path.join(ROOT, 'prono', m.file), matchPage(m))) n++;
 }
 const hub = writeIf(path.join(ROOT, 'pronostics-du-jour.html'), hubPage(byDay));
+let nc = 0;for (const cp of COMP) if (updateComp(cp, ALL)) nc++;
 writeIf(path.join(ROOT, 'sitemap.xml'), sitemap());
-console.log(`${n} page(s) de match écrite(s), page du jour ${hub ? 'mise à jour' : 'inchangée'}, ${Object.values(byDay).reduce((a, b) => a + b.length, 0)} match(s) au total.`);
+console.log(`${n} page(s) de match écrite(s), page du jour ${hub ? 'mise à jour' : 'inchangée'}, ${nc} page(s) de compétition mise(s) à jour, ${Object.values(byDay).reduce((a, b) => a + b.length, 0)} match(s) au total.`);

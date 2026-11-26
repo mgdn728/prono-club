@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PronoClub (Prono-Club) — Paris sportifs gratuits entre amis</title>
+<title>PronoClub (Prono Club) — Pronostics foot et paris sportifs gratuits</title>
 <meta name="theme-color" content="#e5126b">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96.png"><link rel="icon" type="image/png" sizes="144x144" href="/icons/favicon-144.png"><link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -12,18 +12,18 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PronoClub">
-<meta name="description" content="Paris sportifs gratuits sur les vrais matchs : 20 000 pièces par jour, des diamants à gagner et un classement entre amis.">
+<meta name="description" content="PronoClub (Prono Club) : pronostics foot et paris sportifs 100 % gratuits sur les vrais matchs. 20 000 pièces par jour, des diamants à gagner et un classement entre amis.">
 <link rel="canonical" href="https://prono-club.fr/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PronoClub">
-<meta property="og:title" content="PronoClub (Prono-Club) — Paris sportifs gratuits entre amis">
+<meta property="og:title" content="PronoClub (Prono Club) — Pronostics foot et paris sportifs gratuits">
 <meta property="og:description" content="Pronostics sportifs 100 % gratuits sur les vrais matchs du jour, sans argent réel : pièces offertes chaque jour, diamants à gagner, classements entre amis.">
 <meta property="og:url" content="https://prono-club.fr/">
 <meta property="og:image" content="https://prono-club.fr/icons/og-image.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-{"@type":"WebSite","@id":"https://prono-club.fr/#site","url":"https://prono-club.fr/","name":"PronoClub","alternateName":["Prono-Club","Prono Club","prono-club.fr"],"inLanguage":"fr-FR"},
-{"@type":"Organization","@id":"https://prono-club.fr/#org","name":"PronoClub","url":"https://prono-club.fr/","logo":"https://prono-club.fr/icons/icon-512.png"}
+{"@type":"WebSite","@id":"https://prono-club.fr/#site","url":"https://prono-club.fr/","name":"PronoClub","alternateName":["Prono Club","Prono-Club","pronoclub","prono-club.fr"],"inLanguage":"fr-FR","publisher":{"@id":"https://prono-club.fr/#org"}},
+{"@type":"Organization","@id":"https://prono-club.fr/#org","name":"PronoClub","alternateName":["Prono Club","Prono-Club","pronoclub"],"url":"https://prono-club.fr/","logo":"https://prono-club.fr/icons/icon-512.png","description":"PronoClub est un site de pronostics sportifs et de paris 100 % gratuits, sans argent réel.","sameAs":["https://www.instagram.com/pronoclub_","https://www.tiktok.com/@pronoclub_"]}
 ]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -439,6 +439,7 @@ header .pill{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)
 .mc-t span.av{display:inline-grid;place-items:center;gap:0;justify-content:center}
 /* barre de navigation du bas (mobile) */
 .bnav{display:none}
+.sitefoot{max-width:900px;margin:28px auto 96px;padding:0 16px;color:var(--muted);font-size:12px;line-height:1.6;text-align:center}.sitefoot a{color:var(--muted)}.sitefoot p{margin:4px 0}
 @media (max-width:900px){
   .bnav{grid-template-columns:repeat(7,1fr)!important}
   #nav{display:none}
@@ -1702,6 +1703,8 @@ body.pf-lock{overflow:hidden}
       </div>
     </aside>
   </main>
+  <footer class="sitefoot"><p><b>PronoClub</b> (aussi écrit <b>Prono Club</b> ou Prono-Club) : pronostics foot et paris sportifs 100 % gratuits sur les vrais matchs, sans argent réel.</p>
+  <p><a href="pronostics-du-jour.html">Pronos du jour</a> · <a href="pronostics-ligue-1.html">Pronostic Ligue 1</a> · <a href="pronostics-ligue-des-champions.html">Pronostic Ligue des champions</a> · <a href="pronostics-premier-league.html">Premier League</a> · <a href="pronostics-liga.html">Liga</a> · <a href="pronostics-serie-a.html">Serie A</a> · <a href="pronostics-bundesliga.html">Bundesliga</a> · <a href="pronostics-nba.html">NBA</a> · <a href="guides.html">Guides</a> · <a href="lexique-paris-sportifs.html">Lexique</a> · <a href="a-propos.html">À propos</a></p></footer>
 </div>
 <button class="fab hide" id="fab"></button>
 <nav class="bnav" id="bnav">

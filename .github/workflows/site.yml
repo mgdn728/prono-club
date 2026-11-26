@@ -30,7 +30,7 @@ jobs:
         run: |
           git config user.name "pronoclub-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A prono pronostics-du-jour.html sitemap.xml
+          git add -A prono pronostics-*.html sitemap.xml
           if ! git diff --cached --quiet; then
             git commit -q -m "Pages des matchs (auto)"
             git pull -q --rebase origin main && git push -q origin HEAD:main || echo "push impossible"
