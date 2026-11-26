@@ -56,6 +56,7 @@ function kLoad(){try{const o=JSON.parse(localStorage.getItem('cm_keys')||'{}');r
 function kName(k){return({' ':'Espace',shift:'Maj',enter:'Entrée',control:'Ctrl',alt:'Alt',tab:'Tab',arrowup:'↑',arrowdown:'↓',arrowleft:'←',arrowright:'→',backspace:'Retour',capslock:'Verr. Maj'})[k]||String(k).toUpperCase()}
 function start(cfg){
   const SN=mkSound();SN.init();
+  const CO={on:true,last:0,quiet:0,v:null,busyUntil:0};try{CO.on=localStorage.getItem('cm_com')!=='0'}catch(e){}
   const PC=!!(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches);
   let KB=kLoad();
   const live=cfg.mode==='live',T=[cfg.home,cfg.away];
@@ -74,7 +75,7 @@ function start(cfg){
   const ov=document.createElement('div');ov.className='cl-mov cm-ov'+(live?'':' watch');
   const short=s=>{s=String(s||'');return s.length>12?s.slice(0,11)+'…':s};
   ov.innerHTML='<canvas class="cm-cv"></canvas>'+
-   '<div class="cm-top"><button class="cm-x" data-cm="quit">✕</button><button class="cm-x cm-snd" data-cm="snd">'+(SN.on?'🔊':'🔇')+'</button>'+(PC?'<button class="cm-x cm-kb" data-cm="keys" title="Changer les touches">⌨️</button>':'')+(live?'<button class="cm-x cm-gp'+(PC?'':' m')+'" data-cm="pad" title="Manette"'+(gPad()?'':' hidden')+'>🎮</button>':'')+'<div class="cm-sb"><span class="cm-tm" style="--a:'+T[0].c1+';--b:'+T[0].c2+'"><i>'+T[0].e+'</i><b>'+esc(short(T[0].n))+'</b></span><span class="cm-sc"><b id="cmS">0 - 0</b><small id="cmM">0\'</small></span><span class="cm-tm r" style="--a:'+T[1].c1+';--b:'+T[1].c2+'"><b>'+esc(short(T[1].n))+'</b><i>'+T[1].e+'</i></span></div>'+
+   '<div class="cm-top"><button class="cm-x" data-cm="quit">✕</button><button class="cm-x cm-snd" data-cm="snd">'+(SN.on?'🔊':'🔇')+'</button><button class="cm-x cm-com'+(CO.on?'':' off')+'" data-cm="com" title="Commentateur">🎙️</button>'+(PC?'<button class="cm-x cm-kb" data-cm="keys" title="Changer les touches">⌨️</button>':'')+(live?'<button class="cm-x cm-gp'+(PC?'':' m')+'" data-cm="pad" title="Manette"'+(gPad()?'':' hidden')+'>🎮</button>':'')+'<div class="cm-sb"><span class="cm-tm" style="--a:'+T[0].c1+';--b:'+T[0].c2+'"><i>'+T[0].e+'</i><b>'+esc(short(T[0].n))+'</b></span><span class="cm-sc"><b id="cmS">0 - 0</b><small id="cmM">0\'</small></span><span class="cm-tm r" style="--a:'+T[1].c1+';--b:'+T[1].c2+'"><b>'+esc(short(T[1].n))+'</b><i>'+T[1].e+'</i></span></div>'+
    (live?'':'<div class="cm-spd"><button data-cm="sp1" class="on">×1</button><button data-cm="sp2">×2</button><button data-cm="sp4">×4</button><button data-cm="skip">Résultat</button></div>')+'</div>'+
    '<canvas class="cm-mini"></canvas><div class="cm-feed" id="cmFeed"></div><div class="cm-flash" id="cmFlash"></div>'+
    (live?'<div class="cm-joy" id="cmJoy"><i></i></div><div class="cm-pad">'+
@@ -125,6 +126,22 @@ function start(cfg){
     for(let y=2;y<96;y+=6)for(let x=2+(y%12?3:0);x<96;x+=6){c.fillStyle=cols[(Math.random()*cols.length)|0];c.globalAlpha=.55+Math.random()*.45;c.beginPath();c.arc(x+Math.random(),y+Math.random(),1.9,0,7);c.fill()}}
   let crowdP=null;try{crowdP=ctx.createPattern(crowd,'repeat');crowdP.setTransform&&crowdP.setTransform(new DOMMatrix().scale(1/9))}catch(e){}
 
+
+  // ---- Commentateur (voix) ----
+  const SS=window.speechSynthesis;
+  function coVoice(){if(CO.v||!SS)return CO.v;try{const L=SS.getVoices().filter(v=>/^fr/i.test(v.lang));CO.v=L.find(v=>/fr-FR/i.test(v.lang)&&/thomas|google|daniel|paul|henri|male/i.test(v.name))||L.find(v=>/fr-FR/i.test(v.lang))||L[0]||null}catch(e){}return CO.v}
+  try{SS&&SS.addEventListener&&SS.addEventListener('voiceschanged',()=>{CO.v=null;coVoice()})}catch(e){}
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const tn=t=>short(T[t].n);
+  function scoreTxt(){const[a,b]=G.sc;return a===b?(a===0?'toujours zéro partout':'égalité, '+a+' partout'):a>b?tn(0)+' mène '+a+' à '+b:tn(1)+' mène '+b+' à '+a}
+  function com(lines,prio,vars){if(!CO.on||!SS||G.sk||G.speed>2)return;const now=performance.now();
+    if(prio<2&&(SS.speaking||now<CO.busyUntil))return;if(prio<1&&now-CO.last<6000)return;
+    let t=pick(lines);for(const k in (vars||{}))t=t.split('{'+k+'}').join(vars[k]);
+    try{if(prio>=2)SS.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';const v=coVoice();if(v)u.voice=v;u.rate=prio>=2?1.12:1.05;u.pitch=prio>=2?1.1:1;u.volume=1;SS.speak(u);CO.last=now;CO.busyUntil=now+Math.min(5000,600+t.length*55)}catch(e){}}
+  function coTick(dt){if(!CO.on||paused||G.ph!=='play')return;CO.quiet+=dt;if(CO.quiet<9+Math.random()*4)return;CO.quiet=0;const o=B.own;if(!o)return;
+    const att=o.t===0?B.y<PL*.38:B.y>PL*.62;
+    com(att?['{T} est aux abords de la surface !','{p} cherche la faille…','Attention, {T} s\'approche dangereusement !','Ça chauffe devant le but !']
+      :['{T} fait tourner le ballon.','{p} remonte le terrain.','Belle séquence de passes pour {T}.','{p} prend le temps de construire.','Le ballon circule bien chez {T}.'],0,{T:tn(o.t),p:o.sn})}
   function say(txt,cls){const d=document.createElement('div');d.className='cm-e '+(cls||'');d.innerHTML='<em>'+minute()+'\'</em> '+txt;FD.prepend(d);while(FD.children.length>3)FD.lastChild.remove();setTimeout(()=>d.classList.add('old'),3500)}
   function flash(txt,cls,dur){FL.className='cm-flash on '+(cls||'');FL.innerHTML=txt;G.flashT=dur||1.6}
   function minute(){return G.half===1?Math.min(45,Math.floor(G.t/HALF*45)):Math.min(90,45+Math.floor(Math.max(0,G.t-HALF)/HALF*45))}
@@ -166,13 +183,13 @@ function start(cfg){
     const spd=16+pow*15,T2=d/spd,h=pow>.97?1.9+(pow-.97)*40:.3+rnd()*(me?1.1:1.3);
     const err=me?.008+(100-p.r)/100*.045+(d>24?.015:0)+(pressure(p)<1.6?.02:0):.015+(100-p.r)/100*.075+(d>22?.02:0)+(pressure(p)<2?.035:0);
     kick(p,ax,gy,spd,cl((h+4.9*T2*T2)/T2,0,14),err);B.shot=true;B.shooter=p;B.lockT=.35;G.stats.sh[p.t]++;
-    say((p.t===0?'🎯 ':'')+'Frappe de <b>'+esc(p.sn)+'</b> !')}
+    say((p.t===0?'🎯 ':'')+'Frappe de <b>'+esc(p.sn)+'</b> !');CO.quiet=0;com(['{p} tente sa chance !','Frappe de {p} !','{p} déclenche !','Et c\'est {p} qui frappe !','{p} arme sa frappe !'],1,{p:p.sn})}
   function pressure(p){let m=99;for(const o of P)if(o.t!==p.t&&!o.gk)m=Math.min(m,hyp(o.x-p.x,o.y-p.y));return m}
   function tackle(p){if(p.stun>0||p.slide>0)return;const c=B.own;p.cd=.45;
     if(c&&c.t!==p.t){const d=hyp(c.x-p.x,c.y-p.y);if(d<1.8){tryTk(p,c,.08);return}if(d<6)p.dir=Math.atan2(c.y+c.vy*.3-p.y,c.x+c.vx*.3-p.x)}
     p.slide=.42;p.tkDone=false}
   function tryTk(p,c,bonus){p.tkDone=true;p.slide=0;const ch=cl(.62+bonus+(p.r-c.r)/80,.38,.88);
-    if(rnd()<ch){G.stats.utk++;c.stun=.6;take(p);B.tgt=null;vib(30);say('🛡️ Tacle réussi de <b>'+esc(p.sn)+'</b> !');return true}
+    if(rnd()<ch){G.stats.utk++;c.stun=.6;take(p);B.tgt=null;vib(30);say('🛡️ Tacle réussi de <b>'+esc(p.sn)+'</b> !');com(['Superbe tacle de {p} !','Quelle intervention de {p} !','{p} récupère le ballon !'],1,{p:p.sn});return true}
     p.stun=.55;return false}
   function switchP(){const c=G.ctrl;let b=null,bd=1e9;const tx=B.x+B.vx*.4,ty=B.y+B.vy*.4;
     for(const p of P){if(p.t!==0||p.gk||p===c)continue;const d=hyp(p.x-tx,p.y-ty);if(d<bd){bd=d;b=p}}if(b)G.ctrl=b}
@@ -235,8 +252,9 @@ function start(cfg){
   }
   ov.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
   ov.addEventListener('click',e=>{const ck=e.target.closest('[data-ck]');if(ck){G.kcap=ck.dataset.ck;kFill();return}const gk=e.target.closest('[data-gk]');if(gk){G.gcap=gk.dataset.gk;gFill();return}const b=e.target.closest('[data-cm]');if(!b)return;const a=b.dataset.cm;
-    if(a==='go'){ov.querySelector('#cmHelp').remove();paused=false;last=performance.now();SN.whistle(1)}
+    if(a==='go'){ov.querySelector('#cmHelp').remove();paused=false;last=performance.now();SN.whistle(1);coIntro()}
     else if(a==='snd'){b.textContent=SN.toggle()?'🔊':'🔇'}
+    else if(a==='com'){CO.on=!CO.on;try{localStorage.setItem('cm_com',CO.on?'1':'0')}catch(_){}b.classList.toggle('off',!CO.on);if(!CO.on){try{SS&&SS.cancel()}catch(_){}}else com(['Le commentateur est de retour !'],3);flash(CO.on?'🎙️ Commentateur activé':'🎙️ Commentateur coupé','',1.2)}
     else if(a==='keys'){kPanel()}
     else if(a==='pad'){gPanel()}
     else if(a==='greset'){GB=Object.assign({},GDEF);try{localStorage.removeItem('cm_pad')}catch(_){}G.gcap=null;gFill()}
@@ -247,7 +265,7 @@ function start(cfg){
     else if(a==='resume'){b.closest('.cm-help').remove();paused=false;last=performance.now()}
     else if(a==='quitok'){b.closest('.cm-help').remove();G.sc=[0,Math.max(3,G.sc[1])];done(true)}
     else if(a.startsWith('sp')){G.speed=+a.slice(2);ov.querySelectorAll('.cm-spd button').forEach(x=>x.classList.toggle('on',x===b))}
-    else if(a==='skip'){let n=0;while(!G.end&&n++<20000)step(1/30,true)}});
+    else if(a==='skip'){G.sk=1;try{SS&&SS.cancel()}catch(_){}let n=0;while(!G.end&&n++<20000)step(1/30,true);G.sk=0}});
 
   /* ---------- IA ---------- */
   function targetOf(p){const t=p.t,att=(B.own?B.own.t:B.lt)===t,bn=YN(t,B.y),bx=XN(t,B.x),f=FORM[p.i];let yn,xn;
@@ -287,7 +305,7 @@ function start(cfg){
     const w=targetOf(p);steer(p,w[0],w[1],p.spd*(att&&p.role==='A'?1:.9),dt);if(B.own&&B.own.t!==t)autoTk(p,B.own,dt)}
   function autoTk(p,c,dt){if(p.cd>0||p.stun>0)return;const d=hyp(c.x-p.x,c.y-p.y);if(d>1.35)return;p.cd=.55;
     const base=live?(p.t===1?.33:.24):.28,ch=cl(base*Math.pow(p.r/c.r,2)*(c===G.ctrl&&inp.sprint?.8:1),.08,.6);
-    if(rnd()<ch){G.stats.tk++;B.own=p;B.lt=p.t;B.shot=false;B.tgt=null;c.stun=.45;p.cd=.4;if(live&&p.t===1&&c===G.ctrl)vib(25);if(rnd()<.35)say('Ballon récupéré par <b>'+esc(p.sn)+'</b>');if(live&&p.t===0)G.ctrl=p}}
+    if(rnd()<ch){G.stats.tk++;B.own=p;B.lt=p.t;B.shot=false;B.tgt=null;c.stun=.45;p.cd=.4;if(live&&p.t===1&&c===G.ctrl)vib(25);if(rnd()<.35){say('Ballon récupéré par <b>'+esc(p.sn)+'</b>');com(['Ballon récupéré par {p}.','{p} intercepte !','Bien vu de {p} qui récupère.'],0,{p:p.sn})}if(live&&p.t===0)G.ctrl=p}}
   let chaser=[null,null],presser=[null,null],cover=[null,null];
   function roles(){for(let t=0;t<2;t++){chaser[t]=presser[t]=cover[t]=null;const ex=live&&t===0?G.ctrl:null;
     if(!B.own){let bd=1e9;const tx=B.x+B.vx*.4,ty=B.y+B.vy*.4;for(const p of P)if(p.t===t&&!p.gk&&p!==ex&&p.stun<=0){const d=hyp(p.x-tx,p.y-ty);if(d<bd){bd=d;chaser[t]=p}}
@@ -306,8 +324,8 @@ function start(cfg){
       if(G.ph==='kick'||G.ph==='out'){P.forEach(p=>{p.vx=p.vy=0})}
       if(G.ph!=='play')return}
     if(G.ph==='play'){G.t+=dt;G.stats.pos[B.own?B.own.t:B.lt]+=dt;
-      if(G.half===1&&G.t>=HALF){G.half=2;G.ph='half';G.phT=2.4;SN.whistle(2);flash('MI-TEMPS','half',2.2);say('⏸️ Mi-temps : '+G.sc[0]+' - '+G.sc[1]);return}
-      if(G.t>=HALF*2){if(G.sc[0]===G.sc[1]){G.ph='pre';G.phT=2.2;SN.whistle(3);flash('MATCH NUL<small>Place aux tirs au but !</small>','half',2.1);vib([60,40,60]);return}G.ph='full';G.phT=1.6;SN.whistle(3);flash('FIN DU MATCH','half',1.6);vib([60,40,60]);return}}
+      if(G.half===1&&G.t>=HALF){G.half=2;G.ph='half';G.phT=2.4;SN.whistle(2);flash('MI-TEMPS','half',2.2);com(['C\'est la mi-temps ! {s}.','L\'arbitre siffle la pause. {s}.'],3,{s:scoreTxt()});say('⏸️ Mi-temps : '+G.sc[0]+' - '+G.sc[1]);return}
+      if(G.t>=HALF*2){if(G.sc[0]===G.sc[1]){G.ph='pre';G.phT=2.2;SN.whistle(3);flash('MATCH NUL<small>Place aux tirs au but !</small>','half',2.1);com(['Match nul ! On va aux tirs au but ! Le suspense est total !','Égalité à la fin du temps réglementaire ! Place à la séance de tirs au but !'],3);vib([60,40,60]);return}G.ph='full';G.phT=1.6;SN.whistle(3);flash('FIN DU MATCH','half',1.6);com(['C\'est terminé ! Victoire de {W} ! Score final {a} à {b} !','Coup de sifflet final ! {W} l\'emporte {a} à {b} !'],3,{W:tn(G.sc[0]>G.sc[1]?0:1),a:Math.max(...G.sc),b:Math.min(...G.sc)});vib([60,40,60]);return}}
     if(G.bufT>0)G.bufT-=dt;
     if(G.charge>=0){if(live&&B.own!==G.ctrl)G.charge=-1;else G.charge=Math.min(1.2,G.charge+dt*1.1)}
     roles();
@@ -345,15 +363,15 @@ function start(cfg){
     if(G.ph!=='play')return;
     // poteaux / transversale / but
     for(const gy of [0,PL]){if((py-gy)*(B.y-gy)<=0&&py!==B.y){const u=(gy-py)/(B.y-py),cx=px+(B.x-px)*u,dx=Math.abs(cx-CX);
-      if(Math.abs(dx-GW/2)<.22&&B.z<GH+.1){B.y=gy+(py>gy?.3:-.3);B.vy=-B.vy*.55;B.vx+=(cx>CX?1:-1)*(dx>GW/2?2:-2);B.shot=false;flash('POTEAU !','post',1.1);SN.ooh();say('🥅 Sur le poteau !');vib(40);return}
-      if(dx<GW/2&&Math.abs(B.z-GH)<.18){B.y=gy+(py>gy?.3:-.3);B.vy=-B.vy*.45;B.vz=-Math.abs(B.vz)*.3+1;B.shot=false;flash('TRANSVERSALE !','post',1.1);SN.ooh();say('🥅 Sur la barre !');vib(40);return}
+      if(Math.abs(dx-GW/2)<.22&&B.z<GH+.1){B.y=gy+(py>gy?.3:-.3);B.vy=-B.vy*.55;B.vx+=(cx>CX?1:-1)*(dx>GW/2?2:-2);B.shot=false;flash('POTEAU !','post',1.1);SN.ooh();say('🥅 Sur le poteau !');com(['Sur le poteau ! Quelle occasion !','Le poteau ! C\'est passé tout près !','Oh le poteau ! Le gardien était battu !'],2);vib(40);return}
+      if(dx<GW/2&&Math.abs(B.z-GH)<.18){B.y=gy+(py>gy?.3:-.3);B.vy=-B.vy*.45;B.vz=-Math.abs(B.vz)*.3+1;B.shot=false;flash('TRANSVERSALE !','post',1.1);SN.ooh();say('🥅 Sur la barre !');com(['La transversale ! Incroyable !','Sur la barre ! Ça passe tout près !'],2);vib(40);return}
       if(dx<GW/2&&B.z<GH){goal(gy===0?0:1);return}}}
     // gardien
     if(B.shot&&!B.gkTry){const dt2=1-B.kicker.t,g=P.find(p=>p.t===dt2&&p.gk),reach=1.05+(g.r-50)/45*1.25+(B.z>1.2?.2:0),d=hyp(g.x-B.x,g.y-B.y);
       if(d<reach+.45&&B.z<GH+.4){B.gkTry=true;const v=hyp(B.vx,B.vy),sh=B.shooter||B.kicker;
         const ps=cl((live&&sh.t===0?.27:.42)+(g.r-sh.r)/55-(v-24)/26-(d>reach*.75?.12:0),.12,.93);g.dive=.55;g.diveS=Math.sign((B.x-g.x)*(dt2===0?1:-1))||1;
-        if(rnd()<ps){SN.ooh();G.stats.sv++;if(sh.t===0)G.stats.usv++;if(v<21&&rnd()<.6){B.own=g;B.lt=g.t;B.shot=false;B.tgt=null;say('🧤 <b>'+esc(g.sn)+'</b> capte le ballon');}
-          else{B.vy=(dt2===0?-1:1)*(5+rnd()*5);B.vx=(rnd()<.5?-1:1)*(4+rnd()*8);B.vz=2+rnd()*3;B.shot=false;B.lt=g.t;B.lock=g;B.lockT=.4;say('🧤 Parade de <b>'+esc(g.sn)+'</b> !')}
+        if(rnd()<ps){SN.ooh();G.stats.sv++;if(sh.t===0)G.stats.usv++;if(v<21&&rnd()<.6){B.own=g;B.lt=g.t;B.shot=false;B.tgt=null;say('🧤 <b>'+esc(g.sn)+'</b> capte le ballon');com(['{p} capte le ballon.','Tranquille pour le gardien {p}.','{p} s\'empare du ballon.'],1,{p:g.sn});}
+          else{B.vy=(dt2===0?-1:1)*(5+rnd()*5);B.vx=(rnd()<.5?-1:1)*(4+rnd()*8);B.vz=2+rnd()*3;B.shot=false;B.lt=g.t;B.lock=g;B.lockT=.4;say('🧤 Parade de <b>'+esc(g.sn)+'</b> !');com(['Quelle parade de {p} !','Arrêt décisif de {p} !','{p} sort le grand jeu !','Le gardien {p} est impérial !'],2,{p:g.sn})}
           if(live)flash(dt2===0?'ARRÊT !':'ARRÊT DU GARDIEN','save',1);vib(25);return}}}
     // contrôle
     if(B.z<1.7){let best=null,bd=1e9;for(const p of P){if(p.stun>0||(B.lockT>0&&B.lock===p))continue;const reach=p.gk&&inOwnBox(p)?1.5:1.0,d=hyp(p.x-B.x,p.y-B.y);if(d<reach&&d<bd&&(B.z<(p.gk?2.5:1.25))){bd=d;best=p}}
@@ -375,7 +393,7 @@ function start(cfg){
   function goal(t){SN.goal(t===0||!live);const k=B.kicker,sc=k&&k.t===t?k:null;G.sc[t]++;G.ph='goal';G.phT=3.4;G.next=1-t;B.net=1.2;B.shot=false;G.shake=.7;
     G.scorers.push({t,n:sc?sc.n:'csc',m:minute()});ov.querySelector('#cmS').textContent=G.sc[0]+' - '+G.sc[1];
     const who=sc?esc(sc.sn):'contre son camp';flash('BUUUT !<small>'+T[t].e+' '+who+'</small>',t===0?'goal':'goalA',3);
-    say('<b>⚽ BUT ! '+(sc?esc(sc.n):'Contre son camp')+'</b> ('+G.sc[0]+'-'+G.sc[1]+')','g'+t);vib(t===0?[90,50,90,50,200]:80);
+    say('<b>⚽ BUT ! '+(sc?esc(sc.n):'Contre son camp')+'</b> ('+G.sc[0]+'-'+G.sc[1]+')','g'+t);CO.quiet=0;com(sc?['BUUUUUT ! {p} ! Quel but pour {T} ! {s} !','Et c\'est le but ! {p} trompe le gardien ! {s} !','Quelle frappe ! But de {p} ! {s} !','Gooool ! {p} fait trembler les filets ! {s} !']:['Contre son camp ! Quelle malchance ! {s} !'],3,{p:sc?sc.sn:'',T:tn(t),s:scoreTxt()});vib(t===0?[90,50,90,50,200]:80);
     ov.classList.add('scored');setTimeout(()=>ov.classList.remove('scored'),900);
     if(t===0&&!live)return;if(t===0)confetti()}
   function confetti(){for(let i=0;i<46;i++){const d=document.createElement('i');d.className='cm-cf';d.style.left=(Math.random()*100)+'%';d.style.background=[T[0].c1,T[0].c2,'#facc15','#fff'][i%4];d.style.animationDelay=(Math.random()*.4)+'s';d.style.animationDuration=(1.6+Math.random())+'s';ov.appendChild(d);setTimeout(()=>d.remove(),3200)}}
@@ -414,13 +432,13 @@ function start(cfg){
         else if(PK.out==='save'){B.vx=(rnd()-.5)*12;B.vy=8;B.vz=2;flash(t===1?'ARRÊT !!':'ARRÊT DU GARDIEN','save',1.4);vib(t===1?[60,30,90]:40);if(t===1&&live)confetti()}
         else if(PK.out==='post'){B.vx=(B.x>CX?1:-1)*3;B.vy=7;B.vz=1;flash('POTEAU !','post',1.4)}
         else{B.vx=(B.x-CX)*.6;B.vy=-10;B.vz=PK.out==='over'?2:0;flash(PK.out==='over'?'AU-DESSUS !':'À CÔTÉ !','post',1.4)}
-        say((ok?'✅ ':'❌ ')+'<b>'+esc(sh.sn)+'</b> ('+esc(T[t].n)+')');pkHud();
+        say((ok?'✅ ':'❌ ')+'<b>'+esc(sh.sn)+'</b> ('+esc(T[t].n)+')');com(ok?['{p} transforme !','Dans le filet ! {p} ne tremble pas !','{p} marque, imparable !']:PK.out==='save'?['Arrêté ! Quelle parade du gardien !','Le gardien devine et arrête le tir de {p} !']:['Raté ! {p} manque le cadre !','Oh non ! {p} rate son tir au but !'],3,{p:sh.sn});pkHud();
         ov.querySelector('#cmS').textContent=G.sc[0]+' - '+G.sc[1]+' ('+PK.g[0]+'-'+PK.g[1]+')'}return}
     if(PK.st==='result'){const f=Math.exp(-2*dt);B.vx*=f;B.vy*=f;B.x+=B.vx*dt;B.y+=B.vy*dt;B.vz-=9.8*dt;B.z=Math.max(0,B.z+B.vz*dt);if(B.y<-1.7){B.y=-1.7;B.vy=0}
       if(PK.t>1.7){const[a,b]=PK.g,[na,nb]=PK.n;let end=false;
         if(na<=5&&nb<=5){if(a+(5-na)<b||b+(5-nb)<a)end=true}
         if(na>=5&&na===nb&&a!==b)end=true;
-        if(end){G.pens=[a,b];G.ph='full';G.phT=2.6;const w=a>b?0:1;flash((w===0?'VICTOIRE':'DÉFAITE')+'<small>Tirs au but '+a+' - '+b+'</small>',w===0?'goal':'goalA',2.5);vib(w===0?[90,50,90,50,200]:80);if(w===0&&live)confetti();return}
+        if(end){G.pens=[a,b];G.ph='full';G.phT=2.6;const w=a>b?0:1;setTimeout(()=>com(['{W} remporte la séance de tirs au but, {a} à {b} ! Quel suspense !'],3,{W:tn(w),a:Math.max(a,b),b:Math.min(a,b)}),1300);flash((w===0?'VICTOIRE':'DÉFAITE')+'<small>Tirs au but '+a+' - '+b+'</small>',w===0?'goal':'goalA',2.5);vib(w===0?[90,50,90,50,200]:80);if(w===0&&live)confetti();return}
         PK.turn=1-PK.turn;pkPrep()}}}
 
   /* ---------- rendu ---------- */
@@ -545,13 +563,14 @@ function start(cfg){
     PW0.style.width=G.charge>=0?Math.min(100,(G.charge*.8+.3)*100)+'%':'0'}
   let last=performance.now(),acc=0;
   function loop(now){if(G.end)return;const dt=Math.min(.05,(now-last)/1000);last=now;
-    if(!paused){acc+=dt*G.speed;let n=0;while(acc>=1/60&&n<8){step(1/60);acc-=1/60;n++}if(n>=8)acc=0}
+    if(!paused){coTick(dt);acc+=dt*G.speed;let n=0;while(acc>=1/60&&n<8){step(1/60);acc-=1/60;n++}if(n>=8)acc=0}
     if(G.end)return;draw(dt);hud();requestAnimationFrame(loop)}
-  function done(abandon){if(G.end)return;G.end=true;setTimeout(()=>SN.stop(),2500);window.removeEventListener('resize',resize);G.offKeys&&G.offKeys();
+  function done(abandon){if(G.end)return;G.end=true;if(abandon)try{SS&&SS.cancel()}catch(_){}setTimeout(()=>SN.stop(),2500);window.removeEventListener('resize',resize);G.offKeys&&G.offKeys();
     exitFS();const res={pens:G.pens||null,sh:G.sc[0],sa:G.sc[1],scorers:G.scorers,abandon:!!abandon,live,shots:G.stats.sh,st:G.stats,poss:Math.round(G.stats.pos[0]/Math.max(1,G.stats.pos[0]+G.stats.pos[1])*100)};
     ov.querySelectorAll('.cm-joy,.cm-pad,.cm-spd,.cm-feed,.cm-flash,.cm-mini').forEach(x=>x.remove());
     setTimeout(()=>cfg.onEnd&&cfg.onEnd(ov,res),abandon?0:300)}
-  kickoff(0);
+  function coIntro(){com(['Bonsoir à tous et bienvenue pour ce match entre {A} et {B} ! L\'arbitre siffle le coup d\'envoi !','Coup d\'envoi de cette rencontre entre {A} et {B} ! C\'est parti !','Les deux équipes sont prêtes, {A} contre {B}, place au jeu !'],3,{A:tn(0),B:tn(1)})}
+  kickoff(0);if(!live)setTimeout(coIntro,300);
   if(!live){/* regarder : rien à attendre */}
   requestAnimationFrame(t=>{last=t;loop(t)});
   return{ov,G,P,B,step,act,inp}
@@ -570,7 +589,7 @@ const css=`
 .cm-ov.pc .cm-b .kh{display:block}.cm-ov.pc .cm-b span{transform:translateY(-5px)}
 .cm-ov.pc .cm-pad{transform:scale(.72);transform-origin:right bottom;opacity:.8}
 .cm-ov.pc .cm-joy{display:none}.cm-ov.pc .cm-joy.on{display:block}
-.cm-kb{left:98px!important;font-size:15px!important}.cm-gp{left:144px!important;font-size:15px!important}.cm-gp.m{left:98px!important}.cm-gp[hidden]{display:none!important}.cm-ov:has(#cmPad) #cmHelp{visibility:hidden}.cm-ov:has(#cmKeys) #cmHelp{visibility:hidden}.cm-kp{background:rgba(2,6,23,.98)!important}.cm-kp{z-index:8}.ck-l{display:grid;gap:6px;margin:8px 0}
+.cm-com{left:98px!important;font-size:15px!important}.cm-com.off{opacity:.45;text-decoration:line-through}.cm-kb{left:142px!important;font-size:15px!important}.cm-gp{left:186px!important;font-size:15px!important}.cm-gp.m{left:142px!important}.cm-gp[hidden]{display:none!important}.cm-ov:has(#cmPad) #cmHelp{visibility:hidden}.cm-ov:has(#cmKeys) #cmHelp{visibility:hidden}.cm-kp{background:rgba(2,6,23,.98)!important}.cm-kp{z-index:8}.ck-l{display:grid;gap:6px;margin:8px 0}
 .ck-r{display:flex!important;justify-content:space-between;align-items:center;margin:0!important;padding:10px 12px!important;font-size:14px!important;font-weight:700!important;background:rgba(255,255,255,.08)!important;color:#fff!important;border-radius:12px!important}
 .ck-r b{display:inline!important;margin:0!important;font-size:14px!important;background:rgba(255,255,255,.15);border-radius:8px;padding:3px 10px;min-width:40px;text-align:center}.ck-r.cap b{background:#facc15;color:#111}
 .cm-keys{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;background:rgba(2,6,23,.66);border-radius:999px;padding:6px 14px;font-size:12px;white-space:nowrap;pointer-events:none}
